@@ -1,0 +1,53 @@
+{
+  "schema_version": "tep-report-v1",
+  "identity": {
+    "pending_attribution": true,
+    "actor_count": 0
+  },
+  "lineage": {
+    "is_fork": false,
+    "parent": null,
+    "has_upstream_lineage": false
+  },
+  "origin": {
+    "tenant_unique": { "kind": "observed", "value": 0, "unit": "commits" },
+    "tenant_merge_or_sync": { "kind": "observed", "value": 0, "unit": "commits" },
+    "upstream_sync": { "kind": "not_observed", "reason": "no_upstream_lineage" },
+    "inherited_upstream": { "kind": "observed", "value": 0, "unit": "commits" },
+    "unresolved": { "kind": "observed", "value": 6112, "unit": "commits" },
+    "ambiguous_origin": { "kind": "observed", "value": 0, "unit": "commits" },
+    "generated_or_vendor": { "kind": "observed", "value": 0, "unit": "commits" },
+    "template_inherited": { "kind": "not_observed", "reason": "template_not_provided" },
+    "tenant_derivative": { "kind": "not_observed", "reason": "parent_repo_not_provided" },
+    "external_upstream_contribution": { "kind": "not_observed", "reason": "parent_repo_not_provided" }
+  },
+  "attribution": {
+    "bot": { "kind": "observed", "value": 46, "unit": "commits" }
+  },
+  "test_frameworks": {
+    "kind": "observed",
+    "value": true,
+    "names": ["mocha", "nyc"],
+    "unit": "boolean"
+  },
+  "test_cochange": {
+    "kind": "not_observed",
+    "reason": "pending_attribution"
+  },
+  "rework": {
+    "kind": "not_observed",
+    "reason": "pending_attribution"
+  },
+  "survival": {
+    "kind": "not_observed",
+    "reason": "survival_scan_disabled"
+  },
+  "provenance": {
+    "analysis_scope": "tenant",
+    "analyzed_commit_sha": "a3714473feb3d2908add734d340e7755fd85e0a3"
+  },
+  "interpretation": {
+    "test_cochange": { "kind": "not_observed", "reason": "scope_is_tenant" },
+    "corrective_rework": { "kind": "not_observed", "reason": "scope_is_tenant" }
+  }
+}

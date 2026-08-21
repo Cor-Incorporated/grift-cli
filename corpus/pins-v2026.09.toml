@@ -1,0 +1,374 @@
+# Public corpus pins for reference distribution v2026.09 (repo scope).
+# Manifest (name+SHA) is publishable. Do not publish per-repo league tables.
+# Group B is listed as repo URLs only; public docs must not name the people.
+# C selection: created 2024+ and/or README states AI-generated / vibe-coding.
+
+schema_version = "tep-corpus-pins-v1"
+analysis_scope = "repo"
+
+# --- A: high verification culture ---
+
+[[repos]]
+id = "A-click"
+group = "A"
+name = "click"
+url = "https://github.com/pallets/click.git"
+sha = "2c8cd3ac958a7eb316d67f2d316c27086c4c0369"
+
+[[repos]]
+id = "A-express"
+group = "A"
+name = "express"
+url = "https://github.com/expressjs/express.git"
+sha = "a3714473feb3d2908add734d340e7755fd85e0a3"
+
+[[repos]]
+id = "A-typer"
+group = "A"
+name = "typer"
+url = "https://github.com/tiangolo/typer.git"
+sha = "9a7b2e83f6b62c750d6026b0de9ebf2026a8b8fa"
+
+[[repos]]
+id = "A-flask"
+group = "A"
+name = "flask"
+url = "https://github.com/pallets/flask.git"
+sha = "d318b683471101618febed18996405ad26462110"
+
+[[repos]]
+id = "A-httpx"
+group = "A"
+name = "httpx"
+url = "https://github.com/encode/httpx.git"
+sha = "b5addb64f0161ff6bfe94c124ef76f6a1fba5254"
+
+[[repos]]
+id = "A-redis"
+group = "A"
+name = "redis"
+url = "https://github.com/redis/redis.git"
+sha = "78432ed8e48aba009721a15a88ea8f5c9597b8e5"
+
+[[repos]]
+id = "A-curl"
+group = "A"
+name = "curl"
+url = "https://github.com/curl/curl.git"
+sha = "5d6dc816785358f505ba6922ceb507b4521c5421"
+
+[[repos]]
+id = "A-ripgrep"
+group = "A"
+name = "ripgrep"
+url = "https://github.com/BurntSushi/ripgrep.git"
+sha = "3fce3b5bb0236da2df6d99672afb8a719642eca7"
+
+[[repos]]
+id = "A-zstd"
+group = "A"
+name = "zstd"
+url = "https://github.com/facebook/zstd.git"
+sha = "82d322c4973d9e2968d94047a40892bc6d9a9bdf"
+
+[[repos]]
+id = "A-requests"
+group = "A"
+name = "requests"
+url = "https://github.com/psf/requests.git"
+sha = "8f8b212de8c2129d7954c6cd373762880375620a"
+
+# --- B: notable individual flagship repos (URL+SHA only in public aggregates) ---
+
+[[repos]]
+id = "B-backbone"
+group = "B"
+name = "backbone"
+url = "https://github.com/jashkenas/backbone.git"
+sha = "f229c75b194a63a8e07a3313ce43e8d2dc105327"
+
+[[repos]]
+id = "B-got"
+group = "B"
+name = "got"
+url = "https://github.com/sindresorhus/got.git"
+sha = "e3924aa1e53a6ca3eb93a43618ce532442a89b40"
+
+[[repos]]
+id = "B-commander"
+group = "B"
+name = "commander.js"
+url = "https://github.com/tj/commander.js.git"
+sha = "ba6d13ddb4243e5913367734f8c159089ffe7834"
+
+[[repos]]
+id = "B-cobra"
+group = "B"
+name = "cobra"
+url = "https://github.com/spf13/cobra.git"
+sha = "adbc8813901bba65827259daa8e22ff94ec1f30e"
+
+[[repos]]
+id = "B-underscore"
+group = "B"
+name = "underscore"
+url = "https://github.com/jashkenas/underscore.git"
+sha = "e70d5bd070f1d883b40e786a955a61e4f4b3c2c6"
+
+[[repos]]
+id = "B-vim-go"
+group = "B"
+name = "vim-go"
+url = "https://github.com/fatih/vim-go.git"
+sha = "bd1fcfeb79908001ff2a6f4b382a5a55da5ce11e"
+
+[[repos]]
+id = "B-ejs"
+group = "B"
+name = "ejs"
+url = "https://github.com/mde/ejs.git"
+sha = "6af38f04af71a37fef3236cd9931d98a15141267"
+
+# --- C: AI-driven / vibe-coding (2024+ or self-described AI-generated) ---
+
+[[repos]]
+id = "C-vibe"
+group = "C"
+name = "vibe"
+url = "https://github.com/mabene/vibe.git"
+sha = "c53ab3cb3461ef43bb1b6336da4e9cdd477c63ac"
+note = "README: 100% AI-generated product code"
+
+[[repos]]
+id = "C-gpt-engineer"
+group = "C"
+name = "gpt-engineer"
+url = "https://github.com/gpt-engineer-org/gpt-engineer.git"
+sha = "a90fcd543eedcc0ff2c34561bc0785d2ba83c47e"
+note = "AI agent writes code from prompts"
+
+[[repos]]
+id = "C-gpt-crawler"
+group = "C"
+name = "gpt-crawler"
+url = "https://github.com/BuilderIO/gpt-crawler.git"
+sha = "d2245d66a5ad60bf227a55c849135394cbecc9b5"
+note = "2024 AI crawling product"
+
+[[repos]]
+id = "C-screenshot-to-code"
+group = "C"
+name = "screenshot-to-code"
+url = "https://github.com/abi/screenshot-to-code.git"
+sha = "d026163f586dfa8c5c10d28c36edd59a9d3b0e88"
+note = "vision-model generated UI code"
+
+[[repos]]
+id = "C-llamacoder"
+group = "C"
+name = "llamacoder"
+url = "https://github.com/Nutlope/llamacoder.git"
+sha = "4e2ee75147a6834d3d5d035dec023b311abb4836"
+note = "Llama-powered app generator"
+
+[[repos]]
+id = "C-bolt-diy"
+group = "C"
+name = "bolt.diy"
+url = "https://github.com/stackblitz-labs/bolt.diy.git"
+sha = "2e254ac19a696394030601bc602f54945b12bfc4"
+note = "AI web app builder"
+
+[[repos]]
+id = "C-vibe-workflow"
+group = "C"
+name = "vibe-coding-workflow"
+url = "https://github.com/dui14/vibe-coding-workflow.git"
+sha = "c527e78ed09cd5c965a447751cbd3c86bed18a66"
+note = "self-described vibe-coding scaffold"
+
+[[repos]]
+id = "C-open-webui"
+group = "C"
+name = "open-webui"
+url = "https://github.com/open-webui/open-webui.git"
+sha = "01f4282f1ffe0d6212f58d3afbeae21fffd0c4be"
+note = "2024 AI-native product; may be large — record failure if clone times out"
+
+# --- D: template / fork / tutorial ---
+
+[[repos]]
+id = "D-spoon-knife"
+group = "D"
+name = "Spoon-Knife"
+url = "https://github.com/octocat/Spoon-Knife.git"
+sha = "d0dd1f61b33d64e29d8bc1372a94ef6a2fee76a9"
+fork = true
+parent = "octocat/Hello-World"
+
+[[repos]]
+id = "D-gitignore"
+group = "D"
+name = "gitignore"
+url = "https://github.com/github/gitignore.git"
+sha = "57286c3887203259752b747db94e6c3ad10ec53d"
+
+[[repos]]
+id = "D-hello-world"
+group = "D"
+name = "Hello-World"
+url = "https://github.com/octocat/Hello-World.git"
+sha = "7fd1a60b01f91b314f59955a4e4d4e80d8edf11d"
+
+[[repos]]
+id = "D-meghna-hugo"
+group = "D"
+name = "meghna-hugo"
+url = "https://github.com/themefisher/meghna-hugo.git"
+sha = "ddc2b09629af3889d6b7a8cf87d0dca4fc62a295"
+note = "themefisher template"
+
+[[repos]]
+id = "D-timer"
+group = "D"
+name = "timer"
+url = "https://github.com/themefisher/timer.git"
+sha = "78cf5edb4032bbb56a845b1f6d2846c6f7263f0e"
+note = "themefisher template"
+
+[[repos]]
+id = "D-startbootstrap-bare"
+group = "D"
+name = "startbootstrap-bare"
+url = "https://github.com/startbootstrap/startbootstrap-bare.git"
+sha = "9e17b3746e253e04eef809c9b5c8a303cb98ca13"
+
+[[repos]]
+id = "D-cookiecutter-pypackage"
+group = "D"
+name = "cookiecutter-pypackage"
+url = "https://github.com/audreyfeldroy/cookiecutter-pypackage.git"
+sha = "ced42cf27e20987ad5e1a315a26e89a94002ba74"
+
+# --- WP1b-3 additions: public repos with test substrate (raise co-change n) ---
+
+[[repos]]
+id = "A-pip"
+group = "A"
+name = "pip"
+url = "https://github.com/pypa/pip.git"
+sha = "6d309205789d368b2749d93fd6193d584811efd5"
+note = "WP1b-3: packaging tool with pytest"
+
+[[repos]]
+id = "A-pytest"
+group = "A"
+name = "pytest"
+url = "https://github.com/pytest-dev/pytest.git"
+sha = "df87db7b0462fb764ef73fa00561adf8ad047572"
+note = "WP1b-3: test runner, high verification culture"
+
+[[repos]]
+id = "A-jinja"
+group = "A"
+name = "jinja"
+url = "https://github.com/pallets/jinja.git"
+sha = "5ef70112a1ff19c05324ff889dd30405b1002044"
+note = "WP1b-3: pallets pytest culture"
+
+[[repos]]
+id = "A-werkzeug"
+group = "A"
+name = "werkzeug"
+url = "https://github.com/pallets/werkzeug.git"
+sha = "002fcc5450870362028d3ffb3d91f05a4f1fa559"
+note = "WP1b-3: pallets pytest culture"
+
+[[repos]]
+id = "A-starlette"
+group = "A"
+name = "starlette"
+url = "https://github.com/encode/starlette.git"
+sha = "398e5a3430eb1ddd33e1d48d766efe41426e231f"
+note = "WP1b-3: encode pytest culture"
+
+[[repos]]
+id = "A-urllib3"
+group = "A"
+name = "urllib3"
+url = "https://github.com/urllib3/urllib3.git"
+sha = "52dfb19e055baacc4ebc432a2e6012b6d489e4b6"
+note = "WP1b-3: HTTP client with tests"
+
+[[repos]]
+id = "A-black"
+group = "A"
+name = "black"
+url = "https://github.com/psf/black.git"
+sha = "8947c48ef2077c3a301b03c1e814dc2e3f78436e"
+note = "WP1b-3: formatter with pytest"
+
+[[repos]]
+id = "A-poetry"
+group = "A"
+name = "poetry"
+url = "https://github.com/python-poetry/poetry.git"
+sha = "92b74dcfe348d0e01e14d40d6c1fa47a4ee04a54"
+note = "WP1b-3: packaging with pytest"
+
+[[repos]]
+id = "A-fastapi"
+group = "A"
+name = "fastapi"
+url = "https://github.com/fastapi/fastapi.git"
+sha = "c3f316b7e814667e8ee81e03a7330d00ee61e45c"
+note = "WP1b-3: web framework with pytest"
+
+[[repos]]
+id = "A-rich"
+group = "A"
+name = "rich"
+url = "https://github.com/Textualize/rich.git"
+sha = "9d8f9a372cc5916fd4781fec207ced7ddac2f08f"
+note = "WP1b-3: library with pytest"
+
+[[repos]]
+id = "A-precommit"
+group = "A"
+name = "pre-commit"
+url = "https://github.com/pre-commit/pre-commit.git"
+sha = "a9bba55a3f74068b53f4bd4d831d7e05e34eae6c"
+note = "WP1b-3: tooling with pytest"
+
+[[repos]]
+id = "A-httpx-cli"
+group = "A"
+name = "httpie"
+url = "https://github.com/httpie/cli.git"
+sha = "5b604c37c6c67e18e7c3e9aee6c88a8c22b98345"
+note = "WP1b-3: CLI with pytest"
+
+[[repos]]
+id = "C-aider"
+group = "C"
+name = "aider"
+url = "https://github.com/Aider-AI/aider.git"
+sha = "5dc9490bb35f9729ef2c95d00a19ccd30c26339c"
+note = "WP1b-3: AI coding agent with tests; 2024+ product"
+
+[[repos]]
+id = "C-crewai"
+group = "C"
+name = "crewAI"
+url = "https://github.com/crewAIInc/crewAI.git"
+sha = "f4731f5025f861c78e3af0487cc80bf5e7c64782"
+note = "WP1b-3: AI agent framework; 2024+"
+
+[[repos]]
+id = "C-autogen"
+group = "C"
+name = "autogen"
+url = "https://github.com/microsoft/autogen.git"
+sha = "027ecf0a379bcc1d09956d46d12d44a3ad9cee14"
+note = "WP1b-3: multi-agent product with tests"
+

@@ -1,0 +1,10 @@
+schema_version = "identity-v1"
+
+[tenant]
+email_patterns = ["@example\\.com$"]
+
+[[actors]]
+canonical_id = "alice"
+emails = ["alice@example.com", "alice@users.noreply.github.com"]
+github_login = "alice"
+attribution_state = "verified"

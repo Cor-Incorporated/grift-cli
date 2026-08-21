@@ -1,0 +1,10 @@
+schema_version = "identity-v1"
+
+# Pseudonymous canonical_id. The email is already public in the click git log.
+[tenant]
+email_patterns = []
+
+[[actors]]
+canonical_id = "maintainer-1"
+emails = ["davidism@gmail.com"]
+attribution_state = "verified"

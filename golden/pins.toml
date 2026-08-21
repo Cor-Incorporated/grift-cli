@@ -1,0 +1,47 @@
+# Pinned SHAs for the v0 golden corpus.
+# Expected JSON was written from git log inspection before tep_core existed.
+
+[[repos]]
+id = "G1-click"
+name = "click"
+url = "https://github.com/pallets/click.git"
+sha = "2c8cd3ac958a7eb316d67f2d316c27086c4c0369"
+identity = "golden/identity/G1-click.toml"
+fork = false
+parent = ""
+
+[[repos]]
+id = "G2-gitignore"
+name = "gitignore"
+url = "https://github.com/github/gitignore.git"
+sha = "57286c3887203259752b747db94e6c3ad10ec53d"
+identity = ""
+fork = false
+parent = ""
+
+[[repos]]
+id = "G3-spoon-knife"
+name = "Spoon-Knife"
+url = "https://github.com/octocat/Spoon-Knife.git"
+sha = "d0dd1f61b33d64e29d8bc1372a94ef6a2fee76a9"
+identity = ""
+fork = true
+parent = "octocat/Hello-World"
+
+[[repos]]
+id = "G4-express"
+name = "express"
+url = "https://github.com/expressjs/express.git"
+sha = "a3714473feb3d2908add734d340e7755fd85e0a3"
+identity = ""
+fork = false
+parent = ""
+
+[[repos]]
+id = "G5-typer"
+name = "typer"
+url = "https://github.com/tiangolo/typer.git"
+sha = "9a7b2e83f6b62c750d6026b0de9ebf2026a8b8fa"
+identity = ""
+fork = false
+parent = ""

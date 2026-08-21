@@ -1,0 +1,51 @@
+[project]
+name = "grift-cli"
+version = "0.5.0"
+description = "Deterministic TEP evidence metrics from a single git repository. No LLM."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.11"
+authors = [{ name = "TEP contributors" }]
+keywords = ["git", "evidence", "origin", "provenance", "tep"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Quality Assurance",
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "build>=1.2"]
+
+[project.scripts]
+grift = "tep_cli.__main__:main"
+
+[project.urls]
+Homepage = "https://github.com/Cor-Incorporated/grift-cli"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/tep_core", "src/tep_cli"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"src/tep_core/data/v2026.09/distributions.json" = "tep_core/data/v2026.09/distributions.json"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-q --strict-markers"
+markers = [
+    "golden: live clone of pinned public repositories (network)",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
