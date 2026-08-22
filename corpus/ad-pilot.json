@@ -1,0 +1,127 @@
+{
+  "protocol": "docs/corpus-protocol.md",
+  "criteria_registered_before_run": true,
+  "tier1_observation_status": {
+    "verdict": "pass",
+    "failures": []
+  },
+  "tier2_rates": {
+    "verdict": "inconclusive_small_n",
+    "n_A_narratable": 1,
+    "n_D_narratable": 0
+  },
+  "rows": [
+    {
+      "repo": "click",
+      "pending_attribution": false,
+      "test_frameworks": {
+        "kind": "observed",
+        "reason": null,
+        "names": [
+          "pytest"
+        ]
+      },
+      "test_cochange": {
+        "status": "observed",
+        "value": 0.2664,
+        "narrate_rate": true,
+        "population": 274
+      },
+      "corrective_rework": {
+        "status": "observed",
+        "value": 0.0109,
+        "narrate_rate": true,
+        "population": 274
+      },
+      "origin_tenant_unique": 326,
+      "group": "A",
+      "identity_bearing": true
+    },
+    {
+      "repo": "express",
+      "pending_attribution": true,
+      "test_frameworks": {
+        "kind": "observed",
+        "reason": null,
+        "names": [
+          "mocha",
+          "nyc"
+        ]
+      },
+      "test_cochange": {
+        "status": "not_observed",
+        "reason": "pending_attribution"
+      },
+      "corrective_rework": {
+        "status": "not_observed",
+        "reason": "pending_attribution"
+      },
+      "origin_tenant_unique": 0,
+      "group": "A",
+      "identity_bearing": false
+    },
+    {
+      "repo": "typer",
+      "pending_attribution": true,
+      "test_frameworks": {
+        "kind": "observed",
+        "reason": null,
+        "names": [
+          "pytest"
+        ]
+      },
+      "test_cochange": {
+        "status": "not_observed",
+        "reason": "pending_attribution"
+      },
+      "corrective_rework": {
+        "status": "not_observed",
+        "reason": "pending_attribution"
+      },
+      "origin_tenant_unique": 0,
+      "group": "A",
+      "identity_bearing": false
+    },
+    {
+      "repo": "gitignore",
+      "pending_attribution": true,
+      "test_frameworks": {
+        "kind": "not_observed",
+        "reason": "no_test_framework_or_directory",
+        "names": null
+      },
+      "test_cochange": {
+        "status": "not_observed",
+        "reason": "no_test_framework_or_directory"
+      },
+      "corrective_rework": {
+        "status": "not_observed",
+        "reason": "pending_attribution"
+      },
+      "origin_tenant_unique": 0,
+      "group": "D",
+      "identity_bearing": false
+    },
+    {
+      "repo": "Spoon-Knife",
+      "pending_attribution": true,
+      "test_frameworks": {
+        "kind": "not_observed",
+        "reason": "no_test_framework_or_directory",
+        "names": null
+      },
+      "test_cochange": {
+        "status": "not_observed",
+        "reason": "no_test_framework_or_directory"
+      },
+      "corrective_rework": {
+        "status": "not_observed",
+        "reason": "pending_attribution"
+      },
+      "origin_tenant_unique": 0,
+      "group": "D",
+      "identity_bearing": false
+    }
+  ],
+  "narrative_lock": "corrective_rework low is not a bug count; it is fresh-work stability"
+}

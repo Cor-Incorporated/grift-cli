@@ -1,5 +1,5 @@
 {
-  "schema_version": "tep-report-v1",
+  "schema_version": "report-v1",
   "identity": {
     "pending_attribution": true,
     "actor_count": 0

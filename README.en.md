@@ -35,6 +35,22 @@ Example (click, tenant scope, golden G1):
 
 Below population 20, neither the rate nor a distribution position is shown (`insufficient_population`; raw counts only).
 
+## Exit codes and stdout / stderr contract
+
+| Exit code | Meaning |
+|---|---|
+| 0 | success |
+| 2 | usage error, or the given path is not a git repository |
+| 1 | any other unexpected failure (details on stderr) |
+
+With `--format json`, stdout is **exactly one JSON document** (purity guarantee for machine consumption). `--format md` writes markdown only; `--format both` writes markdown, a blank line, then JSON. Diagnostics and errors always go to stderr. `--out DIR` does not change the stdout contract (it additionally writes `report.md` / `report.json`).
+
+The full field-by-field definition of report.json lives in [docs/report-schema.md](docs/report-schema.md) (schema `report-v1`, frozen, additive-only).
+
+## Machine ingestion export (opt-in)
+
+`grift analyze <repo> --export <dir>` writes commits.ndjson (one row per commit: origin / actor / cochange), actors.json (attribution and engagement per canonical_id), and export-meta.json (with `config_digest`). **No raw emails or author strings are ever exported.** Aggregates in report.json remain authoritative for narrative. Details: [docs/export-schema.md](docs/export-schema.md).
+
 ## Metrics and limits
 
 | Metric | What it is evidence of | Limit |

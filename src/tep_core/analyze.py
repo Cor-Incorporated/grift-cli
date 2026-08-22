@@ -23,8 +23,40 @@ from tep_core.version import (
     ACTIVITY_DEFINITION_VERSION,
     DEFINITION_VERSION,
     ORIGIN_DEFINITION_VERSION,
+    REPORT_SCHEMA_VERSION,
     __version__,
 )
+
+
+def prepare_inputs(
+    repo: Path,
+    identity: IdentityConfig,
+    lineage: Lineage,
+    *,
+    include_files: bool = False,
+    scope: str = DEFAULT_SCOPE,
+) -> tuple[list, Any]:
+    """Read commits and classify origin once. Shared by report and export
+    so both consumers see identical per-commit classification (WP-P1e ruling)."""
+    repo = repo.resolve()
+    commits = read_commits(repo, include_files=False)
+    if include_files:
+        _attach_files(repo, commits)
+    origin = classify_commits(commits, identity, lineage)
+    need_paths = include_files or scope == "repo" or origin.counts["tenant_unique"] > 0
+    if not include_files and need_paths:
+        _attach_files(repo, commits)
+    return commits, origin
+
+
+def _attach_files(repo: Path, commits: list) -> None:
+    try:
+        named = read_commits(repo, include_files=True)
+        files_by_sha = {item.sha: item.files for item in named}
+        for commit in commits:
+            commit.files = files_by_sha.get(commit.sha, ())
+    except GitError:
+        pass
 
 
 def analyze_repository(
@@ -40,27 +72,11 @@ def analyze_repository(
     scope: str = DEFAULT_SCOPE,
 ) -> dict[str, Any]:
     repo = repo.resolve()
-    commits = read_commits(repo, include_files=False)
-    if include_files:
-        try:
-            named = read_commits(repo, include_files=True)
-            files_by_sha = {item.sha: item.files for item in named}
-            for commit in commits:
-                commit.files = files_by_sha.get(commit.sha, ())
-        except GitError:
-            pass
-    origin = classify_commits(commits, identity, lineage)
+    commits, origin = prepare_inputs(
+        repo, identity, lineage, include_files=include_files, scope=scope
+    )
     tests = observe_test_frameworks(repo)
     tests_observed = tests.get("kind") == "observed"
-    need_paths = include_files or scope == "repo" or origin.counts["tenant_unique"] > 0
-    if not include_files and need_paths:
-        try:
-            named = read_commits(repo, include_files=True)
-            files_by_sha = {item.sha: item.files for item in named}
-            for commit in commits:
-                commit.files = files_by_sha.get(commit.sha, ())
-        except GitError:
-            pass
     head_sha = rev_parse(repo)
     head_date = commits[0].date if commits else None
     activity = activity_metrics(origin.tenant_dates, origin.tenant_day_counts, head_date=head_date)
@@ -80,7 +96,7 @@ def analyze_repository(
     )
     corr = rework.get("corrective_rework_rate") if rework.get("kind") == "observed" else rework
     return {
-        "schema_version": "tep-report-v1",
+        "schema_version": REPORT_SCHEMA_VERSION,
         "provenance": {
             "tool_name": "grift",
             "method_name": "TEP",

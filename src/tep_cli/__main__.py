@@ -8,7 +8,8 @@ import sys
 from pathlib import Path
 
 from tep_core.analyze import analyze_repository
-from tep_core.identity import discover_identity
+from tep_core.export import build_export, write_export
+from tep_core.identity import IdentityValidationError, discover_identity
 from tep_core.lineage import Lineage
 from tep_core.report import render_markdown
 from tep_core.version import __version__
@@ -97,6 +98,17 @@ def build_parser() -> argparse.ArgumentParser:
         default="tenant",
         help="tenant: identity-matched evidence. repo: all human commits (reference distribution).",
     )
+    analyze.add_argument(
+        "--export",
+        type=Path,
+        default=None,
+        metavar="DIR",
+        help=(
+            "Also write machine-ingestible export-v1 files "
+            "(commits.ndjson, actors.json, export-meta.json) into DIR. "
+            "No raw emails are exported."
+        ),
+    )
     return parser
 
 
@@ -105,7 +117,11 @@ def _run_analyze(args: argparse.Namespace) -> int:
     if not (repo / ".git").exists() and not repo.joinpath("HEAD").exists():
         sys.stderr.write(f"not a git repository: {repo}\n")
         return 2
-    identity = discover_identity(repo, args.identity)
+    try:
+        identity = discover_identity(repo, args.identity)
+    except IdentityValidationError as exc:
+        sys.stderr.write(f"identity validation error: {exc}\n")
+        return 2
     lineage = Lineage(is_fork=bool(args.fork), parent=args.parent or None)
     report = analyze_repository(
         repo,
@@ -130,6 +146,17 @@ def _run_analyze(args: argparse.Namespace) -> int:
             sys.stdout.write("\n")
     if args.format in {"json", "both"}:
         sys.stdout.write(encoded)
+    if args.export is not None:
+        export = build_export(
+            repo,
+            identity,
+            lineage,
+            template_provided=args.template is not None,
+            parent_repo_provided=args.parent_repo is not None,
+            include_files=bool(args.vendor_scan),
+            scope=str(args.scope),
+        )
+        write_export(export, args.export)
     return 0
 
 

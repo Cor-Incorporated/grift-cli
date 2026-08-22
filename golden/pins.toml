@@ -45,3 +45,159 @@ sha = "9a7b2e83f6b62c750d6026b0de9ebf2026a8b8fa"
 identity = ""
 fork = false
 parent = ""
+
+# --- Golden v2 wave 1 (G6-G13): persona-driven expansion, master instruction
+# §3-1. Selection matrix evidence recorded per pin (tags + reason).
+# CI budget: G1-G13 = 13 repos total (master limit <= 13).
+
+[[repos]]
+id = "G6-claude-code"
+name = "claude-code"
+url = "https://github.com/anthropics/claude-code.git"
+sha = "16440d0f6ee8c47f34169687044b89eafa8b0f8d"
+identity = ""
+fork = false
+parent = ""
+
+[repos.tags]
+collaboration = "ai-coauthored"
+lifecycle = "active"
+era = "2024+"
+ecosystem = "typescript"
+persona_questions = "Q5,E4"
+
+[repos.reason]
+text = "AI co-author trailers actually present (67 commits with Claude trailers; e.g. 1feaffa747 'Co-Authored-By: Claude <noreply@anthropic.com>'). Excites declared_ai_assist_share in wave 3 (PR-B); wave 1 pins existing fields. ~733 commits."
+
+[[repos]]
+id = "G7-axios"
+name = "axios"
+url = "https://github.com/axios/axios.git"
+sha = "84a9f3b9a4f3244b8c8e818f557d64c7b964fb25"
+identity = ""
+fork = false
+parent = ""
+
+[repos.tags]
+collaboration = "community-handoff"
+lifecycle = "active"
+era = "pre-2024"
+ecosystem = "javascript"
+persona_questions = "Q3,E1,E3"
+
+[repos.reason]
+text = "443 contributors; lib/axios.js modified by 22 distinct authors over time incl. original author handoff. Excites cross_author_modification_share / adopted_creations in wave 3. ~2,176 commits."
+
+[[repos]]
+id = "G8-co"
+name = "co"
+url = "https://github.com/tj/co.git"
+sha = "249bbdc72da24ae44076afd716349d2089b31c4c"
+identity = ""
+fork = false
+parent = ""
+
+[repos.tags]
+collaboration = "small-community"
+lifecycle = "dormant-since-2016"
+era = "pre-2024"
+ecosystem = "javascript"
+persona_questions = "Q6"
+
+[repos.reason]
+text = "Famous dormant repo: last master commit 2016-10-17 after active 2011-2016; 11.8k stars. Excites lifecycle_stage: dormant (context v2, wave 2) and cadence/gap observations. ~299 commits."
+
+[[repos]]
+id = "G9-pyscript"
+name = "pyscript"
+url = "https://github.com/pyscript/pyscript.git"
+sha = "d798c04910b21e5018813b7975ef3e9999e994c5"
+identity = ""
+fork = false
+parent = ""
+
+[repos.tags]
+collaboration = "community"
+lifecycle = "active"
+era = "2022+"
+ecosystem = "polyglot-python-js-ts"
+persona_questions = "Q2"
+
+[repos.reason]
+text = "Polyglot monorepo: pyproject.toml + core/package.json + bridge/package.json; Python+JS+TS+HTML. Excites language_composition / dependency_manifests / monorepo markers (context v2, wave 2). ~1,339 commits."
+
+[[repos]]
+id = "G10-scvi-tools"
+name = "scvi-tools"
+url = "https://github.com/scverse/scvi-tools.git"
+sha = "93dc4fae21917406673206320c8a3002433c4a5d"
+identity = ""
+fork = false
+parent = ""
+
+[repos.tags]
+collaboration = "community"
+lifecycle = "active"
+era = "2024+"
+ecosystem = "python"
+persona_questions = "Q2,D-class"
+
+[repos.reason]
+text = "Template-derived: root .cruft.json names cookiecutter-scverse template URL + checkout v0.8.0. D-class template lineage coordination. ~4,506 commits (under hard ceiling 8k)."
+
+[[repos]]
+id = "G11-kilo"
+name = "kilo"
+url = "https://github.com/antirez/kilo.git"
+sha = "323d93b29bd89a2cb446de90c4ed4fea1764176e"
+identity = ""
+fork = false
+parent = ""
+
+[repos.tags]
+collaboration = "solo"
+lifecycle = "dormant"
+era = "pre-2024"
+ecosystem = "c"
+persona_questions = "E2"
+
+[repos.reason]
+text = "Solo personal project: antirez 14/20 commits, single-drive-by others; <1k LOC editor. Excites collaboration_class: solo stratification protection (E2). ~20 commits."
+
+[[repos]]
+id = "G12-httpx"
+name = "httpx"
+url = "https://github.com/encode/httpx.git"
+sha = "b5addb64f0161ff6bfe94c124ef76f6a1fba5254"
+identity = ""
+fork = false
+parent = ""
+
+[repos.tags]
+collaboration = "founder-led"
+lifecycle = "active"
+era = "2019+"
+ecosystem = "python"
+persona_questions = "Q7,E6"
+
+[repos.reason]
+text = "Clear founder: oldest commit 'Initial commit' by Tom Christie 2019-04-04, remains lead maintainer. Excites founder timing / scaffold observations (wave 3). ~1,523 commits."
+
+[[repos]]
+id = "G13-voicevox"
+name = "voicevox"
+url = "https://github.com/VOICEVOX/voicevox.git"
+sha = "c72a94cbcf501be054a239446c7eb8cf53be34b4"
+identity = ""
+fork = false
+parent = ""
+
+[repos.tags]
+collaboration = "community"
+lifecycle = "active"
+era = "2024+"
+ecosystem = "typescript-japanese-oss"
+persona_questions = "Q2,robustness"
+
+[repos.reason]
+text = "Japanese-origin OSS: README.md Japanese-first ('VOICEVOX のエディタです。'), Japanese community. Commit-convention / language-composition robustness for our market context. ~1,899 commits."
