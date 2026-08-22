@@ -17,7 +17,7 @@ def test_analyze_json(tmp_path: Path, capsys: object) -> None:
     code = main(["analyze", str(repo), "--format", "json"])
     assert code == 0
     captured = capsys.readouterr()
-    assert '"schema_version": "tep-report-v1"' in captured.out
+    assert '"schema_version": "report-v1"' in captured.out
     assert '"tool_name": "grift"' in captured.out
     assert '"method_name": "TEP"' in captured.out
     assert "pending_attribution" in captured.out

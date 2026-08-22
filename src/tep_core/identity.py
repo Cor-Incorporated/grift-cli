@@ -17,6 +17,20 @@ from tep_core.version import IDENTITY_SCHEMA_VERSION
 ATTRIBUTION_STATES = frozenset({"verified", "claimed", "inferred", "unresolved", "external", "bot"})
 TENANT_STATES = frozenset({"verified", "claimed", "inferred"})
 
+# canonical_id validity (identity-schema.md keeps this regex verbatim;
+# tests/test_identity_validation.py enforces the doc<->code match).
+CANONICAL_ID_PATTERN = r"^[a-z0-9][a-z0-9._-]{0,63}$"
+CANONICAL_ID_PATTERN_VERSION = 1
+CANONICAL_ID_RE = re.compile(CANONICAL_ID_PATTERN)
+
+
+class IdentityValidationError(ValueError):
+    """Producer-side rejection of an invalid identity file (F-P10-3).
+
+    Raised for empty / invalid / duplicate canonical_id. The CLI turns this
+    into a non-zero exit; no export may be written from an invalid identity.
+    """
+
 
 @dataclass(frozen=True)
 class Actor:
@@ -76,14 +90,32 @@ def load_identity(path: Path | None) -> IdentityConfig:
     raw_patterns = list(data.get("tenant", {}).get("email_patterns", []) or [])
     patterns = tuple(re.compile(p, re.I) for p in raw_patterns)
     actors: list[Actor] = []
+    seen_ids: set[str] = set()
     for row in data.get("actors", []) or []:
         state = str(row.get("attribution_state", "unresolved"))
         if state not in ATTRIBUTION_STATES:
             raise ValueError(f"unknown attribution_state: {state}")
+        canonical_id = str(row.get("canonical_id") or "")
+        if not canonical_id:
+            raise IdentityValidationError(
+                "canonical_id must not be empty (identity-v1: ^[a-z0-9][a-z0-9._-]{0,63}$)"
+            )
+        if not CANONICAL_ID_RE.fullmatch(canonical_id):
+            raise IdentityValidationError(
+                f"invalid canonical_id {canonical_id!r}: must match "
+                "^[a-z0-9][a-z0-9._-]{0,63}$ (no '@', whitespace, or control "
+                "characters; starts with lowercase alphanumeric; max 64 chars)"
+            )
+        if canonical_id in seen_ids:
+            raise IdentityValidationError(
+                f"duplicate canonical_id {canonical_id!r}: each actor row must "
+                "have a unique canonical_id"
+            )
+        seen_ids.add(canonical_id)
         emails = tuple(str(e) for e in (row.get("emails") or []) if e)
         actors.append(
             Actor(
-                canonical_id=str(row.get("canonical_id") or ""),
+                canonical_id=canonical_id,
                 emails=emails,
                 github_login=row.get("github_login"),
                 attribution_state=state,

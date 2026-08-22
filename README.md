@@ -25,6 +25,22 @@ grift analyze ./my-repo --scope repo
 
 自リポで `grift analyze . --format md` を実行する。各数値に単位と provenance（method=TEP・tool=grift・定義版・分析 SHA・`analysis_scope`）が付く。
 
+## 終了コードと stdout / stderr 規約
+
+| 終了コード | 意味 |
+|---|---|
+| 0 | 成功 |
+| 2 | 使用法エラー、または指定パスが git リポジトリでない |
+| 1 | その他の予期しない失敗（詳細は stderr） |
+
+`--format json` の stdout は **JSON 1 件のみ**（機械消費向けの純度保証）。`--format md` は markdown のみ、`--format both` は markdown → 空行 → JSON の順。診断とエラーは常に stderr。`--out DIR` を使っても stdout 規約は変わらない（`report.md` / `report.json` の追記のみ）。
+
+report.json の全フィールド定義は [docs/report-schema.md](docs/report-schema.md)（schema `report-v1`・凍結済み・追加互換）。
+
+## 機械取込用 export（opt-in）
+
+`grift analyze <repo> --export <dir>` で commits.ndjson（1行=1コミット・origin/actor/cochange）・actors.json（canonical_id ごとの帰属と活動）・export-meta.json（`config_digest` つき）を書く。**生メールアドレス・生 author 文字列は一切出力しない**。顧客向け叙述に載る数値は report.json の集計値が正。詳細は [docs/export-schema.md](docs/export-schema.md)。
+
 例（click、tenant スコープ。ゴールデン G1）:
 
 - test co-change: 0.2664 ratio（73 of 274）

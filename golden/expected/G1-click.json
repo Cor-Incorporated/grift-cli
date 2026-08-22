@@ -1,5 +1,5 @@
 {
-  "schema_version": "tep-report-v1",
+  "schema_version": "report-v1",
   "identity": {
     "pending_attribution": false,
     "actor_count": 1
@@ -75,6 +75,13 @@
       "retouch_commits": 157,
       "population": 274,
       "evidence_claim": false
+    },
+    "revert_rate": {
+      "kind": "observed",
+      "value": 0.0123,
+      "unit": "ratio",
+      "reverts": 4,
+      "population": 326
     },
     "line_rework": {
       "kind": "not_observed",

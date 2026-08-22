@@ -50,7 +50,16 @@ def test_real_needles_absent_when_needle_file_present() -> None:
         if line.strip() and not line.startswith("#")
     ]
     assert needles, "needle file is empty"
-    skip_dirs = {".git", ".venv", "venv", ".golden-cache", "dist", ".pytest_cache"}
+    skip_dirs = {
+        ".git",
+        ".venv",
+        "venv",
+        ".golden-cache",
+        "dist",
+        ".pytest_cache",
+        ".worktrees",
+        ".corpus-cache",
+    }
     hits: list[str] = []
     for path in ROOT.rglob("*"):
         if any(part in skip_dirs for part in path.parts):

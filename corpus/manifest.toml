@@ -1,0 +1,65 @@
+# Corpus pins. Group C is selected here; A/D pilot uses golden cache only.
+
+[[repos]]
+id = "A-click"
+group = "A"
+name = "click"
+url = "https://github.com/pallets/click.git"
+sha = "2c8cd3ac958a7eb316d67f2d316c27086c4c0369"
+identity = "golden/identity/G1-click.toml"
+fork = false
+parent = ""
+note = "identity-bearing A pin for tenant rates"
+
+[[repos]]
+id = "A-express"
+group = "A"
+name = "express"
+url = "https://github.com/expressjs/express.git"
+sha = "a3714473feb3d2908add734d340e7755fd85e0a3"
+identity = ""
+fork = false
+parent = ""
+note = "culture marker only until identity is configured"
+
+[[repos]]
+id = "A-typer"
+group = "A"
+name = "typer"
+url = "https://github.com/tiangolo/typer.git"
+sha = "9a7b2e83f6b62c750d6026b0de9ebf2026a8b8fa"
+identity = ""
+fork = false
+parent = ""
+note = "culture marker only until identity is configured"
+
+[[repos]]
+id = "D-gitignore"
+group = "D"
+name = "gitignore"
+url = "https://github.com/github/gitignore.git"
+sha = "57286c3887203259752b747db94e6c3ad10ec53d"
+identity = ""
+fork = false
+parent = ""
+
+[[repos]]
+id = "D-spoon-knife"
+group = "D"
+name = "Spoon-Knife"
+url = "https://github.com/octocat/Spoon-Knife.git"
+sha = "d0dd1f61b33d64e29d8bc1372a94ef6a2fee76a9"
+identity = ""
+fork = true
+parent = "octocat/Hello-World"
+
+[[repos]]
+id = "C1-vibe"
+group = "C"
+name = "vibe"
+url = "https://github.com/mabene/vibe.git"
+sha = "c53ab3cb3461ef43bb1b6336da4e9cdd477c63ac"
+identity = ""
+fork = false
+parent = ""
+note = "self-described 100% AI-generated product; SHA at first clone; A/D pilot does not wait"

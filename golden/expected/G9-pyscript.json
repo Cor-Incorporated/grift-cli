@@ -1,0 +1,131 @@
+{
+  "schema_version": "report-v1",
+  "identity": {
+    "pending_attribution": true,
+    "actor_count": 0
+  },
+  "lineage": {
+    "is_fork": false,
+    "parent": null,
+    "has_upstream_lineage": false
+  },
+  "origin": {
+    "inherited_upstream": {
+      "kind": "observed",
+      "value": 0,
+      "unit": "commits"
+    },
+    "upstream_sync": {
+      "kind": "not_observed",
+      "reason": "no_upstream_lineage"
+    },
+    "tenant_unique": {
+      "kind": "observed",
+      "value": 0,
+      "unit": "commits"
+    },
+    "tenant_merge_or_sync": {
+      "kind": "observed",
+      "value": 0,
+      "unit": "commits"
+    },
+    "tenant_derivative": {
+      "kind": "not_observed",
+      "reason": "parent_repo_not_provided"
+    },
+    "external_upstream_contribution": {
+      "kind": "not_observed",
+      "reason": "parent_repo_not_provided"
+    },
+    "template_inherited": {
+      "kind": "not_observed",
+      "reason": "template_not_provided"
+    },
+    "generated_or_vendor": {
+      "kind": "observed",
+      "value": 0,
+      "unit": "commits"
+    },
+    "ambiguous_origin": {
+      "kind": "observed",
+      "value": 0,
+      "unit": "commits"
+    },
+    "unresolved": {
+      "kind": "observed",
+      "value": 1283,
+      "unit": "commits"
+    },
+    "bot": {
+      "kind": "observed",
+      "value": 56,
+      "unit": "commits"
+    }
+  },
+  "attribution": {
+    "bot": {
+      "kind": "observed",
+      "value": 56,
+      "unit": "commits"
+    }
+  },
+  "activity": {
+    "tenant_commits": {
+      "kind": "observed",
+      "value": 0,
+      "unit": "commits"
+    },
+    "active_days": {
+      "kind": "observed",
+      "value": 0,
+      "unit": "days"
+    },
+    "commits_per_active_day": {
+      "kind": "not_observed",
+      "reason": "no_tenant_active_days"
+    },
+    "commits_per_active_day_median": {
+      "kind": "not_observed",
+      "reason": "no_tenant_active_days"
+    },
+    "active_days_13w": {
+      "kind": "observed",
+      "value": 0,
+      "unit": "days"
+    }
+  },
+  "core_activity_period": {
+    "kind": "not_observed",
+    "reason": "no_tenant_commits"
+  },
+  "test_frameworks": {
+    "kind": "not_observed",
+    "reason": "no_test_framework_or_directory"
+  },
+  "test_cochange": {
+    "kind": "not_observed",
+    "reason": "no_test_framework_or_directory"
+  },
+  "rework": {
+    "kind": "not_observed",
+    "reason": "pending_attribution"
+  },
+  "survival": {
+    "kind": "not_observed",
+    "reason": "survival_scan_disabled"
+  },
+  "provenance": {
+    "analysis_scope": "tenant",
+    "analyzed_commit_sha": "d798c04910b21e5018813b7975ef3e9999e994c5"
+  },
+  "interpretation": {
+    "test_cochange": {
+      "kind": "not_observed",
+      "reason": "scope_is_tenant"
+    },
+    "corrective_rework": {
+      "kind": "not_observed",
+      "reason": "scope_is_tenant"
+    }
+  }
+}
