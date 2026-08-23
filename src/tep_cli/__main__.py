@@ -16,9 +16,9 @@ from tep_core.verify import CANNOT_VERIFY, MISMATCH, VERIFIED, verify_report
 from tep_core.version import __version__
 
 _EPILOG = """examples:
-  grift report             # analyze the current repo → ./out/report.{json,md}
-  grift report path/report.json   # re-render md from an existing report (no re-analysis)
   grift analyze . --scope repo --out ./out
+  grift report             # analyze current HEAD → ./out/report.{json,md} (always re-analyzes)
+  grift report path/report.json    # re-render md from an existing report (no re-analysis)
   grift verify ./out/report.json --repo ./repo
   grift contribute         # build opt-in payload from ./out/report.json (never sends)
 詳細: README"""
@@ -274,15 +274,17 @@ def _resolve_report_path(explicit: Path | None) -> tuple[Path | None, str]:
 
 
 def _run_report(args: argparse.Namespace) -> int:
-    report_path, _guidance = _resolve_report_path(args.report_json)
-    if report_path is None:
-        # UX (代表 2026-08-23): bare `grift report` in a repo with no prior
-        # output = run the analysis now and write ./out/report.{json,md}.
+    if args.report_json is None:
+        # UX (代表 2026-08-23): bare `grift report` ALWAYS re-analyzes the
+        # current HEAD and rewrites ./out/report.{json,md}. It never falls
+        # back to a stale ./out/report.json — "report で測ったつもりが古い
+        # SHA のまま" は自己証明の罠になるため、既存ファイルは無条件に
+        # 上書きする。再分析なしの再レンダリングは引数指定時のみ。
         return _analyze_to_out(scope="repo")
     try:
-        payload = json.loads(report_path.read_text(encoding="utf-8"))
+        payload = json.loads(args.report_json.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
-        sys.stderr.write(f"report unreadable ({report_path}): {exc}\n")
+        sys.stderr.write(f"report unreadable ({args.report_json}): {exc}\n")
         return 2
     try:
         markdown = render_markdown(payload)

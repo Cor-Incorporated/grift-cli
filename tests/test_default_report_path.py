@@ -40,27 +40,47 @@ def _make_report_json(dir_path: Path) -> Path:
     return target
 
 
-def test_report_bare_uses_out_default(tmp_path: Path, capsys: object, monkeypatch: object) -> None:
-    _make_report_json(tmp_path)
-    monkeypatch.chdir(tmp_path)
-    code = main(["report"])
-    assert code == 0
-    out = capsys.readouterr().out
-    assert "# TEP analysis" in out
-    assert "## Shared block" in out
-
-
-def test_report_bare_searches_grift_out(
+def test_report_bare_ignores_stale_out_and_reanalyzes(
     tmp_path: Path, capsys: object, monkeypatch: object
 ) -> None:
-    _make_report_json(tmp_path)
-    (tmp_path / ".grift-out").mkdir(exist_ok=True)
-    (tmp_path / ".grift-out" / "report.json").write_text(
-        (tmp_path / "out" / "report.json").read_text(encoding="utf-8"), encoding="utf-8"
+    """Critical UX (提唱者 2026-08-23): bare `grift report` with an EXISTING
+    ./out/report.json must RE-ANALYZE the current HEAD, not re-render the
+    stale file."""
+    import json as _json
+    import subprocess as _sp
+
+    from git_fixture import commit as _commit, init_repo as _init
+
+    repo = _init(tmp_path / "repo")
+    (repo / "pyproject.toml").write_text(
+        '[project]\nname = "demo"\ndependencies = ["pytest"]\n', encoding="utf-8"
     )
-    monkeypatch.chdir(tmp_path / ".grift-out")
-    code = main(["report"])
+    for index in range(5):
+        _commit(repo, email="a@example.com", date="2026-01-05", message=f"feat: {index}")
+    monkeypatch.chdir(repo)
+    assert main(["report"]) == 0
+    first_sha = _json.loads((repo / "out" / "report.json").read_text())["provenance"][
+        "analyzed_commit_sha"
+    ]
+    _commit(repo, email="a@example.com", date="2026-01-06", message="feat: more")
+    assert main(["report"]) == 0
+    second_sha = _json.loads((repo / "out" / "report.json").read_text())["provenance"][
+        "analyzed_commit_sha"
+    ]
+    assert first_sha != second_sha, "bare report must re-analyze, not re-render stale output"
+    head = _sp.run(
+        ["git", "rev-parse", "HEAD"], capture_output=True, text=True, cwd=repo
+    ).stdout.strip()
+    assert second_sha == head
+    assert "## Shared block" in capsys.readouterr().out
+
+
+def test_report_with_explicit_path_still_re_renders(tmp_path: Path, capsys: object) -> None:
+    """Explicit path keeps the re-render (no re-analysis) contract."""
+    _make_report_json(tmp_path)
+    code = main(["report", str(tmp_path / "out" / "report.json")])
     assert code == 0
+    assert "## Shared block" in capsys.readouterr().out
 
 
 def test_report_bare_without_prior_output_analyzes_cwd(

@@ -17,10 +17,14 @@ Commit counts, line counts, and “activity” inflate easily once agents and ge
 
 ```bash
 pipx install grift-cli
-grift analyze ./my-repo --scope repo
+grift analyze ./my-repo --scope repo --out ./out
 ```
 
-If the package is not on PyPI yet: `pipx install .`
+**Quickest first run**: inside a repository, `grift report` alone analyzes the
+current HEAD and writes `./out/report.md` and `report.json` (it always
+re-analyzes, even if `./out/report.json` already exists). For explicit
+control and CI, use `grift analyze . --scope repo --out ./out` (`report` is a
+fixed repo-scope shorthand).
 
 - `--scope tenant` (default): work matched in `.tep/identity.toml` = **evidence**
 - `--scope repo`: all non-bot human commits = **process observation and reference distributions**
@@ -82,7 +86,7 @@ The v2026.09 record (Run 2: A vs C `separated` etc.) remains as history in `corp
 ## GitHub Action (observation only)
 
 ```yaml
-uses: Cor-Incorporated/grift-cli@v0.5.3
+uses: Cor-Incorporated/grift-cli@v0.5.4
 with:
   scope: repo
 ```
