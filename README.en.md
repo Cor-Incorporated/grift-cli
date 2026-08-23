@@ -18,17 +18,17 @@ Commit counts, line counts, and “activity” inflate easily once agents and ge
 ```bash
 pipx install grift-cli
 cd your-repo
-grift analyze     # analyze → writes .grift/report.{json,md}
+grift analyze     # analyze and print to stdout (repo scope)
 grift verify      # recompute .grift/report.json against the current repo
 ```
 
-Every basic operation is just **`grift <verb>`** (target = current directory,
-output = `.grift/`):
+Every basic operation is just **`grift <verb>`**. Verb semantics:
+**analyze = display (stdout)** · **report = record (`.grift/`)**:
 
 | Verb | Action |
 |---|---|
-| `grift analyze` | Analyze the current repository into `.grift/report.{json,md}` |
-| `grift report` | Same as bare analyze (always re-analyzes the current HEAD) |
+| `grift analyze` | Analyze the current repository and **print to stdout** (repo scope; does not create `.grift/`) |
+| `grift report` | Analyze and **record into `.grift/report.{json,md}`** (always re-analyzes the current HEAD; repo scope by default, `--scope tenant` available) |
 | `grift verify` | Recompute `.grift/report.json` under recorded provenance (VERIFIED / MISMATCH / CANNOT_VERIFY) |
 | `grift contribute` | Build an opt-in submission payload from `.grift/report.json` (**never sends**) |
 

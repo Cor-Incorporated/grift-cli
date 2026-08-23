@@ -1,4 +1,4 @@
-"""grift CLI (method = TEP)."""
+"""grift CLI (method = TEP). Verb semantics: analyze=display (stdout), report=record (.grift/)."""
 
 from __future__ import annotations
 
@@ -16,11 +16,11 @@ from tep_core.verify import CANNOT_VERIFY, MISMATCH, VERIFIED, verify_report
 from tep_core.version import __version__
 
 _EPILOG = """examples:
-  grift analyze             # analyze the current repo → .grift/report.{json,md}
-  grift report              # same as bare analyze: always re-analyzes HEAD
+  grift analyze             # analyze the current repo, print to stdout (repo scope)
+  grift report              # analyze and RECORD into .grift/report.{json,md} (always re-analyzes)
+  grift report --scope tenant   # record a tenant-scope report (needs .tep/identity.toml)
   grift verify              # verify .grift/report.json against the current repo
   grift contribute          # build an opt-in payload from .grift/report.json (never sends)
-  grift analyze PATH --scope tenant --identity .tep/identity.toml   # custom
 詳細: README"""
 
 
@@ -105,8 +105,8 @@ def build_parser() -> argparse.ArgumentParser:
     analyze.add_argument(
         "--scope",
         choices=("tenant", "repo"),
-        default="tenant",
-        help="tenant: identity-matched evidence. repo: all human commits (reference distribution).",
+        default=None,
+        help="tenant: identity-matched evidence. repo: all human commits (reference distribution). Bare `grift analyze` defaults to repo; explicit-path invocations default to tenant.",
     )
     analyze.add_argument(
         "--reference-version",
@@ -154,7 +154,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     render = sub.add_parser(
         "report",
-        help="Analyze the current repo and write ./out/report.{json,md}; or re-render md from an existing report.json",
+        help="Analyze the current repo and RECORD into .grift/report.{json,md}; or re-render md from an existing report.json",
         epilog=_EPILOG,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
@@ -163,7 +163,13 @@ def build_parser() -> argparse.ArgumentParser:
         type=Path,
         nargs="?",
         default=None,
-        help="Path to an existing report.json to re-render (default: analyze the current repo into ./out)",
+        help="Path to an existing report.json to re-render (default: analyze the current repo into .grift/)",
+    )
+    render.add_argument(
+        "--scope",
+        choices=("tenant", "repo"),
+        default="repo",
+        help="Analysis scope for the bare form (default: repo)",
     )
     render.add_argument(
         "--out",
@@ -183,7 +189,7 @@ def build_parser() -> argparse.ArgumentParser:
         type=Path,
         nargs="?",
         default=None,
-        help="Path to a repo-scope report.json (default: .grift/, then legacy locations)",
+        help="Path to a repo-scope report.json (default: .grift/report.json)",
     )
     contribute.add_argument(
         "--out",
@@ -201,6 +207,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 def _run_analyze(args: argparse.Namespace) -> int:
     repo: Path = args.repo if args.repo is not None else Path(".")
+    scope = str(args.scope) if args.scope is not None else ("repo" if args.repo is None else "tenant")
     if not (repo / ".git").exists() and not repo.joinpath("HEAD").exists():
         sys.stderr.write(f"not a git repository: {repo}\n")
         return 2
@@ -219,7 +226,7 @@ def _run_analyze(args: argparse.Namespace) -> int:
         include_files=bool(args.vendor_scan),
         include_local_path=bool(args.include_local_path),
         survival=bool(args.survival),
-        scope=str(args.scope),
+        scope=scope,
         reference_version=str(args.reference_version) if args.reference_version else None,
     )
     markdown = render_markdown(report)
@@ -298,7 +305,7 @@ def _run_report(args: argparse.Namespace) -> int:
         # back to a stale report.json — "report で測ったつもりが古い
         # SHA のまま" は自己証明の罠になるため、既存ファイルは無条件に
         # 上書きする。再分析なしの再レンダリングは引数指定時のみ。
-        return _analyze_to_grift_dir(scope="repo")
+        return _analyze_to_grift_dir(scope=str(args.scope))
     try:
         payload = json.loads(args.report_json.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
