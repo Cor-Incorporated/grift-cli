@@ -120,6 +120,32 @@ lineage・テンプレ・親リポ未指定のクラスは対応する `not_obse
 
 `tau_days`: 180、`files_sampled` / `source_files` / `lines_sampled`: int>=1、`survival_index`: number（unit=`dimensionless`）、`definition_version`。
 
+### context_profile（observed の場合・v0.5.2 追加）
+
+repo スコープの文脈観測層（裁定: BD tep-context-profile-ruling §4-5・定義版 `context-v1`）。report-v1 への**追加セクション**。
+
+| フィールド | unit | 意味 |
+|---|---|---|
+| `resolved_human_actors` | actors | bot・upstream系（inherited_upstream/upstream_sync）除外後のユニーク正規化著者数。**数のみ。誰かは出さない**（生 shortlog 数の叙述は禁止） |
+| `top_actor_share` | ratio | 最多著者のコミット比率（canonical_id も名前も出さない） |
+| `collaboration_class` | class | `solo`（top_share≥0.90）/ `small_team`（actors≤5）/ `community`（他）。閾値は定義版に含む |
+| `pr_flow_share` | ratio | merge コミット比率 |
+| `scale` | — | human_commits / first_commit / last_commit / active_span_days / top_level_dirs / tags |
+| `repo_age_days` | days | first〜HEAD |
+| `days_since_last_human_commit` | days | **lifecycle-v2 一次出力**: HEAD から最後の human（非bot）コミットまでの日数 |
+| `active_days_180d` | days | **lifecycle-v2 一次出力**: 直近180日窓の human コミットユニーク日数（密度） |
+| `lifecycle_stage` | class | **lifecycle-v2（密度基準）**: `dormant`（active_days_180d≤2）/ `maintained`（3〜11）/ `active`（≥12）。クラスは便宜であり一次観測値2つに常に併記される。**本閾値はパイロット第1round の観察から設計した（informed-by-pilot-1）** — 同一標本での「検証」は行わず、妥当性確認は将来の新標本（段2）で行う。**限界**: bulk housekeeping は「新しさ」を膨らませるため密度基準を採る／作業モード（開発 vs 保守）は測っていない — クラスは活動密度のみ |
+| `actor_turnover` | actors/year | 年別 joined/left |
+| `release_cadence` | releases/year | タグ頻度 |
+| `conventional_commit_share` | ratio | `type(scope)?:` 形式の件名比率 |
+| `language_composition` | touch-share | 拡張子別パス接触比率（1%未満は省略） |
+| `test_file_ratio` / `docs_share` | ratio | テスト/ドキュメントパス接触コミット比率 |
+| `dependency_manifests` | manifests | 検出された依存 manifest 名のリスト（polyglot 度） |
+| `monorepo_markers` | markers | packages/ apps/ nx.json 等 |
+| `issue_link_density` | ratio | `#N` 参照を含む非 merge 件名比率 |
+
+**等級語・良し悪しの含意は持たせない**（community だから偉い、は書かない。分類は比較の条件であって賞ではない）。**重み付け禁止**: 文脈は比較母集団を選ぶためだけに使う。
+
 ### interpretation 各エントリ（observed の場合）
 
 `reference_version`: string（例 `v2026.09`）、`analysis_scope`: `"repo"` 固定、`n`: int>=1、`decile`: 1..10、`value`: 0..1、`unit`、`metric_id`。参照分布 n<30 は `reference_too_small`。**十分位の 1 行以外の位置情報は出さない。**

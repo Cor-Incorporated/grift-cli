@@ -1,0 +1,107 @@
+name: kpi-monthly
+
+# 月初 00:00 UTC = 09:00 JST。直 push せず docs-only PR を開く。
+# workflow_dispatch は default 枝にこのファイルが載ってから有効。
+# pull_request は merge 前のスイープ試走専用（docs-only PR は作らない）。
+on:
+  schedule:
+    - cron: "0 0 1 * *"
+  pull_request:
+    paths:
+      - ".github/workflows/kpi-monthly.yml"
+      - "docs/kpi/kpi_sweep.py"
+  workflow_dispatch:
+    inputs:
+      note:
+        description: "KPI-LOG の note 欄"
+        required: false
+        default: "monthly"
+      create_pr:
+        description: "差分があれば docs-only PR を作る"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run KPI sweep
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          note="${{ github.event.inputs.note }}"
+          if [ -z "$note" ]; then
+            note="monthly"
+          fi
+          line="$(python3 docs/kpi/kpi_sweep.py --append --note "$note")"
+          echo "$line"
+          {
+            echo "## KPI sweep"
+            echo ""
+            echo '```'
+            echo "$line"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Open docs-only PR
+        if: github.event_name == 'schedule' || inputs.create_pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- docs/kpi/KPI-LOG.md; then
+            echo "KPI-LOG.md unchanged; skip PR"
+            echo "KPI-LOG unchanged — PR skipped" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          default_branch="${DEFAULT_BRANCH:-main}"
+          stamp="$(date -u +%Y-%m)"
+          head_branch="chore/kpi-monthly-${stamp}"
+
+          case "$head_branch" in
+            main|master|develop|"$default_branch")
+              echo "refusing protected branch name: $head_branch" >&2
+              exit 1
+              ;;
+          esac
+
+          tmp="$(mktemp)"
+          cp docs/kpi/KPI-LOG.md "$tmp"
+          git fetch origin "$default_branch"
+          git switch -C "$head_branch" "origin/${default_branch}"
+          mkdir -p docs/kpi
+          cp "$tmp" docs/kpi/KPI-LOG.md
+          rm -f "$tmp"
+
+          git add docs/kpi/KPI-LOG.md
+          if git diff --cached --quiet; then
+            echo "no commit vs ${default_branch}"
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs(kpi): ${stamp} の月次KPIを追記"
+
+          # 保護ブランチへは押さない。head は chore/kpi-monthly-* のみ。
+          git push -u origin "refs/heads/${head_branch}:refs/heads/${head_branch}"
+
+          existing="$(gh pr list --head "$head_branch" --base "$default_branch" --json number --jq '.[0].number // empty')"
+          if [ -n "$existing" ]; then
+            echo "PR #${existing} already open"
+            echo "Existing PR #${existing}" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          gh pr create --base "$default_branch" --head "$head_branch" \
+            --title "docs(kpi): ${stamp} 月次KPIログ" \
+            --body "docs-only: KPI-LOG.md の月次追記。公開件数と統計のみ。main への直 push はしない。"

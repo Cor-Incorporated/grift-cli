@@ -12,11 +12,14 @@ from tep_core.export import build_export, write_export
 from tep_core.identity import IdentityValidationError, discover_identity
 from tep_core.lineage import Lineage
 from tep_core.report import render_markdown
+from tep_core.verify import CANNOT_VERIFY, MISMATCH, VERIFIED, verify_report
 from tep_core.version import __version__
 
 _EPILOG = """examples:
   grift analyze . --scope repo
   grift analyze ./repo --format md --out ./out
+  grift verify ./out/report.json --repo ./repo
+  grift contribute ./out/report.json --out contribution.json
 詳細: README"""
 
 
@@ -99,6 +102,12 @@ def build_parser() -> argparse.ArgumentParser:
         help="tenant: identity-matched evidence. repo: all human commits (reference distribution).",
     )
     analyze.add_argument(
+        "--reference-version",
+        default=None,
+        metavar="VER",
+        help="Reference distribution version (default: latest; e.g. v2026.09 is still selectable and immutable).",
+    )
+    analyze.add_argument(
         "--export",
         type=Path,
         default=None,
@@ -108,6 +117,59 @@ def build_parser() -> argparse.ArgumentParser:
             "(commits.ndjson, actors.json, export-meta.json) into DIR. "
             "No raw emails are exported."
         ),
+    )
+
+    verify = sub.add_parser(
+        "verify",
+        help="Recompute a report.json under its recorded provenance and diff it",
+        epilog=_EPILOG,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    verify.add_argument("report", type=Path, help="Path to report.json to verify")
+    verify.add_argument(
+        "--repo",
+        type=Path,
+        default=None,
+        help="Path to the target repository (default: the report's repository field is not used; you must pass this or run inside the repo)",
+    )
+    verify.add_argument(
+        "--identity",
+        type=Path,
+        default=None,
+        help="Optional identity.toml used for the original analysis (attribution re-verification).",
+    )
+
+    render = sub.add_parser(
+        "report",
+        help="Re-render report.md from an existing report.json (no re-analysis)",
+        epilog=_EPILOG,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    render.add_argument("report_json", type=Path, help="Path to report.json")
+    render.add_argument(
+        "--out",
+        type=Path,
+        default=None,
+        help="Write report.md here (default: stdout)",
+    )
+
+    contribute = sub.add_parser(
+        "contribute",
+        help="Build an opt-in contribution payload from a repo-scope report (never sends)",
+        epilog=_EPILOG,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    contribute.add_argument("report_json", type=Path, help="Path to a repo-scope report.json")
+    contribute.add_argument(
+        "--out",
+        type=Path,
+        default=None,
+        help="Write the payload JSON here (default: stdout prints payload + confirmation)",
+    )
+    contribute.add_argument(
+        "--yes",
+        action="store_true",
+        help="Skip the interactive confirmation (payload is still printed in full)",
     )
     return parser
 
@@ -133,6 +195,7 @@ def _run_analyze(args: argparse.Namespace) -> int:
         include_local_path=bool(args.include_local_path),
         survival=bool(args.survival),
         scope=str(args.scope),
+        reference_version=str(args.reference_version) if args.reference_version else None,
     )
     markdown = render_markdown(report)
     encoded = json.dumps(report, indent=2, ensure_ascii=False) + "\n"
@@ -160,11 +223,111 @@ def _run_analyze(args: argparse.Namespace) -> int:
     return 0
 
 
+def _run_verify(args: argparse.Namespace) -> int:
+    repo = args.repo
+    if repo is None:
+        sys.stderr.write("verify: --repo is required (the report does not carry a local path)\n")
+        return 2
+    result = verify_report(args.report, repo, args.identity)
+    if result.status == VERIFIED:
+        sys.stdout.write(f"{VERIFIED}: all fields match recomputation under recorded provenance\n")
+        return 0
+    if result.status == MISMATCH:
+        sys.stdout.write(f"{MISMATCH}: {len(result.differences)} field(s) differ\n")
+        for line in result.differences:
+            sys.stdout.write(f"  - {line}\n")
+        return 1
+    sys.stdout.write(f"{CANNOT_VERIFY}:\n")
+    for note in result.notes:
+        sys.stdout.write(f"  - {note}\n")
+    return 2
+
+
+def _run_report(args: argparse.Namespace) -> int:
+    try:
+        payload = json.loads(args.report_json.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        sys.stderr.write(f"report unreadable: {exc}\n")
+        return 2
+    try:
+        markdown = render_markdown(payload)
+    except KeyError as exc:
+        sys.stderr.write(f"report is missing a required field: {exc}\n")
+        return 2
+    if args.out is not None:
+        target = args.out / "report.md" if args.out.is_dir() else args.out
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(markdown, encoding="utf-8")
+    else:
+        sys.stdout.write(markdown)
+    return 0
+
+
+def _run_contribute(args: argparse.Namespace) -> int:
+    from tep_core.contribute import CONFIRMATION_TEXT, build_contribution, render_confirmation
+
+    try:
+        report = json.loads(args.report_json.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        sys.stderr.write(f"report unreadable: {exc}\n")
+        return 2
+    try:
+        payload = build_contribution(report)
+    except ValueError as exc:
+        sys.stderr.write(f"contribute: {exc}\n")
+        return 2
+    text = render_confirmation(payload)
+    if not args.yes:
+        # F-C1: consent gate is enforced on EVERY path. Non-TTY without --yes
+        # is refused (exit 2) with the disclosure on stderr — never a silent write.
+        if not sys.stdin.isatty():
+            sys.stderr.write(
+                "contribute: interactive confirmation required.\n\n"
+                + CONFIRMATION_TEXT
+                + "\n非対話環境では --yes を明示してください。--yes でも開示文と payload 全文を表示してから書き出します。\n"
+            )
+            return 2
+        sys.stdout.write(text)
+        answer = input(
+            "提出payloadを確認しましたか？ 公開されることに同意して書き出しますか? [yes/No] "
+        )
+        if answer.strip().lower() not in ("y", "yes"):
+            sys.stderr.write("aborted: nothing was written or sent\n")
+            return 1
+    else:
+        # F-C1: --yes still prints disclosure + payload summary BEFORE writing
+        # (consent leaves a trace even in non-interactive use).
+        sys.stderr.write(CONFIRMATION_TEXT)
+        sys.stderr.write(
+            f"payload summary: schema={payload['contribution_schema']} "
+            f"purpose={payload['purpose']} "
+            f"definition={payload['provenance']['definition_version']} "
+            f"metric_sections={sorted(payload['metrics'])}\n"
+            f"payload full text follows on stdout.\n"
+        )
+        sys.stdout.write(text)
+    if args.out is not None:
+        args.out.parent.mkdir(parents=True, exist_ok=True)
+        args.out.write_text(
+            json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+        )
+        sys.stderr.write(f"payload written to {args.out} (nothing was sent)\n")
+    elif args.yes:
+        pass  # full text already on stdout above
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
     if args.command == "analyze":
         return _run_analyze(args)
+    if args.command == "verify":
+        return _run_verify(args)
+    if args.command == "report":
+        return _run_report(args)
+    if args.command == "contribute":
+        return _run_contribute(args)
     parser.error("unknown command")
     return 2
 

@@ -37,6 +37,36 @@ def _fmt_obs(obs: dict[str, Any], *, fallback: str = "not observed") -> str:
     return f"{value} {unit}".strip() if unit else fallback
 
 
+def shared_block(report: dict[str, Any]) -> list[str]:
+    """P1a: 3-5 line copy-pasteable summary. Numbers+units+n+definition version
+    only. No absolute paths, no grade vocabulary. One-line reader's-guide
+    pointer included (P1g)."""
+    prov = report["provenance"]
+    scope = prov.get("analysis_scope")
+    lines = [
+        f"- tool: {prov['tool_name']} {prov['tool_version']} (method {prov.get('method_name') or 'TEP'}, definition {prov['definition_version']})",
+        f"- scope: {scope} (analyzed at commit `{prov['analyzed_commit_sha'][:12]}`)",
+    ]
+    tests = report.get("test_frameworks") or {}
+    if tests.get("kind") == "observed":
+        cochange = (report.get("test_cochange") or {}).get("all_time") or {}
+        if cochange.get("kind") == "observed":
+            if cochange.get("narrate_rate", True):
+                lines.append(
+                    f"- test co-change: {cochange['value']} ratio ({cochange['cochanged']} of {cochange['population']} commits)"
+                )
+            else:
+                lines.append(
+                    f"- test co-change: not narrated (insufficient_population; {cochange['cochanged']} of {cochange['population']} commits)"
+                )
+    activity = report.get("activity") or {}
+    tenant = activity.get("tenant_commits") or {}
+    if tenant.get("kind") == "observed" and scope == "tenant":
+        lines.append(f"- tenant commits: {tenant['value']} commits")
+    lines.append("- 読み方: 本レポートは証拠であり判定ではない（docs/norms.md 参照）")
+    return lines
+
+
 def render_markdown(report: dict[str, Any]) -> str:
     prov = report["provenance"]
     identity = report["identity"]
@@ -49,6 +79,9 @@ def render_markdown(report: dict[str, Any]) -> str:
 
     lines: list[str] = [
         "# TEP analysis",
+        "",
+        "## Shared block (copy-pasteable)",
+        *shared_block(report),
         "",
         "## Provenance",
         f"- method: {prov.get('method_name') or 'TEP'}",
@@ -126,8 +159,51 @@ def render_markdown(report: dict[str, Any]) -> str:
     lines += ["", "## Rework", *_fmt_rework_lines(report.get("rework"))]
     lines += _fmt_interp_line("corrective rework", interp.get("corrective_rework"))
     lines += ["", "## Survival (tau=180 days)", f"- {_fmt_metric_block(report.get('survival'))}"]
+    lines += ["", *(_fmt_context_lines(report.get("context_profile")))]
+    lines += ["", *readers_guide_lines()]
     lines.append("")
     return "\n".join(lines)
+
+
+def _fmt_context_lines(ctx: dict[str, Any] | None) -> list[str]:
+    if not ctx or ctx.get("kind") != "observed":
+        if ctx and ctx.get("kind") == "not_observed":
+            return ["## Context profile", f"- not observed ({ctx.get('reason')})"]
+        return []
+
+    def val(key: str) -> Any:
+        node = ctx.get(key) or {}
+        return node.get("value")
+
+    lines = [
+        "## Context profile (observational; not a ranking)",
+        (
+            f"- collaboration: {val('collaboration_class')} "
+            f"({val('resolved_human_actors')} resolved human actors; "
+            f"top actor share {val('top_actor_share')} ratio)"
+        ),
+        (
+            f"- lifecycle: {val('lifecycle_stage')} "
+            f"(active_days_180d {val('active_days_180d')} days; "
+            f"days_since_last_human_commit {val('days_since_last_human_commit')}; "
+            f"repo age {val('repo_age_days')} days)"
+        ),
+        f"- process: pr_flow_share {val('pr_flow_share')} ratio; conventional subjects {val('conventional_commit_share')} ratio",
+        f"- languages (touch-share): {val('language_composition') or {}}",
+    ]
+    return lines
+
+
+def readers_guide_lines() -> list[str]:
+    """P1g: fixed reader's guide appended to every report.md (data-layer
+    template, no LLM). Golden snapshots and vocab gates pin the wording."""
+    return [
+        "## この数値でしてはいけない判断",
+        "- このレポートは「観測できた証拠」であり、書かれていないことは「無かったこと」を意味しません",
+        "- 分布位置は同スコープ・同文脈の repo 間の位置であり、優劣の等級ではありません",
+        "- 単独の数値での合否判断・他者との比較表の作成は TEP 非準拠です（docs/norms.md 参照）",
+        "- 観測には限界があります（各指標の limit 欄を参照してください）",
+    ]
 
 
 def _fmt_metric_block(obs: dict[str, Any] | None) -> str:

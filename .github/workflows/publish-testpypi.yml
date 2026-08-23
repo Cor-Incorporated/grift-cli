@@ -1,6 +1,9 @@
 name: publish-testpypi
 
 on:
+  push:
+    tags:
+      - "v*"
   workflow_dispatch:
 
 jobs:
