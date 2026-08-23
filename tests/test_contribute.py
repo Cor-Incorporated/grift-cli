@@ -109,9 +109,12 @@ def test_context_profile_slimmed_but_scale_dropped(tmp_path: Path) -> None:
 
 
 def test_confirmation_mentions_public_disclosure() -> None:
-    assert "公開リポジトリに載ります" in CONFIRMATION_TEXT
+    assert "公開コーパスに載ります" in CONFIRMATION_TEXT
     assert "何も送信しません" in CONFIRMATION_TEXT
     assert CONTRIBUTE_PURPOSE in CONFIRMATION_TEXT
+    assert "repo 名は含まれません" in CONFIRMATION_TEXT
+    assert "推測されるリスクはゼロではありません" in CONFIRMATION_TEXT
+    assert "二枚扉" in CONFIRMATION_TEXT and "非公開ドア" in CONFIRMATION_TEXT
 
 
 def test_cli_contribute_writes_payload_and_never_silent(tmp_path: Path, capsys: object) -> None:
@@ -150,7 +153,8 @@ def test_f_c1_non_tty_without_yes_is_refused(tmp_path: Path, capsys: object) -> 
     code = main(["contribute", str(path), "--out", str(out)])
     assert code == 2, "non-TTY without --yes must be refused"
     captured = capsys.readouterr()
-    assert "公開リポジトリに載ります" in captured.err, "disclosure must be shown on stderr"
+    assert "公開コーパスに載ります" in captured.err, "disclosure must be shown on stderr"
+    assert "推測されるリスクはゼロではありません" in captured.err, "inference-risk disclosure required"
     assert "--yes" in captured.err
     assert not out.exists(), "nothing may be written when refused"
 
@@ -166,7 +170,8 @@ def test_f_c1_yes_still_discloses_before_writing(tmp_path: Path, capsys: object)
     code = main(["contribute", str(path), "--out", str(out), "--yes"])
     assert code == 0
     captured = capsys.readouterr()
-    assert "公開リポジトリに載ります" in captured.err, "disclosure on stderr even with --yes"
+    assert "公開コーパスに載ります" in captured.err, "disclosure on stderr even with --yes"
+    assert "推測されるリスクはゼロではありません" in captured.err
     assert "payload summary:" in captured.err
     assert "definition=" in captured.err
     assert "=== contribution payload (full) ===" in captured.out, "full payload on stdout"

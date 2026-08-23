@@ -16,7 +16,7 @@ inputs:
   version:
     description: "grift-cli version to install (pinned)"
     required: false
-    default: "0.5.4"
+    default: "0.5.5"
   comment:
     description: "Opt-in: post the shared block as a PR comment (default off)"
     required: false
@@ -36,16 +36,16 @@ runs:
         GRIFT_SCOPE: ${{ inputs.scope }}
       run: |
         set -euo pipefail
-        mkdir -p .grift-out
-        grift analyze . --scope "$GRIFT_SCOPE" --format both --out .grift-out
+        mkdir -p .grift
+        grift analyze . --scope "$GRIFT_SCOPE" --format both --out .grift
         # Shared block = the copy-pasteable summary section of report.md.
         # Extract from '## Shared block' to the next '## ' heading.
-        awk '/^## Shared block/{flag=1;next}/^## /{flag=0}flag' .grift-out/report.md > .grift-out/shared-block.md
-        cat .grift-out/shared-block.md >> "$GITHUB_STEP_SUMMARY"
+        awk '/^## Shared block/{flag=1;next}/^## /{flag=0}flag' .grift/report.md > .grift/shared-block.md
+        cat .grift/shared-block.md >> "$GITHUB_STEP_SUMMARY"
         {
           echo "### grift (observation only — no pass/fail)"
           echo '```'
-          cat .grift-out/shared-block.md
+          cat .grift/shared-block.md
           echo '```'
           echo "_読み方: 本レポートは証拠であり判定ではない（TEP norms 参照: https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/norms.md）_"
         } >> "$GITHUB_STEP_SUMMARY"
@@ -54,7 +54,7 @@ runs:
       uses: actions/upload-artifact@v4
       with:
         name: grift-report
-        path: .grift-out/
+        path: .grift/
         retention-days: 30
 
     - name: Post PR comment (explicit opt-in only)
@@ -66,7 +66,7 @@ runs:
           const body = [
             '### grift (observation only — no pass/fail)',
             '```',
-            fs.readFileSync('.grift-out/shared-block.md', 'utf8').trim(),
+            fs.readFileSync('.grift/shared-block.md', 'utf8').trim(),
             '```',
             '_読み方: 本レポートは証拠であり判定ではない（TEP norms 参照）_'
           ].join('\n');

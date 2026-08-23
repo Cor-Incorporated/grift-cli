@@ -13,18 +13,28 @@ The conditions for calling a use "TEP-compliant" are defined in [docs/norms.md](
 
 Commit counts, line counts, and “activity” inflate easily once agents and generated code are in the loop. grift reads git only and emits TEP provenance (whose work) and a verification layer (test co-change and related metrics) **deterministically**. No LLM. No composite score. No skill-rank labels.
 
-## Start in five minutes
+## Start in five minutes (two-word verbs)
 
 ```bash
 pipx install grift-cli
-grift analyze ./my-repo --scope repo --out ./out
+cd your-repo
+grift analyze     # analyze → writes .grift/report.{json,md}
+grift verify      # recompute .grift/report.json against the current repo
 ```
 
-**Quickest first run**: inside a repository, `grift report` alone analyzes the
-current HEAD and writes `./out/report.md` and `report.json` (it always
-re-analyzes, even if `./out/report.json` already exists). For explicit
-control and CI, use `grift analyze . --scope repo --out ./out` (`report` is a
-fixed repo-scope shorthand).
+Every basic operation is just **`grift <verb>`** (target = current directory,
+output = `.grift/`):
+
+| Verb | Action |
+|---|---|
+| `grift analyze` | Analyze the current repository into `.grift/report.{json,md}` |
+| `grift report` | Same as bare analyze (always re-analyzes the current HEAD) |
+| `grift verify` | Recompute `.grift/report.json` under recorded provenance (VERIFIED / MISMATCH / CANNOT_VERIFY) |
+| `grift contribute` | Build an opt-in submission payload from `.grift/report.json` (**never sends**) |
+
+- **`.grift/` is the dedicated output directory** (auto-created). Adding `.grift/` to your `.gitignore` is recommended
+- Custom invocations keep the explicit form: `grift analyze path --scope tenant --identity .tep/identity.toml --out dir`
+- `--scope tenant` (default): the identity.toml members' work = **evidence** / `--scope repo`: all human commits = **process observation & reference distributions**
 
 - `--scope tenant` (default): work matched in `.tep/identity.toml` = **evidence**
 - `--scope repo`: all non-bot human commits = **process observation and reference distributions**
@@ -58,6 +68,36 @@ The full field-by-field definition of report.json lives in [docs/report-schema.m
 ## Machine ingestion export (opt-in)
 
 `grift analyze <repo> --export <dir>` writes commits.ndjson (one row per commit: origin / actor / cochange), actors.json (attribution and engagement per canonical_id), and export-meta.json (with `config_digest`). **No raw emails or author strings are ever exported.** Aggregates in report.json remain authoritative for narrative. Details: [docs/export-schema.md](docs/export-schema.md).
+
+## Opt-in data submission (grift contribute)
+
+Submissions to the **TEP Report and the next reference distribution** take three steps:
+
+```bash
+grift report                                      # 1) create a repo-scope report
+grift contribute --out .grift/contribution.json   # 2) build & review the payload
+# 3) submit the payload as a PR to tep-contributions
+#    https://github.com/Cor-Incorporated/tep-contributions
+```
+
+- **The CLI never sends anything** (automatic transmission is permanently
+  forbidden). The full payload is printed and the flow states explicitly that
+  it will appear in a public repository
+- The payload carries repo-scope aggregates + class-level context + definition
+  versions only — **no canonical_id, emails, paths, repo names, or
+  tenant-scope values**
+- The intake repository's CI mechanically validates the schema
+  (`tep-contribution-v1`) and rejects email-shaped content
+- Use is limited to "TEP Report aggregation and the next reference
+  distribution"; retained until the next annual Report; withdrawal via issue
+
+## How to read the metrics (for non-engineers)
+
+[docs/metrics-guide.md](docs/metrics-guide.md) explains every metric in plain
+language: what it measures, what high/low values suggest, and rough ranges
+from a 117-repository public corpus. Common misreadings (e.g. corrective
+rework is not a bug count; dormant does not mean abandoned) are listed in a
+table. Read this first if you are new to the reports.
 
 ## Metrics and limits
 
