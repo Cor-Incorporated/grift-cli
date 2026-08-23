@@ -84,7 +84,7 @@ v2026.09 の記録（Run 2: A vs C `separated` ほか）は `corpus/DISCRIMINANT
 ## GitHub Action（観測のみ）
 
 ```yaml
-uses: Cor-Incorporated/grift-cli@v0.5.1
+uses: Cor-Incorporated/grift-cli@v0.5.3
 with:
   scope: repo
 ```
@@ -105,7 +105,7 @@ with:
 
 - 公開リポ: https://github.com/Cor-Incorporated/grift-cli
 - コマンド名: **`grift`**（方法論名 TEP はレポートに残す）
-- PyPI: 配布名 **`grift-cli`**。本公開は別ゲート（未了ならソースから `pipx install .`）
+- PyPI: 配布名 **`grift-cli`**（最新 0.5.2 を公開済み: `pipx install grift-cli`）
 
 ## License
 

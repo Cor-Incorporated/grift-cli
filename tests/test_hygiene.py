@@ -19,6 +19,10 @@ _AUDIT_PREFIXES = (
     "docs/PREPUB",
     "docs/kpi",
     "docs/pilot",
+    "docs/SMOKE",
+    "docs/REREVIEW",
+    "docs/RELEASE-REHEARSAL",
+    "docs/INTERNAL-PILOT",
 )
 
 

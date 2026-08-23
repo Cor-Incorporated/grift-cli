@@ -82,7 +82,7 @@ The v2026.09 record (Run 2: A vs C `separated` etc.) remains as history in `corp
 ## GitHub Action (observation only)
 
 ```yaml
-uses: Cor-Incorporated/grift-cli@v0.5.1
+uses: Cor-Incorporated/grift-cli@v0.5.3
 with:
   scope: repo
 ```

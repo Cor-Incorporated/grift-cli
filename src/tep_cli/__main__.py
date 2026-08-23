@@ -16,10 +16,11 @@ from tep_core.verify import CANNOT_VERIFY, MISMATCH, VERIFIED, verify_report
 from tep_core.version import __version__
 
 _EPILOG = """examples:
-  grift analyze . --scope repo
-  grift analyze ./repo --format md --out ./out
+  grift report             # analyze the current repo → ./out/report.{json,md}
+  grift report path/report.json   # re-render md from an existing report (no re-analysis)
+  grift analyze . --scope repo --out ./out
   grift verify ./out/report.json --repo ./repo
-  grift contribute ./out/report.json --out contribution.json
+  grift contribute         # build opt-in payload from ./out/report.json (never sends)
 詳細: README"""
 
 
@@ -141,11 +142,17 @@ def build_parser() -> argparse.ArgumentParser:
 
     render = sub.add_parser(
         "report",
-        help="Re-render report.md from an existing report.json (no re-analysis)",
+        help="Analyze the current repo and write ./out/report.{json,md}; or re-render md from an existing report.json",
         epilog=_EPILOG,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    render.add_argument("report_json", type=Path, help="Path to report.json")
+    render.add_argument(
+        "report_json",
+        type=Path,
+        nargs="?",
+        default=None,
+        help="Path to an existing report.json to re-render (default: analyze the current repo into ./out)",
+    )
     render.add_argument(
         "--out",
         type=Path,
@@ -159,7 +166,13 @@ def build_parser() -> argparse.ArgumentParser:
         epilog=_EPILOG,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    contribute.add_argument("report_json", type=Path, help="Path to a repo-scope report.json")
+    contribute.add_argument(
+        "report_json",
+        type=Path,
+        nargs="?",
+        default=None,
+        help="Path to a repo-scope report.json (default: search ./out, .grift-out, ./)",
+    )
     contribute.add_argument(
         "--out",
         type=Path,
@@ -243,11 +256,33 @@ def _run_verify(args: argparse.Namespace) -> int:
     return 2
 
 
+_DEFAULT_REPORT_SEARCH = (
+    Path("out") / "report.json",
+    Path(".grift-out") / "report.json",
+    Path("report.json"),
+)
+
+
+def _resolve_report_path(explicit: Path | None) -> tuple[Path | None, str]:
+    """Return (path, guidance). Search ./out, .grift-out, ./ when no explicit path."""
+    if explicit is not None:
+        return explicit, ""
+    for candidate in _DEFAULT_REPORT_SEARCH:
+        if candidate.is_file():
+            return candidate, ""
+    return None, ""
+
+
 def _run_report(args: argparse.Namespace) -> int:
+    report_path, _guidance = _resolve_report_path(args.report_json)
+    if report_path is None:
+        # UX (代表 2026-08-23): bare `grift report` in a repo with no prior
+        # output = run the analysis now and write ./out/report.{json,md}.
+        return _analyze_to_out(scope="repo")
     try:
-        payload = json.loads(args.report_json.read_text(encoding="utf-8"))
+        payload = json.loads(report_path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
-        sys.stderr.write(f"report unreadable: {exc}\n")
+        sys.stderr.write(f"report unreadable ({report_path}): {exc}\n")
         return 2
     try:
         markdown = render_markdown(payload)
@@ -263,13 +298,43 @@ def _run_report(args: argparse.Namespace) -> int:
     return 0
 
 
+def _analyze_to_out(*, scope: str = "repo") -> int:
+    """Run the analysis in the current directory and write ./out/report.{json,md}.
+
+    UX (代表 2026-08-23): bare `grift report` should just produce the reports —
+    create ./out if missing. Reuses the analyze pipeline on '.'.
+    """
+    repo = Path(".")
+    if not (repo / ".git").exists():
+        sys.stderr.write("grift: not a git repository (run inside the repo you want to analyze)\n")
+        return 2
+    identity = discover_identity(repo, None)
+    report = analyze_repository(repo, identity, Lineage(), scope=scope)
+    markdown = render_markdown(report)
+    encoded = json.dumps(report, indent=2, ensure_ascii=False) + "\n"
+    out_dir = Path("out")
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / "report.json").write_text(encoded, encoding="utf-8")
+    (out_dir / "report.md").write_text(markdown, encoding="utf-8")
+    sys.stdout.write(markdown)
+    sys.stderr.write(f"\nwrote {out_dir / 'report.json'} and {out_dir / 'report.md'}\n")
+    return 0
+
+
 def _run_contribute(args: argparse.Namespace) -> int:
     from tep_core.contribute import CONFIRMATION_TEXT, build_contribution, render_confirmation
 
+    report_path, _guidance = _resolve_report_path(args.report_json)
+    if report_path is None:
+        sys.stderr.write(
+            "contribute: no report.json found (searched ./out/report.json, .grift-out/report.json, ./report.json). "
+            "Run `grift report` first — it will analyze the repo and write ./out/report.json.\n"
+        )
+        return 2
     try:
-        report = json.loads(args.report_json.read_text(encoding="utf-8"))
+        report = json.loads(report_path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
-        sys.stderr.write(f"report unreadable: {exc}\n")
+        sys.stderr.write(f"report unreadable ({report_path}): {exc}\n")
         return 2
     try:
         payload = build_contribution(report)
