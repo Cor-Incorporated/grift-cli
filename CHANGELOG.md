@@ -4,6 +4,27 @@
 
 タグ・PyPI・リポ public 化は本ファイルの記載対象外（人間ゲート）。
 
+## [0.5.6] — 2026-08-23
+
+公開後検収で発見の仕様記述↔実挙動の矛盾 3 件（D-1/D-2/D-3）を解消するホットフィックス。
+
+### Fixed
+
+- **動詞の意味を確定: `analyze` = 表示（stdout）・`report` = 記録（`.grift/`）**。README 日英の 2 語動詞表の analyze 行（「`.grift/` を生成」と誤記）を訂正
+- **D-3b**: 裸 `grift analyze` の既定スコープを **repo** に統一（パス明示の従来モードは既定 tenant のまま不変）
+- **D-3a**: `grift report --scope {repo,tenant}`（既定 repo）を追加
+- D-2 文書: report の help「default: ./out」誤記を `.grift/` に訂正・docstring/examples を動詞意味確定版に更新
+- **errata（0.5.5 の記載について）**: 0.5.5 の README/EVIDENCE に「裸 `grift analyze` が `.grift/` を自動生成する」との記述があったが、実挙動は stdout 出力のみ（`.grift/` は `grift report` が作る）。本版で文書をバイナリに合わせ、動詞意味を上記のとおり確定した
+- CHANGELOG の受け口 URL 表記を tep-contributions に統一
+
+### Added（報告規律・恒久）
+
+- **「wheel 実測」節の各 claim には実行コマンドと生ログを添付する**（0.5.5 で裸 analyze の claim が公開 wheel で再現しなかった件の再発防止）
+
+### テスト（反証）
+
+- 裸 analyze が `.grift/` を作らず stdout へ出すピン / 裸 analyze の scope=repo ピン / パス明示の既定 tenant 維持ピン / 裸 report が `.grift/` を書き scope=repo のピン / `report --scope tenant` のピン / help 文言の golden（`./out` 残存なし）
+
 ## [0.5.5] — 2026-08-23
 
 UX 統一（2語動詞 + `.grift/` 出力）+ contribute 受け口の実運用化 + 全ドキュメント日英対応。

@@ -18,16 +18,16 @@ Named after the Grift product line.
 ```bash
 pipx install grift-cli
 cd your-repo
-grift analyze     # 分析 → .grift/report.{json,md} に書き出し
+grift analyze     # 分析結果を stdout に表示（repo スコープ）
 grift verify      # .grift/report.json を現在のリポジトリで再計算・突合
 ```
 
-基本操作はすべて **`grift <動詞>` の2語**で完結します（対象 = カレントディレクトリ、出力 = `.grift/`）:
+基本操作はすべて **`grift <動詞>` の2語**で完結します。動詞の意味は「**analyze = 表示（stdout）**・**report = 記録（`.grift/`）**」です:
 
 | 2語コマンド | 動作 |
 |---|---|
-| `grift analyze` | カレントリポジトリを分析し `.grift/report.{json,md}` を生成 |
-| `grift report` | `grift analyze` と同結果（常に現在の HEAD を再分析） |
+| `grift analyze` | カレントリポジトリを**stdout に表示**（repo スコープ・`.grift/` は作らない） |
+| `grift report` | 分析して `.grift/report.{json,md}` に**記録**（常に現在の HEAD を再分析・既定 repo スコープ・`--scope tenant` 可） |
 | `grift verify` | `.grift/report.json` を同条件で再計算し改ざんを検出（VERIFIED / MISMATCH / CANNOT_VERIFY） |
 | `grift contribute` | `.grift/report.json` から opt-in 提出 payload を組む（**何も送信しない**） |
 
