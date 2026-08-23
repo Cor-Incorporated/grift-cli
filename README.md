@@ -17,11 +17,13 @@ Named after the Grift product line.
 
 ```bash
 pipx install grift-cli
-grift analyze ./my-repo --scope repo
+grift analyze ./my-repo --scope repo --out ./out
 ```
 
 - `--scope tenant`（既定）: `.tep/identity.toml` に載った人の仕事 = **証拠用**
 - `--scope repo`: bot 以外の全人間コミット = **プロセス観測・参照分布用**
+
+**初回の簡単導線**: リポジトリ内で `grift report` だけでも現在の HEAD を分析して `./out/report.md` と `report.json` を書き出します（既存の `./out/report.json` があっても常に再分析します）。**確実に指定条件で測りたいとき・CI では `grift analyze . --scope repo --out ./out` を使ってください**（`report` は repo スコープ固定の省略形です）。
 
 参照分布 v2026.09 は **repo スコープ同士**でのみ照合する。tenant の値を repo 分布に載せない（混ぜたら分布が嘘になる）。
 
@@ -84,7 +86,7 @@ v2026.09 の記録（Run 2: A vs C `separated` ほか）は `corpus/DISCRIMINANT
 ## GitHub Action（観測のみ）
 
 ```yaml
-uses: Cor-Incorporated/grift-cli@v0.5.3
+uses: Cor-Incorporated/grift-cli@v0.5.4
 with:
   scope: repo
 ```
@@ -105,7 +107,7 @@ with:
 
 - 公開リポ: https://github.com/Cor-Incorporated/grift-cli
 - コマンド名: **`grift`**（方法論名 TEP はレポートに残す）
-- PyPI: 配布名 **`grift-cli`**（最新 0.5.2 を公開済み: `pipx install grift-cli`）
+- PyPI: 配布名 **`grift-cli`**（公開済み: `pipx install grift-cli`・最新版は [PyPI](https://pypi.org/project/grift-cli/) を参照）
 
 ## License
 
