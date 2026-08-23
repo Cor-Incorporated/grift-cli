@@ -7,6 +7,10 @@ Named after the Grift product line.
 
 量は誰でも作れる。残るものと、検証が伴った変更を測る。技量スコアではない。
 
+## 利用規範（norms）
+
+「TEP 準拠」を名乗る利用の条件を [docs/norms.md](docs/norms.md) に定める（不在を負に読まない・単独足切り禁止・申告を負に読まない・同意なき第三者プロファイリング禁止・監視転用非準拠・選択性の明示・重み付け禁止の7条・日英併記）。**本規範への適合を「TEP」の名の使用条件とする。**
+
 コミット数・行数・「活動量」は、エージェントと生成コードの時代に簡単に膨らむ。grift は git だけから、TEP の帰属（誰の仕事か）と検証層（test co-change ほか）を**決定論的に**出す。LLM は使わない。合成スコアも等級語彙も出さない。
 
 ## 5分で始める
@@ -41,6 +45,10 @@ report.json の全フィールド定義は [docs/report-schema.md](docs/report-s
 
 `grift analyze <repo> --export <dir>` で commits.ndjson（1行=1コミット・origin/actor/cochange）・actors.json（canonical_id ごとの帰属と活動）・export-meta.json（`config_digest` つき）を書く。**生メールアドレス・生 author 文字列は一切出力しない**。顧客向け叙述に載る数値は report.json の集計値が正。詳細は [docs/export-schema.md](docs/export-schema.md)。
 
+## データ提出（grift contribute・明示的 opt-in）
+
+`grift contribute <repo-scopeのreport.json> --out contribution.json` は **TEP Report 集計と参照分布 vNext** への提出 payload を組み立てる。**CLI は何も送信しない（自動送信は恒久禁止）** — payload 全文を表示し、「この提出は公開リポジトリに載る」ことを明示した上で、提出はあなた自身が PR で行う。payload は repo スコープ集計値 + context_profile（クラス級）+ 定義版のみで、canonical_id・メール・パス・repo 名・tenant スコープ値は含まない（`docs/norms.md` 保持・削除条項参照）。
+
 例（click、tenant スコープ。ゴールデン G1）:
 
 - test co-change: 0.2664 ratio（73 of 274）
@@ -59,18 +67,32 @@ report.json の全フィールド定義は [docs/report-schema.md](docs/report-s
 | path retouch | 同一ファイル再接触 | 観測のみ。証拠主張に使わない |
 | survival (τ=180d) | 行の残り方 | `--survival` のみ。参照分布は **v2027 予定**。今回の公開分布には含めない |
 
-参照位置は「第N十分位」の1行だけ。n<30 の指標は位置を出さない（`reference_too_small`）。v2026.09 の観測 n: test co-change 33 / corrective rework 42（観測）/ survival 0。
+参照位置は「第N十分位」の1行だけ。n<30 の指標は位置を出さない（`reference_too_small`）。現行 v2026.11 の観測 n: test co-change 68 / corrective rework 101（観測）/ survival 0（v2027 予定）。旧 v2026.09 は不変のまま `--reference-version` で選択可能。
 
 ## 判別力の現況（repo スコープ・基準 `5f2665e`）
 
-出典: `corpus/DISCRIMINANT-v2026.09.md` Run 2。verdict はファイルから逐語。
+出典: `corpus/DISCRIMINANT-v2026.11.md`（n=117・v2026.09 全行 + v2026.11 admission 70 件）。verdict はファイルから逐語。
 
-- `test_cochange A vs C` → `separated`（median_A 0.2379, median_other 0.0306, gap 0.2073, Cliff δ 0.7143, n 18/7）
-- `test_cochange A vs D` → `inconclusive_small_n`（n 18/1。D の narratable 観測が 1）
-- `corrective_rework A vs C` → `fail_tier2`（median_A 0.0522, median_other 0.1063, gap -0.0541, Cliff δ -0.7083, n 18/8）。観測診断のみ。証拠主張には使わない
-- survival: 本コーパスでは未計測。参照分布は v2027 予定
+- `test_cochange A vs D` → `separated`（median_A 0.2379, median_other 0.0718, gap 0.1661, Cliff δ 0.9198, n 18/18）— **初めて n が立った分離**。「量は誰でも作れる」テーゼの最初の強い実証
+- `test_cochange A vs C` → `fail_tier2`（median_A 0.2379, median_other 0.0769, gap 0.161, Cliff δ 0.291, n 18/21）— v2026.09 では `separated`（δ 0.7143）だったが、C 群が「tests を持つ AI 駆動 repo」に広がり分離が低下。**登録済み基準は下げず転回をそのまま公開する**
+- `corrective_rework A vs C / A vs D` → 方向要件なし（観測専用・v0.5.0 から不変）。A vs C δ -0.8333 / A vs D δ 0.0139
+- 母数の正直な記録: C narratable = 14（目標 30 に不足・admission 実測で訂正）/ D total 29（目標 20 達成）
+- survival: 参照分布は v2027 予定
 
-WP4 Run 1 の記録（`separated` / `inconclusive_small_n` / `fail_tier2`）は同ファイルに履歴として残してある。
+v2026.09 の記録（Run 2: A vs C `separated` ほか）は `corpus/DISCRIMINANT-v2026.09.md` に履歴として残してある。
+
+## GitHub Action（観測のみ）
+
+```yaml
+uses: Cor-Incorporated/grift-cli@v0.5.1
+with:
+  scope: repo
+```
+
+- `grift analyze` を実行し、**$GITHUB_STEP_SUMMARY に共有ブロック**を出力、report.md / report.json を artifact に upload
+- **合否・閾値・fail は実装しない**（観測のみ・ゲート化は恒久にしない）
+- PR コメント投稿は `comment: true` の明示オプトインのみ（既定 off）
+- permissions は最小限（`contents: read` を推奨。`comment: true` のみ `pull-requests: write` が必要）
 
 ## 倫理
 

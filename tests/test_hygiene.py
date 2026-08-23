@@ -17,6 +17,8 @@ _AUDIT_PREFIXES = (
     "docs/INSTRUCTION",
     "docs/EVIDENCE-INDEX",
     "docs/PREPUB",
+    "docs/kpi",
+    "docs/pilot",
 )
 
 
@@ -59,6 +61,9 @@ def test_real_needles_absent_when_needle_file_present() -> None:
         ".pytest_cache",
         ".worktrees",
         ".corpus-cache",
+        ".opencode",
+        ".claude",
+        "node_modules",
     }
     hits: list[str] = []
     for path in ROOT.rglob("*"):

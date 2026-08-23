@@ -1,0 +1,65 @@
+{
+  "version": "v2026.11",
+  "analysis_scope": "repo",
+  "definition_version": "tep-v0.5.1-2026-08-22",
+  "metrics": {
+    "test_cochange": {
+      "n": 68,
+      "deciles": [
+        0.0,
+        0.0094,
+        0.0458,
+        0.0711,
+        0.1089,
+        0.1613,
+        0.233,
+        0.2894,
+        0.4871,
+        0.6948
+      ],
+      "strata": {
+        "active": {
+          "n": 34,
+          "deciles": [
+            0.0,
+            0.0048,
+            0.0439,
+            0.0584,
+            0.0725,
+            0.0885,
+            0.1515,
+            0.2148,
+            0.5663,
+            0.6948
+          ]
+        }
+      }
+    },
+    "corrective_rework": {
+      "n": 101,
+      "deciles": [
+        0.0,
+        0.0273,
+        0.0446,
+        0.056,
+        0.0683,
+        0.0972,
+        0.1338,
+        0.1904,
+        0.2658,
+        0.4818
+      ]
+    }
+  },
+  "notes": [
+    "test_cochange stratum community: n=25 < MIN_N 30 — global only (context_stratum_too_small)",
+    "test_cochange stratum small_team: n=2 < MIN_N 30 — global only (context_stratum_too_small)",
+    "test_cochange stratum solo: n=9 < MIN_N 30 — global only (context_stratum_too_small)",
+    "test_cochange stratum dormant: n=1 < MIN_N 30 — global only (context_stratum_too_small)",
+    "test_cochange stratum maintained: n=1 < MIN_N 30 — global only (context_stratum_too_small)"
+  ],
+  "sources": {
+    "v2026.09": 47,
+    "v2026.11": 70
+  }
+}

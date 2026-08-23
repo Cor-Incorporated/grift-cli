@@ -8,6 +8,7 @@ from typing import Any
 
 from tep_core.activity import activity_metrics
 from tep_core.cochange import test_cochange
+from tep_core.context_profile import build_context_profile
 from tep_core.core_period import compute_core_activity_period
 from tep_core.gitutil import GitError, read_commits, repository_identity, rev_parse
 from tep_core.identity import IdentityConfig
@@ -70,6 +71,7 @@ def analyze_repository(
     include_local_path: bool = False,
     survival: bool = False,
     scope: str = DEFAULT_SCOPE,
+    reference_version: str | None = None,
 ) -> dict[str, Any]:
     repo = repo.resolve()
     commits, origin = prepare_inputs(
@@ -128,12 +130,15 @@ def analyze_repository(
         "test_cochange": cochange,
         "rework": rework,
         "survival": survival_metrics(repo, enabled=survival),
+        "context_profile": build_context_profile(repo, commits, origin),
         "interpretation": {
             "test_cochange": interpret_metric(
-                report_scope=scope, metric_id="test_cochange", observation=cochange
+                report_scope=scope, metric_id="test_cochange", observation=cochange,
+                reference_version=reference_version,
             ),
             "corrective_rework": interpret_metric(
-                report_scope=scope, metric_id="corrective_rework", observation=corr
+                report_scope=scope, metric_id="corrective_rework", observation=corr,
+                reference_version=reference_version,
             ),
         },
     }

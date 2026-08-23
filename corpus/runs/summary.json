@@ -1,9 +1,0 @@
-{
-  "run_id": "20260821T164827Z",
-  "pins": 47,
-  "ok": 47,
-  "failed": 0,
-  "analysis_scope": "repo",
-  "failures_path": "/Users/teradakousuke/Developer/grift-cli/corpus/runs/failures.jsonl",
-  "results_path": "/Users/teradakousuke/Developer/grift-cli/corpus/runs/results.jsonl"
-}

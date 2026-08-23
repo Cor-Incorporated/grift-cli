@@ -7,6 +7,10 @@ Named after the Grift product line.
 
 Anyone can produce volume. This tool measures what remains, and which changes came with verification. It is not a skill score.
 
+## Usage norms
+
+The conditions for calling a use "TEP-compliant" are defined in [docs/norms.md](docs/norms.md) (seven articles, JA/EN: do not read absence as negative; no single-metric cutoffs; do not read AI declaration as negative; no third-party profiling without consent; surveillance use is non-compliant; disclose selectivity; no weighting or conversion). **Compliance with these norms is a condition of using the TEP name.**
+
 Commit counts, line counts, and “activity” inflate easily once agents and generated code are in the loop. grift reads git only and emits TEP provenance (whose work) and a verification layer (test co-change and related metrics) **deterministically**. No LLM. No composite score. No skill-rank labels.
 
 ## Start in five minutes
@@ -61,18 +65,32 @@ The full field-by-field definition of report.json lives in [docs/report-schema.m
 | path retouch | same-file re-touch | observational only. not an evidence claim |
 | survival (τ=180d) | whether lines remain | `--survival` only. reference distribution planned for **v2027**. not in this public distribution |
 
-Reference position is a single “decile N” line. Metrics with n&lt;30 omit position (`reference_too_small`). v2026.09 measured n: test co-change 33 / corrective rework 42 (observational) / survival 0.
+Reference position is a single “decile N” line. Metrics with n&lt;30 omit position (`reference_too_small`). Current v2026.11 measured n: test co-change 68 / corrective rework 101 (observational) / survival 0 (planned for v2027). The older v2026.09 stays immutable and selectable via `--reference-version`.
 
 ## Discriminatory power (repo scope, criteria `5f2665e`)
 
-Source: `corpus/DISCRIMINANT-v2026.09.md` Run 2. Verdicts copied **verbatim** from the file.
+Source: `corpus/DISCRIMINANT-v2026.11.md` (n=117: all v2026.09 rows + 70 v2026.11 admissions). Verdicts copied **verbatim** from the file.
 
-- `test_cochange A vs C` → `separated` (median_A 0.2379, median_other 0.0306, gap 0.2073, Cliff δ 0.7143, n 18/7)
-- `test_cochange A vs D` → `inconclusive_small_n` (n 18/1; D has 1 narratable observation)
-- `corrective_rework A vs C` → `fail_tier2` (median_A 0.0522, median_other 0.1063, gap -0.0541, Cliff δ -0.7083, n 18/8). diagnostic only; not an evidence claim
-- survival: not measured in this corpus. reference distribution planned for v2027
+- `test_cochange A vs D` → `separated` (median_A 0.2379, median_other 0.0718, gap 0.1661, Cliff δ 0.9198, n 18/18) — **first separation with a standing n**; the first strong evidence for the "anyone can produce volume" thesis
+- `test_cochange A vs C` → `fail_tier2` (median_A 0.2379, median_other 0.0769, gap 0.161, Cliff δ 0.291, n 18/21) — was `separated` in v2026.09 (δ 0.7143), but the grown C pool (AI-driven repos WITH tests) reduced the separation. **The registered criteria were not lowered; the reversal is published as-is**
+- `corrective_rework A vs C / A vs D` → no required direction (observational only, unchanged since v0.5.0). A vs C δ -0.8333 / A vs D δ 0.0139
+- Honest population note: C narratable = 14 (short of the 30 target, corrected by machine-verified admission) / D total 29 (target 20 met)
+- survival: reference distribution planned for v2027
 
-WP4 Run 1 (`separated` / `inconclusive_small_n` / `fail_tier2`) is kept as history in the same file.
+The v2026.09 record (Run 2: A vs C `separated` etc.) remains as history in `corpus/DISCRIMINANT-v2026.09.md`.
+
+## GitHub Action (observation only)
+
+```yaml
+uses: Cor-Incorporated/grift-cli@v0.5.1
+with:
+  scope: repo
+```
+
+- Runs `grift analyze`, prints the **shared block to $GITHUB_STEP_SUMMARY**, and uploads report.md / report.json as artifacts
+- **No pass/fail, no thresholds, no failure exit — observation only, permanently**
+- PR comment requires explicit opt-in (`comment: true`, default off)
+- Minimal permissions recommended (`contents: read`; `pull-requests: write` only when `comment: true`)
 
 ## Ethics
 

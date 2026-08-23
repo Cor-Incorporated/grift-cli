@@ -1,6 +1,6 @@
 [project]
 name = "grift-cli"
-version = "0.5.1"
+version = "0.5.2"
 description = "Deterministic TEP evidence metrics from a single git repository. No LLM."
 readme = "README.md"
 license = { text = "MIT" }
@@ -37,6 +37,7 @@ packages = ["src/tep_core", "src/tep_cli"]
 
 [tool.hatch.build.targets.wheel.force-include]
 "src/tep_core/data/v2026.09/distributions.json" = "tep_core/data/v2026.09/distributions.json"
+"src/tep_core/data/v2026.11/distributions.json" = "tep_core/data/v2026.11/distributions.json"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

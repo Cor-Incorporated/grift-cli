@@ -1,0 +1,710 @@
+# Public corpus pins for reference distribution v2026.11 (repo scope).
+# Admission run 20260823T000417Z: 70 admitted (C33/D29/B8), 0 failures.
+# SHA = default-branch HEAD at admission time (re-pinned from research candidates).
+# Narratable = test_frameworks observed AND repo-scope production population >= 20.
+# SHORTFALL RECORDED VERBATIM: C narratable = 14 (target 30), D total = 29 (target 20 OK),
+#   D narratable = 14. Research tests-hints overestimated narratability; per-repo
+#   narratable flags are machine-verified in this file.
+
+schema_version = "tep-corpus-pins-v1"
+analysis_scope = "repo"
+
+[[repos]]
+id = "C-monize"
+group = "C"
+name = "monize"
+url = "https://github.com/kenlasko/monize.git"
+sha = "daeeae8345104b90326afe40cff0dac16f5d658e"
+license = "AGPL-3.0"
+narratable = false
+reason = "README: '100% written by AI. I've done practically zero manual changes'"
+
+[[repos]]
+id = "C-coda"
+group = "C"
+name = "coda"
+url = "https://github.com/adamtwiss/coda.git"
+sha = "6531e16a36a47cdf0a7781112205c7cac7b97199"
+license = "GPL-3.0"
+narratable = true
+reason = "'every line of code was written by Claude Code'（UCI チェスエンジン）"
+
+[[repos]]
+id = "C-oh-my-claudecode"
+group = "C"
+name = "oh-my-claudecode"
+url = "https://github.com/Yeachan-Heo/oh-my-claudecode.git"
+sha = "94e71c3630acbfb4f26dee6df4b78af30bab1563"
+license = "MIT"
+narratable = true
+reason = "Claude Code 設定フレームワーク・38.7k★・個人"
+
+[[repos]]
+id = "C-onlook"
+group = "C"
+name = "onlook"
+url = "https://github.com/onlook-dev/onlook.git"
+sha = "423e2e924366419e418ee049093872d535eea41a"
+license = "Apache-2.0"
+narratable = false
+reason = "2024 AI-native 製品 'Cursor for Designers'・26.5k★"
+
+[[repos]]
+id = "C-hapi"
+group = "C"
+name = "hapi"
+url = "https://github.com/tiann/hapi.git"
+sha = "be1ef2a2e4d6d8836ca28695d86ccff47d0c03a3"
+license = "AGPL-3.0"
+narratable = true
+reason = "weishu 製・Claude Code/Codex/Cursor Agent セッション実行"
+
+[[repos]]
+id = "C-vibesdk"
+group = "C"
+name = "vibesdk"
+url = "https://github.com/cloudflare/vibesdk.git"
+sha = "89c5f3a84c65b86595ed48996aabed68f447c0bd"
+license = "MIT"
+narratable = true
+reason = "公式 vibe-coding SDK（2025）"
+
+[[repos]]
+id = "C-deutsia-radio"
+group = "C"
+name = "deutsia-radio"
+url = "https://github.com/deutsia/deutsia-radio.git"
+sha = "38499d6f2555a80de4b7df1b1073f3e0cdb1f124"
+license = "Apache-2.0"
+narratable = false
+reason = "README: 'Built with Claude Code'"
+
+[[repos]]
+id = "C-VibeUE"
+group = "C"
+name = "VibeUE"
+url = "https://github.com/kevinpbuckley/VibeUE.git"
+sha = "b0bb5b93d67da44da6a8eb9d0c004b591cbb1cfc"
+license = "MIT"
+narratable = false
+reason = "AI-Powered UE 開発（tests なし→非narratable）"
+
+[[repos]]
+id = "C-aci"
+group = "C"
+name = "aci"
+url = "https://github.com/aipotheosis-labs/aci.git"
+sha = "3e4a82fa5fd22f1165af2b39fa3de2b0f031242e"
+license = "Apache-2.0"
+narratable = false
+reason = "'Infra to Power Unified MCP Servers and VibeOps'"
+
+[[repos]]
+id = "C-swish"
+group = "C"
+name = "swish"
+url = "https://github.com/infiniteNIL/swish.git"
+sha = "c6fdb5ba886a9ae94bff6b4ac3343790276e2f78"
+license = "Apache-2.0"
+narratable = true
+reason = "Lisp-in-Swift・'started out being written with Claude Code'"
+
+[[repos]]
+id = "C-vibing-steampunk"
+group = "C"
+name = "vibing-steampunk"
+url = "https://github.com/oisee/vibing-steampunk.git"
+sha = "b292b702ccdb58d7daf043eeb909873c99ad6fbd"
+license = "MIT"
+narratable = false
+reason = "SAP ADT への MCP ブリッジ"
+
+[[repos]]
+id = "C-DesktopCommanderMCP"
+group = "C"
+name = "DesktopCommanderMCP"
+url = "https://github.com/wonderwhy-er/DesktopCommanderMCP.git"
+sha = "9bd8422dd676d5ab93d977bcdcafb3ec58788bd3"
+license = "MIT"
+narratable = true
+reason = "9.4k★ MCP サーバ（2024・個人）"
+
+[[repos]]
+id = "C-claude_code_agent"
+group = "C"
+name = "claude_code_agent"
+url = "https://github.com/kcenon/claude_code_agent.git"
+sha = "e7ed2a109016b74b3a8a915ff69e2c53e79a9a1c"
+license = "BSD-3-Clause"
+narratable = true
+reason = "Claude Agent SDK 製 AD-SDLC 自動化"
+
+[[repos]]
+id = "C-adk-python"
+group = "C"
+name = "adk-python"
+url = "https://github.com/google/adk-python.git"
+sha = "d9f4d3d288257593471fc708a9ab851779005ca5"
+license = "Apache-2.0"
+narratable = true
+reason = "Agent Development Kit（pinned autogen と同アーキタイプ）"
+
+[[repos]]
+id = "C-mcp"
+group = "C"
+name = "mcp"
+url = "https://github.com/awslabs/mcp.git"
+sha = "100b55b6d92f731bc8d23486ce9efd5bbf90c606"
+license = "Apache-2.0"
+narratable = false
+reason = "AWS MCP servers・README 'Vibe Coding & Development'"
+
+[[repos]]
+id = "C-claude-squad"
+group = "C"
+name = "claude-squad"
+url = "https://github.com/smtg-ai/claude-squad.git"
+sha = "ce1ffb4392b01f38e2c4599c7c84d2a93973b138"
+license = "AGPL-3.0"
+narratable = false
+reason = "AI コーディングエージェントセッション管理・8.4k★"
+
+[[repos]]
+id = "C-claude-context"
+group = "C"
+name = "claude-context"
+url = "https://github.com/zilliztech/claude-context.git"
+sha = "6fc318b4e3ce58e2898b00a9c3538ead9e24dee5"
+license = "MIT"
+narratable = false
+reason = "MCP context サーバ・12.4k★"
+
+[[repos]]
+id = "C-mindpocket"
+group = "C"
+name = "mindpocket"
+url = "https://github.com/jihe520/mindpocket.git"
+sha = "caf493d368c4af8464572ce740991c170b4d2d64"
+license = "none"
+narratable = false
+reason = "README に 'VIBE CODING' 節"
+
+[[repos]]
+id = "C-raiden-pico"
+group = "C"
+name = "raiden-pico"
+url = "https://github.com/AdamLaurie/raiden-pico.git"
+sha = "dcc9be60fc30e6b91b17b8df0d47b9e7928a1744"
+license = "none"
+narratable = true
+reason = "'All the code and test scripts… written and tested by Claude'"
+
+[[repos]]
+id = "C-claude-world-studio"
+group = "C"
+name = "claude-world-studio"
+url = "https://github.com/claude-world/claude-world-studio.git"
+sha = "a7ff636524bafc12e8878f3a9f1e7c61b9f9463b"
+license = "MIT"
+narratable = true
+reason = "Claude World Studio エージェントビルダ"
+
+[[repos]]
+id = "C-ccpm"
+group = "C"
+name = "ccpm"
+url = "https://github.com/automazeio/ccpm.git"
+sha = "7d7e4623bc6d4c0c9ba66ca6bfecd7e5261dc697"
+license = "MIT"
+narratable = false
+reason = "Claude Code パッケージマネージャ（2025）・8.3k★"
+
+[[repos]]
+id = "C-agentgraphed"
+group = "C"
+name = "agentgraphed"
+url = "https://github.com/sudomichael/agentgraphed.git"
+sha = "0fc90d5961cc42de1c50044d3bbf2b3d54af09cf"
+license = "MIT"
+narratable = false
+reason = "Claude Code/Codex 向け履歴可視化"
+
+[[repos]]
+id = "C-demo2apk"
+group = "C"
+name = "demo2apk"
+url = "https://github.com/DeadWaveWave/demo2apk.git"
+sha = "1405c4405c96e8ee5e8143f47c39d28203fc6e89"
+license = "none"
+narratable = false
+reason = "'Turn your Vibe Coding ideas into runnable Android Apps'"
+
+[[repos]]
+id = "C-vibe-llama"
+group = "C"
+name = "vibe-llama"
+url = "https://github.com/run-llama/vibe-llama.git"
+sha = "cb28f060f3f3d6942202c48e594745511aaa2288"
+license = "MIT"
+narratable = true
+reason = "LlamaIndex vibe-coding スタック"
+
+[[repos]]
+id = "C-html-anything"
+group = "C"
+name = "html-anything"
+url = "https://github.com/nexu-io/html-anything.git"
+sha = "f2cfd34c43a1d2ca8c98ed456a7b9f20821affa9"
+license = "Apache-2.0"
+narratable = false
+reason = "'Your local agent writes it'"
+
+[[repos]]
+id = "C-ai-job-agent"
+group = "C"
+name = "ai-job-agent"
+url = "https://github.com/AkbarDevop/ai-job-agent.git"
+sha = "9ce47d29b5fcfd37ea2fdd5588c8d178bbfa7305"
+license = "MIT"
+narratable = true
+reason = "badge 'Built with Claude Code'"
+
+[[repos]]
+id = "C-frontend-slides"
+group = "C"
+name = "frontend-slides"
+url = "https://github.com/zarazhangrui/frontend-slides.git"
+sha = "9906a34d640d2111f724544cbc50f7f130569ae1"
+license = "MIT"
+narratable = false
+reason = "Claude Code スライドプラグイン・27.9k★・個人"
+
+[[repos]]
+id = "C-EurekAgent"
+group = "C"
+name = "EurekAgent"
+url = "https://github.com/THU-Team-Eureka/EurekAgent.git"
+sha = "fb96df897dfb99797a77623aa0dd9ee178fe89d2"
+license = "AGPL-3.0"
+narratable = true
+reason = "badge 'built on Claude Code'"
+
+[[repos]]
+id = "C-MacPilot"
+group = "C"
+name = "MacPilot"
+url = "https://github.com/joonlab/MacPilot.git"
+sha = "9333dc22b37956952362e6d427b6a8fe8a345e22"
+license = "MIT"
+narratable = false
+reason = "'Built end-to-end with Claude Code'"
+
+[[repos]]
+id = "C-opencti_mcp_server"
+group = "C"
+name = "opencti_mcp_server"
+url = "https://github.com/CooperCyberCoffee/opencti_mcp_server.git"
+sha = "fa2ab0cc267be8dc176ad1ea3ea34ea8d687923c"
+license = "NOASSERTION"
+narratable = true
+reason = "Claude Desktop ↔ OpenCTI"
+
+[[repos]]
+id = "C-claude-rename-agent"
+group = "C"
+name = "claude-rename-agent"
+url = "https://github.com/omarshahine/claude-rename-agent.git"
+sha = "b978958a73e860e6f4f183a8b566015039e95a5f"
+license = "MIT"
+narratable = false
+reason = "Claude Agent SDK 製（ex-Microsoft VP）"
+
+[[repos]]
+id = "C-node-peek"
+group = "C"
+name = "node-peek"
+url = "https://github.com/mlstr0m/node-peek.git"
+sha = "dd1b8b965e3f77bee16e390b478ea31c214317dd"
+license = "GPL-3.0"
+narratable = false
+reason = "'The code was written by Claude from my specs'"
+
+[[repos]]
+id = "C-crypto-claude-desk"
+group = "C"
+name = "crypto-claude-desk"
+url = "https://github.com/hugoguerrap/crypto-claude-desk.git"
+sha = "e72d299624aeb98ba3a593d85c07823bbc959bd3"
+license = "MIT"
+narratable = false
+reason = "暗号トレードデスク"
+
+[[repos]]
+id = "D-cookiecutter-data-science"
+group = "D"
+name = "cookiecutter-data-science"
+url = "https://github.com/drivendataorg/cookiecutter-data-science.git"
+sha = "0f6b163cdbe3918a2c65ab57ad9fefda93976d9e"
+license = "MIT"
+narratable = true
+reason = "定番 DS cookiecutter"
+
+[[repos]]
+id = "D-cookiecutter-flask"
+group = "D"
+name = "cookiecutter-flask"
+url = "https://github.com/cookiecutter-flask/cookiecutter-flask.git"
+sha = "e5666c23a633b5b6fcb0dc2cfda2441d7f885727"
+license = "MIT"
+narratable = false
+reason = "2013年からの Flask テンプレ"
+
+[[repos]]
+id = "D-cookiecutter-hypermodern-python"
+group = "D"
+name = "cookiecutter-hypermodern-python"
+url = "https://github.com/cjolowicz/cookiecutter-hypermodern-python.git"
+sha = "af0fd99e72e3afac2dc2b20406b1bee689260be1"
+license = "MIT"
+narratable = false
+reason = "hypermodern Python テンプレ（半休止）"
+
+[[repos]]
+id = "D-cookiecutter-pylibrary"
+group = "D"
+name = "cookiecutter-pylibrary"
+url = "https://github.com/ionelmc/cookiecutter-pylibrary.git"
+sha = "609b67c6d28a467262541f890a370e08753b9b90"
+license = "BSD-2-Clause"
+narratable = false
+reason = "Python ライブラリテンプレ"
+
+[[repos]]
+id = "D-cookiecutter-uv"
+group = "D"
+name = "cookiecutter-uv"
+url = "https://github.com/osprey-oss/cookiecutter-uv.git"
+sha = "d7123d2885830bcabfe3f2d9e1b1e57b840d7874"
+license = "MIT"
+narratable = true
+reason = "2024 uv ベース"
+
+[[repos]]
+id = "D-cookiecutter-fastapi"
+group = "D"
+name = "cookiecutter-fastapi"
+url = "https://github.com/arthurhenrique/cookiecutter-fastapi.git"
+sha = "6418a161e72caedf04655cdf5b22dae9386d3b8e"
+license = "MIT"
+narratable = false
+reason = "FastAPI+ML"
+
+[[repos]]
+id = "D-cookiecutter-golang"
+group = "D"
+name = "cookiecutter-golang"
+url = "https://github.com/lacion/cookiecutter-golang.git"
+sha = "d8e034b722276dede208f092dcf9ebbfeb9ab7f1"
+license = "MIT"
+narratable = true
+reason = "Go サービス"
+
+[[repos]]
+id = "D-cookiecutter-pytest-plugin"
+group = "D"
+name = "cookiecutter-pytest-plugin"
+url = "https://github.com/pytest-dev/cookiecutter-pytest-plugin.git"
+sha = "8f38e95b344f07071c1adada1fe209137c7effab"
+license = "MIT"
+narratable = true
+reason = "pytest プラグインテンプレ（半休止）"
+
+[[repos]]
+id = "D-substrate"
+group = "D"
+name = "substrate"
+url = "https://github.com/superlinear-ai/substrate.git"
+sha = "ad9b9f61cd4c895a71f98994ab5547b461772eeb"
+license = "MIT"
+narratable = false
+reason = "copier 製 Python テンプレ"
+
+[[repos]]
+id = "D-python-template"
+group = "D"
+name = "python-template"
+url = "https://github.com/NLeSC/python-template.git"
+sha = "1d1b6bb84708971362d368507190011531ac4364"
+license = "Apache-2.0"
+narratable = true
+reason = "研究ソフト copier テンプレ"
+
+[[repos]]
+id = "D-copier-uv"
+group = "D"
+name = "copier-uv"
+url = "https://github.com/pawamoy/copier-uv.git"
+sha = "a8fa3af2f71dd0897c3ab21c60099f4ecfb41661"
+license = "ISC"
+narratable = true
+reason = "2024 copier・個人"
+
+[[repos]]
+id = "D-ss-python"
+group = "D"
+name = "ss-python"
+url = "https://github.com/serious-scaffold/ss-python.git"
+sha = "9222f049827f9d037d1697ba4e859fea61c309b5"
+license = "MIT"
+narratable = true
+reason = "活発な copier スキャフォールド"
+
+[[repos]]
+id = "D-pypackage-template"
+group = "D"
+name = "pypackage-template"
+url = "https://github.com/browniebroke/pypackage-template.git"
+sha = "f361dcc5b176588cf93d1ec18a291a32eca55d89"
+license = "MIT"
+narratable = true
+reason = "copier・個人"
+
+[[repos]]
+id = "D-python-project-template"
+group = "D"
+name = "python-project-template"
+url = "https://github.com/lincc-frameworks/python-project-template.git"
+sha = "a7522ba48c0576fb4e9e48f18b3cb84a0669d5dd"
+license = "BSD-3-Clause"
+narratable = true
+reason = "天文学コミュニティ copier"
+
+[[repos]]
+id = "D-hackathon-starter"
+group = "D"
+name = "hackathon-starter"
+url = "https://github.com/sahat/hackathon-starter.git"
+sha = "cd28225af169eb6f1c5508862af8f6d9c2c07405"
+license = "MIT"
+narratable = false
+reason = "定番 Node ボイラープレート・35k★"
+
+[[repos]]
+id = "D-Next-js-Boilerplate"
+group = "D"
+name = "Next-js-Boilerplate"
+url = "https://github.com/ixartz/Next-js-Boilerplate.git"
+sha = "51dfd23b21ac4ef8da56f8cc9a2f4b78f5df0deb"
+license = "MIT"
+narratable = false
+reason = "個人・13k★"
+
+[[repos]]
+id = "D-SaaS-Boilerplate"
+group = "D"
+name = "SaaS-Boilerplate"
+url = "https://github.com/ixartz/SaaS-Boilerplate.git"
+sha = "e3952a7ed5b0ef172ac4363c4644b8c334d1094b"
+license = "MIT"
+narratable = true
+reason = "2024 SaaS スターター・個人"
+
+[[repos]]
+id = "D-node-express-boilerplate"
+group = "D"
+name = "node-express-boilerplate"
+url = "https://github.com/hagopj13/node-express-boilerplate.git"
+sha = "179ae84efec61b14206d0305d941daed6c6d07f9"
+license = "MIT"
+narratable = true
+reason = "REST API ボイラープレート（2024-07 休止）"
+
+[[repos]]
+id = "D-next-forge"
+group = "D"
+name = "next-forge"
+url = "https://github.com/vercel/next-forge.git"
+sha = "f189de79ceef7c1ef69f61f12e272f99b4cdb699"
+license = "MIT"
+narratable = true
+reason = "公式 Next.js テンプレ"
+
+[[repos]]
+id = "D-pagoda"
+group = "D"
+name = "pagoda"
+url = "https://github.com/mikestefanello/pagoda.git"
+sha = "02a6db2795efa887383e0e6591acaacccecd51bb"
+license = "MIT"
+narratable = false
+reason = "Go Web スターター・個人"
+
+[[repos]]
+id = "D-dotnet-starter-kit"
+group = "D"
+name = "dotnet-starter-kit"
+url = "https://github.com/fullstackhero/dotnet-starter-kit.git"
+sha = "3f2959e683e9f83f13e55e1678c9119f63c7e8e5"
+license = "MIT"
+narratable = false
+reason = ".NET スターター・個人"
+
+[[repos]]
+id = "D-nestjs-boilerplate"
+group = "D"
+name = "nestjs-boilerplate"
+url = "https://github.com/brocoders/nestjs-boilerplate.git"
+sha = "9620f159eefe38f47747d02ab162852367c5472c"
+license = "MIT"
+narratable = true
+reason = "NestJS ボイラープレート"
+
+[[repos]]
+id = "D-react-native-template-obytes"
+group = "D"
+name = "react-native-template-obytes"
+url = "https://github.com/obytes/react-native-template-obytes.git"
+sha = "fd9b358ed11913d2a49fd9ffa6582fe03ba130e7"
+license = "MIT"
+narratable = false
+reason = "RN テンプレ"
+
+[[repos]]
+id = "D-laravel-boilerplate"
+group = "D"
+name = "laravel-boilerplate"
+url = "https://github.com/rappasoft/laravel-boilerplate.git"
+sha = "a91de1efacc38eea14b46a898c99e9b1b5d45636"
+license = "none"
+narratable = true
+reason = "Laravel・個人"
+
+[[repos]]
+id = "D-open-saas"
+group = "D"
+name = "open-saas"
+url = "https://github.com/wasp-lang/open-saas.git"
+sha = "cbd30162b05d798b3a3f955ab5781940b67bec89"
+license = "MIT"
+narratable = false
+reason = "無料 SaaS スターター"
+
+[[repos]]
+id = "D-self-hosted-ai-starter-kit"
+group = "D"
+name = "self-hosted-ai-starter-kit"
+url = "https://github.com/n8n-io/self-hosted-ai-starter-kit.git"
+sha = "662bd8892476b41d9084417a569cc84013354674"
+license = "Apache-2.0"
+narratable = false
+reason = "docker-compose AI スターター（最小コミット型）・15k★"
+
+[[repos]]
+id = "D-cv"
+group = "D"
+name = "cv"
+url = "https://github.com/lissy93/cv.git"
+sha = "36cb7728bab2a0ab5ae9aa61d116f01c988856fd"
+license = "MIT"
+narratable = false
+reason = "個人 CV 'generated from template'"
+
+[[repos]]
+id = "D-tiago_robot"
+group = "D"
+name = "tiago_robot"
+url = "https://github.com/pal-robotics/tiago_robot.git"
+sha = "f1c33c92bdde7c1dd79f0c3e739e98a233dbd30b"
+license = "Apache-2.0"
+narratable = false
+reason = "ROS 'generated from template files'"
+
+[[repos]]
+id = "D-ai-website-cloner-template"
+group = "D"
+name = "ai-website-cloner-template"
+url = "https://github.com/JCodesMore/ai-website-cloner-template.git"
+sha = "92872bc40ced2c5edb4d5dc9fd3970d40c77f4ca"
+license = "MIT"
+narratable = false
+reason = "'AI Website Cloner Template'・32.7k★（C/D 境界・D 分類）"
+
+[[repos]]
+id = "B-procs"
+group = "B"
+name = "procs"
+url = "https://github.com/dalance/procs.git"
+sha = "6fc5a2d286c3d87f75de2f027e5f349534125409"
+license = "MIT"
+narratable = false
+reason = "Rust 製 ps 代替・個人・活発"
+
+[[repos]]
+id = "B-zoxide"
+group = "B"
+name = "zoxide"
+url = "https://github.com/ajeetdsouza/zoxide.git"
+sha = "e3ef7c9b41e38aff62dd68fcb920a9765e46aa71"
+license = "MIT"
+narratable = true
+reason = "38.8k★・個人・活発"
+
+[[repos]]
+id = "B-lazy.nvim"
+group = "B"
+name = "lazy.nvim"
+url = "https://github.com/folke/lazy.nvim.git"
+sha = "306a05526ada86a7b30af95c5cc81ffba93fef97"
+license = "Apache-2.0"
+narratable = true
+reason = "neovim プラグインマネージャ・21.4k★"
+
+[[repos]]
+id = "B-snacks.nvim"
+group = "B"
+name = "snacks.nvim"
+url = "https://github.com/folke/snacks.nvim.git"
+sha = "882c996cf28183f4d63640de0b4c02ec886d01f2"
+license = "Apache-2.0"
+narratable = true
+reason = "2024+ 個人フラッグシップ・8k★"
+
+[[repos]]
+id = "B-zip"
+group = "B"
+name = "zip"
+url = "https://github.com/kuba--/zip.git"
+sha = "f57d98fbaa774c73de650fde16a9b5f8a92743ea"
+license = "MIT"
+narratable = true
+reason = "ポータブル C zip・個人・活発"
+
+[[repos]]
+id = "B-promnesia"
+group = "B"
+name = "promnesia"
+url = "https://github.com/karlicoss/promnesia.git"
+sha = "29692c5ff589657faecb31ae98a942dd15f5f665"
+license = "MIT"
+narratable = false
+reason = "ブラウザ履歴・個人・活発"
+
+[[repos]]
+id = "B-fx"
+group = "B"
+name = "fx"
+url = "https://github.com/antonmedv/fx.git"
+sha = "63eb255ad0149ca84c711e89cc85dd6434055405"
+license = "MIT"
+narratable = false
+reason = "JSON ビューア・個人・20.6k★"
+
+[[repos]]
+id = "B-sh"
+group = "B"
+name = "sh"
+url = "https://github.com/mvdan/sh.git"
+sha = "3b8cc352ec2aab86523113e305dc2c2ab7bdd988"
+license = "BSD-3-Clause"
+narratable = false
+reason = "shfmt・個人（コミット数が上限近く）"

@@ -4,6 +4,29 @@
 
 タグ・PyPI・リポ public 化は本ファイルの記載対象外（人間ゲート）。
 
+## [0.5.2] — 2026-08-23
+
+基準の憲法（norms / reader's guide / verify）+ 文脈層（context_profile v2・lifecycle-v2）+ corpus v2026.11 + contribute。
+
+### Added
+
+- **norms.md v1**（7条 ja/en + 保持・削除条項）: 「TEP 準拠」の使用条件を定義。README 日英からリンク
+- **reader's guide**: 全 report.md 末尾に「この数値でしてはいけない判断」節を自動同梱（テンプレート固定・LLM 不使用）
+- **`grift verify`**: report.json を記録 provenance で再計算し全フィールド突合（VERIFIED / MISMATCH / CANNOT_VERIFY・exit 0/1/2）。改ざん検出の反証テストつき
+- **context_profile v2**（裁定 §4/§5）: 16観測（collaboration_class / language_composition / dependency_manifests 等・定義版管理）。`resolved_human_actors` は bot・upstream 除外後の定義（push-copy fork 反証テストで上流混入排除を実証）
+- **lifecycle-v2**（密度基準）: 一次出力 = `days_since_last_human_commit` + `active_days_180d`（クラスに常に併記）。帯 dormant≤2 / maintained 3-11 / active≥12。informed-by-pilot-1 を開示。180日沈黙+直近1日 fixture の反証テスト
+- **共有ブロック**（`shared_block`）: report.md 冒頭に 3-5 行のコピペ要約（norms 1 行版つき）
+- **`grift report`**: 既存 JSON から md を再レンダリング（再分析なし）
+- **GitHub Action**（観測のみ）: `grift-cli` ピン install → STEP_SUMMARY に共有ブロック・artifact upload・PR コメントは明示 opt-in のみ。action-dogfood で自リポ動作保証
+- **`grift contribute`**: 明示的 opt-in 提出 payload 組み立て（repo スコープ集計 + context クラス級 + 定義版のみ。canonical_id/メール/パス/repo 名/activity は構造的除外）。**CLI は何も送信しない（7禁止⑦）**。F-C1: 非 TTY + `--yes` なしは exit 2 で拒否・`--yes` でも開示文 + payload 全文表示（同意の痕跡）
+- **corpus v2026.11**: admission 70 件（C33/D29/B8・narratable は機械実測で C=14/D=14 — 目標 30 に対する不足を逐語記録）。分布 test co-change n=68 / corrective n=101（deciles 収録・values 非同梱）。層別は active n=34 のみ発行・他は `context_stratum_too_small`
+- `docs/coverage-map.md`（21問→観測の表）・`docs/persona-answers.md` 判別引用更新・`--reference-version`（旧 v2026.09 は不変で選択可能）
+
+### Changed
+
+- README 日英の判別節を v2026.11 逐語へ全面更新: **A vs D separated（δ=0.9198）を筆頭に、A vs C は fail_tier2 に転回**（基準 5f2665e 不変・転回をそのまま公開）。旧 separated 根拠の残存 0 を CI が機械強制
+- CLI 既定の参照分布を v2026.11 に
+
 ## [0.5.1] — 2026-08-22
 
 WP-P1e 二層契約 + Golden v2 第1波。Grift 本体統合（WP-G1）の unblock マイルストーン。

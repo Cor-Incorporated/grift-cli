@@ -54,6 +54,8 @@ def main() -> int:
             ":!docs/INSTRUCTION*",
             ":!docs/EVIDENCE-INDEX*",
             ":!docs/PREPUB*",
+            ":!docs/kpi*",
+            ":!docs/pilot*",
         ],
         cwd=ROOT,
         capture_output=True,
