@@ -100,12 +100,16 @@ def _assert_no_private_shape(payload: dict[str, Any]) -> None:
             raise ValueError(f"payload contains forbidden key {key!r}")
 
 
+INTAKE_REPO = "https://github.com/Cor-Incorporated/tep-contributions"
+
 CONFIRMATION_TEXT = """この提出について（必読）:
 1. 上記の payload 全文が提出内容のすべてです（他に何も送られません）
-2. この提出は公開リポジトリに載ります（PR 方式の受け口のため、payload は公開になります）
-3. 用途は「{purpose}」に限定され、それ以外に使われません（docs/norms.md 保持・削除条項）
-4. CLI は何も送信しません — 提出はあなた自身が行います（自動送信は恒久禁止）
-""".format(purpose=CONTRIBUTE_PURPOSE)
+2. この提出は公開コーパスに載ります（受け口は公開リポジトリのため、payload は公開になります）
+3. repo 名は含まれません（payload への付記は opt-in です）。ただし特徴の組合せから推測されるリスクはゼロではありません
+4. 用途は「{purpose}」に限定され、それ以外（SaaS 等への転用を含む）には使われません（docs/norms.md 保持・削除条項）
+5. CLI は何も送信しません — 提出はあなた自身が行います（自動送信は恒久禁止）
+6. 提出は二枚扉です: 公開ドア（本人 PR・{intake}）/ 非公開ドア（フォーム・メールで受領後に当社が代理 PR・提出者身元は非公開）
+""".format(purpose=CONTRIBUTE_PURPOSE, intake=INTAKE_REPO)
 
 
 def render_confirmation(payload: dict[str, Any]) -> str:

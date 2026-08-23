@@ -59,12 +59,12 @@ def test_report_bare_ignores_stale_out_and_reanalyzes(
         _commit(repo, email="a@example.com", date="2026-01-05", message=f"feat: {index}")
     monkeypatch.chdir(repo)
     assert main(["report"]) == 0
-    first_sha = _json.loads((repo / "out" / "report.json").read_text())["provenance"][
+    first_sha = _json.loads((repo / ".grift" / "report.json").read_text())["provenance"][
         "analyzed_commit_sha"
     ]
     _commit(repo, email="a@example.com", date="2026-01-06", message="feat: more")
     assert main(["report"]) == 0
-    second_sha = _json.loads((repo / "out" / "report.json").read_text())["provenance"][
+    second_sha = _json.loads((repo / ".grift" / "report.json").read_text())["provenance"][
         "analyzed_commit_sha"
     ]
     assert first_sha != second_sha, "bare report must re-analyze, not re-render stale output"
@@ -98,8 +98,8 @@ def test_report_bare_without_prior_output_analyzes_cwd(
     assert code == 0
     out = capsys.readouterr()
     assert "## Shared block" in out.out
-    assert (repo / "out" / "report.json").is_file()
-    assert (repo / "out" / "report.md").is_file()
+    assert (repo / ".grift" / "report.json").is_file()
+    assert (repo / ".grift" / "report.md").is_file()
 
 
 def test_report_bare_outside_git_repo_refused(
@@ -130,5 +130,5 @@ def test_contribute_bare_uses_out_default(
     code = main(["contribute", "--out", str(tmp_path / "c.json")])  # non-TTY, no --yes
     assert code == 2  # F-C1 refusal path (not path-resolution error)
     err = capsys.readouterr().err
-    assert "公開リポジトリに載ります" in err
+    assert "公開コーパスに載ります" in err
     assert "grift analyze . --out ./out" not in err  # found the file; failed on consent instead

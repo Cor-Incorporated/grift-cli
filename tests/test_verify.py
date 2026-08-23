@@ -101,12 +101,28 @@ def test_verify_cannot_verify_old_definition_version(tmp_path: Path, capsys: obj
     assert "definition version" in out
 
 
-def test_verify_requires_repo_flag(tmp_path: Path, capsys: object) -> None:
+def test_verify_bare_uses_grift_dir_and_cwd(tmp_path: Path, capsys: object, monkeypatch: object) -> None:
+    """v0.5.5: bare `grift verify` = verify .grift/report.json against the current repo."""
+    import json as _json
+
     repo = _repo_with_commits(tmp_path)
-    report_path = _write_report(repo, tmp_path)
-    code = main(["verify", str(report_path)])
+    report = analyze_repository(repo, empty_identity(), Lineage())
+    grift = repo / ".grift"
+    grift.mkdir(exist_ok=True)
+    (grift / "report.json").write_text(_json.dumps(report), encoding="utf-8")
+    monkeypatch.chdir(repo)
+    code = main(["verify"])
+    assert code == 0
+    assert VERIFIED in capsys.readouterr().out
+
+
+def test_verify_bare_without_report_gives_guidance(tmp_path: Path, capsys: object, monkeypatch: object) -> None:
+    repo = _repo_with_commits(tmp_path)
+    monkeypatch.chdir(repo)
+    code = main(["verify"])
     assert code == 2
-    assert "--repo" in capsys.readouterr().err
+    err = capsys.readouterr().err
+    assert "grift report" in err and ".grift/report.json" in err
 
 
 # --- reader's guide (P1g §2) ----------------------------------------------

@@ -4,13 +4,33 @@
 
 タグ・PyPI・リポ public 化は本ファイルの記載対象外（人間ゲート）。
 
+## [0.5.5] — 2026-08-23
+
+UX 統一（2語動詞 + `.grift/` 出力）+ contribute 受け口の実運用化 + 全ドキュメント日英対応。
+
+### Changed
+
+- **基本操作はすべて `grift <動詞>` の2語で完結**: `grift analyze`（対象=カレント・出力=`.grift/`）・`grift report`（常に HEAD を再分析）・`grift verify`（`.grift/report.json` をカレントリポで再計算）・`grift contribute`（`.grift/report.json` から payload 組立）。明示指定は従来どおり引数で
+- **出力先を `.grift/` に統一**（旧 `./out`・`.grift-out` は読み取り互換のみ）。`.gitignore` への `.grift/` 追加を推奨・リポ標準 `.gitignore` に同梱
+- Action の作業ディレクトリも `.grift/` へ・既定ピン 0.5.5
+
+### Added
+
+- **contribute 受け口リポ [grift-contributions](https://github.com/Cor-Incorporated/grift-contributions) を開設**: README（日英）・CONTRIBUTING・schema 検証 CI（`tep-contribution-v1`・メール形状拒否・禁止キー検査）。`grift contribute` の確認文が提出先と手順を明示
+- **全公開ドキュメントの英語版を `docs/en/` に追加**: norms / metrics-guide（v2・帯規約・インベントリ・関連ツール節を含む完全英訳）/ report-schema / export-schema / identity-schema / corpus-protocol / coverage-map / persona-answers
+- 読み方ガイド v2（帯規約の統一定義・全観測インベントリ・関連ツール節・表記確定）
+
+### Removed
+
+- publish-testpypi ワークフロー（TestPyPI シークレット不在による恒久失敗のため削除）
+
 ## [0.5.4] — 2026-08-23
 
 `grift report` の stale 出力問題を解消 + 表示の版残存を一掃。
 
 ### Fixed
 
-- **`grift report`（引数なし）は既存の `./out/report.json` があっても常に現在の HEAD を再分析**する（提唱者実測で検出: 旧仕様は既存 JSON を再表示し、2コミット目以降の SHA が古いまま残った — 自己証明の罹患として重大）。再分析なしの再レンダリングは引数指定時のみ
+- **`grift report`（引数なし）は既存の `./out/report.json` があっても常に現在の HEAD を再分析**する（提唱者実測で検出: 旧仕様は既存 JSON を再表示し、2コミット目以降の SHA が古いまま残った — 自己証明の信頼性を損なう重大な問題として処理）。再分析なしの再レンダリングは引数指定時のみ
 - README 日英: Action 使用例を `@v0.5.4` へ・**PyPI 欄を版に依存しない表記に変更**（「最新 0.5.2」等の古い版番号が残り続ける問題を構造的に解消）・`grift report` を「初回の簡単導線」として条件付きで説明（主 CTA は `grift analyze . --scope repo --out ./out` を維持）
 - action.yml 既定ピンを 0.5.4 へ
 

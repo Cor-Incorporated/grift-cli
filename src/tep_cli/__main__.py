@@ -16,11 +16,11 @@ from tep_core.verify import CANNOT_VERIFY, MISMATCH, VERIFIED, verify_report
 from tep_core.version import __version__
 
 _EPILOG = """examples:
-  grift analyze . --scope repo --out ./out
-  grift report             # analyze current HEAD → ./out/report.{json,md} (always re-analyzes)
-  grift report path/report.json    # re-render md from an existing report (no re-analysis)
-  grift verify ./out/report.json --repo ./repo
-  grift contribute         # build opt-in payload from ./out/report.json (never sends)
+  grift analyze             # analyze the current repo → .grift/report.{json,md}
+  grift report              # same as bare analyze: always re-analyzes HEAD
+  grift verify              # verify .grift/report.json against the current repo
+  grift contribute          # build an opt-in payload from .grift/report.json (never sends)
+  grift analyze PATH --scope tenant --identity .tep/identity.toml   # custom
 詳細: README"""
 
 
@@ -40,7 +40,13 @@ def build_parser() -> argparse.ArgumentParser:
         epilog=_EPILOG,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    analyze.add_argument("repo", type=Path, help="Path to a git working tree")
+    analyze.add_argument(
+        "repo",
+        type=Path,
+        nargs="?",
+        default=None,
+        help="Path to a git working tree (default: current directory)",
+    )
     analyze.add_argument(
         "--identity",
         type=Path,
@@ -126,12 +132,18 @@ def build_parser() -> argparse.ArgumentParser:
         epilog=_EPILOG,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    verify.add_argument("report", type=Path, help="Path to report.json to verify")
+    verify.add_argument(
+        "report",
+        type=Path,
+        nargs="?",
+        default=None,
+        help="Path to report.json (default: .grift/report.json — or run a bare verify after report)",
+    )
     verify.add_argument(
         "--repo",
         type=Path,
         default=None,
-        help="Path to the target repository (default: the report's repository field is not used; you must pass this or run inside the repo)",
+        help="Path to the target repository (default: current directory)",
     )
     verify.add_argument(
         "--identity",
@@ -171,7 +183,7 @@ def build_parser() -> argparse.ArgumentParser:
         type=Path,
         nargs="?",
         default=None,
-        help="Path to a repo-scope report.json (default: search ./out, .grift-out, ./)",
+        help="Path to a repo-scope report.json (default: .grift/, then legacy locations)",
     )
     contribute.add_argument(
         "--out",
@@ -188,7 +200,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def _run_analyze(args: argparse.Namespace) -> int:
-    repo: Path = args.repo
+    repo: Path = args.repo if args.repo is not None else Path(".")
     if not (repo / ".git").exists() and not repo.joinpath("HEAD").exists():
         sys.stderr.write(f"not a git repository: {repo}\n")
         return 2
@@ -237,11 +249,15 @@ def _run_analyze(args: argparse.Namespace) -> int:
 
 
 def _run_verify(args: argparse.Namespace) -> int:
-    repo = args.repo
-    if repo is None:
-        sys.stderr.write("verify: --repo is required (the report does not carry a local path)\n")
+    repo = args.repo if args.repo is not None else Path(".")
+    report = args.report if args.report is not None else GRIFT_DIR / "report.json"
+    if not report.is_file():
+        sys.stderr.write(
+            f"verify: {report} not found — run `grift report` first "
+            "(bare verify checks .grift/report.json against the current repo)\n"
+        )
         return 2
-    result = verify_report(args.report, repo, args.identity)
+    result = verify_report(report, repo, args.identity)
     if result.status == VERIFIED:
         sys.stdout.write(f"{VERIFIED}: all fields match recomputation under recorded provenance\n")
         return 0
@@ -256,15 +272,17 @@ def _run_verify(args: argparse.Namespace) -> int:
     return 2
 
 
+GRIFT_DIR = Path(".grift")
 _DEFAULT_REPORT_SEARCH = (
-    Path("out") / "report.json",
+    GRIFT_DIR / "report.json",
+    Path("out") / "report.json",   # legacy pre-0.5.5 locations, read-only compat
     Path(".grift-out") / "report.json",
     Path("report.json"),
 )
 
 
 def _resolve_report_path(explicit: Path | None) -> tuple[Path | None, str]:
-    """Return (path, guidance). Search ./out, .grift-out, ./ when no explicit path."""
+    """Return (path, guidance). Search .grift, then legacy ./out, .grift-out, ./."""
     if explicit is not None:
         return explicit, ""
     for candidate in _DEFAULT_REPORT_SEARCH:
@@ -276,11 +294,11 @@ def _resolve_report_path(explicit: Path | None) -> tuple[Path | None, str]:
 def _run_report(args: argparse.Namespace) -> int:
     if args.report_json is None:
         # UX (代表 2026-08-23): bare `grift report` ALWAYS re-analyzes the
-        # current HEAD and rewrites ./out/report.{json,md}. It never falls
-        # back to a stale ./out/report.json — "report で測ったつもりが古い
+        # current HEAD and rewrites .grift/report.{json,md}. It never falls
+        # back to a stale report.json — "report で測ったつもりが古い
         # SHA のまま" は自己証明の罠になるため、既存ファイルは無条件に
         # 上書きする。再分析なしの再レンダリングは引数指定時のみ。
-        return _analyze_to_out(scope="repo")
+        return _analyze_to_grift_dir(scope="repo")
     try:
         payload = json.loads(args.report_json.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
@@ -300,11 +318,11 @@ def _run_report(args: argparse.Namespace) -> int:
     return 0
 
 
-def _analyze_to_out(*, scope: str = "repo") -> int:
+def _analyze_to_grift_dir(*, scope: str = "repo") -> int:
     """Run the analysis in the current directory and write ./out/report.{json,md}.
 
-    UX (代表 2026-08-23): bare `grift report` should just produce the reports —
-    create ./out if missing. Reuses the analyze pipeline on '.'.
+    UX (v0.5.5): bare verbs write into .grift/ (auto-created, gitignored
+    by convention). Reuses the analyze pipeline on '.'.
     """
     repo = Path(".")
     if not (repo / ".git").exists():
@@ -314,7 +332,7 @@ def _analyze_to_out(*, scope: str = "repo") -> int:
     report = analyze_repository(repo, identity, Lineage(), scope=scope)
     markdown = render_markdown(report)
     encoded = json.dumps(report, indent=2, ensure_ascii=False) + "\n"
-    out_dir = Path("out")
+    out_dir = GRIFT_DIR
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "report.json").write_text(encoded, encoding="utf-8")
     (out_dir / "report.md").write_text(markdown, encoding="utf-8")
@@ -329,8 +347,8 @@ def _run_contribute(args: argparse.Namespace) -> int:
     report_path, _guidance = _resolve_report_path(args.report_json)
     if report_path is None:
         sys.stderr.write(
-            "contribute: no report.json found (searched ./out/report.json, .grift-out/report.json, ./report.json). "
-            "Run `grift report` first — it will analyze the repo and write ./out/report.json.\n"
+            "contribute: no report.json found (searched .grift/report.json, then legacy ./out, .grift-out, ./). "
+            "Run `grift report` first — it will analyze the repo and write .grift/report.json.\n"
         )
         return 2
     try:
