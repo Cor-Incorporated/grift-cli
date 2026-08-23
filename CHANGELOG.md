@@ -4,6 +4,20 @@
 
 タグ・PyPI・リポ public 化は本ファイルの記載対象外（人間ゲート）。
 
+## [0.5.3] — 2026-08-23
+
+UX 改善（代表フィードバック）+ 公開 README の整合。
+
+### Changed
+
+- **`grift report`（引数なし）= そのディレクトリを分析して `./out/report.{json,md}` を自動作成**（`out/` がなければ作る）。引数を渡した場合は従来どおり既存 JSON からの再レンダリング（再分析なし）
+- `grift contribute`（引数なし）は `./out/report.json` → `.grift-out/report.json` → `./report.json` を自動探索。無ければ「先に `grift report` を」と案内
+- GitHub Action の使用例を `@v0.5.2` ぼ更新・「本公開は別ゲート」注記を公開済み表示に更新（README 日英）
+
+### Fixed
+
+- hygiene 除外リストに内部調査文書プレフィックス（SMOKE / REREVIEW / RELEASE-REHEARSAL / INTERNAL-PILOT）を追加
+
 ## [0.5.2] — 2026-08-23
 
 基準の憲法（norms / reader's guide / verify）+ 文脈層（context_profile v2・lifecycle-v2）+ corpus v2026.11 + contribute。
