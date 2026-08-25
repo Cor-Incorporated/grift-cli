@@ -81,6 +81,10 @@ grift contribute --out .grift/contribution.json  # ② payload を組み・全�
 
 母数 20 未満では率も分布位置も出さない（`insufficient_population`。件数の生表示のみ）。
 
+## Shared block の扱い（仕様）
+
+Shared block（レポート冒頭 3-5 行のコピペ要約）には **gloss（説明）を付けない**。経歴書や issue にそのまま貼ったとき自己説明的な長文になるより、簡潔さ・貼りやすさを優先するため。各数値の意味は本文の行末 gloss と [docs/metrics-guide.md](metrics-guide.md) が担う。
+
 ## 指標の読み方（非エンジニア向け）
 
 すべての指標について「何を測っているか・高い/低いで何がわかるか・公開リポジトリ117件の分布上の目安」を [docs/metrics-guide.md](docs/metrics-guide.md) に平易にまとめています。初めてレポートを見る方はまずこちらを。誤読しやすい点（例: corrective rework はバグ件数ではない、dormant は放置ではない）も表にしてあります。

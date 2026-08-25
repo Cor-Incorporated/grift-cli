@@ -95,6 +95,14 @@ grift contribute --out .grift/contribution.json   # 2) build & review the payloa
 - Use is limited to "TEP Report aggregation and the next reference
   distribution"; retained until the next annual Report; withdrawal via issue
 
+## Shared block policy (spec)
+
+The Shared block (the 3-5 line copy-pasteable summary at the top of every
+report) carries **no glosses**. Rationale: it is pasted into résumés and
+issues, where compactness beats self-explanation — the per-line glosses in
+the body and [docs/en/metrics-guide.md](en/metrics-guide.md) carry the
+meanings.
+
 ## How to read the metrics (for non-engineers)
 
 [docs/metrics-guide.md](docs/metrics-guide.md) explains every metric in plain
