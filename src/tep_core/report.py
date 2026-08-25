@@ -23,6 +23,22 @@ _DISPLAY_NAME = {
     "tenant_merge_or_sync": "merge commits (PR flow)",
 }
 
+# Inline one-line glosses (ja / en) per origin class — keep short so the
+# value stays scannable; full definitions live in docs/metrics-guide.
+_ORIGIN_GLOSS = {
+    "tenant_unique": "本人の独自コミット / this person's original commits",
+    "tenant_merge_or_sync": "PRマージ経由 / merged via PR flow",
+    "upstream_sync": "上流の取り込み / pulls from upstream",
+    "inherited_upstream": "fork由来の他人のコミット / other people's commits from the forked history",
+    "tenant_derivative": "親リポ由来の改変コミット / commits derived from the parent repo",
+    "external_upstream_contribution": "上流へ還流したコミット / commits contributed back upstream",
+    "template_inherited": "テンプレート由来のコミット / template-derived commits",
+    "generated_or_vendor": "生成・ベンダー成果物のみのコミット / commits touching only generated or vendored files",
+    "ambiguous_origin": "作者情報が欠損したコミット / commits with missing author info",
+    "unresolved": "identityに一致しなかったコミット / commits not matched by the identity",
+    "bot": "自動化アカウントのコミット / automation-account commits",
+}
+
 _SKIP_NOT_OBSERVED = frozenset({"upstream_sync", "tenant_merge_or_sync"})
 
 
@@ -122,18 +138,20 @@ def render_markdown(report: dict[str, Any]) -> str:
         ):
             continue
         label = _DISPLAY_NAME.get(name, name)
-        lines.append(f"- {label}: {_fmt_obs(obs)}")
+        gloss = _ORIGIN_GLOSS.get(name, "")
+        suffix = f" — {gloss}" if gloss else ""
+        lines.append(f"- {label}: {_fmt_obs(obs)}{suffix}")
     lines += [
         "",
         "## Activity (tenant_unique commits)",
-        f"- tenant commits: {_fmt_obs(activity['tenant_commits'])}",
-        f"- active days: {_fmt_obs(activity['active_days'])}",
-        f"- commits per active day: {_fmt_obs(activity['commits_per_active_day'])}",
+        f"- tenant commits: {_fmt_obs(activity['tenant_commits'])} — identityに一致した人のコミット数 / commits by identity-matched people",
+        f"- active days: {_fmt_obs(activity['active_days'])} — コミットした一意な日数 / unique days with commits",
+        f"- commits per active day: {_fmt_obs(activity['commits_per_active_day'])} — 1活動日あたりの密度 / per-active-day density",
         (
             "- commits per active day (median): "
-            f"{_fmt_obs(activity['commits_per_active_day_median'])}"
+            f"{_fmt_obs(activity['commits_per_active_day_median'])} — 中央値（日ごとの偏りに強い）/ median (robust to daily spikes)"
         ),
-        f"- active days (13 weeks): {_fmt_obs(activity['active_days_13w'])}",
+        f"- active days (13 weeks): {_fmt_obs(activity['active_days_13w'])} — 直近13週の活動日数 / active days in the last 13 weeks",
         "",
         "## Core activity period",
     ]
@@ -148,32 +166,32 @@ def render_markdown(report: dict[str, Any]) -> str:
         )
         if activity["commits_per_active_day_median"].get("sample_size", 99) < 5:
             lines.append("- comparison narrative omitted: median sample size is below 5 days")
-    lines += ["", "## Test frameworks"]
+    lines += ["", "## Test frameworks", "（検出されたテスト基盤 / detected test substrate）"]
     if tests.get("kind") == "not_observed":
         lines.append(f"- not observed ({tests.get('reason')})")
     else:
         names = ", ".join(tests.get("names") or []) or "none named"
-        lines.append(f"- observed: {names} (boolean {tests.get('value')})")
+        lines.append(
+            f"- observed: {names} (boolean {tests.get('value')})"
+            " — 検出されたテスト基盤 / detected test substrate"
+        )
     lines += [
         "",
         "## Test co-change",
-        "（何を測るか / What this measures: 本番コードを変えたコミットのうち、同じコミットでテストも変更した割合。高い=変更にテストが伴う習慣。テストが前提でない仕事は正当に低くなる — the share of production-changing commits whose same commit also changed tests. High = the habit of pairing changes with tests. Work where tests are not the norm legitimately lands low.)",
-        f"- {_fmt_metric_block(report.get('test_cochange'))}",
+        f"- {_fmt_metric_block(report.get('test_cochange'))} — 本番変更のうち同コミットでテストも変更した割合 / share of production changes paired with tests in the same commit",
     ]
     interp = report.get("interpretation") or {}
     lines += _fmt_interp_line("co-change", interp.get("test_cochange"))
     lines += [
         "",
         "## Rework",
-        "（何を測るか / What this measures: 作った直後に手直しが発生した傾向の観測。バグ件数でも品質でもなく、件名慣習の影響を受けるため比較・合否には使えない — observed tendency of immediate rework after fresh changes. Not a bug count, not quality; subject-convention dependent, so never use for comparisons or pass/fail.)",
         *_fmt_rework_lines(report.get("rework")),
     ]
     lines += _fmt_interp_line("corrective rework", interp.get("corrective_rework"))
     lines += [
         "",
         "## Survival (tau=180 days)",
-        "（何を測るか / What this measures: 6ヶ月後も残っている行の割合。1.0に近い=書いたものが残り続けている — the share of lines still present after 6 months. Near 1.0 = what was written keeps living.)",
-        f"- {_fmt_metric_block(report.get('survival'))}",
+        f"- {_fmt_metric_block(report.get('survival'))} — 6ヶ月後も残っている行の割合（1.0に近い=残り続けている）/ share of lines still present after 6 months (near 1.0 = keeps living)",
     ]
     lines += ["", *(_fmt_context_lines(report.get("context_profile")))]
     lines += ["", *readers_guide_lines()]
@@ -201,11 +219,11 @@ def _fmt_context_lines(ctx: dict[str, Any] | None) -> list[str]:
 
     lines = [
         "## Context profile (observational; not a ranking)",
-        "（このrepoのかたち / The shape of this repo: 協働・活動密度・プロセスの分類。序列ではなく、数値の読み方を条件付ける文脈 — collaboration, activity density, and process classification. Not a ranking; context that conditions how to read the numbers.)",
         (
             f"- collaboration: {val('collaboration_class')} "
             f"({val('resolved_human_actors')} resolved human actors; "
             f"top actor share {val('top_actor_share')} ratio)"
+            " — 協働のかたち / shape of collaboration"
         ),
         (
             f"- lifecycle: {val('lifecycle_stage')} "
@@ -213,8 +231,8 @@ def _fmt_context_lines(ctx: dict[str, Any] | None) -> list[str]:
             f"days_since_last_human_commit {val('days_since_last_human_commit')} = 最終コミットからの日数 / days since the last human commit; "
             f"repo age {val('repo_age_days')} days)"
         ),
-        f"- process: pr_flow_share {val('pr_flow_share')} ratio; conventional subjects {val('conventional_commit_share')} ratio",
-        f"- languages (touch-share): {_fmt_langs(val('language_composition'))}",
+        f"- process: pr_flow_share {val('pr_flow_share')} ratio (PRマージ経由 / via PR merges); conventional subjects {val('conventional_commit_share')} ratio (定型件名 / conventional subjects)",
+        f"- languages (touch-share): {_fmt_langs(val('language_composition'))} — 言語構成（接触比率）/ language mix by path touches",
     ]
     return lines
 
@@ -276,7 +294,7 @@ def _fmt_rework_lines(obs: dict[str, Any] | None) -> list[str]:
                 f"- corrective rework (observational, subject-convention dependent; "
                 f"not an evidence claim): {corr.get('value')} {corr.get('unit')} "
                 f"({corr.get('corrective_commits')} of {corr.get('population')} "
-                f"commits; {window} day window)"
+                f"commits; {window} day window) — 作った直後の手直し傾向。バグ数でも品質でもない / tendency of immediate rework; not a bug count, not quality"
             )
             lines.append(
                 "- limit: corrective rework is fresh-work stability "
@@ -306,6 +324,7 @@ def _fmt_rework_lines(obs: dict[str, Any] | None) -> list[str]:
             "- path retouch (observational, not an evidence claim): "
             f"{touch.get('value')} {touch.get('unit')} "
             f"({touch.get('retouch_commits')} of {touch.get('population')} commits)"
+            " — 同じファイルを21日窓で再び触れた割合 / share re-touching the same files within 21 days"
         )
     return lines or ["- observed"]
 

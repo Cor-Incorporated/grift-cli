@@ -16,7 +16,7 @@ inputs:
   version:
     description: "grift-cli version to install (pinned)"
     required: false
-    default: "0.5.8"
+    default: "0.5.9"
   comment:
     description: "Opt-in: post the shared block as a PR comment (default off)"
     required: false

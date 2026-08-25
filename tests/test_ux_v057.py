@@ -135,14 +135,19 @@ def test_report_md_carries_meaning_one_liners(tmp_path, capsys):
     from tep_core.report import render_markdown
 
     markdown = render_markdown(report)
-    assert "何を測るか / What this measures" in markdown
-    assert "本番コードを変えたコミットのうち" in markdown and "share of production-changing commits" in markdown
-    assert "バグ件数でも品質でもなく" in markdown and "not a bug count" in markdown
-    assert "このrepoのかたち / The shape of this repo" in markdown
-    assert "直近180日で人がコミットした日数" in markdown and "unique days with human commits" in markdown
-    # reader's guide is bilingual too
+    # v0.5.8+: glosses are INLINE on each value line (not section-level)
+    assert "share of production changes paired with tests in the same commit" in markdown
+    assert "not a bug count, not quality" in markdown
+    assert "share of lines still present after 6 months" in markdown
+    assert "shape of collaboration" in markdown
+    assert "unique days with human commits in the last 180 days" in markdown
+    assert "commits by identity-matched people" in markdown
+    # reader's guide is bilingual
     assert "## この数値でしてはいけない判断 / Decisions these numbers must NOT be used for" in markdown
     assert "not grades" in markdown and "non-compliant with the TEP norms" in markdown
+    # no leftover section-level explanation blocks
+    assert "（何を測るか / What this measures" not in markdown
+    assert "（このrepoのかたち / The shape of this repo" not in markdown
 
 
 def test_49_open_fallback_without_gh(tmp_path, capsys, monkeypatch):

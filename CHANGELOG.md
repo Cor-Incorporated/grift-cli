@@ -4,6 +4,13 @@
 
 タグ・PyPI・リポ public 化は本ファイルの記載対象外（人間ゲート）。
 
+## [0.5.9] — 2026-08-25
+
+### Changed（代表 UX フィードバック）
+
+- **report.md の説明を項目ごと（行末）に配置**: セクション末尾への一括説明を廃止し、各値の行末に短い日英併記の gloss を直付け（origin 11分類・activity 5項目・test co-change・corrective/path retouch・survival・context 各行・test frameworks）。値と説明の距離がゼロになり、レポートを上から読むだけで各数値の意味が分かる
+- **検収ゲート対応（提唱者4点）**: ①全 gloss の**単位一致**を機械強制（origin はコミット単位に統一 —「identityに一致しなかったコミット」等・行の単位と gloss の突合テスト）②gloss の**規範語ゲート**（良い/悪い/優れ/劣る/健全/理想等の混入ゼロをピン。解釈は metrics-guide 側のみ・rework の否定注記は維持）③**report.json は不変**（gloss は md のみ・render が dict を mutate しないことと verify が VERIFIED のままなことをテストで明示）④**Shared block は gloss なしと仕様明文化**（README 日英・metrics-guide に「簡潔さ優先、意味は本文行末 gloss が担う」の一行・gloss-free をピン）
+
 ## [0.5.8] — 2026-08-25
 
 提唱者事前レビューの必須ゲート（A/B/C/D/E）+ 日英併記拡充。
