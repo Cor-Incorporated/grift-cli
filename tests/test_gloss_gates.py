@@ -182,3 +182,29 @@ def test_4_shared_block_stays_gloss_free(tmp_path: Path) -> None:
     report = _repo_report(tmp_path)
     for line in _sb(report):
         assert "—" not in line, f"shared block line carries a gloss: {line}"
+
+
+def test_g1_no_standalone_paren_note_lines(tmp_path: Path) -> None:
+    """G-1: section-header parenthetical notes are forbidden — glosses live
+    on value lines only (Test frameworks used to double-print the note)."""
+    report = _repo_report(tmp_path)
+    markdown = render_markdown(report)
+    for line in markdown.splitlines():
+        stripped = line.strip()
+        assert not (stripped.startswith("（") and stripped.endswith("）")), (
+            f"standalone paren note line present: {stripped[:50]}"
+        )
+
+
+def test_g1_no_immediate_duplicate_gloss_lines(tmp_path: Path) -> None:
+    """G-1: a repo with detected frameworks must not print the same gloss
+    twice in a row (header note + value line duplication pattern)."""
+    report = _repo_report(tmp_path)
+    markdown = render_markdown(report)
+    lines = markdown.splitlines()
+    for i in range(len(lines) - 1):
+        if "—" in lines[i] and "—" in lines[i + 1]:
+            g1 = lines[i].split("—", 1)[1].strip()
+            g2 = lines[i + 1].split("—", 1)[1].strip()
+            if g1 and g1 == g2:
+                raise AssertionError(f"consecutive duplicate glosses: {g1[:50]}")
