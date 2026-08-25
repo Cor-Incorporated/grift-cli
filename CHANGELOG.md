@@ -22,7 +22,9 @@
 
 ### テスト
 
-- test_v058_gates 11本（A claim整合×5対象 + B 4反証 + pre-push検査 + scoped必須）ほか
+- **F-1（タグ前検収）**: --open の gh 不在/失敗フォールバックURLを `compare/main...new`（不正）から**intake リポジトリ実在パスへ修正**。反証: フォールバックURLが `compare/` を含まないことのピン
+- **F-2（タグ前検収）**: payload の `metrics.provenance.analyzed_commit_sha`/`analyzed_at` を README 日英・tep-contributions README 日英のフィールド一覧に明記（「SHA は中身を復元できない不透明値だが公開 repo では特定に使える」推測リスクと同旨の一行つき）。README.en の "manifest line committed" の古い言い回しを "meta file" へ修正
+- test_v058_gates 12本（A claim整合×5対象 + B 4反証 + pre-push検査 + scoped必須 + F-1フォールバックピン）ほか
 
 ## [0.5.7] — 2026-08-25
 

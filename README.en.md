@@ -30,7 +30,7 @@ Every basic operation is just **`grift <verb>`**. Verb semantics:
 | `grift analyze` | Analyze the current repository and **print to stdout** (repo scope; does not create `.grift/`) |
 | `grift report` | Analyze and **record into `.grift/report.{json,md}`** (always re-analyzes the current HEAD; repo scope by default, `--scope tenant` available) |
 | `grift verify` | Recompute `.grift/report.json` under recorded provenance (VERIFIED / MISMATCH / CANNOT_VERIFY) |
-| `grift contribute` | Build an opt-in payload from `.grift/report.json` (**never auto-sends to us**; after consent writes `.grift/contribution.json` and prints steps). **`--open`** pushes a branch with the payload and manifest line committed to your fork and opens the PR creation page in the browser (the only remaining action is pressing "Create pull request"; uses your own gh credentials and your own fork; the final button is yours) |
+| `grift contribute` | Build an opt-in payload from `.grift/report.json` (**never auto-sends to us**; after consent writes `.grift/contribution.json` and prints steps). **`--open`** pushes a branch with the payload and meta file committed to your fork and opens the PR creation page in the browser (the only remaining action is pressing "Create pull request"; uses your own gh credentials and your own fork; the final button is yours) |
 | `grift update` | Upgrade grift-cli itself (`--check` shows the latest version, read-only). Interactive runs print a one-line notice when a newer version exists (`GRIFT_NO_UPDATE_NOTICE=1` to silence; never in CI/non-TTY) |
 
 - **`.grift/` is the dedicated output directory** (auto-created). Adding `.grift/` to your `.gitignore` is recommended
@@ -86,7 +86,10 @@ grift contribute --out .grift/contribution.json   # 2) build & review the payloa
   it will appear in a public repository
 - The payload carries repo-scope aggregates + class-level context + definition
   versions only — **no canonical_id, emails, paths, repo names, or
-  tenant-scope values**
+  tenant-scope values**. The payload includes `metrics.provenance.analyzed_commit_sha` (the commit
+  SHA at analysis time) and `analyzed_at` — **the SHA is an opaque value that
+  cannot restore content, but for public repos it can identify the target;
+  same caveat as the re-identification risk disclosure**
 - The intake repository's CI mechanically validates the schema
   (`tep-contribution-v1`) and rejects email-shaped content
 - Use is limited to "TEP Report aggregation and the next reference

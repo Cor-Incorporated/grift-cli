@@ -184,3 +184,33 @@ def test_b_pre_push_validation_blocks_bad_payload() -> None:
     email = dict(good)
     email["metrics"] = {"leak": {"email": "a@example.com"}}
     assert any("email" in v for v in validate_contribution_payload(email))
+
+
+def test_f1_fallback_url_is_real_path_not_compare() -> None:
+    """F-1: the gh-absent fallback must land on the intake repo root, never a
+    compare/ URL (compare/main...new was invalid). Pin: no 'compare/' in the
+    opened URL, and the URL is the intake repository itself."""
+    import shutil as _sh
+    import tempfile
+    from pathlib import Path as _P
+
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = _P(tmp)
+        report = _write_report(tmp_path)
+        monkeypatched_open: list[str] = []
+        original = cli_main._open_browser
+        cli_main._open_browser = lambda url: monkeypatched_open.append(url)
+        try:
+            real_which = _sh.which
+            _sh.which = lambda name: None
+            try:
+                code = main(["contribute", str(report), "--yes", "--open"])
+            finally:
+                _sh.which = real_which
+        finally:
+            cli_main._open_browser = original
+        assert code == 0
+        assert monkeypatched_open, "browser must have been opened"
+        url = monkeypatched_open[0]
+        assert "compare/" not in url, f"F-1 regression: fallback URL is a compare URL: {url}"
+        assert url.startswith("https://github.com/Cor-Incorporated/tep-contributions"), url

@@ -1,0 +1,256 @@
+{
+  "contribution_schema": "tep-contribution-v1",
+  "purpose": "TEP Report 集計と参照分布 vNext",
+  "provenance": {
+    "tool_name": "grift",
+    "tool_version": "0.5.8",
+    "definition_version": "tep-v0.5.8-2026-08-25",
+    "origin_definition_version": "origin-v1.1-2026-08-22",
+    "activity_definition_version": "activity-v1-2026-08-16",
+    "analysis_scope": "repo"
+  },
+  "metrics": {
+    "provenance": {
+      "tool_name": "grift",
+      "method_name": "TEP",
+      "tool_version": "0.5.8",
+      "definition_version": "tep-v0.5.8-2026-08-25",
+      "origin_definition_version": "origin-v1.1-2026-08-22",
+      "activity_definition_version": "activity-v1-2026-08-16",
+      "analysis_scope": "repo",
+      "analyzed_commit_sha": "49248320758d2d9e604a2420c285136e1ea6eff3",
+      "analyzed_at": "2026-08-25T06:16:56Z"
+    },
+    "lineage": {
+      "is_fork": false,
+      "parent": null,
+      "has_upstream_lineage": false
+    },
+    "origin": {
+      "inherited_upstream": {
+        "kind": "observed",
+        "value": 0,
+        "unit": "commits"
+      },
+      "upstream_sync": {
+        "kind": "not_observed",
+        "reason": "no_upstream_lineage"
+      },
+      "tenant_unique": {
+        "kind": "observed",
+        "value": 0,
+        "unit": "commits"
+      },
+      "tenant_merge_or_sync": {
+        "kind": "observed",
+        "value": 0,
+        "unit": "commits"
+      },
+      "tenant_derivative": {
+        "kind": "not_observed",
+        "reason": "parent_repo_not_provided"
+      },
+      "external_upstream_contribution": {
+        "kind": "not_observed",
+        "reason": "parent_repo_not_provided"
+      },
+      "template_inherited": {
+        "kind": "not_observed",
+        "reason": "template_not_provided"
+      },
+      "generated_or_vendor": {
+        "kind": "observed",
+        "value": 0,
+        "unit": "commits"
+      },
+      "ambiguous_origin": {
+        "kind": "observed",
+        "value": 0,
+        "unit": "commits"
+      },
+      "unresolved": {
+        "kind": "observed",
+        "value": 36,
+        "unit": "commits"
+      },
+      "bot": {
+        "kind": "observed",
+        "value": 0,
+        "unit": "commits"
+      }
+    },
+    "attribution": {
+      "bot": {
+        "kind": "observed",
+        "value": 0,
+        "unit": "commits"
+      }
+    },
+    "core_activity_period": {
+      "kind": "not_observed",
+      "reason": "no_tenant_commits"
+    },
+    "test_frameworks": {
+      "kind": "observed",
+      "value": true,
+      "names": [
+        "pytest"
+      ],
+      "directories": [
+        "tests"
+      ],
+      "unit": "boolean"
+    },
+    "test_cochange": {
+      "kind": "observed",
+      "definition_version": "test-cochange-v1-2026-08-22",
+      "analysis_scope": "repo",
+      "all_time": {
+        "kind": "observed",
+        "value": 0.0,
+        "unit": "ratio",
+        "population": 24,
+        "cochanged": 0,
+        "test_only": 12,
+        "docs_or_config_excluded": 0,
+        "narrate_rate": true
+      },
+      "last_13w": {
+        "kind": "observed",
+        "value": 0.0,
+        "unit": "ratio",
+        "population": 24,
+        "cochanged": 0,
+        "test_only": 12,
+        "docs_or_config_excluded": 0,
+        "narrate_rate": true
+      }
+    },
+    "rework": {
+      "kind": "observed",
+      "definition_version": "rework-v1.1-2026-08-22",
+      "analysis_scope": "repo",
+      "window_days": 21,
+      "evidence_claim": null,
+      "corrective_rework_rate": {
+        "kind": "observed",
+        "value": 0.0,
+        "unit": "ratio",
+        "corrective_commits": 0,
+        "population": 24,
+        "narrate_rate": true,
+        "evidence_claim": false
+      },
+      "path_retouch_rate": {
+        "kind": "observed",
+        "value": 0.9583,
+        "unit": "ratio",
+        "retouch_commits": 23,
+        "population": 24,
+        "evidence_claim": false
+      },
+      "revert_rate": {
+        "kind": "observed",
+        "value": 0.0,
+        "unit": "ratio",
+        "reverts": 0,
+        "population": 36
+      },
+      "line_rework": {
+        "kind": "not_observed",
+        "reason": "deferred_to_v0.6"
+      }
+    },
+    "survival": {
+      "kind": "not_observed",
+      "reason": "survival_scan_disabled"
+    }
+  },
+  "context_profile": {
+    "definition_version": "context-v3-2026-08-25",
+    "analysis_scope": "repo",
+    "resolved_human_actors": {
+      "kind": "observed",
+      "value": 1,
+      "unit": "actors"
+    },
+    "actor_turnover": {
+      "kind": "observed",
+      "value": {
+        "2026": {
+          "joined": 1,
+          "last_active": 1
+        }
+      },
+      "unit": "actors/year"
+    },
+    "collaboration_class": {
+      "kind": "observed",
+      "value": "solo",
+      "unit": "class"
+    },
+    "kind": "observed",
+    "language_composition": {
+      "kind": "observed",
+      "value": {
+        "py": 1.0
+      },
+      "unit": "touch-share"
+    },
+    "monorepo_markers": {
+      "kind": "observed",
+      "value": [],
+      "unit": "markers"
+    },
+    "issue_link_density": {
+      "kind": "observed",
+      "value": 0.0,
+      "unit": "ratio"
+    },
+    "lifecycle_stage": {
+      "kind": "observed",
+      "value": "dormant",
+      "unit": "class"
+    },
+    "repo_age_days": {
+      "kind": "observed",
+      "value": 0,
+      "unit": "days"
+    },
+    "pr_flow_share": {
+      "kind": "observed",
+      "value": 0.0,
+      "unit": "ratio"
+    },
+    "test_file_ratio": {
+      "kind": "observed",
+      "value": 0.3333,
+      "unit": "ratio"
+    },
+    "release_cadence": {
+      "kind": "observed",
+      "value": null,
+      "unit": "tags/year"
+    },
+    "top_actor_share": {
+      "kind": "observed",
+      "value": 1.0,
+      "unit": "ratio"
+    },
+    "conventional_commit_share": {
+      "kind": "observed",
+      "value": 1.0,
+      "unit": "ratio"
+    },
+    "dependency_manifests": {
+      "kind": "observed",
+      "value": [],
+      "unit": "manifests"
+    },
+    "docs_share": {
+      "kind": "observed",
+      "value": 0.0,
+      "unit": "ratio"
+    }
+  }
+}
