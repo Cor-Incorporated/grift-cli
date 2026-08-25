@@ -25,8 +25,10 @@ def _analyze(repo: Path):
     return analyze_repository(repo, empty_identity(), Lineage(), scope="repo")["context_profile"]
 
 
-def test_version_is_v2_and_bands_disclosed() -> None:
-    assert CONTEXT_DEFINITION_VERSION == "context-v2-2026-08-23"
+def test_version_is_current_and_bands_disclosed() -> None:
+    # v3 (2026-08-25): language_composition emits shares (unit contract),
+    # actor_turnover key left→last_active, release_cadence unit tags/year
+    assert CONTEXT_DEFINITION_VERSION == "context-v3-2026-08-25"
     assert (LIFECYCLE_MAINTAINED_MIN_DAYS_180D, LIFECYCLE_ACTIVE_MIN_DAYS_180D) == (3, 12)
 
 

@@ -152,6 +152,17 @@ def build_parser() -> argparse.ArgumentParser:
         help="Optional identity.toml used for the original analysis (attribution re-verification).",
     )
 
+    update = sub.add_parser(
+        "update",
+        help="Upgrade grift-cli itself (pipx or pip; explicit, never automatic)",
+        epilog=_EPILOG,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    update.add_argument(
+        "--check",
+        action="store_true",
+        help="Only show the latest available version from PyPI (read-only), do not upgrade",
+    )
     render = sub.add_parser(
         "report",
         help="Analyze the current repo and RECORD into .grift/report.{json,md}; or re-render md from an existing report.json",
@@ -202,12 +213,47 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Skip the interactive confirmation (payload is still printed in full)",
     )
+    contribute.add_argument(
+        "--open",
+        action="store_true",
+        help=(
+            "After writing the payload, open the submission flow: with gh + git "
+            "available, fork tep-contributions and open the PR creation page with "
+            "the payload already committed (you only press 'Create pull request'). "
+            "Without gh, opens the browser to the intake repo's new-PR page. "
+            "The grift CLI itself still sends nothing."
+        ),
+    )
     return parser
 
 
+def _maybe_update_notice() -> None:
+    """Read-only update notice (#51 extension): one stderr line when a newer
+    PyPI version exists. Runs only in interactive (TTY) analyze/report/verify
+    invocations; CI/non-TTY stays silent. Reads public PyPI JSON; sends nothing."""
+    import os
+    import urllib.request
+
+    if not sys.stdout.isatty() or os.environ.get("GRIFT_NO_UPDATE_NOTICE"):
+        return
+    try:
+        with urllib.request.urlopen("https://pypi.org/pypi/grift-cli/json", timeout=2) as response:
+            latest = json.loads(response.read()).get("info", {}).get("version")
+    except Exception:  # noqa: BLE001 — offline/timeout: stay silent
+        return
+    if latest and latest != __version__:
+        sys.stderr.write(
+            f"grift {__version__}: 新しいバージョン {latest} があります "
+            f"(grift update で更新 / GRIFT_NO_UPDATE_NOTICE=1 で非表示)\n"
+        )
+
+
 def _run_analyze(args: argparse.Namespace) -> int:
+    _maybe_update_notice()
     repo: Path = args.repo if args.repo is not None else Path(".")
-    scope = str(args.scope) if args.scope is not None else ("repo" if args.repo is None else "tenant")
+    scope = (
+        str(args.scope) if args.scope is not None else ("repo" if args.repo is None else "tenant")
+    )
     if not (repo / ".git").exists() and not repo.joinpath("HEAD").exists():
         sys.stderr.write(f"not a git repository: {repo}\n")
         return 2
@@ -282,7 +328,7 @@ def _run_verify(args: argparse.Namespace) -> int:
 GRIFT_DIR = Path(".grift")
 _DEFAULT_REPORT_SEARCH = (
     GRIFT_DIR / "report.json",
-    Path("out") / "report.json",   # legacy pre-0.5.5 locations, read-only compat
+    Path("out") / "report.json",  # legacy pre-0.5.5 locations, read-only compat
     Path(".grift-out") / "report.json",
     Path("report.json"),
 )
@@ -348,6 +394,43 @@ def _analyze_to_grift_dir(*, scope: str = "repo") -> int:
     return 0
 
 
+def _run_update(args: argparse.Namespace) -> int:
+    """Explicit self-upgrade (#51). No telemetry: reads PyPI metadata (public
+    JSON) only with --check; upgrade runs pipx/pip locally."""
+    import shutil
+    import subprocess
+    import urllib.request
+
+    latest = None
+    try:
+        with urllib.request.urlopen("https://pypi.org/pypi/grift-cli/json", timeout=10) as response:
+            latest = json.loads(response.read()).get("info", {}).get("version")
+    except Exception as exc:  # noqa: BLE001 — offline is fine
+        sys.stderr.write(f"version check skipped (offline or PyPI unreachable): {exc}\n")
+    sys.stdout.write(f"installed: {__version__}\n")
+    if latest:
+        sys.stdout.write(f"latest:    {latest}\n")
+        if latest == __version__:
+            sys.stdout.write("up to date\n")
+            return 0
+    elif not args.check:
+        sys.stderr.write("continuing with upgrade attempt anyway\n")
+    if args.check:
+        return 0
+    pipx = shutil.which("pipx")
+    if pipx:
+        sys.stdout.write("running: pipx upgrade grift-cli\n")
+        result = subprocess.run([pipx, "upgrade", "grift-cli"])
+        return result.returncode
+    pip = shutil.which("pip") or shutil.which("pip3")
+    if pip:
+        sys.stdout.write("running: pip install --upgrade grift-cli\n")
+        result = subprocess.run([pip, "install", "--upgrade", "grift-cli"])
+        return result.returncode
+    sys.stderr.write("neither pipx nor pip found — upgrade manually (pipx upgrade grift-cli)\n")
+    return 2
+
+
 def _run_contribute(args: argparse.Namespace) -> int:
     from tep_core.contribute import CONFIRMATION_TEXT, build_contribution, render_confirmation
 
@@ -398,15 +481,163 @@ def _run_contribute(args: argparse.Namespace) -> int:
             f"payload full text follows on stdout.\n"
         )
         sys.stdout.write(text)
-    if args.out is not None:
-        args.out.parent.mkdir(parents=True, exist_ok=True)
-        args.out.write_text(
-            json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
-        )
-        sys.stderr.write(f"payload written to {args.out} (nothing was sent)\n")
-    elif args.yes:
-        pass  # full text already on stdout above
+    import hashlib
+    from datetime import datetime, timezone
+
+    payload_text = json.dumps(payload, indent=2, ensure_ascii=False) + "\n"
+    target = args.out
+    if target is None:
+        # UX (#49): consented submissions always land somewhere — default to .grift/
+        target = GRIFT_DIR / "contribution.json"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(payload_text, encoding="utf-8")
+    digest = hashlib.sha256(payload_text.encode("utf-8")).hexdigest()
+    now = datetime.now(timezone.utc)
+    submission_id = now.strftime("%m%d-%H%M") + "-" + digest[:8]
+    sys.stderr.write(f"\npayload written to {target} (nothing was sent)\n")
+    sys.stderr.write(
+        "\n=== 次の提出手順（あなた自身が行います・CLIは送信しません） ===\n"
+        f"1. 公開ドア: https://github.com/Cor-Incorporated/tep-contributions に PR を出す\n"
+        f"   - ファイル名: payloads/{now.year}/{submission_id}.json（上記 payload をそのまま）\n"
+        f"   - 同じ場所に {submission_id}.meta.json も追加（--open は自動でコミット済み / Public door adds a sidecar meta file; --open commits it automatically）:\n"
+        f'     {{"id":"{submission_id}","sha256":"{digest}","received_at":"{now.strftime("%Y-%m-%dT%H:%M:%SZ")}","door":"pr"}}\n'
+        f"   - manifest.jsonl は main で自動生成されるため編集不要（並行提出と衝突しません）/ manifest.jsonl is generated on main; do not edit it\n"
+        f"2. 非公開ドア: payload ファイルを会社へ送付（代理PR・身元は非公開 / private door: send the payload file; we open the PR anonymously）\n"
+        f"   詳細: tep-contributions の README/CONTRIBUTING\n"
+    )
+    if getattr(args, "open", False):
+        from tep_core.contribute import validate_contribution_payload
+
+        violations = validate_contribution_payload(payload)
+        if violations:
+            sys.stderr.write(
+                "contribute --open: payload failed the local pre-push check; not pushing:\n"
+            )
+            for violation in violations:
+                sys.stderr.write(f"  - {violation}\n")
+            return 1
+        _open_submission_flow(payload_text, submission_id, digest, now)
     return 0
+
+
+def _open_submission_flow(payload_text: str, submission_id: str, digest: str, now) -> None:
+    """`grift contribute --open` (#49 follow-up): open the submission flow.
+
+    Preferred path (gh + git available): create a fork branch locally with the
+    payload committed (payload + manifest line), push it to the user's fork,
+    and open the compare URL — the browser shows a ready PR with files already
+    attached; the user only presses "Create pull request".
+    Fallback: open the intake repo's new-PR page in the browser.
+
+    grift itself performs no network call: git push goes to the USER's fork
+    with the user's own gh/git credentials (the user presses the final button).
+    """
+    import shlex
+    import shutil
+    import subprocess
+    import tempfile
+    import urllib.parse
+    import urllib.request
+
+    INTAKE = "https://github.com/Cor-Incorporated/tep-contributions"
+    received_at = now.strftime("%Y-%m-%dT%H:%M:%SZ")
+    branch = f"contrib/{submission_id}"
+    title = f"contribution: {submission_id}"
+    body = (
+        f"Opt-in TEP contribution (door: pr).\n\n"
+        f"- payload: `payloads/{now.year}/{submission_id}.json`\n"
+        f"- sha256: `{digest}`\n"
+    )
+    gh = shutil.which("gh")
+    git = shutil.which("git")
+    if not (gh and git):
+        # fallback: browser to the intake repo (manual attach)
+        url = f"{INTAKE}/compare/main...new?expand=1"
+        _open_browser(url)
+        sys.stderr.write(
+            "opened the intake repository in your browser — attach "
+            f"{GRIFT_DIR / 'contribution.json'} as payloads/{now.year}/{submission_id}.json "
+            "(gh CLI not found for the automated branch flow)\n"
+        )
+        return
+
+    def run(
+        cmd: list[str], cwd: str | None = None, check: bool = True
+    ) -> subprocess.CompletedProcess:
+        result = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True)
+        if check and result.returncode != 0:
+            raise RuntimeError(f"{' '.join(shlex.quote(c) for c in cmd)}\n{result.stderr.strip()}")
+        return result
+
+    try:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo_dir = str(Path(tmp) / "tep-contributions")
+            run([git, "clone", "--quiet", "--depth", "1", f"{INTAKE}.git", repo_dir])
+            year_dir = Path(repo_dir) / "payloads" / str(now.year)
+            year_dir.mkdir(parents=True, exist_ok=True)
+            (year_dir / f"{submission_id}.json").write_text(payload_text, encoding="utf-8")
+            # C: PRs add payload + sidecar meta only; manifest.jsonl is
+            # regenerated on main (single writer) — no append conflicts
+            meta = year_dir / f"{submission_id}.meta.json"
+            meta.write_text(
+                json.dumps(
+                    {
+                        "id": submission_id,
+                        "sha256": digest,
+                        "received_at": received_at,
+                        "door": "pr",
+                    },
+                    ensure_ascii=False,
+                    indent=1,
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            run([git, "-C", repo_dir, "config", "user.name", "grift-contribute"])
+            run(
+                [git, "-C", repo_dir, "config", "user.email", "contribute@users.noreply.github.com"]
+            )
+            run([git, "-C", repo_dir, "checkout", "--quiet", "-b", branch])
+            run([git, "-C", repo_dir, "add", "-A"])
+            run([git, "-C", repo_dir, "commit", "--quiet", "-m", title])
+            # fork (idempotent) using the user's credentials; the intake README
+            # already discloses that --open may auto-create the fork (B-3)
+            run([gh, "repo", "fork", INTAKE, "--clone=false"], check=False)
+            user = run([gh, "api", "user", "--jq", ".login"]).stdout.strip()
+            fork_url = f"https://github.com/{user}/tep-contributions.git"
+            if fork_url.rstrip(".git") == INTAKE:
+                raise RuntimeError("push target resolved to the intake origin; refusing")
+            # B-3: push ONLY the single contribution branch to the user's fork;
+            # never push to origin (the clone's origin stays untouched).
+            run([git, "-C", repo_dir, "remote", "add", "fork", fork_url])
+            run([git, "-C", repo_dir, "push", "--quiet", "fork", branch])
+            compare = (
+                f"{INTAKE}/compare/{urllib.parse.quote(branch)}"
+                f"?expand=1&title={urllib.parse.quote(title)}"
+                f"&body={urllib.parse.quote(body)}"
+            )
+            _open_browser(compare)
+            sys.stderr.write(
+                f"branch `{branch}` pushed to your fork ({user}/tep-contributions).\n"
+                "browser opened at the PR creation page — payload and manifest line are "
+                "already committed; press 'Create pull request' to submit.\n"
+            )
+    except Exception as exc:  # noqa: BLE001 — degrade gracefully
+        sys.stderr.write(f"automated flow failed ({exc}); falling back to the browser\n")
+        _open_browser(f"{INTAKE}/compare/main...new?expand=1")
+
+
+def _open_browser(url: str) -> None:
+    import platform
+    import subprocess
+
+    system = platform.system()
+    if system == "Darwin":
+        subprocess.run(["open", url], check=False)
+    elif system == "Windows":
+        subprocess.run(["cmd", "/c", "start", url], check=False)
+    else:
+        subprocess.run(["xdg-open", url], check=False)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -420,6 +651,8 @@ def main(argv: list[str] | None = None) -> int:
         return _run_report(args)
     if args.command == "contribute":
         return _run_contribute(args)
+    if args.command == "update":
+        return _run_update(args)
     parser.error("unknown command")
     return 2
 

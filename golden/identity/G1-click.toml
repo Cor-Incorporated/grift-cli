@@ -1,3 +1,8 @@
+# Provenance: this email comes from the public commit metadata of the
+# click repository (visible in its git log). Used solely for golden
+# reproduction checks (tenant-scope expected values). Indirecting it
+# (hashed identity) is tracked for v0.6.
+# 削除依頼先 / removal requests: open an issue on the public repository
 schema_version = "identity-v1"
 
 # Pseudonymous canonical_id. The email is already public in the click git log.

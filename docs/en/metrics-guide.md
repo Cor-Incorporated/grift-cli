@@ -141,7 +141,7 @@ Reference distribution planned for v2027 — no high/low judgment provided yet.
 
 | Name | In one line |
 |---|---|
-| **machuz/eis (Engineering Impact Signal)** | TEP's survival observation adopts EIS-style blame sampling as its lineage; the designs differ in fact: EIS reduces 7 axes with fixed weights to a 0-100 composite score with type labels and team side-by-sides; TEP forbids composite scores, weighting, and grade vocabulary by design (the six prohibitions / norms), and secures trust via discriminant validation, `grift verify`, and no-transmission |
+| **machuz/eis (Engineering Impact Signal)** | TEP's survival observation adopts EIS-style blame sampling as its lineage; the designs differ in fact: EIS reduces 7 axes with fixed weights to a 0-100 composite score with type labels and team side-by-sides; TEP forbids composite scores, weighting, and grade vocabulary by design (the six prohibitions / norms), and secures trust via discriminant validation, `grift verify`, and no transmission to the vendor (measurement commands never touch the network) |
 | DORA | Four delivery-performance metrics and benchmarks; TEP's norm-style usage guidelines follow the DORA pattern |
 | SPACE | A satisfaction/performance/activity/communication/efficiency/flow framework; agrees with TEP that productivity is not one number |
 | GitClear | Commercial code-health (technical debt, rework) research and SaaS; overlapping observations, but TEP never emits person-comparison tables and the CLI transmits nothing |

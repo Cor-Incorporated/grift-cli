@@ -30,7 +30,8 @@ Every basic operation is just **`grift <verb>`**. Verb semantics:
 | `grift analyze` | Analyze the current repository and **print to stdout** (repo scope; does not create `.grift/`) |
 | `grift report` | Analyze and **record into `.grift/report.{json,md}`** (always re-analyzes the current HEAD; repo scope by default, `--scope tenant` available) |
 | `grift verify` | Recompute `.grift/report.json` under recorded provenance (VERIFIED / MISMATCH / CANNOT_VERIFY) |
-| `grift contribute` | Build an opt-in submission payload from `.grift/report.json` (**never sends**) |
+| `grift contribute` | Build an opt-in payload from `.grift/report.json` (**never auto-sends to us**; after consent writes `.grift/contribution.json` and prints steps). **`--open`** pushes a branch with the payload and manifest line committed to your fork and opens the PR creation page in the browser (the only remaining action is pressing "Create pull request"; uses your own gh credentials and your own fork; the final button is yours) |
+| `grift update` | Upgrade grift-cli itself (`--check` shows the latest version, read-only). Interactive runs print a one-line notice when a newer version exists (`GRIFT_NO_UPDATE_NOTICE=1` to silence; never in CI/non-TTY) |
 
 - **`.grift/` is the dedicated output directory** (auto-created). Adding `.grift/` to your `.gitignore` is recommended
 - Custom invocations keep the explicit form: `grift analyze path --scope tenant --identity .tep/identity.toml --out dir`
@@ -80,7 +81,7 @@ grift contribute --out .grift/contribution.json   # 2) build & review the payloa
 #    https://github.com/Cor-Incorporated/tep-contributions
 ```
 
-- **The CLI never sends anything** (automatic transmission is permanently
+- **The measurement commands (analyze/report/verify) never touch the network; contribute never auto-sends to us** (automatic transmission to us is permanently
   forbidden). The full payload is printed and the flow states explicitly that
   it will appear in a public repository
 - The payload carries repo-scope aggregates + class-level context + definition
@@ -135,6 +136,12 @@ with:
 - **No pass/fail, no thresholds, no failure exit — observation only, permanently**
 - PR comment requires explicit opt-in (`comment: true`, default off)
 - Minimal permissions recommended (`contents: read`; `pull-requests: write` only when `comment: true`)
+
+## Support
+
+- Removal requests (e.g. for golden identity emails derived from public commit
+  metadata): please open an issue on the public repository; see the
+  tep-contributions README for the private contact channel.
 
 ## Ethics
 

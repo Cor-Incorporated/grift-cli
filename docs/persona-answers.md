@@ -39,7 +39,7 @@ wave 1 = 既存 report-v1 フィールドで答えられる問い。wave 2 = con
 - 使う観測: interpretation（参照分布位置）— **golden は tenant スコープで固定しているため励起されない**（`scope_is_tenant`）。repo スコープの十分位は corpus v2026.09 由来
 - 転記: golden/expected/G1-click.json#interpretation.test_cochange.reason = scope_is_tenant
 - 限界文: golden 実数値つきの十分位実演には repo スコープの golden 期待値ピンが必要（観測ではなく golden ピン構成の欠落）→ 起票した
-- 起票: https://github.com/Cor-Incorporated/grift-cli-dev/issues/12
+- 起票: https://github.com/Cor-Incorporated/grift-cli/issues/8
 
 #### Q1-4「偽陰性のコストは誰が持つか」 — △（規範で対応）
 
@@ -162,7 +162,7 @@ wave 1 = 既存 report-v1 フィールドで答えられる問い。wave 2 = con
 
 | 問い | 状態 | 起票 |
 |---|---|---|
-| Q1-3 | golden 実数値の十分位実演に repo スコープ期待値ピンが無い（観測は既存・ピン構成の欠落） | https://github.com/Cor-Incorporated/grift-cli-dev/issues/12 |
+| Q1-3 | golden 実数値の十分位実演に repo スコープ期待値ピンが無い（観測は既存・ピン構成の欠落） | https://github.com/Cor-Incorporated/grift-cli/issues/8 |
 | Q3-2 / E1 / E4 | 恒久限界（✗）— 観測の欠落ではなく TEP の外側の世界。規範と限界文で対応 | なし（宿題は P1g） |
 
 wave 2 / wave 3 の問い（context・experience 由来）は各波の完了時にこの表へ追記する。

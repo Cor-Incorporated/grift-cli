@@ -4,6 +4,46 @@
 
 タグ・PyPI・リポ public 化は本ファイルの記載対象外（人間ゲート）。
 
+## [0.5.8] — 2026-08-25
+
+提唱者事前レビューの必須ゲート（A/B/C/D/E）+ 日英併記拡充。
+
+### Changed
+
+- **A: 無送信文言の精密化**: 全称 claim（「CLI は何も送信しません」等）を全公開物から除去し、スコープ化（「測定コマンドはネットワークに触れない / contribute は自動送信しない / --open は本人権限・本人 fork・最終ボタンは本人 / こちらへの自動送信は恒久にない」）。**claim整合テスト**が全称文言の再混入を CI で検知
+- **report.md 全テンプレートを日英併記に**（読み方ガイド・共有ブロック1行・各節の意味行・lifecycle 説明・contribute 開示文・提出手順）
+- **D: dev issue リンク張り替え**（persona-answers ×2・test_coverage ×1 → 公開 tracker 鏡 issue #7/#8 — 告けい第1波の 404 防止）
+- **E: G1-click.toml 暫定ヘッダ注記**（公開コミットメタデータ由来・再現検証専用・削除依頼先明記。間接化本体は v0.6）
+
+### Added
+
+- **B: --open ガードレール**: ①フラグ無しでは git/gh サブプロセス不起動（spy 反証）②同意前 git 操作なし・非TTY+--yes無しは --open 付きでも exit 2（F-C1 整合）③push 先は本人 fork 限定（origin 拒否ガード）+ 同意文に「公開ドアです・アカウント名が表示されます・fork 自動作成」警告 ④gh/ブラウザ不在フォールバック。**push 前に intake と同一の schema+needle ローカル検査**（不合格は push させない）
+- **C: manifest 競合の恒久解消**: 提出は payloads/<year>/<id>.json + <id>.meta.json の2ファイルのみ・manifest.jsonl は main 上で CI が生成（単一書き手・tep-contributions PR #3）。同時2PR反証で無衝突を実証
+
+### テスト
+
+- test_v058_gates 11本（A claim整合×5対象 + B 4反証 + pre-push検査 + scoped必須）ほか
+
+## [0.5.7] — 2026-08-25
+
+代表実機レビュー（2026-08-25）の3問題（#49/#50/#51）を解消。
+
+### Fixed
+
+- **#49 追加: `grift contribute --open`** — payload と manifest 行をコミット済みのブランチを fork に push し（ユーザーの gh 認証・gh/git 必須）、ブラウザで PR 作成ページを開く。**残る操作は「Create pull request」ボタンのみ**。grift 自身のネットワーク送信なし（push は git 経由でユーザーの fork へ・最終ボタンはユーザーが押す）。gh がない環境はイントークリポジトリのページを開くフォールバック。実測: fork ブランチ `contrib/<id>` 作成・payload は intake validator 合格
+- **#49 contribute の同意後行き止まり**: 同意（対話 yes または --yes）後にデフォルトで `.grift/contribution.json` を書き、**提出ID（MMDD-HHMM-hash8）・PR ファイル名・manifest 行（sha256 計算済み・コピー可能）・二枚扉の手順**を表示。CLI は引き続き何も送信しない
+- **#50 出力値の読みやすさ**（context-v3）: `language_composition` の値を生カウントから**シェア（0-1・合計≈1）に修正**（unit が touch-share なのに値がカウントだった契約不一致バグ）／`actor_turnover` の `left` を **`last_active` に改名**（今年最終コミットの作者は退場していない）／`release_cadence` の単位を `releases/year` → `tags/year` に／report.md の言語構成をパーセント表記で表示
+
+### Added
+
+- **#51 `grift update`**: grift-cli 自身の明示的アップグレード（pipx 優先・フォールバック pip）。`--check` は PyPI メタデータの**読み取りのみ**（送信なし・無送信原則は不変）
+- **#51 追加: アップデート通知** — 対話（TTY）実行の analyze/report/verify で新しいバージョンがあれば stderr に1行表示（PyPI メタデータの読み取りのみ・`GRIFT_NO_UPDATE_NOTICE=1` で非表示・CI/非TTYでは出ない）
+- **report.md の数値に平易な意味を1行添付**（test co-change / rework / survival / context / lifecycle の各節に「何を測るか」の日本語1行・lifecycle の2観測には変数名の直後に平易説明）
+
+### テスト
+
+- 同意後のデフォルト書き込み+ガイド行（manifest 行の sha256 が実ファイルと一致）／シェア合計≈1／`left` 廃止／markdown パーセント／`update --check`
+
 ## [0.5.6] — 2026-08-23
 
 公開後検収で発見の仕様記述↔実挙動の矛盾 3 件（D-1/D-2/D-3）を解消するホットフィックス。

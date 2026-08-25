@@ -1,6 +1,6 @@
 [project]
 name = "grift-cli"
-version = "0.5.6"
+version = "0.5.8"
 description = "Deterministic TEP evidence metrics from a single git repository. No LLM."
 readme = "README.md"
 license = { text = "MIT" }
