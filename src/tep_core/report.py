@@ -166,7 +166,7 @@ def render_markdown(report: dict[str, Any]) -> str:
         )
         if activity["commits_per_active_day_median"].get("sample_size", 99) < 5:
             lines.append("- comparison narrative omitted: median sample size is below 5 days")
-    lines += ["", "## Test frameworks", "（検出されたテスト基盤 / detected test substrate）"]
+    lines += ["", "## Test frameworks"]
     if tests.get("kind") == "not_observed":
         lines.append(f"- not observed ({tests.get('reason')})")
     else:

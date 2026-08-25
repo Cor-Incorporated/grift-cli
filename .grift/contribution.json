@@ -19,7 +19,7 @@
       "activity_definition_version": "activity-v1-2026-08-16",
       "analysis_scope": "repo",
       "analyzed_commit_sha": "49248320758d2d9e604a2420c285136e1ea6eff3",
-      "analyzed_at": "2026-08-25T08:23:27Z"
+      "analyzed_at": "2026-08-25T09:17:01Z"
     },
     "lineage": {
       "is_fork": false,
@@ -167,33 +167,7 @@
     }
   },
   "context_profile": {
-    "repo_age_days": {
-      "kind": "observed",
-      "value": 0,
-      "unit": "days"
-    },
-    "definition_version": "context-v3-2026-08-25",
-    "dependency_manifests": {
-      "kind": "observed",
-      "value": [],
-      "unit": "manifests"
-    },
-    "monorepo_markers": {
-      "kind": "observed",
-      "value": [],
-      "unit": "markers"
-    },
-    "issue_link_density": {
-      "kind": "observed",
-      "value": 0.0,
-      "unit": "ratio"
-    },
-    "resolved_human_actors": {
-      "kind": "observed",
-      "value": 1,
-      "unit": "actors"
-    },
-    "pr_flow_share": {
+    "docs_share": {
       "kind": "observed",
       "value": 0.0,
       "unit": "ratio"
@@ -204,6 +178,26 @@
         "py": 1.0
       },
       "unit": "touch-share"
+    },
+    "resolved_human_actors": {
+      "kind": "observed",
+      "value": 1,
+      "unit": "actors"
+    },
+    "lifecycle_stage": {
+      "kind": "observed",
+      "value": "dormant",
+      "unit": "class"
+    },
+    "release_cadence": {
+      "kind": "observed",
+      "value": null,
+      "unit": "tags/year"
+    },
+    "pr_flow_share": {
+      "kind": "observed",
+      "value": 0.0,
+      "unit": "ratio"
     },
     "actor_turnover": {
       "kind": "observed",
@@ -220,37 +214,43 @@
       "value": "solo",
       "unit": "class"
     },
-    "top_actor_share": {
+    "definition_version": "context-v3-2026-08-25",
+    "repo_age_days": {
       "kind": "observed",
-      "value": 1.0,
-      "unit": "ratio"
-    },
-    "release_cadence": {
-      "kind": "observed",
-      "value": null,
-      "unit": "tags/year"
+      "value": 0,
+      "unit": "days"
     },
     "conventional_commit_share": {
       "kind": "observed",
       "value": 1.0,
       "unit": "ratio"
     },
+    "dependency_manifests": {
+      "kind": "observed",
+      "value": [],
+      "unit": "manifests"
+    },
+    "analysis_scope": "repo",
     "test_file_ratio": {
       "kind": "observed",
       "value": 0.3333,
       "unit": "ratio"
     },
-    "kind": "observed",
-    "lifecycle_stage": {
+    "top_actor_share": {
       "kind": "observed",
-      "value": "dormant",
-      "unit": "class"
+      "value": 1.0,
+      "unit": "ratio"
     },
-    "docs_share": {
+    "monorepo_markers": {
+      "kind": "observed",
+      "value": [],
+      "unit": "markers"
+    },
+    "issue_link_density": {
       "kind": "observed",
       "value": 0.0,
       "unit": "ratio"
     },
-    "analysis_scope": "repo"
+    "kind": "observed"
   }
 }
