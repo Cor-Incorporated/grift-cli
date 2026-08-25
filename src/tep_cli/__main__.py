@@ -551,8 +551,9 @@ def _open_submission_flow(payload_text: str, submission_id: str, digest: str, no
     gh = shutil.which("gh")
     git = shutil.which("git")
     if not (gh and git):
-        # fallback: browser to the intake repo (manual attach)
-        url = f"{INTAKE}/compare/main...new?expand=1"
+        # F-1: fallback lands on the intake repository (a real page) — the old
+        # compare/main...new URL was invalid. Manual attach per CONTRIBUTING.
+        url = f"{INTAKE}#how-to-submit"
         _open_browser(url)
         sys.stderr.write(
             "opened the intake repository in your browser — attach "
@@ -624,7 +625,7 @@ def _open_submission_flow(payload_text: str, submission_id: str, digest: str, no
             )
     except Exception as exc:  # noqa: BLE001 — degrade gracefully
         sys.stderr.write(f"automated flow failed ({exc}); falling back to the browser\n")
-        _open_browser(f"{INTAKE}/compare/main...new?expand=1")
+        _open_browser(f"{INTAKE}#how-to-submit")
 
 
 def _open_browser(url: str) -> None:
