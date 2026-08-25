@@ -109,12 +109,14 @@ def test_context_profile_slimmed_but_scale_dropped(tmp_path: Path) -> None:
 
 
 def test_confirmation_mentions_public_disclosure() -> None:
-    assert "公開コーパスに載ります" in CONFIRMATION_TEXT
-    assert "何も送信しません" in CONFIRMATION_TEXT
+    assert "公開コーパスに載ります" in CONFIRMATION_TEXT and "public corpus" in CONFIRMATION_TEXT
+    assert "ネットワークに触れません" in CONFIRMATION_TEXT  # scoped (A): measurement commands
+    assert "自動送信しません" in CONFIRMATION_TEXT and "never auto-sends" in CONFIRMATION_TEXT
     assert CONTRIBUTE_PURPOSE in CONFIRMATION_TEXT
     assert "repo 名は含まれません" in CONFIRMATION_TEXT
-    assert "推測されるリスクはゼロではありません" in CONFIRMATION_TEXT
+    assert "推測されるリスクはゼロではありません" in CONFIRMATION_TEXT and "not zero" in CONFIRMATION_TEXT
     assert "二枚扉" in CONFIRMATION_TEXT and "非公開ドア" in CONFIRMATION_TEXT
+    assert "公開ドアです" in CONFIRMATION_TEXT and "PUBLIC door" in CONFIRMATION_TEXT  # B: --open warning
 
 
 def test_cli_contribute_writes_payload_and_never_silent(tmp_path: Path, capsys: object) -> None:

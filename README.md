@@ -29,7 +29,8 @@ grift verify      # .grift/report.json を現在のリポジトリで再計算�
 | `grift analyze` | カレントリポジトリを**stdout に表示**（repo スコープ・`.grift/` は作らない） |
 | `grift report` | 分析して `.grift/report.{json,md}` に**記録**（常に現在の HEAD を再分析・既定 repo スコープ・`--scope tenant` 可） |
 | `grift verify` | `.grift/report.json` を同条件で再計算し改ざんを検出（VERIFIED / MISMATCH / CANNOT_VERIFY） |
-| `grift contribute` | `.grift/report.json` から opt-in 提出 payload を組む（**何も送信しない**） |
+| `grift contribute` | `.grift/report.json` から opt-in 提出 payload を組む（**何も送信しない**・同意後に `.grift/contribution.json` を書き提出手順を表示）。**`--open`** で payload と manifest 行をコミット済みブランチを fork に push し、ブラウザで PR 作成ページを開きます（残る操作は「Create pull request」ボタンのみ・gh CLI 利用・grift 自身はネット送信なし） |
+| `grift update` | grift-cli 自身を更新（`--check` は最新版の表示のみ・読み取り専用）。対話実行時に新しいバージョンがあれば1行のお知らせが出ます（`GRIFT_NO_UPDATE_NOTICE=1` で非表示・CI/非TTYでは出ません） |
 
 - **`.grift/` は出力専用ディレクトリ**です（無ければ自動作成）。リポジトリの `.gitignore` に `.grift/` を追加することを推奨します
 - カスタム指定（対象パス・スコープ・出力先を明示）は従来どおり引数・オプションで: `grift analyze path --scope tenant --identity .tep/identity.toml --out dir`
@@ -67,7 +68,7 @@ grift contribute --out .grift/contribution.json  # ② payload を組み・全�
 # ③ payload を [tep-contributions](https://github.com/Cor-Incorporated/tep-contributions) に PR で提出
 ```
 
-- **CLI は何も送信しません（自動送信は恒久禁止）**。payload 全文が表示され、「この提出は公開リポジトリに載る」ことが明示されます
+- **測定コマンド（analyze/report/verify）はネットワークに触れず、contribute は自動送信をしない（こちらへの自動送信は恒久にありません）**。payload 全文が表示され、「この提出は公開コーパスに載る」ことが明示されます。`--open` は本人の GitHub 権限で本人の fork にブランチを push し、最終ボタンは本人が押します
 - payload は repo スコープ集計値 + context_profile（クラス級）+ 定義版のみ。**canonical_id・メール・パス・repo 名・tenant スコープ値は含まれません**
 - 受け口リポ（tep-contributions）の CI が schema（`tep-contribution-v1`）と個人情報形状（メール等）を機械検証します
 - 用途は「TEP Report 集計と参照分布 vNext」に限定。保持期間は次回年次 Report まで・撤回は issue で受け付けます（`docs/norms.md` 保持・削除条項）
@@ -120,6 +121,11 @@ with:
 - **合否・閾値・fail は実装しない**（観測のみ・ゲート化は恒久にしない）
 - PR コメント投稿は `comment: true` の明示オプトインのみ（既定 off）
 - permissions は最小限（`contents: read` を推奨。`comment: true` のみ `pull-requests: write` が必要）
+
+## サポート / Support
+
+- golden identity（再現検証用の公開コミットメタデータ由来メール）の削除依頼などは public リポの issue でお知らせください（非公開を希望される場合は private door の連絡先を tep-contributions の README で確認してください）
+- Removal requests (e.g. for golden identity emails derived from public commit metadata): please open an issue on the public repository; see the tep-contributions README for the private contact channel.
 
 ## 倫理
 

@@ -64,6 +64,7 @@ def shared_block(report: dict[str, Any]) -> list[str]:
     if tenant.get("kind") == "observed" and scope == "tenant":
         lines.append(f"- tenant commits: {tenant['value']} commits")
     lines.append("- 読み方: 本レポートは証拠であり判定ではない（docs/norms.md 参照）")
+    lines.append("- Reading: this report is evidence, not a verdict (see docs/norms.md)")
     return lines
 
 
@@ -153,16 +154,39 @@ def render_markdown(report: dict[str, Any]) -> str:
     else:
         names = ", ".join(tests.get("names") or []) or "none named"
         lines.append(f"- observed: {names} (boolean {tests.get('value')})")
-    lines += ["", "## Test co-change", f"- {_fmt_metric_block(report.get('test_cochange'))}"]
+    lines += [
+        "",
+        "## Test co-change",
+        "（何を測るか / What this measures: 本番コードを変えたコミットのうち、同じコミットでテストも変更した割合。高い=変更にテストが伴う習慣。テストが前提でない仕事は正当に低くなる — the share of production-changing commits whose same commit also changed tests. High = the habit of pairing changes with tests. Work where tests are not the norm legitimately lands low.)",
+        f"- {_fmt_metric_block(report.get('test_cochange'))}",
+    ]
     interp = report.get("interpretation") or {}
     lines += _fmt_interp_line("co-change", interp.get("test_cochange"))
-    lines += ["", "## Rework", *_fmt_rework_lines(report.get("rework"))]
+    lines += [
+        "",
+        "## Rework",
+        "（何を測るか / What this measures: 作った直後に手直しが発生した傾向の観測。バグ件数でも品質でもなく、件名慣習の影響を受けるため比較・合否には使えない — observed tendency of immediate rework after fresh changes. Not a bug count, not quality; subject-convention dependent, so never use for comparisons or pass/fail.)",
+        *_fmt_rework_lines(report.get("rework")),
+    ]
     lines += _fmt_interp_line("corrective rework", interp.get("corrective_rework"))
-    lines += ["", "## Survival (tau=180 days)", f"- {_fmt_metric_block(report.get('survival'))}"]
+    lines += [
+        "",
+        "## Survival (tau=180 days)",
+        "（何を測るか / What this measures: 6ヶ月後も残っている行の割合。1.0に近い=書いたものが残り続けている — the share of lines still present after 6 months. Near 1.0 = what was written keeps living.)",
+        f"- {_fmt_metric_block(report.get('survival'))}",
+    ]
     lines += ["", *(_fmt_context_lines(report.get("context_profile")))]
     lines += ["", *readers_guide_lines()]
     lines.append("")
     return "\n".join(lines)
+
+
+def _fmt_langs(value: Any) -> str:
+    """Shares as human-readable percents; empty-safe (#50)."""
+    if not isinstance(value, dict) or not value:
+        return "not observed"
+    top = list(value.items())[:3]
+    return ", ".join(f"{name} {share * 100:.0f}%" for name, share in top) or "not observed"
 
 
 def _fmt_context_lines(ctx: dict[str, Any] | None) -> list[str]:
@@ -177,6 +201,7 @@ def _fmt_context_lines(ctx: dict[str, Any] | None) -> list[str]:
 
     lines = [
         "## Context profile (observational; not a ranking)",
+        "（このrepoのかたち / The shape of this repo: 協働・活動密度・プロセスの分類。序列ではなく、数値の読み方を条件付ける文脈 — collaboration, activity density, and process classification. Not a ranking; context that conditions how to read the numbers.)",
         (
             f"- collaboration: {val('collaboration_class')} "
             f"({val('resolved_human_actors')} resolved human actors; "
@@ -184,12 +209,12 @@ def _fmt_context_lines(ctx: dict[str, Any] | None) -> list[str]:
         ),
         (
             f"- lifecycle: {val('lifecycle_stage')} "
-            f"(active_days_180d {val('active_days_180d')} days; "
-            f"days_since_last_human_commit {val('days_since_last_human_commit')}; "
+            f"(active_days_180d {val('active_days_180d')} days = 直近180日で人がコミットした日数 / unique days with human commits in the last 180 days; "
+            f"days_since_last_human_commit {val('days_since_last_human_commit')} = 最終コミットからの日数 / days since the last human commit; "
             f"repo age {val('repo_age_days')} days)"
         ),
         f"- process: pr_flow_share {val('pr_flow_share')} ratio; conventional subjects {val('conventional_commit_share')} ratio",
-        f"- languages (touch-share): {val('language_composition') or {}}",
+        f"- languages (touch-share): {_fmt_langs(val('language_composition'))}",
     ]
     return lines
 
@@ -198,11 +223,11 @@ def readers_guide_lines() -> list[str]:
     """P1g: fixed reader's guide appended to every report.md (data-layer
     template, no LLM). Golden snapshots and vocab gates pin the wording."""
     return [
-        "## この数値でしてはいけない判断",
-        "- このレポートは「観測できた証拠」であり、書かれていないことは「無かったこと」を意味しません",
-        "- 分布位置は同スコープ・同文脈の repo 間の位置であり、優劣の等級ではありません",
-        "- 単独の数値での合否判断・他者との比較表の作成は TEP 非準拠です（docs/norms.md 参照）",
-        "- 観測には限界があります（各指標の limit 欄を参照してください）",
+        "## この数値でしてはいけない判断 / Decisions these numbers must NOT be used for",
+        "- このレポートは「観測できた証拠」であり、書かれていないことは「無かったこと」を意味しません / This report is observed evidence; what is not written does not mean it did not happen",
+        "- 分布位置は同スコープ・同文脈の repo 間の位置であり、優劣の等級ではありません / Distribution positions are locations among same-scope, same-context repositories — not grades",
+        "- 単独の数値での合否判断・他者との比較表の作成は TEP 非準拠です（docs/norms.md 参照） / Standalone pass/fail decisions and person-to-person comparison tables are non-compliant with the TEP norms (see docs/norms.md)",
+        "- 観測には限界があります（各指標の limit 欄を参照してください） / Observations have limits (see each metric's limit notes)",
     ]
 
 

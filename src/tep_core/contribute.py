@@ -1,8 +1,10 @@
 """`grift contribute` — explicit opt-in submission builder (data-collection
 ruling §2-3, shipped ahead of schedule in v0.5.2).
 
-This command NEVER sends anything. Automatic transmission from the CLI is
-permanently forbidden (7th prohibition). It builds a payload file and prints
+The measurement commands never touch the network, and contribute never
+auto-sends to anyone (7th prohibition: no automatic transmission to us, ever).
+`--open` uses the user's own gh credentials to push to the user's own fork;
+the final submit button is the user's. This module builds a payload and prints
 it in full; the user reviews it and submits it themselves (PR-based intake
 into the public contributions repository — therefore the payload WILL be
 public, which the confirmation flow states explicitly).
@@ -102,13 +104,14 @@ def _assert_no_private_shape(payload: dict[str, Any]) -> None:
 
 INTAKE_REPO = "https://github.com/Cor-Incorporated/tep-contributions"
 
-CONFIRMATION_TEXT = """この提出について（必読）:
-1. 上記の payload 全文が提出内容のすべてです（他に何も送られません）
-2. この提出は公開コーパスに載ります（受け口は公開リポジトリのため、payload は公開になります）
-3. repo 名は含まれません（payload への付記は opt-in です）。ただし特徴の組合せから推測されるリスクはゼロではありません
-4. 用途は「{purpose}」に限定され、それ以外（SaaS 等への転用を含む）には使われません（docs/norms.md 保持・削除条項）
-5. CLI は何も送信しません — 提出はあなた自身が行います（自動送信は恒久禁止）
-6. 提出は二枚扉です: 公開ドア（本人 PR・{intake}）/ 非公開ドア（フォーム・メールで受領後に当社が代理 PR・提出者身元は非公開）
+CONFIRMATION_TEXT = """この提出について（必読）/ About this submission (read first):
+1. 上記の payload 全文が提出内容のすべてです / The payload above is the entirety of the submission
+2. この提出は公開コーパスに載ります（受け口は公開リポジトリのため、payload は公開になります）/ It will appear in the public corpus (the intake is a public repository)
+3. repo 名は含まれません（付記は opt-in）。ただし特徴の組合せから推測されるリスクはゼロではありません / No repo name is included (opt-in aside); the risk of re-identification from feature combinations is not zero
+4. 用途は「{purpose}」に限定され、それ以外（SaaS 等への転用を含む）には使われません（docs/norms.md 保持・削除条項）/ Use is restricted to "{purpose}" — nothing else, including SaaS reuse (see the norms retention section)
+5. 測定コマンド（analyze/report/verify）はネットワークに触れません。contribute は自動送信しません — 提出はあなた自身が行います / The measurement commands never touch the network; contribute never auto-sends — submission is your action
+6. 提出は二枚扉です / Two doors: 公開ドア（本人 PR・{intake}）/ 非公開ドア（フォーム・メール → 当社が代理 PR・身元は非公開）/ public door (your own PR) or private door (form/email; we open the PR; your identity stays private)
+7. --open を使う場合 / If you use --open: **この方法は公開ドアです。あなたの GitHub アカウント名が PR に表示されます / this is the PUBLIC door; your GitHub account name will appear on the PR**。fork がまだ無い場合は自動作成されます / a fork under your account will be auto-created if you do not have one
 """.format(purpose=CONTRIBUTE_PURPOSE, intake=INTAKE_REPO)
 
 
@@ -119,3 +122,35 @@ def render_confirmation(payload: dict[str, Any]) -> str:
         + "\n=== end payload ===\n\n"
         + CONFIRMATION_TEXT
     )
+
+
+def validate_contribution_payload(payload: dict) -> list[str]:
+    """Local pre-push check for --open (B-4): mirrors the intake validator's
+    schema + needle rails. Returns violation list; non-empty = do not push."""
+    violations: list[str] = []
+    if payload.get("contribution_schema") != "tep-contribution-v1":
+        violations.append("contribution_schema must be tep-contribution-v1")
+    if payload.get("purpose") != CONTRIBUTE_PURPOSE:
+        violations.append("unexpected purpose")
+    prov = payload.get("provenance") or {}
+    if prov.get("analysis_scope") != "repo":
+        violations.append("only repo-scope contributions are accepted")
+    import json as _json
+
+    text = _json.dumps(payload, ensure_ascii=False)
+    if "@" in text:
+        violations.append("email-shaped string present")
+    forbidden = {"canonical_id", "actor", "actors", "emails", "path", "repo", "repository"}
+
+    def walk(node):
+        if isinstance(node, dict):
+            for key, value in node.items():
+                if key in forbidden:
+                    violations.append(f"forbidden key {key!r}")
+                walk(value)
+        elif isinstance(node, list):
+            for item in node:
+                walk(item)
+
+    walk(payload)
+    return violations

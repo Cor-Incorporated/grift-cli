@@ -22,7 +22,7 @@ COVERAGE_MD = ROOT / "golden" / "coverage.md"
 # HOLE rows must carry an issue URL. When a hole is closed (pin added etc.),
 # remove the row here and close the issue.
 KNOWN_HOLES: dict[str, str] = {
-    "origin.template_inherited": "https://github.com/Cor-Incorporated/grift-cli-dev/issues/11",
+    "origin.template_inherited": "https://github.com/Cor-Incorporated/grift-cli/issues/7",
 }
 
 

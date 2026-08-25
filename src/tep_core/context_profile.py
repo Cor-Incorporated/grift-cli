@@ -21,7 +21,7 @@ from tep_core.gitutil import GitCommit, _run_git
 from tep_core.observation import NotObserved, Observed
 from tep_core.origin import OriginResult
 
-CONTEXT_DEFINITION_VERSION = "context-v2-2026-08-23"
+CONTEXT_DEFINITION_VERSION = "context-v3-2026-08-25"
 
 # collaboration_class thresholds (part of the definition version):
 #   solo          top_actor_share >= 0.90
@@ -184,7 +184,9 @@ def _top_level_dirs(commits: list[GitCommit]) -> list[str]:
     return [name for name, _count in dirs.most_common(5)]
 
 
-def _language_composition(commits: list[GitCommit]) -> dict[str, int]:
+def _language_composition(commits: list[GitCommit]) -> dict[str, float]:
+    """Touch shares (0-1, context-v3): the unit has been "touch-share" since
+    context-v1 but the value emitted raw counts until v3 — aligned here (#50)."""
     counts: Counter[str] = Counter()
     total = 0
     for commit in commits:
@@ -197,7 +199,11 @@ def _language_composition(commits: list[GitCommit]) -> dict[str, int]:
                     break
     if total == 0:
         return {}
-    return {name: count for name, count in counts.most_common() if count / total >= 0.01}
+    return {
+        name: round(count / total, 4)
+        for name, count in counts.most_common()
+        if count / total >= 0.01
+    }
 
 
 def _manifest_set(commits: list[GitCommit]) -> list[str]:
@@ -249,8 +255,11 @@ def _test_docs_shares(commits: list[GitCommit]) -> tuple[float | None, float | N
 
 
 def _actor_turnover(commits: list[GitCommit]) -> dict[str, dict[str, int]]:
-    first_year: dict[str, int] = {}
-    last_year: dict[str, int] = {}
+    """Per-year actor movement (context-v3): `joined` = first-seen year count,
+    `last_active` = last-seen year count. The old key `left` was misleading —
+    an actor whose latest commit is this year is NOT gone (#50)."""
+    first_year: dict[str, str] = {}
+    last_year: dict[str, str] = {}
     for commit in commits:
         key = _author_key(commit)
         year = commit.date[:4]
@@ -259,9 +268,12 @@ def _actor_turnover(commits: list[GitCommit]) -> dict[str, dict[str, int]]:
         if key not in last_year or year > last_year[key]:
             last_year[key] = year
     joined: Counter[str] = Counter(first_year.values())
-    left: Counter[str] = Counter(last_year.values())
+    last_active: Counter[str] = Counter(last_year.values())
     years = sorted(set(first_year.values()) | set(last_year.values()))
-    return {year: {"joined": joined.get(year, 0), "left": left.get(year, 0)} for year in years}
+    return {
+        year: {"joined": joined.get(year, 0), "last_active": last_active.get(year, 0)}
+        for year in years
+    }
 
 
 def _release_cadence(tags: list[str], span_days: int) -> float | None:
@@ -336,7 +348,7 @@ def build_context_profile(
         "active_days_180d": Observed(active_days_180d, "days").to_dict(),
         "lifecycle_stage": Observed(lifecycle_stage, "class").to_dict(),
         "actor_turnover": Observed(_actor_turnover(humans), "actors/year").to_dict(),
-        "release_cadence": Observed(_release_cadence(tags, span_days), "releases/year").to_dict(),
+        "release_cadence": Observed(_release_cadence(tags, span_days), "tags/year").to_dict(),
         "conventional_commit_share": Observed(
             conventional if conventional is not None else 0, "ratio"
         ).to_dict(),
