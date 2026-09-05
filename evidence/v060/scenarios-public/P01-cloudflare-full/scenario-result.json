@@ -1,0 +1,362 @@
+{
+  "argv": [
+    "python",
+    "-m",
+    "tep_cli",
+    "repo",
+    "${DISPOSABLE_REPO}/cloudflare-os",
+    "--rev",
+    "4f42d625a994a7bff4a3091a6b06897ab2e4d79c",
+    "--actors",
+    "--format",
+    "both",
+    "--out",
+    "${OUTPUT_ROOT}/P01-cloudflare-full/live",
+    "--forge-provider",
+    "github",
+    "--fetch-public",
+    "--public-evidence-out",
+    "${RAW_BUNDLE_ROOT}/P01-cloudflare-full",
+    "--max-public-pages",
+    "100"
+  ],
+  "assertions": [
+    {
+      "actual": "0.7.0",
+      "expected": "0.7.0",
+      "id": "runner-tool-version",
+      "status": "PASS"
+    },
+    {
+      "actual": "4f42d625a994a7bff4a3091a6b06897ab2e4d79c",
+      "expected": "4f42d625a994a7bff4a3091a6b06897ab2e4d79c",
+      "id": "target-oid",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "expected": 0,
+      "id": "offline-exit",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "expected": 0,
+      "id": "offline_collection_verify-exit",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "expected": 0,
+      "id": "fetch-exit",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "expected": 0,
+      "id": "bundle_verify-exit",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "expected": 0,
+      "id": "live_collection_verify-exit",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "expected": 0,
+      "id": "replay-exit",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "expected": 0,
+      "id": "replay_collection_verify-exit",
+      "status": "PASS"
+    },
+    {
+      "actual": "complete",
+      "expected": "complete",
+      "id": "provider-coverage",
+      "status": "PASS"
+    },
+    {
+      "actual": 7,
+      "expected": 7,
+      "id": "provider-pages",
+      "status": "PASS"
+    },
+    {
+      "actual": 667,
+      "expected": 667,
+      "id": "provider-items",
+      "status": "PASS"
+    },
+    {
+      "actual": 667,
+      "expected": 667,
+      "id": "oid-expected",
+      "status": "PASS"
+    },
+    {
+      "actual": 667,
+      "expected": 667,
+      "id": "oid-observed",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "expected": 0,
+      "id": "oid-missing",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "expected": 0,
+      "id": "oid-extra",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "expected": 0,
+      "id": "oid-duplicate",
+      "status": "PASS"
+    },
+    {
+      "actual": 667,
+      "expected": 667,
+      "id": "git-total",
+      "status": "PASS"
+    },
+    {
+      "actual": 438,
+      "expected": 438,
+      "id": "human-nonmerge",
+      "status": "PASS"
+    },
+    {
+      "actual": 225,
+      "expected": 225,
+      "id": "human-merge",
+      "status": "PASS"
+    },
+    {
+      "actual": 4,
+      "expected": 4,
+      "id": "bot-commits",
+      "status": "PASS"
+    },
+    {
+      "actual": 18,
+      "expected": 18,
+      "id": "actor-count",
+      "status": "PASS"
+    },
+    {
+      "actual": "complete",
+      "expected": "complete",
+      "id": "account-linkage",
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "id": "duration-within-limit",
+      "status": "PASS"
+    },
+    {
+      "actual": "a9a93de68843beeb9eed296171a319a78b9921f2aace86ac2efbca4234faea02",
+      "expected": "a9a93de68843beeb9eed296171a319a78b9921f2aace86ac2efbca4234faea02",
+      "id": "acquisition-receipt-digest",
+      "status": "PASS"
+    }
+  ],
+  "collection_mode": "fresh",
+  "counts": {
+    "account.commit-linked": 661,
+    "account.public-handle-actors": 17,
+    "account.stable": 14,
+    "account.status-conflict-actors": 6,
+    "account.status-matched-actors": 11,
+    "account.status-unmatched-actors": 1,
+    "actor.full": 18,
+    "git.bot": 4,
+    "git.human": 663,
+    "git.merge": 225,
+    "git.nonmerge": 442,
+    "git.total": 667,
+    "metric.human-nonmerge.denominator": 663,
+    "metric.human-nonmerge.numerator": 438,
+    "oid.duplicates": 0,
+    "oid.expected": 667,
+    "oid.extra": 0,
+    "oid.missing": 0,
+    "oid.observed": 667,
+    "provider.items": 667,
+    "provider.pages": 7,
+    "provider.sha-to-account": 661,
+    "verify.cannot-verify": 0,
+    "verify.collections": 3,
+    "verify.verified": 3
+  },
+  "duration_ms": 13647,
+  "exit_code": 0,
+  "output_digests": {
+    "derived/actor-provider-independent": {
+      "algorithm": "sha256",
+      "value": "1e59b7a2c61db41d0f59a12093d0bc99c83d53a9b2f278aa89095315ebcf4752"
+    },
+    "derived/actor-provider-independent-numeric": {
+      "algorithm": "sha256",
+      "value": "063d3bb67f4f510c126c9bb7fb5c77ced0d2a5fadd6a8a81585f52cf99dcfa44"
+    },
+    "derived/license-evidence": {
+      "algorithm": "sha256",
+      "value": "36f808a0f1a0ea4847e35a36fe6e722600b8a130d799817704c5b3abd617de88"
+    },
+    "derived/population": {
+      "algorithm": "sha256",
+      "value": "ed97c11633bbd258e6051faf0db75c113ed3c26cb9769b4c53228c78db6d1084"
+    },
+    "derived/repo-provider-independent": {
+      "algorithm": "sha256",
+      "value": "2845f2e2d51228b44748ae05ec118e7e756fd1c77371046ab658a06d92c75c0b"
+    },
+    "derived/repo-provider-independent-numeric": {
+      "algorithm": "sha256",
+      "value": "6692915edcacb832b8971f7d5c788fef10838f6da4c5c3b837598a6857b24a40"
+    },
+    "derived/sha-to-actor": {
+      "algorithm": "sha256",
+      "value": "2bfc8bf7d3191ebc6e2d1a6f43b62570e3fcb001c3cc7de15b0a2c6d0fc846d9"
+    },
+    "live/actor-index.json": {
+      "algorithm": "sha256",
+      "value": "85e4312b364de009566ededc049198adac6adc47bfa70697a55e50465b98d09e"
+    },
+    "live/actor-index.md": {
+      "algorithm": "sha256",
+      "value": "822c1baa8878b8bfad610fb447c08e8d1654ecda5df3d05a07b164b38095dcfc"
+    },
+    "live/collection-manifest.json": {
+      "algorithm": "sha256",
+      "value": "dde74fa9c87ab3570bdf2be4525346830ad99e063023b0f1c20a71dfc85e2093"
+    },
+    "live/repo-report.json": {
+      "algorithm": "sha256",
+      "value": "3db2a4b873c5136ca85757e9fffc59c37a9ccd52e3721c67ad04efe2f0c050ce"
+    },
+    "live/repo-report.md": {
+      "algorithm": "sha256",
+      "value": "186dc1e98ad00197f6afe256b088f24fbc477295021aa9ef1c805f7be38c5274"
+    },
+    "offline/actor-index.json": {
+      "algorithm": "sha256",
+      "value": "85e4312b364de009566ededc049198adac6adc47bfa70697a55e50465b98d09e"
+    },
+    "offline/actor-index.md": {
+      "algorithm": "sha256",
+      "value": "08b08c1ff17b82b719a68ffd0048944526e0ebeeb6316e9a91ef570b76a3eb91"
+    },
+    "offline/collection-manifest.json": {
+      "algorithm": "sha256",
+      "value": "ba6a7030194302c0f909bca54a9cbae0ad790a6c3ebe6b371156907ba9ba2902"
+    },
+    "offline/repo-report.json": {
+      "algorithm": "sha256",
+      "value": "7b1a4bae52d5774a5aec2a027c0365f72bc0e9beff0ce56ac6ff17565c28a0c1"
+    },
+    "offline/repo-report.md": {
+      "algorithm": "sha256",
+      "value": "53dad1b16c8b5c09ac99258d0e16f60786be0fce5d9c4194973c6adc48aaed30"
+    },
+    "public-evidence/manifest.json": {
+      "algorithm": "sha256",
+      "value": "25182999037ae8566deb79675a145014aa6c71882a431678f62d5b2631ccfd5f"
+    },
+    "public-evidence/page-01.body": {
+      "algorithm": "sha256",
+      "value": "0d830f0b82a290d35769cbeb5d44aed017c05470527f93843d4d7aa61fed44f2"
+    },
+    "public-evidence/page-02.body": {
+      "algorithm": "sha256",
+      "value": "262eebcf886e599c183bab39de2e50faaccfd4064454766d78aad7343cd851b2"
+    },
+    "public-evidence/page-03.body": {
+      "algorithm": "sha256",
+      "value": "f4ab9a7f492e71bd3d6f1580f6168de09f623c859aee5757d61d16bb498701d5"
+    },
+    "public-evidence/page-04.body": {
+      "algorithm": "sha256",
+      "value": "4547a445dbd6cb806d296a8b77fd58e3e537b5af631f95a5be47d19eab084b35"
+    },
+    "public-evidence/page-05.body": {
+      "algorithm": "sha256",
+      "value": "e6af839ff460193d0bb49033674a9c04b6474b575fd5f0666694192d4f25a1f0"
+    },
+    "public-evidence/page-06.body": {
+      "algorithm": "sha256",
+      "value": "ae14ef11bc7feeb3ec33915ac930a02ba40b89379d5b24c811ccf646f0166e2b"
+    },
+    "public-evidence/page-07.body": {
+      "algorithm": "sha256",
+      "value": "62907f7e6bcd5c1f9a7fd9564f46b4b8d55dda25f147717a7b4f6a254d4589fd"
+    },
+    "public-evidence/payload": {
+      "algorithm": "sha256",
+      "value": "82c9c47a5713dddc783643815e85ce59b76e275598a741249ee51ae0d5827c07"
+    },
+    "replay/actor-index.json": {
+      "algorithm": "sha256",
+      "value": "85e4312b364de009566ededc049198adac6adc47bfa70697a55e50465b98d09e"
+    },
+    "replay/actor-index.md": {
+      "algorithm": "sha256",
+      "value": "822c1baa8878b8bfad610fb447c08e8d1654ecda5df3d05a07b164b38095dcfc"
+    },
+    "replay/collection-manifest.json": {
+      "algorithm": "sha256",
+      "value": "0387ef33be691e86ca28d9dd5eaa71a076fe1d38c821a69231b1aa6ab4687925"
+    },
+    "replay/repo-report.json": {
+      "algorithm": "sha256",
+      "value": "38fb4e5a4a662984c1cbbdb57c6451b8efb89c5b3774f8fa7dc93899b4432214"
+    },
+    "replay/repo-report.md": {
+      "algorithm": "sha256",
+      "value": "186dc1e98ad00197f6afe256b088f24fbc477295021aa9ef1c805f7be38c5274"
+    }
+  },
+  "partition_digest": {
+    "algorithm": "sha256",
+    "value": "3a34221d8d9ec7fc883e95022b2e3d95e6df6129af091ff1b29924c38bca92d3"
+  },
+  "prior_evidence_digests": null,
+  "provider_coverage": {
+    "kind": "observed",
+    "provided": true
+  },
+  "runner": {
+    "source_binding": {
+      "commit_oid": {
+        "algorithm": "sha1",
+        "value": "1a5682675faeca8949481b6ef13c406d14d7b832"
+      },
+      "definition_version": "grift-tool-source-tree-v1",
+      "file_count": 97,
+      "source_tree_digest": {
+        "algorithm": "sha256",
+        "value": "115e7ae4af4d6eaecce0c97812b0a70ab2a39416194a22f5e00c93d51af882c3"
+      }
+    },
+    "tool_version": "0.7.0"
+  },
+  "scenario_id": "P01-cloudflare-full",
+  "schema_version": "tep-public-scenario-result-v2",
+  "target_oid": {
+    "algorithm": "sha1",
+    "value": "4f42d625a994a7bff4a3091a6b06897ab2e4d79c"
+  },
+  "verdict": "PASS"
+}

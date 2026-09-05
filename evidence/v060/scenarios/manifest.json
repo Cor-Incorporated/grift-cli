@@ -1,0 +1,121 @@
+{
+  "definition_version": "scenario-v1",
+  "scenarios": [
+    {
+      "expected_artifacts": [
+        "artifacts/repo-report.json",
+        "artifacts/repo-report.md",
+        "artifacts/actor-index.json",
+        "artifacts/actor-index.md",
+        "artifacts/actors/*.json",
+        "artifacts/actors/*.md",
+        "artifacts/collection-manifest.json",
+        "scenario-result.json"
+      ],
+      "id": "R01-benevolent-director",
+      "target_oid": {
+        "algorithm": "sha1",
+        "value": "a650ffa6b5921b93fcc32398ab01e0043ce962ec"
+      },
+      "tier": "local",
+      "timeout_seconds": 600
+    },
+    {
+      "expected_artifacts": [
+        "artifacts/repo-report.json",
+        "artifacts/repo-report.md",
+        "artifacts/actor-index.json",
+        "artifacts/actor-index.md",
+        "artifacts/actors/*.json",
+        "artifacts/actors/*.md",
+        "artifacts/collection-manifest.json",
+        "scenario-result.json"
+      ],
+      "id": "R02-grift-landing-blueprint",
+      "target_oid": {
+        "algorithm": "sha1",
+        "value": "7efd09e22d06caa813149af891ae2001bebf6cb4"
+      },
+      "tier": "local",
+      "timeout_seconds": 180
+    },
+    {
+      "expected_artifacts": [
+        "artifacts/repo-report.json",
+        "artifacts/repo-report.md",
+        "artifacts/actor-index.json",
+        "artifacts/actor-index.md",
+        "artifacts/actors/*.json",
+        "artifacts/actors/*.md",
+        "artifacts/collection-manifest.json",
+        "scenario-result.json"
+      ],
+      "id": "R03-shallow-history",
+      "target_oid": {
+        "algorithm": "sha1",
+        "value": "fa9bc317cc0ac1953ed09cbab11d3de2232c2fb0"
+      },
+      "tier": "local",
+      "timeout_seconds": 180
+    },
+    {
+      "expected_artifacts": [
+        "artifacts/repo-report.json",
+        "artifacts/repo-report.md",
+        "artifacts/actor-index.json",
+        "artifacts/actor-index.md",
+        "artifacts/actors/*.json",
+        "artifacts/actors/*.md",
+        "artifacts/collection-manifest.json",
+        "scenario-result.json"
+      ],
+      "id": "R04-grift-cli-baseline",
+      "target_oid": {
+        "algorithm": "sha1",
+        "value": "fa9bc317cc0ac1953ed09cbab11d3de2232c2fb0"
+      },
+      "tier": "local",
+      "timeout_seconds": 180
+    },
+    {
+      "expected_artifacts": [
+        "artifacts/repo-report.json",
+        "artifacts/repo-report.md",
+        "artifacts/actor-index.json",
+        "artifacts/actor-index.md",
+        "artifacts/actors/*.json",
+        "artifacts/actors/*.md",
+        "artifacts/collection-manifest.json",
+        "scenario-result.json"
+      ],
+      "id": "R07-voicevox",
+      "target_oid": {
+        "algorithm": "sha1",
+        "value": "c72a94cbcf501be054a239446c7eb8cf53be34b4"
+      },
+      "tier": "local",
+      "timeout_seconds": 180
+    },
+    {
+      "expected_artifacts": [
+        "artifacts/repo-report.json",
+        "artifacts/repo-report.md",
+        "artifacts/actor-index.json",
+        "artifacts/actor-index.md",
+        "artifacts/actors/*.json",
+        "artifacts/actors/*.md",
+        "artifacts/collection-manifest.json",
+        "scenario-result.json"
+      ],
+      "id": "R08-kilo",
+      "target_oid": {
+        "algorithm": "sha1",
+        "value": "323d93b29bd89a2cb446de90c4ed4fea1764176e"
+      },
+      "tier": "local",
+      "timeout_seconds": 180
+    }
+  ],
+  "schema_version": "tep-scenario-manifest-v1",
+  "suite_id": "v060-real-repositories"
+}

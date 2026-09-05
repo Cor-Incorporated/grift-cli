@@ -1,0 +1,21 @@
+schema_version = "tep-project-v1"
+project_id = ""
+title = ""
+
+[requirements.change_rhythm]
+# 未記入の値は要求なし。単位は日。CLI は空欄を 0 や不足にしない。
+# active_days_180d_min =
+# median_gap_days_max =
+# p90_gap_days_max =
+
+[requirements.surfaces]
+required = []
+
+[requirements.verification]
+required = []
+
+[requirements.inputs]
+required = []
+
+[requirements.role_lens]
+# name =

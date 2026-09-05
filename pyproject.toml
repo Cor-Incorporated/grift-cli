@@ -1,6 +1,6 @@
 [project]
 name = "grift-cli"
-version = "0.5.9"
+dynamic = ["version"]
 description = "Deterministic TEP evidence metrics from a single git repository. No LLM."
 readme = "README.md"
 license = { text = "MIT" }
@@ -20,7 +20,7 @@ classifiers = [
 dependencies = []
 
 [project.optional-dependencies]
-dev = ["pytest>=8.0", "build>=1.2"]
+dev = ["pytest>=8.0", "build>=1.2", "jsonschema>=4,<5"]
 
 [project.scripts]
 grift = "tep_cli.__main__:main"
@@ -31,6 +31,34 @@ Homepage = "https://github.com/Cor-Incorporated/grift-cli"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "src/tep_core/version.py"
+
+[tool.hatch.build]
+skip-excluded-dirs = true
+
+[tool.hatch.build.targets.sdist]
+# Explicit source-distribution allowlist.  A dirty checkout must never make
+# owner-unknown worktrees, smoke output, local lockfiles, or nested repos part
+# of the release artifact.
+only-include = [
+    ".github",
+    "benchmarks",
+    "corpus",
+    "docs",
+    "golden",
+    "scripts",
+    "src",
+    "tests",
+    ".gitignore",
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.en.md",
+    "README.md",
+    "action.yml",
+    "pyproject.toml",
+]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/tep_core", "src/tep_cli"]

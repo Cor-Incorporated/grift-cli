@@ -23,6 +23,20 @@ from tep_core.origin import OriginResult
 
 CONTEXT_DEFINITION_VERSION = "context-v3-2026-08-25"
 
+# `scale` counts every non-bot commit, merges included; `activity` counts only
+# non-merge ones. Both blocks ship in the same report, and on a merge-heavy
+# repository they differ by thousands (pytest: 16,962 vs 12,396), so the scale
+# block states its denominator instead of relying on the field name to imply it.
+# No measured value changes with this note, so CONTEXT_DEFINITION_VERSION holds
+# — only the collaboration_class thresholds below are versioned behaviour.
+SCALE_DENOMINATOR_NOTE = "human_commits includes merge commits and excludes bot commits"
+
+# Shared with analyze.py's actor-side degradation so a report never carries two
+# spellings of the same limit. Repo-scope metrics reached this guard late: the
+# actor path has degraded on truncated history since v0.6.0, while
+# context_profile kept reporting the visible slice as if it were the repository.
+HISTORY_INCOMPLETE_REASON = "history_incomplete"
+
 # collaboration_class thresholds (part of the definition version):
 #   solo          top_actor_share >= 0.90
 #   small_team    resolved_human_actors <= 5
@@ -243,6 +257,38 @@ def _conventional_share(commits: list[GitCommit]) -> float | None:
     return round(matched / len(pop), 4)
 
 
+# Reasons a context value cannot be measured. Coercing either case to 0 and
+# labelling it `observed` is what norms §1 forbids: on a partial clone that
+# reported `test_file_ratio = 0` for pytest and `docs_share = 0` for curl,
+# which carries 1,090 documentation files (R9).
+_NO_PATHS = "commit_paths_unavailable"
+_NO_POPULATION = "no_nonmerge_commits"
+
+
+def _has_commit_paths(commits: list[GitCommit]) -> bool:
+    """Same predicate as surface_profile, so the two cannot disagree."""
+    return any(commit.files for commit in commits)
+
+
+def _measured(value: Any, unit: str, reason: str) -> dict[str, Any]:
+    """None means the value could not be computed, never that it is zero."""
+    if value is None:
+        return NotObserved(reason).to_dict()
+    return Observed(value, unit).to_dict()
+
+
+def _path_measured(
+    paths_available: bool,
+    compute: Any,
+    commits: list[GitCommit],
+    unit: str,
+) -> dict[str, Any]:
+    """Path-derived values are unmeasurable, not empty, when no paths exist."""
+    if not paths_available:
+        return NotObserved(_NO_PATHS).to_dict()
+    return Observed(compute(commits), unit).to_dict()
+
+
 def _test_docs_shares(commits: list[GitCommit]) -> tuple[float | None, float | None]:
     from tep_core.paths import is_doc_or_config_path, is_test_path
 
@@ -287,11 +333,27 @@ def build_context_profile(
     repo: Path,
     commits: list[GitCommit],
     origin: OriginResult,
+    *,
+    history_complete: bool = True,
 ) -> dict[str, Any]:
-    """repo-scope context layer. Appears in report-v1 as an additive section."""
+    """repo-scope context layer. Appears in report-v1 as an additive section.
+
+    `history_complete=False` (a shallow or promisor clone) suppresses every
+    depth-dependent field. On a `--depth 50` clone of urllib3 the visible
+    history claimed 38 commits from 2026-05-07 by 17 authors; the repository
+    actually holds 4,269 commits from 2009-12-10 by 433. Those are artifacts of
+    the truncation, not measurements of the repository, and reporting them as
+    `observed` states as fact something the tool cannot see (norms §1).
+    """
     humans = _human_commits(commits, origin)
     if not humans:
         return NotObserved("no_human_commits").to_dict()
+
+    def depth_dependent(observation: dict[str, Any]) -> dict[str, Any]:
+        """Emit the measurement, or say the history was too short to make it."""
+        if history_complete:
+            return observation
+        return NotObserved(HISTORY_INCOMPLETE_REASON).to_dict()
 
     author_counts: Counter[str] = Counter(_author_key(c) for c in humans)
     resolved_human_actors = len(author_counts)
@@ -321,6 +383,7 @@ def build_context_profile(
         lifecycle_stage = "dormant"
 
     tags = _tags(repo)
+    paths_available = _has_commit_paths(humans)
     test_share, docs_share = _test_docs_shares(humans)
     conventional = _conventional_share(humans)
     issue_share = _issue_link_share(humans)
@@ -328,36 +391,50 @@ def build_context_profile(
         "kind": "observed",
         "definition_version": CONTEXT_DEFINITION_VERSION,
         "analysis_scope": "repo",
-        "resolved_human_actors": Observed(resolved_human_actors, "actors").to_dict(),
-        "top_actor_share": Observed(top_share, "ratio").to_dict(),
-        "collaboration_class": Observed(collaboration_class, "class").to_dict(),
+        "resolved_human_actors": depth_dependent(
+            Observed(resolved_human_actors, "actors").to_dict()
+        ),
+        "top_actor_share": depth_dependent(Observed(top_share, "ratio").to_dict()),
+        "collaboration_class": depth_dependent(Observed(collaboration_class, "class").to_dict()),
         "pr_flow_share": Observed(pr_flow_share, "ratio").to_dict(),
         "scale": {
             "kind": "observed",
-            "human_commits": Observed(len(humans), "commits").to_dict(),
-            "first_commit": Observed(first_date, "date").to_dict(),
+            # This block counts merges; `activity` does not. Both populations
+            # appear in one report, so each states its own denominator rather
+            # than leaving the reader to infer it from the field name.
+            "denominator_note": SCALE_DENOMINATOR_NOTE,
+            "human_commits": depth_dependent(Observed(len(humans), "commits").to_dict()),
+            "first_commit": depth_dependent(Observed(first_date, "date").to_dict()),
+            # HEAD is real whatever the depth, so the recent end survives.
             "last_commit": Observed(last_date, "date").to_dict(),
-            "active_span_days": Observed(span_days, "days").to_dict(),
-            "top_level_dirs": Observed(_top_level_dirs(humans), "dirs").to_dict(),
-            "tags": Observed(len(tags), "tags").to_dict(),
+            "active_span_days": depth_dependent(Observed(span_days, "days").to_dict()),
+            "top_level_dirs": depth_dependent(Observed(_top_level_dirs(humans), "dirs").to_dict()),
+            "tags": depth_dependent(Observed(len(tags), "tags").to_dict()),
         },
-        "repo_age_days": Observed(
-            _days_between(first_date, head_date) if first_date and head_date else 0, "days"
-        ).to_dict(),
+        "repo_age_days": depth_dependent(
+            Observed(
+                _days_between(first_date, head_date) if first_date and head_date else 0, "days"
+            ).to_dict()
+        ),
         "days_since_last_human_commit": Observed(days_since_last, "days").to_dict(),
-        "active_days_180d": Observed(active_days_180d, "days").to_dict(),
-        "lifecycle_stage": Observed(lifecycle_stage, "class").to_dict(),
-        "actor_turnover": Observed(_actor_turnover(humans), "actors/year").to_dict(),
-        "release_cadence": Observed(_release_cadence(tags, span_days), "tags/year").to_dict(),
-        "conventional_commit_share": Observed(
-            conventional if conventional is not None else 0, "ratio"
-        ).to_dict(),
-        "language_composition": Observed(_language_composition(humans), "touch-share").to_dict(),
-        "test_file_ratio": Observed(test_share if test_share is not None else 0, "ratio").to_dict(),
-        "docs_share": Observed(docs_share if docs_share is not None else 0, "ratio").to_dict(),
-        "dependency_manifests": Observed(_manifest_set(humans), "manifests").to_dict(),
-        "monorepo_markers": Observed(_monorepo_markers(humans), "markers").to_dict(),
+        # A truncated clone can cover fewer than 180 days, so the window itself
+        # is unproven and the stage derived from it with it.
+        "active_days_180d": depth_dependent(Observed(active_days_180d, "days").to_dict()),
+        "lifecycle_stage": depth_dependent(Observed(lifecycle_stage, "class").to_dict()),
+        "actor_turnover": depth_dependent(
+            Observed(_actor_turnover(humans), "actors/year").to_dict()
+        ),
+        "release_cadence": depth_dependent(
+            Observed(_release_cadence(tags, span_days), "tags/year").to_dict()
+        ),
+        "conventional_commit_share": _measured(conventional, "ratio", _NO_POPULATION),
+        "language_composition": _path_measured(
+            paths_available, _language_composition, humans, "touch-share"
+        ),
+        "test_file_ratio": _measured(test_share, "ratio", _NO_PATHS),
+        "docs_share": _measured(docs_share, "ratio", _NO_PATHS),
+        "dependency_manifests": _path_measured(paths_available, _manifest_set, humans, "manifests"),
+        "monorepo_markers": _path_measured(paths_available, _monorepo_markers, humans, "markers"),
     }
-    issue_share_val = issue_share if issue_share is not None else 0
-    profile["issue_link_density"] = Observed(issue_share_val, "ratio").to_dict()
+    profile["issue_link_density"] = _measured(issue_share, "ratio", _NO_POPULATION)
     return profile

@@ -1,0 +1,43 @@
+{
+  "definition_version": "scenario-public-v2",
+  "scenarios": [
+    {
+      "expected_artifacts": [
+        "scenario-result.json"
+      ],
+      "id": "P01-cloudflare-full",
+      "target_oid": {
+        "algorithm": "sha1",
+        "value": "4f42d625a994a7bff4a3091a6b06897ab2e4d79c"
+      },
+      "tier": "live-pr",
+      "timeout_seconds": 180
+    },
+    {
+      "expected_artifacts": [
+        "scenario-result.json"
+      ],
+      "id": "P02-vite-forced-partial",
+      "target_oid": {
+        "algorithm": "sha1",
+        "value": "e2b597de0ef14598901703f5aa52f8c962007d02"
+      },
+      "tier": "live-pr",
+      "timeout_seconds": 600
+    },
+    {
+      "expected_artifacts": [
+        "scenario-result.json"
+      ],
+      "id": "P03-gitlab-release-cli-full",
+      "target_oid": {
+        "algorithm": "sha1",
+        "value": "07d5e21c6610f781b65d7196c5d0e86e73bcc6be"
+      },
+      "tier": "live-pr",
+      "timeout_seconds": 180
+    }
+  ],
+  "schema_version": "tep-scenario-manifest-v1",
+  "suite_id": "v060-public-live-gates"
+}

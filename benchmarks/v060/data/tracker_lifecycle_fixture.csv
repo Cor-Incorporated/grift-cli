@@ -1,0 +1,9 @@
+fixture_kind,record_type,record_id,project_id,created_at,in_progress_at,first_review_at,merged_at,closed_at,release_at,status,linked_record_id,notes
+synthetic_contract,issue,ISSUE-001,project_constant,2026-01-05T09:00:00Z,2026-01-05T10:00:00Z,,,2026-01-07T15:00:00Z,,closed,PR-001,issue_to_close_2d6h
+synthetic_contract,pull_request,PR-001,project_constant,2026-01-06T09:00:00Z,,2026-01-06T10:00:00Z,2026-01-06T16:00:00Z,2026-01-06T16:00:00Z,,merged,ISSUE-001,pr_to_merge_7h
+synthetic_contract,release,REL-001,project_constant,2026-01-08T09:00:00Z,,,,,2026-01-08T09:00:00Z,released,,release_after_linked_issue
+synthetic_contract,issue,ISSUE-002,project_burst,2026-02-03T09:00:00Z,2026-02-03T09:05:00Z,,,2026-02-03T10:00:00Z,,closed,PR-002,same_day_burst
+synthetic_contract,pull_request,PR-002,project_burst,2026-02-03T09:00:00Z,,2026-02-03T09:05:00Z,2026-02-03T11:00:00Z,2026-02-03T11:00:00Z,,merged,ISSUE-002,pr_to_merge_2h
+synthetic_contract,issue,ISSUE-003,project_burst,2026-02-03T09:30:00Z,2026-02-03T09:35:00Z,,,2026-02-03T10:00:00Z,,closed,,same_day_issue
+synthetic_contract,issue,ISSUE-004,project_burst,2026-02-03T10:00:00Z,,,,2026-02-03T10:10:00Z,,closed,,same_day_issue
+synthetic_contract,release,REL-002,project_burst,2026-02-03T12:00:00Z,,,,,2026-02-03T12:00:00Z,released,,release_after_burst

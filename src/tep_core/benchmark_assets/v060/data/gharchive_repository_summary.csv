@@ -1,0 +1,9 @@
+repository,event_count,active_utc_days,first_utc,last_utc
+"apache/airflow",40,7,"2024-01-15T00:09:40Z","2024-01-21T00:13:43Z"
+"grafana/gotip",26,7,"2024-01-15T00:03:47Z","2024-01-21T00:08:11Z"
+"kubernetes/kubernetes",125,7,"2024-01-15T00:08:17Z","2024-01-21T00:36:24Z"
+"microsoft/vscode",64,7,"2024-01-15T00:23:44Z","2024-01-21T00:31:48Z"
+"numpy/numpy",35,7,"2024-01-15T00:01:19Z","2024-01-21T00:58:07Z"
+"pandas-dev/pandas",37,6,"2024-01-15T00:19:21Z","2024-01-21T00:06:21Z"
+"python/cpython",70,7,"2024-01-15T00:23:41Z","2024-01-21T00:58:04Z"
+"rust-lang/rust",157,7,"2024-01-15T00:02:30Z","2024-01-21T00:49:39Z"

@@ -1,0 +1,91 @@
+{
+  "actor_index_digest": {
+    "algorithm": "sha256",
+    "value": "e647bf12ae83a47d3b4617e32a26dce7aa4bb4ae701949bb2b82818c7d1d88f5"
+  },
+  "full": {
+    "actor_count": 1,
+    "digest": {
+      "algorithm": "sha256",
+      "value": "bd0c499d80ca53d61e8c41a67e74ddebde7807d6031f90acba0f9920e55bc0b6"
+    },
+    "human_commit_count": 33,
+    "links": {
+      "index_json": "actor-index.json",
+      "index_markdown": "actor-index.md",
+      "repo_json": "repo-report.json",
+      "repo_markdown": "repo-report.md"
+    }
+  },
+  "members": [
+    {
+      "bytes": 1185,
+      "media_type": "application/json",
+      "path": "actor-index.json",
+      "sha256": "9a3b64711004266c30585d75d6ca4f88031f8dd1ee7884273a45731fe29c1ce1"
+    },
+    {
+      "bytes": 629,
+      "media_type": "text/markdown",
+      "path": "actor-index.md",
+      "sha256": "77e001644e99448d50fafe25a78fe88ef4b44e2960de2606cae0bf581c60aefa"
+    },
+    {
+      "bytes": 955,
+      "media_type": "application/json",
+      "path": "actors/terada-kousuke.json",
+      "sha256": "244bc4e8ab4ac3eca155c1b727b2dc05d9e3eb795892c9ffbd580645aae6fc10"
+    },
+    {
+      "bytes": 394,
+      "media_type": "text/markdown",
+      "path": "actors/terada-kousuke.md",
+      "sha256": "e88b4f460033227756e831b605e4f87d8f2796990a8d42bbfabb793adf6873f1"
+    },
+    {
+      "bytes": 7617,
+      "media_type": "application/json",
+      "path": "repo-report.json",
+      "sha256": "d30a5afa9609615c8fc9484eddec4eb7c1d40210de1f8f4d6af3f30733e9ddb4"
+    },
+    {
+      "bytes": 1068,
+      "media_type": "text/markdown",
+      "path": "repo-report.md",
+      "sha256": "5031595d59e8dd244e00a88e2ec4e909d28a68d5f5be8dbad0a627c3a4f60ad5"
+    }
+  ],
+  "partition_digest": {
+    "algorithm": "sha256",
+    "value": "e5f43f4c48847a5c8e5541b86ce37165802d7098d5412fbdaddf5b3c1c62dfc1"
+  },
+  "population_digest": {
+    "algorithm": "sha256",
+    "value": "bd0c499d80ca53d61e8c41a67e74ddebde7807d6031f90acba0f9920e55bc0b6"
+  },
+  "schema_version": "actor-artifact-manifest-v1",
+  "selection": {
+    "actor_count": 1,
+    "actor_ids": [
+      "terada-kousuke"
+    ],
+    "digest": {
+      "algorithm": "sha256",
+      "value": "ab2dfe047a770f6647a71923bbadd9a980d2e9fff567da69324d67db073c0dd3"
+    },
+    "links": [
+      {
+        "actor_id": "terada-kousuke",
+        "json": "actors/terada-kousuke.json",
+        "markdown": "actors/terada-kousuke.md"
+      }
+    ],
+    "mode": "all"
+  },
+  "target": {
+    "oid": {
+      "algorithm": "sha1",
+      "value": "fa9bc317cc0ac1953ed09cbab11d3de2232c2fb0"
+    }
+  }
+}

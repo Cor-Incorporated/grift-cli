@@ -1,0 +1,21 @@
+=== CMD: ./smoke/bin/grift --version ===
+grift 0.5.8
+
+=== Bilingual templates ===
+CMD: grift report | grep -E 'What this measures|not grades|PUBLIC'
+4
+
+=== contribute disclosure (bilingual + public-door warn) ===
+CMD: grift report >/dev/null; grift contribute --yes 2>&1 | grep -cE 'PUBLIC door|never auto-sends'
+4
+
+=== B-2: --open without consent ===
+CMD: grift contribute --open --out /tmp/x.json (non-TTY)
+exit=2 (want 2)
+no file ✓
+
+=== --open full flow (fork push + compare URL) ===
+CMD: grift contribute --yes --open 2>err
+exit=0
+branch `contrib/0825-0539-a80ad796` pushed to your fork (terisuke/tep-contributions).
+browser opened at the PR creation page — payload and manifest line are already committed; press 'Create pull request' to submit.

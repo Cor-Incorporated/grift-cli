@@ -1,0 +1,34 @@
+{
+  "schema_version": "report-v2",
+  "report_kind": "evidence",
+  "subject": {
+    "kind": "repo",
+    "selection": "repo_all_human"
+  },
+  "provenance": {
+    "tool_name": "grift",
+    "tool_version": "0.6.0",
+    "definition_version": "tep-v0.6.0-2026-08-29",
+    "analysis_scope": "repo",
+    "window_basis": "legacy_head_date"
+  },
+  "input_coverage": {
+    "git": {
+      "kind": "observed",
+      "value": true,
+      "unit": "boolean",
+      "provided": true
+    },
+    "forge": {
+      "kind": "not_observed",
+      "reason": "forge_export_not_provided",
+      "provided": false
+    },
+    "tracker": {
+      "kind": "not_observed",
+      "reason": "tracker_export_not_provided",
+      "provided": false
+    }
+  },
+  "role_lens": null
+}

@@ -1,0 +1,50 @@
+{
+  "argv": [
+    "python",
+    "-m",
+    "tep_cli",
+    "repo",
+    "${THIS_CHECKOUT}",
+    "--rev",
+    "add5bc0",
+    "--actors",
+    "--format",
+    "both",
+    "--out",
+    "${OUTPUT}"
+  ],
+  "counts": {
+    "actors.full": 2,
+    "git.merge": 54,
+    "git.nonmerge": 118,
+    "git.total": 172,
+    "report.bot": 0,
+    "report.human_nonmerge": 118
+  },
+  "consumer_action": "REJECT_AS_FINAL",
+  "evidence_status": "HISTORICAL_NON_FINAL",
+  "final_evidence_eligible": false,
+  "historical_manifest": "historical-evidence-manifest.json",
+  "limitations": [
+    "Population 172 differs from the R04 baseline (164=110+54) because the v0.6.0 completion commits are included; this is expected, not drift."
+  ],
+  "note": "HISTORICAL_NON_FINAL: self-analysis of an earlier grift-cli source snapshot. This checked-in artifact is outside the closed scenario registry and cannot prove the later final PR head. Final exact-head evidence must come from an external CI artifact bound to the exact pull-request head.",
+  "output_sha256": {
+    "actor-index.json": "9603a12827983638bc4597c421180200957e52bded72aa834d93826afcaa792a",
+    "actor-index.md": "156931f7ba0148e9b1e341902446ca8ddda7c9ce062158e642004eca32d55430",
+    "collection-manifest.json": "9745e9cb6f277300f7a5c2948094e38bde3bbfceb80971f2fe09912646758797",
+    "repo-report.json": "e320ca48368ca21d44553f5972bb0e84a893874ba4c5ce938484754fd1a30013",
+    "repo-report.md": "fa588146605ca74e56c2e6279c6c8635350d19289e2b56de8fa6ba2dcab37514"
+  },
+  "partition_digest": "dc21eaebe6b6f65ec469e26b82c3a319a6d10e3da40b9c8797eb7af96e28613e",
+  "replacement": {
+    "required_evidence_kind": "external_ci_exact_pr_head",
+    "status": "NOT_PROVEN"
+  },
+  "schema_version": "tep-exact-head-note-v1",
+  "target_oid": {
+    "algorithm": "sha1",
+    "value": "add5bc0"
+  },
+  "verify": "VERIFIED: actor collection 8 member(s), full=2, selected=2 (exit 0)"
+}

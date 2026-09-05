@@ -1,0 +1,1209 @@
+{
+  "argv": [
+    "python",
+    "-m",
+    "tep_cli",
+    "repo",
+    "${DEVELOPER_ROOT}/oss/voicevox",
+    "--rev",
+    "c72a94cbcf501be054a239446c7eb8cf53be34b4",
+    "--actors",
+    "--format",
+    "both",
+    "--out",
+    "${OUTPUT_ROOT}/R07-voicevox/artifacts"
+  ],
+  "assertions": [
+    {
+      "actual": 1899,
+      "expected": 1899,
+      "id": "git-total",
+      "status": "PASS"
+    },
+    {
+      "actual": 1810,
+      "expected": 1810,
+      "id": "git-nonmerge",
+      "status": "PASS"
+    },
+    {
+      "actual": 89,
+      "expected": 89,
+      "id": "git-merge",
+      "status": "PASS"
+    },
+    {
+      "actual": 1899,
+      "expected": 1899,
+      "id": "git-total-arithmetic",
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "id": "revision-completeness",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "expected": 0,
+      "id": "repo-command-exit",
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "id": "repo-json-generated",
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "id": "repo-markdown-generated",
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "id": "actor-index-json-generated",
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "id": "actor-index-markdown-generated",
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "id": "collection-manifest-generated",
+      "status": "PASS"
+    },
+    {
+      "actual": "valid",
+      "expected": "valid",
+      "id": "collection-json-parse",
+      "status": "PASS"
+    },
+    {
+      "actual": "VERIFIED",
+      "expected": "VERIFIED",
+      "id": "verify-collection-core",
+      "status": "PASS"
+    },
+    {
+      "actual": "0.7.0",
+      "expected": "0.7.0",
+      "id": "runner-tool-version",
+      "status": "PASS"
+    },
+    {
+      "actual": "c72a94cbcf501be054a239446c7eb8cf53be34b4",
+      "expected": "c72a94cbcf501be054a239446c7eb8cf53be34b4",
+      "id": "target-oid",
+      "status": "PASS"
+    },
+    {
+      "actual": 1810,
+      "expected": 1810,
+      "id": "report-human-nonmerge",
+      "status": "PASS"
+    },
+    {
+      "actual": 89,
+      "expected": 89,
+      "id": "report-merge",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "expected": 0,
+      "id": "report-bot",
+      "status": "PASS"
+    },
+    {
+      "actual": 118,
+      "expected": 118,
+      "id": "actor-count",
+      "status": "PASS"
+    },
+    {
+      "actual": "repo_human_nonmerge_commits + merge_count = attribution_human_including_merges + attribution_unresolved_commit_count",
+      "expected": "repo_human_nonmerge_commits + merge_count = attribution_human_including_merges + attribution_unresolved_commit_count",
+      "id": "merge-basis",
+      "status": "PASS"
+    },
+    {
+      "actual": "2026-02-23",
+      "expected": "2026-02-23",
+      "id": "window-start",
+      "status": "PASS"
+    },
+    {
+      "actual": "2026-08-22",
+      "expected": "2026-08-22",
+      "id": "window-end",
+      "status": "PASS"
+    },
+    {
+      "actual": 180,
+      "expected": 180,
+      "id": "window-days",
+      "status": "PASS"
+    },
+    {
+      "actual": "date-range",
+      "expected": "date-range",
+      "id": "window-unit",
+      "status": "PASS"
+    },
+    {
+      "actual": "legacy_head_date",
+      "expected": "legacy_head_date",
+      "id": "window-basis",
+      "status": "PASS"
+    },
+    {
+      "actual": 1810,
+      "expected": 1810,
+      "id": "metric-numerator",
+      "status": "PASS"
+    },
+    {
+      "actual": 1899,
+      "expected": 1899,
+      "id": "metric-denominator",
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "id": "report-revision-completeness",
+      "status": "PASS"
+    },
+    {
+      "actual": "safe",
+      "expected": "safe",
+      "id": "artifact-safety",
+      "status": "PASS"
+    }
+  ],
+  "counts": {
+    "actors.full": 118,
+    "actors.selected": 118,
+    "collection.members": 240,
+    "git.merge": 89,
+    "git.nonmerge": 1810,
+    "git.total": 1899,
+    "metric.human_nonmerge.denominator": 1899,
+    "metric.human_nonmerge.numerator": 1810,
+    "population.human": 1899,
+    "population.merge": 89,
+    "population.nonmerge": 1810,
+    "report.attributed_including_merges": 1899,
+    "report.bot": 0,
+    "report.human_nonmerge": 1810,
+    "report.merge": 89,
+    "report.unresolved": 0
+  },
+  "duration_ms": 4145,
+  "exit_code": 0,
+  "output_digests": {
+    "artifacts/actor-index.json": {
+      "algorithm": "sha256",
+      "value": "653d33f5960a7b51b0c6acdeda29d0fbaddc33b14a92c3f5553f86a02a3a78f2"
+    },
+    "artifacts/actor-index.md": {
+      "algorithm": "sha256",
+      "value": "fc3bad20dc69b906b147f60b7c56d065b0129a08ac4fcc0e35872f76717ade19"
+    },
+    "artifacts/actors/actor_02d931d2be690de3178041c7a6d1d432.json": {
+      "algorithm": "sha256",
+      "value": "72a5007f51104a4c9de33938026b5ef34ebe9d25b138e6ef2f4f64bd3d1f1c19"
+    },
+    "artifacts/actors/actor_02d931d2be690de3178041c7a6d1d432.md": {
+      "algorithm": "sha256",
+      "value": "dc5df9daa3b3bc98d86cd1d2d5b1d2c3f68f1d1aac9dd81d5953f6915aba34ad"
+    },
+    "artifacts/actors/actor_0f8674812e150c768f0a33220bdc0a22.json": {
+      "algorithm": "sha256",
+      "value": "505991920cf2bb492668843dcbce079e9b2296112b5ec014a42f0e4472db0ac9"
+    },
+    "artifacts/actors/actor_0f8674812e150c768f0a33220bdc0a22.md": {
+      "algorithm": "sha256",
+      "value": "745b148eab170c1d432b13e0d430ad973eac49c03a028f8f37167b576abb3830"
+    },
+    "artifacts/actors/actor_10d02ed0a40d0f047ec3816c6c041da2.json": {
+      "algorithm": "sha256",
+      "value": "20998363f757a90f1a11ba840ce16959c4f36c2b477e3d6a1f33f2d832b729f4"
+    },
+    "artifacts/actors/actor_10d02ed0a40d0f047ec3816c6c041da2.md": {
+      "algorithm": "sha256",
+      "value": "e9a6ff3a1e5c9035d08b068075d5ce6464167ff0589317e7a097a711462680eb"
+    },
+    "artifacts/actors/actor_19dc2bc80cbffefe2c511a0085d990e0.json": {
+      "algorithm": "sha256",
+      "value": "444c3200d8484074598424910508753619c7745d0f6584403d78a48d18b0d62a"
+    },
+    "artifacts/actors/actor_19dc2bc80cbffefe2c511a0085d990e0.md": {
+      "algorithm": "sha256",
+      "value": "5806ff5a56251a14c34065f11fe9e77a251547d81b6ba2f14c2d9da9573f9624"
+    },
+    "artifacts/actors/actor_1e882f81815bb5bf16a60b24ec84d32b.json": {
+      "algorithm": "sha256",
+      "value": "1e15898c56819ba587b795e157025cbd7e00d892c85f29dfba41cd21a499fc88"
+    },
+    "artifacts/actors/actor_1e882f81815bb5bf16a60b24ec84d32b.md": {
+      "algorithm": "sha256",
+      "value": "84c5f66e3148217cfff7b116dffb060532255f46bd876f8e777f6eb3caed0ad0"
+    },
+    "artifacts/actors/actor_27f8450ce23d4be99326fd5911a725d3.json": {
+      "algorithm": "sha256",
+      "value": "d93d9860242d2b5acdb624906e1b08da9534415ca4c6ea0060014876a258fb4b"
+    },
+    "artifacts/actors/actor_27f8450ce23d4be99326fd5911a725d3.md": {
+      "algorithm": "sha256",
+      "value": "57dcbf6ca716cbd348b8ee0d6d772ca9edec9e1f1ee65d422c256d401f7011b5"
+    },
+    "artifacts/actors/actor_2e8bf4f4f70d3bf5e1e122b5be15c703.json": {
+      "algorithm": "sha256",
+      "value": "df84cf70569792bf103c9c699ef41483b221094ba65608899e940b3010dd49c0"
+    },
+    "artifacts/actors/actor_2e8bf4f4f70d3bf5e1e122b5be15c703.md": {
+      "algorithm": "sha256",
+      "value": "66179d5b69ef06f4aa0bef7bcab5b3edff22628e6f9c832280123b7dda9e7683"
+    },
+    "artifacts/actors/actor_3332ce147a38dea476662a6ecfbd7c15.json": {
+      "algorithm": "sha256",
+      "value": "3ab571ca903f0207e99b05d9f175217a7694709ece537c9e26bce60f1310f0ed"
+    },
+    "artifacts/actors/actor_3332ce147a38dea476662a6ecfbd7c15.md": {
+      "algorithm": "sha256",
+      "value": "ce440df27a6bf1251a2b6df615306e4a5431cf463a7a91bb2e2fc41894356a85"
+    },
+    "artifacts/actors/actor_501962469534947816d4ee4d724e3223.json": {
+      "algorithm": "sha256",
+      "value": "1fdd4c9cb51b8f9187e6e65f1bfe971e1b91cf134c78398ac81446173a857571"
+    },
+    "artifacts/actors/actor_501962469534947816d4ee4d724e3223.md": {
+      "algorithm": "sha256",
+      "value": "fb463eb33d8dbafbf9fa8ab3acef30dace3835acec7b463ecab9a4f649ff2fb0"
+    },
+    "artifacts/actors/actor_57cf3a611c9ff059f4baa48e7113692e.json": {
+      "algorithm": "sha256",
+      "value": "baaa0d64d1ccc2b5ac4516fad8b12b35386872c207240746dc53189742943bc2"
+    },
+    "artifacts/actors/actor_57cf3a611c9ff059f4baa48e7113692e.md": {
+      "algorithm": "sha256",
+      "value": "e22130a879add07516c689dc3089cb2b836920a1c8b7ce054d1e16098aeb6797"
+    },
+    "artifacts/actors/actor_5a85c8845c9faeacc40b8988a2aaa93d.json": {
+      "algorithm": "sha256",
+      "value": "43857e1713fea1b76148bf66306d379e1b2a5bf3a1b12c6b8b50ff4321c59077"
+    },
+    "artifacts/actors/actor_5a85c8845c9faeacc40b8988a2aaa93d.md": {
+      "algorithm": "sha256",
+      "value": "fb1da7c374ff55d90174ee72ba2c2361fd59331bc6d62db5809ce984af47fd34"
+    },
+    "artifacts/actors/actor_5c603e5f841fc6be84ded251be17f9ca.json": {
+      "algorithm": "sha256",
+      "value": "dd1c8aab738bab619cd6e3eea98cc2a0f94fb9f03cabe7acaa2f43d0fc52c6d7"
+    },
+    "artifacts/actors/actor_5c603e5f841fc6be84ded251be17f9ca.md": {
+      "algorithm": "sha256",
+      "value": "22f5e780c7df4bdad42a53f50aa8a129a4af83dbba2b31e5b3a8264cad136d30"
+    },
+    "artifacts/actors/actor_60cefbf628e87f782984182dc0df836f.json": {
+      "algorithm": "sha256",
+      "value": "e51f5b43c9a54ab6475397f8b1d3f8c90e9dfb0d6c7499ee1347b7aca963d8ff"
+    },
+    "artifacts/actors/actor_60cefbf628e87f782984182dc0df836f.md": {
+      "algorithm": "sha256",
+      "value": "01c0f8277812e307bdd07874d3f58c699fcdffb9718ade1b2bb49ac407684d14"
+    },
+    "artifacts/actors/actor_63b28497c0e0bf22940d40424b5780f5.json": {
+      "algorithm": "sha256",
+      "value": "e857e26a07cac59318527bdcbcc2f30b76897f8acf5c3d73a9991e13e4ee19e0"
+    },
+    "artifacts/actors/actor_63b28497c0e0bf22940d40424b5780f5.md": {
+      "algorithm": "sha256",
+      "value": "530dfe4b3fd39f55e2477142d62aef8ae3c7aef9d118a3f709010d0c69b38670"
+    },
+    "artifacts/actors/actor_650f92231d0de4803109a2ec99b09d35.json": {
+      "algorithm": "sha256",
+      "value": "8a71609174fc15c38a6c4ee9576d73ff7b657fcb7cffc0256ecefdd31779178b"
+    },
+    "artifacts/actors/actor_650f92231d0de4803109a2ec99b09d35.md": {
+      "algorithm": "sha256",
+      "value": "8aafc745047265992d4bd23d1f528d6ab42163a7cc9313d05f00da8665140c97"
+    },
+    "artifacts/actors/actor_6dceed931a85614a8a240d3794a8af89.json": {
+      "algorithm": "sha256",
+      "value": "f60bb0d2d9378703330c3f72f833e1ce647b5ef565e034ddf3ca1a37fe1c7a21"
+    },
+    "artifacts/actors/actor_6dceed931a85614a8a240d3794a8af89.md": {
+      "algorithm": "sha256",
+      "value": "16b0c246a4968e218ed53676ba8225f6cf49f5eaeea02675dabcba266681c4a1"
+    },
+    "artifacts/actors/actor_7de98ef902b711cf71da9e0a99497066.json": {
+      "algorithm": "sha256",
+      "value": "7260e73a4d5aed4dd36502e63af8299b253d620ed208827c088d80ab3783b267"
+    },
+    "artifacts/actors/actor_7de98ef902b711cf71da9e0a99497066.md": {
+      "algorithm": "sha256",
+      "value": "d4c72536425feb9c3fefab53e49ffef37bb111f375568433a2c4d5710b9e2e76"
+    },
+    "artifacts/actors/actor_a2b4ba1f54b9cc3edece0874d267e233.json": {
+      "algorithm": "sha256",
+      "value": "0fc872319598cb36c950e9d69acba8fd1d90c008e396112ccf4555ace1480d06"
+    },
+    "artifacts/actors/actor_a2b4ba1f54b9cc3edece0874d267e233.md": {
+      "algorithm": "sha256",
+      "value": "6f456c849761a605f508370a9fc725a531c7a92404b7e93b0fd4071db422b5d0"
+    },
+    "artifacts/actors/actor_a362c99a437ee94d879a036aee6e8322.json": {
+      "algorithm": "sha256",
+      "value": "c419d294224b36037a95c104e58cc9fb57a8db4f2144c4c56074a6d412482793"
+    },
+    "artifacts/actors/actor_a362c99a437ee94d879a036aee6e8322.md": {
+      "algorithm": "sha256",
+      "value": "6f400826af0eebe3aece39f3530fc46eaae498b24af681790d2c3f054545fa80"
+    },
+    "artifacts/actors/actor_a8922a83e22c029c7814c2163b81ef73.json": {
+      "algorithm": "sha256",
+      "value": "a11670dc3ef63966a34c60f74f27b5fb27b446c724e7445dde07e245c94be700"
+    },
+    "artifacts/actors/actor_a8922a83e22c029c7814c2163b81ef73.md": {
+      "algorithm": "sha256",
+      "value": "babe823aa1d0a0bfc50c52d7675ffd1e2ec8dadd78e929516cada036e26cff2d"
+    },
+    "artifacts/actors/actor_b0f7244f99157f8cd1b40892482020a2.json": {
+      "algorithm": "sha256",
+      "value": "d4ec720694ec81330780ad29ae371ebc0c89b0ca12f77ac90cc9eefe235178f9"
+    },
+    "artifacts/actors/actor_b0f7244f99157f8cd1b40892482020a2.md": {
+      "algorithm": "sha256",
+      "value": "4f1178b2db105fc1b50d163d1e0f70628b4704ec2236c8a3150d0aef4b826a23"
+    },
+    "artifacts/actors/actor_c4533a36ec5b9efbab1987c0820d3c6d.json": {
+      "algorithm": "sha256",
+      "value": "3ccfa402effc61b7b3ae1650a9df9cd447c0dbc85279066b1abe4ee352201c34"
+    },
+    "artifacts/actors/actor_c4533a36ec5b9efbab1987c0820d3c6d.md": {
+      "algorithm": "sha256",
+      "value": "89fa35d2c944c97e412080137f5b8c07e228086572a865fc88bec618c271b410"
+    },
+    "artifacts/actors/actor_c46e6b7540e168fadc97939e5b439220.json": {
+      "algorithm": "sha256",
+      "value": "20211f7ae0f765bbcd6f54bf35ff41c58c6322c6fbdf724466880c72b8a62ed6"
+    },
+    "artifacts/actors/actor_c46e6b7540e168fadc97939e5b439220.md": {
+      "algorithm": "sha256",
+      "value": "874f46301ebf8047e1210fb6a813d886323c37d11ddeae3a5877b20e91412724"
+    },
+    "artifacts/actors/actor_dde4e6ec8096f199a20e4e1fd4b12ef2.json": {
+      "algorithm": "sha256",
+      "value": "a0bf3fdb322214d6c2653021fcc911e7302589e5281c7c502d5a8454fe11fe2d"
+    },
+    "artifacts/actors/actor_dde4e6ec8096f199a20e4e1fd4b12ef2.md": {
+      "algorithm": "sha256",
+      "value": "7c9e1c4cc63f476e6e1bd45ec17d24488883a8a50a337397af8ef44941e02f55"
+    },
+    "artifacts/actors/actor_f30c88a0d1d8e2763dafd1b0c6ee6fdf.json": {
+      "algorithm": "sha256",
+      "value": "fdcc772dba7a4a23400c89dd92b284afcf040e69695e1edc32376215af81162e"
+    },
+    "artifacts/actors/actor_f30c88a0d1d8e2763dafd1b0c6ee6fdf.md": {
+      "algorithm": "sha256",
+      "value": "248da6c2e61aa6b4c565f533887a5c00e66a3d3d655feb31b5c3ad65f16a5df9"
+    },
+    "artifacts/actors/actor_fe2f98946676130af9c023b220e115a8.json": {
+      "algorithm": "sha256",
+      "value": "d32b087507b86c2fea942cb6bdf730c7782885ac69ccaf18e4e21d6c170e44c8"
+    },
+    "artifacts/actors/actor_fe2f98946676130af9c023b220e115a8.md": {
+      "algorithm": "sha256",
+      "value": "cc5e436c79dd0fccf4b72d82620b881a86609abc544416813b46dfe194917230"
+    },
+    "artifacts/actors/akihiko-koizuka.json": {
+      "algorithm": "sha256",
+      "value": "b37d3c904dba169eb209d4c56784887ba940ef84d8afa9c344a4c079488468a3"
+    },
+    "artifacts/actors/akihiko-koizuka.md": {
+      "algorithm": "sha256",
+      "value": "861f9aba9ed577a71457c0abe3cc2b697ded52650d5570def5ed4d87159136ef"
+    },
+    "artifacts/actors/akikukeo.json": {
+      "algorithm": "sha256",
+      "value": "a72fc692335ce388a060f98d480defb60f62cff334db15178ab3181cd7b47dd4"
+    },
+    "artifacts/actors/akikukeo.md": {
+      "algorithm": "sha256",
+      "value": "e981dfd4a9ceba6c0bfd93d84f79cbee6afe445490bdccea7cfd1f5f3dbfb4cc"
+    },
+    "artifacts/actors/aoirint.json": {
+      "algorithm": "sha256",
+      "value": "65cbfc2f3a144deab83063166be6fe668ff5f1e5df6c4f15e194df1a54015ad1"
+    },
+    "artifacts/actors/aoirint.md": {
+      "algorithm": "sha256",
+      "value": "2ff5aca19a43baecf22649a26bba95e9731d2af32b725b6499e0caea0993c6d6"
+    },
+    "artifacts/actors/arigayas.json": {
+      "algorithm": "sha256",
+      "value": "e59d96d7c4d12b78e072eaf0890c786a1e12e0b401cb6bba519e0c8f0addf371"
+    },
+    "artifacts/actors/arigayas.md": {
+      "algorithm": "sha256",
+      "value": "21a9370a0d315bb82586fe815ed418760e13d1da5451b2e0f86c72a6ba5f471c"
+    },
+    "artifacts/actors/aruneko.json": {
+      "algorithm": "sha256",
+      "value": "1bcd2b5a2a04cfc70213b19f7351ed25f84f33d116fe1574f94c474fad2b468f"
+    },
+    "artifacts/actors/aruneko.md": {
+      "algorithm": "sha256",
+      "value": "0da45b686c6bf549690e55ca78f60332c8bda4b24f23dc13ac303aa21154375b"
+    },
+    "artifacts/actors/bobonba.json": {
+      "algorithm": "sha256",
+      "value": "d048dd5b961e71b106606056293f3f45b7e99f86d9685ed529000c1103be096f"
+    },
+    "artifacts/actors/bobonba.md": {
+      "algorithm": "sha256",
+      "value": "1cb15a00e89a3e45b85efe7e4a90b24ad661d68edef7be49674d325f6b58038d"
+    },
+    "artifacts/actors/cm-ayf.json": {
+      "algorithm": "sha256",
+      "value": "211894602f17c733a98ae28586f7c7ea8c5023ad4871750cd8e55530a864515b"
+    },
+    "artifacts/actors/cm-ayf.md": {
+      "algorithm": "sha256",
+      "value": "65728d2d0310279f98f68b9966bd025aef5f642d6300cdf7c7986cc900f77b67"
+    },
+    "artifacts/actors/copilot.json": {
+      "algorithm": "sha256",
+      "value": "b1a79798b3728077a128580789e7b23a831c0dddd685a6693b9e4cbdcc37b500"
+    },
+    "artifacts/actors/copilot.md": {
+      "algorithm": "sha256",
+      "value": "1f636ca31d064e3b6c2b67ebdd3c13d0ca11d023ccf6fbb19c26bf345ad89a91"
+    },
+    "artifacts/actors/finict.json": {
+      "algorithm": "sha256",
+      "value": "24c6f71d92d44aa266521c8f37eba00b00a71f77b199f7dee47ec026d3bea03e"
+    },
+    "artifacts/actors/finict.md": {
+      "algorithm": "sha256",
+      "value": "80a62696230011758abe1a41f840162e1be2e404e7752aefac973a01d7a05df4"
+    },
+    "artifacts/actors/gigi434.json": {
+      "algorithm": "sha256",
+      "value": "1f6d8af9fd5a45ae86c2add72f408653ff9c5f3494299ff6078a3f509be2f08f"
+    },
+    "artifacts/actors/gigi434.md": {
+      "algorithm": "sha256",
+      "value": "6848df01a383844bf5655ebf9c637e5d845fc9485b4aab03e23edf69db0f20a6"
+    },
+    "artifacts/actors/gray-suitcase.json": {
+      "algorithm": "sha256",
+      "value": "47d1e4f40a0379cb51802a5d89a2b9bb7d339b9f64c20a800aa7a7c01c278c45"
+    },
+    "artifacts/actors/gray-suitcase.md": {
+      "algorithm": "sha256",
+      "value": "672312ba266bfa70cf650a2176e3839a432964c5c98ed50cbddd5b9deaeba809"
+    },
+    "artifacts/actors/gurrium.json": {
+      "algorithm": "sha256",
+      "value": "17ebe259a308072e1b04a91c9a099871f90db72c6a1a9157a36f45f8421c46b5"
+    },
+    "artifacts/actors/gurrium.md": {
+      "algorithm": "sha256",
+      "value": "0bf883dac9d132695667df0639d3bad83374ee5586ba9903fa5752757aae1b02"
+    },
+    "artifacts/actors/han-yeong-woo.json": {
+      "algorithm": "sha256",
+      "value": "8642dd4f463e8eef5c8640eecc41f3b5aacdff01cc2d441bd2c92305685432bc"
+    },
+    "artifacts/actors/han-yeong-woo.md": {
+      "algorithm": "sha256",
+      "value": "4c48d442d674654f99a031705c7270d652b8da971b7e589f119a90c4900f1e24"
+    },
+    "artifacts/actors/haruki-tazoe.json": {
+      "algorithm": "sha256",
+      "value": "3ddd6f0e8de27e461dcc57777246ebe85fb668c29310e465f57f288eed7d2ceb"
+    },
+    "artifacts/actors/haruki-tazoe.md": {
+      "algorithm": "sha256",
+      "value": "d0f1549287e2fdd0c15e58bd8bc231ec96b509c8c3d66d16386ea9ddc7a08b1f"
+    },
+    "artifacts/actors/haruna.json": {
+      "algorithm": "sha256",
+      "value": "4b394e8f05f39a40c4d6f6cec6a4e70a771909676c334b7e955ad667d5b63b66"
+    },
+    "artifacts/actors/haruna.md": {
+      "algorithm": "sha256",
+      "value": "a941e2cfff392492b3ba6b77751b3c3b02103a29767b67186e77914a4e3d4bcd"
+    },
+    "artifacts/actors/henteko.json": {
+      "algorithm": "sha256",
+      "value": "b80209b47f4de9a6fd7202e3abbf47a4a2d5d7292035db365ecceb775bccec8c"
+    },
+    "artifacts/actors/henteko.md": {
+      "algorithm": "sha256",
+      "value": "1f3f4ef99b98653fb5758c36d15129b6a5b11afbee380e7bccd900d073c11fb6"
+    },
+    "artifacts/actors/hiroaki-kajiyama.json": {
+      "algorithm": "sha256",
+      "value": "f892c627c72fa30cd03bc2245e0a21367cb7a48948751fafa33e73b2e60b87b1"
+    },
+    "artifacts/actors/hiroaki-kajiyama.md": {
+      "algorithm": "sha256",
+      "value": "37a5194d6e725a17bb6fa1397af7d09e86cbad49af842f1c3347ff9f02d406e1"
+    },
+    "artifacts/actors/hyoda-kazuaki.json": {
+      "algorithm": "sha256",
+      "value": "7fed9a5d71e37ff316a07caad22e854cce31786a6e464cb0975e547026bccb6d"
+    },
+    "artifacts/actors/hyoda-kazuaki.md": {
+      "algorithm": "sha256",
+      "value": "8656b9aca73e1ab005c6722beda745c29f93afe1e4c0c473f704e0f374736e63"
+    },
+    "artifacts/actors/ishida-naoto.json": {
+      "algorithm": "sha256",
+      "value": "ea87eac8e0194383ec5066d98575a3af979d00ec48852e4676924aba2be46985"
+    },
+    "artifacts/actors/ishida-naoto.md": {
+      "algorithm": "sha256",
+      "value": "e7a4d10b8be09742c23cb444a06cb9730422b29ab0187a3b361f29eab05f1b8c"
+    },
+    "artifacts/actors/jun-1il.json": {
+      "algorithm": "sha256",
+      "value": "3950170c44d8fe9366cc189ec222aa5c92ffc86c208d54b8ecf1d8e35a17ef8b"
+    },
+    "artifacts/actors/jun-1il.md": {
+      "algorithm": "sha256",
+      "value": "83be19a2f8f0c5a5f85f98bd1c8eccfdb2e5e875654e4461309dc2cd294a67d1"
+    },
+    "artifacts/actors/kai.json": {
+      "algorithm": "sha256",
+      "value": "0f2f6e0d5de3e7a5ac04a577e2236b4bd4b65a81e9f24d705e60cc2e77986a8e"
+    },
+    "artifacts/actors/kai.md": {
+      "algorithm": "sha256",
+      "value": "7a0c70db9f7460cf244a1e44b706a392f118b42b7617aba649e9179a861da1e9"
+    },
+    "artifacts/actors/kantas-spike.json": {
+      "algorithm": "sha256",
+      "value": "67ddee2a300db3ca878847a2ceff61e8c343d100582bc878b0fecc6b949dff15"
+    },
+    "artifacts/actors/kantas-spike.md": {
+      "algorithm": "sha256",
+      "value": "4d554fe622650468e2bd2f96ed31ea54ee51f566dfd375ffe62d2bb6d5bee536"
+    },
+    "artifacts/actors/kchop.json": {
+      "algorithm": "sha256",
+      "value": "e27fa3088f80459c05fb91e0de5df6bb0340256d63772340b3ab38da25ddcf2e"
+    },
+    "artifacts/actors/kchop.md": {
+      "algorithm": "sha256",
+      "value": "9d95f87f14800550c81cb6420f5b8373aee2aa804ef8ad8902a3e4c74f9e36ac"
+    },
+    "artifacts/actors/kebin.json": {
+      "algorithm": "sha256",
+      "value": "6f30f0ab4e971551e501f4f544669ef8690bc656a8b3aa17a4519cb3ebc7f5b9"
+    },
+    "artifacts/actors/kebin.md": {
+      "algorithm": "sha256",
+      "value": "8ab50c00d6a0b8d13d279dfbcf81e21beff51a91d9da90c9f9b4998365025cf1"
+    },
+    "artifacts/actors/keisuke-ishii.json": {
+      "algorithm": "sha256",
+      "value": "fcb1c2d7db2897bb0af714a20a31e7737e72b369b36104ddc81f348d997ee335"
+    },
+    "artifacts/actors/keisuke-ishii.md": {
+      "algorithm": "sha256",
+      "value": "8334b9f24ff666fa566cc382c34d900daa9c6399ce2a0cbd37241e75b84dd099"
+    },
+    "artifacts/actors/koharuyuzuki.json": {
+      "algorithm": "sha256",
+      "value": "cbd1f350580602f71ad900ed88e85fc89637f0e2e39eaac44abe0326a00cbf99"
+    },
+    "artifacts/actors/koharuyuzuki.md": {
+      "algorithm": "sha256",
+      "value": "51e9ab059cefcc0e3bbe84ff1eb763da64db15ad6768101a1c5ab911ddc8848f"
+    },
+    "artifacts/actors/kota-kato.json": {
+      "algorithm": "sha256",
+      "value": "5f2bb9740e52ce49f0305994afb40048e698eb942b7d2c0269622db67a2622a1"
+    },
+    "artifacts/actors/kota-kato.md": {
+      "algorithm": "sha256",
+      "value": "957137bc317cadae4cc49eebcc2baef0629b34563fc38e0ca73552ecfb505c4f"
+    },
+    "artifacts/actors/kurehajime.json": {
+      "algorithm": "sha256",
+      "value": "cda392eacf201358f1eaf04ffd324cdbf074472a0a4905c919e3c9df030c7e6b"
+    },
+    "artifacts/actors/kurehajime.md": {
+      "algorithm": "sha256",
+      "value": "60816e24b150cb21df26b9aef217510014c2d2fbbb2224b08e3cc934c433c77d"
+    },
+    "artifacts/actors/liszt01.json": {
+      "algorithm": "sha256",
+      "value": "dc4669d965e9fc738c068d75f1d9892ba6376d0acc4a9b9c8393e4083e0897ae"
+    },
+    "artifacts/actors/liszt01.md": {
+      "algorithm": "sha256",
+      "value": "4a5936057dc32431eaf895ddd61b62ee7d751a6267f6f3e9ade4b31898521411"
+    },
+    "artifacts/actors/madosuki.json": {
+      "algorithm": "sha256",
+      "value": "7452287723207424260dfa8c312f0884bc4865304975edb725699e5f6142298f"
+    },
+    "artifacts/actors/madosuki.md": {
+      "algorithm": "sha256",
+      "value": "586dee6798573cdd863b23b585d617bb8cd823f09d0d97697314db6174289657"
+    },
+    "artifacts/actors/masanobu-yoshioka.json": {
+      "algorithm": "sha256",
+      "value": "6035023abbdf957aee50fc0d7ee50fc11ee7ab4458090d88f652b6b10b7c0aa3"
+    },
+    "artifacts/actors/masanobu-yoshioka.md": {
+      "algorithm": "sha256",
+      "value": "f380b27e6610147ad58e8a35483b9aab594b2b9f3c352d578098e9c2903ca455"
+    },
+    "artifacts/actors/masarakki.json": {
+      "algorithm": "sha256",
+      "value": "1126b2309340f7d2c13f80e21ce1f75d7d7ec13ef8afc5ee830b56d4a812888b"
+    },
+    "artifacts/actors/masarakki.md": {
+      "algorithm": "sha256",
+      "value": "bd81957758b5f3a90b74024cce3ccf5df82322da7fc08ce55cb5e87eca5f6bde"
+    },
+    "artifacts/actors/matt-van-horn.json": {
+      "algorithm": "sha256",
+      "value": "06df1a98a6d1b0ef25df8ffa7ab3be19cec37ff83e15f0d37777c81e060c78a8"
+    },
+    "artifacts/actors/matt-van-horn.md": {
+      "algorithm": "sha256",
+      "value": "cdc7310de5be6d9da1cc2be036520ea68310b1f0f84d86b14103334ddd9a9382"
+    },
+    "artifacts/actors/mes51.json": {
+      "algorithm": "sha256",
+      "value": "9613bb946c33265c9bb0a6eee245a2128cf5ec053deb048e6f5d310819434d68"
+    },
+    "artifacts/actors/mes51.md": {
+      "algorithm": "sha256",
+      "value": "9931ef220a5fe3817f7650328e291f0b34593044a05014e5e49a2b8cffafe012"
+    },
+    "artifacts/actors/mikage-asuka.json": {
+      "algorithm": "sha256",
+      "value": "48da1bb2231c446a8b563ac4342569745c5f265c93e0fec2e3bc7f7de0d4de7d"
+    },
+    "artifacts/actors/mikage-asuka.md": {
+      "algorithm": "sha256",
+      "value": "b1e1706d83f083dda44ddf0028ae282945662438a84f685bf14e63046ad72038"
+    },
+    "artifacts/actors/motoki-saito.json": {
+      "algorithm": "sha256",
+      "value": "c453fb9234bdf762713dce68f75e5b0f5d164a0d8cf8febf7782acbf6a9fa4a6"
+    },
+    "artifacts/actors/motoki-saito.md": {
+      "algorithm": "sha256",
+      "value": "abbf9c2f69ffaff3da17a9172490b0400bdc8ea40eaab382a59cc33f81965810"
+    },
+    "artifacts/actors/my.json": {
+      "algorithm": "sha256",
+      "value": "d5f5face1a0fffb886c07236e974d02d88328fe32d6abe467f45565d91dc7956"
+    },
+    "artifacts/actors/my.md": {
+      "algorithm": "sha256",
+      "value": "3947c5f84a97b9e170a021b75354455e17782c521cba3899bec3eebaf3b009b6"
+    },
+    "artifacts/actors/nanae1914.json": {
+      "algorithm": "sha256",
+      "value": "87fc840a9f3be402e08a8cbd6ef570a267aa503fa574e85d1b330812de5b6212"
+    },
+    "artifacts/actors/nanae1914.md": {
+      "algorithm": "sha256",
+      "value": "7555c0d69a57fe5812523954b29980f605f4fd784ed9e7126ea1981e69184697"
+    },
+    "artifacts/actors/nao.json": {
+      "algorithm": "sha256",
+      "value": "6b974f6954d89ccf06d000f77abc2212760498e4ca1b72a56322ca68b9c19b53"
+    },
+    "artifacts/actors/nao.md": {
+      "algorithm": "sha256",
+      "value": "84a3b0a11c16ec734f82bbe5195e7afa93b1822cb68a2b3ef95fdfc09d757333"
+    },
+    "artifacts/actors/nebocco.json": {
+      "algorithm": "sha256",
+      "value": "d84ac29612d0ec77c3522c6ef202a53302e6527484cd71421ee1524b5933cf4e"
+    },
+    "artifacts/actors/nebocco.md": {
+      "algorithm": "sha256",
+      "value": "ac2075e957de9dfd5e95eb70bc51944ba3bb5ceb324641a7db615b4096e2848e"
+    },
+    "artifacts/actors/nogino.json": {
+      "algorithm": "sha256",
+      "value": "d222e2e515366a22edc85961606a4366d2e79cfb55df489d43781dbced31acb2"
+    },
+    "artifacts/actors/nogino.md": {
+      "algorithm": "sha256",
+      "value": "d42203c740d2767a922cc473cde69aa7099bbd006e5004f7ae7a083fd51699ee"
+    },
+    "artifacts/actors/noronoro56.json": {
+      "algorithm": "sha256",
+      "value": "e4b14818fc10c55f5061fa40ca14017f464a80443d3d755d24654b419d218069"
+    },
+    "artifacts/actors/noronoro56.md": {
+      "algorithm": "sha256",
+      "value": "2a2872653518c7db981733529a7ea680891c20c31f61ef7cfb49a895566cd631"
+    },
+    "artifacts/actors/o108minmin.json": {
+      "algorithm": "sha256",
+      "value": "65e460c850bab66fac99cc388428ddddc3c187ea25e588f54954a49327a69a10"
+    },
+    "artifacts/actors/o108minmin.md": {
+      "algorithm": "sha256",
+      "value": "7a91695edf5c06efcf4d6e839fb7f0fa93ce25f696c11d4e8c958cf09a15ec35"
+    },
+    "artifacts/actors/oech3.json": {
+      "algorithm": "sha256",
+      "value": "480cbcb32bdc673b04d946adfffb4f2d96a35c94948337ba1e896daffda54aba"
+    },
+    "artifacts/actors/oech3.md": {
+      "algorithm": "sha256",
+      "value": "605436967397414c14e33759ec704d6702e08c76af5b40af7bb438f697a05c85"
+    },
+    "artifacts/actors/oyaki.json": {
+      "algorithm": "sha256",
+      "value": "c8808ec6e818ab9fdf0a4af9c9ee8360e1dbbc0358c426a36c21056f0fcf0b57"
+    },
+    "artifacts/actors/oyaki.md": {
+      "algorithm": "sha256",
+      "value": "5964334de75baefbf6cdcb490fb5975e62aad5ff6643508516d106e1fd4f76ab"
+    },
+    "artifacts/actors/palm209.json": {
+      "algorithm": "sha256",
+      "value": "a86d003d5691b793cb69312cfdd5e75fe725b6c3c8c1238f00d4f9b81c390161"
+    },
+    "artifacts/actors/palm209.md": {
+      "algorithm": "sha256",
+      "value": "366991b19af343ddb3dd76e8ad313eda27c415c5b8f5ce83718db396bf4b6f62"
+    },
+    "artifacts/actors/patchethium.json": {
+      "algorithm": "sha256",
+      "value": "feffa8ba4e0a192cb2ac511239a912eadf07bd7c645c874b50697dcd0c068b28"
+    },
+    "artifacts/actors/patchethium.md": {
+      "algorithm": "sha256",
+      "value": "9deae4470d37924ee32e1f4ecb5806408f5426563a771c251da62509c7fb957d"
+    },
+    "artifacts/actors/qwerty2501.json": {
+      "algorithm": "sha256",
+      "value": "02093576608eabfa0b95de1c8ab72d49d8489556e1a8a8c2d3d66d199c9cb5fa"
+    },
+    "artifacts/actors/qwerty2501.md": {
+      "algorithm": "sha256",
+      "value": "afdd518be1735c71b12d079303874f3e30691dc6a5e182a87b16059bfb1d246b"
+    },
+    "artifacts/actors/r17n.json": {
+      "algorithm": "sha256",
+      "value": "ec580affe12df5c9c09ac57ee0adaa597c55a9429f5373270f044e1e5ac90e32"
+    },
+    "artifacts/actors/r17n.md": {
+      "algorithm": "sha256",
+      "value": "c6765742be02520c2448c2253b5fd0038679bb4a462c1a17fb763c9afcc0f4d6"
+    },
+    "artifacts/actors/raa0121.json": {
+      "algorithm": "sha256",
+      "value": "b534967ffc1183ce23c05e6046d0d3bc33b3de8bcfcd03ca79d0c53330107983"
+    },
+    "artifacts/actors/raa0121.md": {
+      "algorithm": "sha256",
+      "value": "40669b540145928769d75a155702b48437923174367a131e893289fc6b9ea0bb"
+    },
+    "artifacts/actors/rikitonoto.json": {
+      "algorithm": "sha256",
+      "value": "f6cd86cc7de307dba09163d6ca6c5ba2f149464257b049ee6db06c71db336068"
+    },
+    "artifacts/actors/rikitonoto.md": {
+      "algorithm": "sha256",
+      "value": "a6ca37d28e5a02ea6b1ee573bc345bbc7cd401c9505238dabdfe587cd67a20a5"
+    },
+    "artifacts/actors/riku-kanayama.json": {
+      "algorithm": "sha256",
+      "value": "3f28f49ae71c85a9cfe39d9aaf8fcd4e9d937ebea2fae5ae363e0eb510cd54bd"
+    },
+    "artifacts/actors/riku-kanayama.md": {
+      "algorithm": "sha256",
+      "value": "ff2120c96c3ce791266cd08b659270aad12e5b81d500ceb3153c442b9216a481"
+    },
+    "artifacts/actors/risu.json": {
+      "algorithm": "sha256",
+      "value": "f0b502af5ddba53a6a2601691398c327b1ec65b73b8c9770f645402d43537af0"
+    },
+    "artifacts/actors/risu.md": {
+      "algorithm": "sha256",
+      "value": "bbf2ea2ef8cff331aac84f384b6bee6c952dc91501d2b192ad41d66d2740930f"
+    },
+    "artifacts/actors/romot.json": {
+      "algorithm": "sha256",
+      "value": "01da0a5a0be01750062489f87546089d0b1a594b24da4c292a66a0594430a608"
+    },
+    "artifacts/actors/romot.md": {
+      "algorithm": "sha256",
+      "value": "a12169b416f9ed4dfc13c9c15b8afb4cb572167c2e8e4d16ed209718f258a788"
+    },
+    "artifacts/actors/ryo-yamashita.json": {
+      "algorithm": "sha256",
+      "value": "7ddcb31be88ecaf83e432ff734534cb37601e80778d1e4cac10f9c9d3ed88179"
+    },
+    "artifacts/actors/ryo-yamashita.md": {
+      "algorithm": "sha256",
+      "value": "d83851e061f841916eb45fb59abbaa51b8cadfcff8f1b191ba67bf4941879d1e"
+    },
+    "artifacts/actors/sabonerune.json": {
+      "algorithm": "sha256",
+      "value": "17fb35f4cc9ef70d1ce33b002ecf96f289801a928ed40db8ea0b8fe7c1f4ad0f"
+    },
+    "artifacts/actors/sabonerune.md": {
+      "algorithm": "sha256",
+      "value": "214621c34ffb5fd106ee3d823e21f10d59903481fa2f11fa53b58f2ec50db623"
+    },
+    "artifacts/actors/scarletdango1204.json": {
+      "algorithm": "sha256",
+      "value": "c4bc5a06cac45ca3325f9bb111e1236d0e28ecb6dcce875e541c5663240d25bb"
+    },
+    "artifacts/actors/scarletdango1204.md": {
+      "algorithm": "sha256",
+      "value": "29d70ce13befe871d110020cff38e7f0d1aee495769fa827fbaacae59dedce2f"
+    },
+    "artifacts/actors/segu.json": {
+      "algorithm": "sha256",
+      "value": "268331894958b274c2a3b069b177e7641edf937697d3e076e2fe57e049539029"
+    },
+    "artifacts/actors/segu.md": {
+      "algorithm": "sha256",
+      "value": "035a388f6f17fca4d976d85b0325c06cfb3fabc63196159cd79874b80dca49bd"
+    },
+    "artifacts/actors/sheltie.json": {
+      "algorithm": "sha256",
+      "value": "2ade44dc9410daaad40b69e0690f45aca5ff2e9f2508a2cac3fbeb002522e2d9"
+    },
+    "artifacts/actors/sheltie.md": {
+      "algorithm": "sha256",
+      "value": "0c1daa0e86c4899c5f7f90e273f21a14fd137b0cafe21c532f1fdbc9f33643bd"
+    },
+    "artifacts/actors/shimagayasatoka.json": {
+      "algorithm": "sha256",
+      "value": "d2fa55686b1420c62cb35d8f8d2dba2134c7574236a28b6a38e63012e2eab551"
+    },
+    "artifacts/actors/shimagayasatoka.md": {
+      "algorithm": "sha256",
+      "value": "794e8a66962d1fb3e13b2748691a3cf5f877525b242a28b9a3ca67e35b6a1775"
+    },
+    "artifacts/actors/shirowanisan.json": {
+      "algorithm": "sha256",
+      "value": "4c025d26ef144008109ae2e4c757665938e0c530ba27253a6a9bc5fa1ddf19aa"
+    },
+    "artifacts/actors/shirowanisan.md": {
+      "algorithm": "sha256",
+      "value": "d9e765fd68ea95a537a821006acf035e4b50749d7e49662e23a2b6fed16514e9"
+    },
+    "artifacts/actors/so-c.json": {
+      "algorithm": "sha256",
+      "value": "0858fc392b0463f868a663fa46550d07b9dfedb9d74aeeb78a3150b726224724"
+    },
+    "artifacts/actors/so-c.md": {
+      "algorithm": "sha256",
+      "value": "46310055eac9d386caf43bb09f0dd7dfcb8f53a9be7fae2353f530306c35e78f"
+    },
+    "artifacts/actors/sota-ichikawa.json": {
+      "algorithm": "sha256",
+      "value": "741d9254b1f94d3ea0c9922359a313833bdca9f8fa8b949e7f5c3f6e04947865"
+    },
+    "artifacts/actors/sota-ichikawa.md": {
+      "algorithm": "sha256",
+      "value": "040c2e976eb8826681cb83fec4d5fcd14992c5ede9517743e8b8ace21345c1e1"
+    },
+    "artifacts/actors/sousuke0422.json": {
+      "algorithm": "sha256",
+      "value": "62fb9568ad8c8203d073de14b663f212e91e89d9227550039df10ea938e16576"
+    },
+    "artifacts/actors/sousuke0422.md": {
+      "algorithm": "sha256",
+      "value": "17e64157e562c4da39f0f66ff831299561e4014954e06f7721ad6a33582e0420"
+    },
+    "artifacts/actors/takana-v.json": {
+      "algorithm": "sha256",
+      "value": "05bee4d23045140ac1e91270b066633059da7a3f623eee38b91715fc30fccb91"
+    },
+    "artifacts/actors/takana-v.md": {
+      "algorithm": "sha256",
+      "value": "da665d39257ebcda964ad42675233fd7b3d76e915e710bbe67730f8fbbd53553"
+    },
+    "artifacts/actors/tasteless0wash.json": {
+      "algorithm": "sha256",
+      "value": "73461cbe172267aa3ff75c416a8fb5766b193aa7e32d80cabebf968c8a5ec333"
+    },
+    "artifacts/actors/tasteless0wash.md": {
+      "algorithm": "sha256",
+      "value": "97f28b6b686a0b304a108b20a6e62921194262c12f3f69afec262b3188e28743"
+    },
+    "artifacts/actors/tatsuya_yd.json": {
+      "algorithm": "sha256",
+      "value": "5338d538ba390670353592f83e97a12f8b8bdf70fc70b4d3f522ab5d480d4a61"
+    },
+    "artifacts/actors/tatsuya_yd.md": {
+      "algorithm": "sha256",
+      "value": "de5fc02a9376bc2493f921ec7d9b6b45f6ab4f44979a4336194ec5ddd231f540"
+    },
+    "artifacts/actors/terapotan.json": {
+      "algorithm": "sha256",
+      "value": "2f0d0a7877f2f8b024f0226f4f8b4528247ea25fa072670ae24433367d2e3813"
+    },
+    "artifacts/actors/terapotan.md": {
+      "algorithm": "sha256",
+      "value": "d150e8acb8b93aff8af40a7ca5f00548b4663c1ea0173891328bc2fc5b79635b"
+    },
+    "artifacts/actors/tiramisu_otato.json": {
+      "algorithm": "sha256",
+      "value": "4ce935355f03f8a38c8e37431223b849408aae2435ca6536726dd865400d9c03"
+    },
+    "artifacts/actors/tiramisu_otato.md": {
+      "algorithm": "sha256",
+      "value": "2cd11e1236ed6724df7ea31bdd2c0f7c0dcda2ed254ecba90f15a261c3851d5b"
+    },
+    "artifacts/actors/tksn07.json": {
+      "algorithm": "sha256",
+      "value": "df87ba7548a4e7316f1840b9e4f79a927b9cf4c7b3e8511ad058e18d9fe81464"
+    },
+    "artifacts/actors/tksn07.md": {
+      "algorithm": "sha256",
+      "value": "2d5b0d795f36d532db03a6f3778bb2c1cb7533b28820559c8eadff1f89df0eda"
+    },
+    "artifacts/actors/tomofumi-kondo.json": {
+      "algorithm": "sha256",
+      "value": "d56c4d6b92132959e6a0146d31aa2a31033646069bdba77d5da75d5d867507fa"
+    },
+    "artifacts/actors/tomofumi-kondo.md": {
+      "algorithm": "sha256",
+      "value": "b1fa1f1188fdc5df0b879a1e52be186a4719e3c6e5c36e52c3a12790f204cd65"
+    },
+    "artifacts/actors/tsunekazu-omija.json": {
+      "algorithm": "sha256",
+      "value": "93f2c8d29dc303b21b419768f1d45eca374c08a46e207c10aae4f92449bf001a"
+    },
+    "artifacts/actors/tsunekazu-omija.md": {
+      "algorithm": "sha256",
+      "value": "63836e80c9e524804056b11aa03e439fd641e585048822ff192f28dbb8673b00"
+    },
+    "artifacts/actors/tsym.json": {
+      "algorithm": "sha256",
+      "value": "9d6b2d4e4d38e75a1313e0ceebe9603b285b479f8afc40f3fef8534d0f71ba43"
+    },
+    "artifacts/actors/tsym.md": {
+      "algorithm": "sha256",
+      "value": "11aa1bee4067547bd4349ab589f53884a46aef6ea0a7217b0684632aa377e998"
+    },
+    "artifacts/actors/tunamaguro.json": {
+      "algorithm": "sha256",
+      "value": "a06efd2df56d250bb0176c681d95aea42c77573e4966ea45ca7fe09b513411dc"
+    },
+    "artifacts/actors/tunamaguro.md": {
+      "algorithm": "sha256",
+      "value": "c752d6c4f3803c9beaf34b8996c943639e3b86a5ca5c490325e988bb6b6542d6"
+    },
+    "artifacts/actors/umi.json": {
+      "algorithm": "sha256",
+      "value": "4659c5b54798c43705dde93f35b42b83bf38eb959bb90d356bccac27bc05110e"
+    },
+    "artifacts/actors/umi.md": {
+      "algorithm": "sha256",
+      "value": "0282da3eff41307f56b2e19d626d6df0f851c5d2fb94aa584e6986c3d0e9fa79"
+    },
+    "artifacts/actors/vuchvu.json": {
+      "algorithm": "sha256",
+      "value": "3aea10fcaa5cbd34b50e781eacf3c010c66b72305dea40f05dcd68ebf75dec99"
+    },
+    "artifacts/actors/vuchvu.md": {
+      "algorithm": "sha256",
+      "value": "119cf0a3a8186679d286bab9c84585b8a29d55802cccd5d7b1459b80db9cbf6e"
+    },
+    "artifacts/actors/wertyus11.json": {
+      "algorithm": "sha256",
+      "value": "73bfb0b9f1eb0c03a9b21b4ced4c0df716a7df362c6fe7859b23add0e02c1cfe"
+    },
+    "artifacts/actors/wertyus11.md": {
+      "algorithm": "sha256",
+      "value": "d715f7325f4c76144eef38c65c55d4cbec1122aa620f6183980361a14a7cc06a"
+    },
+    "artifacts/actors/white-green.json": {
+      "algorithm": "sha256",
+      "value": "b41ff3969141e62ad411013831cd8b75a76d6a8dfe55801ea2c1e9ddc497fd3e"
+    },
+    "artifacts/actors/white-green.md": {
+      "algorithm": "sha256",
+      "value": "1ff37eea193e64b0b85080e0fe9bef970c319daf73a3723443f3b6a7cd01fec2"
+    },
+    "artifacts/actors/x-20a.json": {
+      "algorithm": "sha256",
+      "value": "9d3ae6bebaec80de6426ef9c45b626bfda428b5699ca5a06e7830f329151e3ac"
+    },
+    "artifacts/actors/x-20a.md": {
+      "algorithm": "sha256",
+      "value": "660d32cd49988a31c8218ad7f3e2ece7ca084baf1fadd23fb224eb47f6744a53"
+    },
+    "artifacts/actors/yohaku7.json": {
+      "algorithm": "sha256",
+      "value": "1baf372f3b6cd28a79c6bd4365a40069e694f6c0151688c55d37cb9ea983e9b2"
+    },
+    "artifacts/actors/yohaku7.md": {
+      "algorithm": "sha256",
+      "value": "94eb19d48809a046666a24b0da8754ebe1de926ef3250e00c6e9a193d874046f"
+    },
+    "artifacts/actors/yoshiki-higuchi.json": {
+      "algorithm": "sha256",
+      "value": "6c91eeca0af458776d3a01efea928fc3d977bdaecbecf5f2426deca6bbafc33f"
+    },
+    "artifacts/actors/yoshiki-higuchi.md": {
+      "algorithm": "sha256",
+      "value": "9134767dbf03c1a9e7c34b1a5efd24770e70b32d88f8eb84bc930fae62bd7e47"
+    },
+    "artifacts/actors/yosshi999.json": {
+      "algorithm": "sha256",
+      "value": "d6e2a3acb2f9956d9187bf240cf4432b9bced59f1c58c3aeea1e64405497012e"
+    },
+    "artifacts/actors/yosshi999.md": {
+      "algorithm": "sha256",
+      "value": "c8ceee02022c8fb8397cbcaa17cee6b7dfe5477f47447d41d755c5f29d3f7835"
+    },
+    "artifacts/actors/ytjvdcm.json": {
+      "algorithm": "sha256",
+      "value": "0c3ce26b958ad24bb944ccd314771698bd760424832ab9ec62a0e776a44036c7"
+    },
+    "artifacts/actors/ytjvdcm.md": {
+      "algorithm": "sha256",
+      "value": "46e36de0ea91c93dbf8cf95e84ea99d4bcca0a380078a8913d475e9a5c4f4b9f"
+    },
+    "artifacts/actors/yuki-igarashi.json": {
+      "algorithm": "sha256",
+      "value": "be2420d68f0074488ab31eeb9c5a0935b3f29b49175c20cc6347b1acaff58162"
+    },
+    "artifacts/actors/yuki-igarashi.md": {
+      "algorithm": "sha256",
+      "value": "6bb19b2b67d87a39f40ceb6a23bca6782c6309b16b0efa5c6ed39092a7024517"
+    },
+    "artifacts/actors/yuki.json": {
+      "algorithm": "sha256",
+      "value": "99c432c80671ea9a3fc70179d6314a393f97846c95ac8cf17b95cc0b595c0062"
+    },
+    "artifacts/actors/yuki.md": {
+      "algorithm": "sha256",
+      "value": "0a39bf7631aa7637b3e5f086ab6385cf8e9ee8c58d3461c43fac504a26c09452"
+    },
+    "artifacts/actors/yuki1229ushioda.json": {
+      "algorithm": "sha256",
+      "value": "dadd185e366498b5902c8566c5042066a2c6d6121c69e437d66bf37e8e760d1b"
+    },
+    "artifacts/actors/yuki1229ushioda.md": {
+      "algorithm": "sha256",
+      "value": "29fe62b090a2d4e24bd97139c3a1affbe401b751eb6a42e31645962fa5700b56"
+    },
+    "artifacts/actors/yukio-nozawa.json": {
+      "algorithm": "sha256",
+      "value": "73cfc969a1d9ec065aeaa62d13050bddeb7362ec14de8b73067b44e3a3e6a1c7"
+    },
+    "artifacts/actors/yukio-nozawa.md": {
+      "algorithm": "sha256",
+      "value": "d02f6a230675fcb4335e07159e638282b3430ef2402b89930df3052357c7ac6b"
+    },
+    "artifacts/actors/yuqquu.json": {
+      "algorithm": "sha256",
+      "value": "2a211468229c433f360e6a9efe180bf894dbdf41314521600ac3cf0554de0686"
+    },
+    "artifacts/actors/yuqquu.md": {
+      "algorithm": "sha256",
+      "value": "b958a8ecd071290ec58704f708caf27dbf8faa4bb32f4760a3c2dc955bd580de"
+    },
+    "artifacts/actors/yuriko0505.json": {
+      "algorithm": "sha256",
+      "value": "61b76e4bb031abc8bb83644e4546ef673a0e7091af6144bd6b1fdda2265c5e94"
+    },
+    "artifacts/actors/yuriko0505.md": {
+      "algorithm": "sha256",
+      "value": "163e6e923850659ad42e40a9dcafe7b22fa01ae0d9f2eb8df2a55f668bb7b1c6"
+    },
+    "artifacts/actors/yusuke-yamada.json": {
+      "algorithm": "sha256",
+      "value": "543f9c7e13bb7089b2c824c599ed751d2b8e01d64a2262acbdfbbb07e014891f"
+    },
+    "artifacts/actors/yusuke-yamada.md": {
+      "algorithm": "sha256",
+      "value": "1d927a654f17ec36ca0cedccf10e9ce21b3e1267b6007ba6eaf706d8b4d6171a"
+    },
+    "artifacts/actors/yuta-hayashibe.json": {
+      "algorithm": "sha256",
+      "value": "f2196486d051a595964c9aa998ecf41b843830134bdcf32147e13e721053bc87"
+    },
+    "artifacts/actors/yuta-hayashibe.md": {
+      "algorithm": "sha256",
+      "value": "524c5845337c077eff32cc2582081c6fb522eb6657f2d1019ee76b2823655aa4"
+    },
+    "artifacts/actors/yuto-ashida.json": {
+      "algorithm": "sha256",
+      "value": "eec8b1b3e1a21d61cbb741aeb2b9107ee81de64350ddc0d45b8f08dfea32a680"
+    },
+    "artifacts/actors/yuto-ashida.md": {
+      "algorithm": "sha256",
+      "value": "0cfc2335d6d0eca851094aa8426300c4acb39cb9b4df052824aec3f7ee7d1452"
+    },
+    "artifacts/collection-manifest.json": {
+      "algorithm": "sha256",
+      "value": "77d1a1b7873a281257fa49fac436b8a5e3d8b03d0c72fa43f3a45959437fb0c7"
+    },
+    "artifacts/repo-report.json": {
+      "algorithm": "sha256",
+      "value": "fe0e74e3922db72c1c894ea3a1091696dad73838860274debcbd411e2be7e8c8"
+    },
+    "artifacts/repo-report.md": {
+      "algorithm": "sha256",
+      "value": "4feddd9cd52b3d9d60ecdf5ff52511639ed8c6a91bd59e3bcaf33039b2823814"
+    }
+  },
+  "partition_digest": {
+    "algorithm": "sha256",
+    "value": "6387bbe252a91f89e2e1b1bc73f9563820f4e32ba0bddbce7a202903217cd093"
+  },
+  "provider_coverage": {
+    "kind": "not_observed",
+    "provided": false,
+    "reason": "public_evidence_not_provided"
+  },
+  "runner": {
+    "source_binding": {
+      "commit_oid": {
+        "algorithm": "sha1",
+        "value": "f5ac2730e702935e57912f339d920c40202eb5de"
+      },
+      "definition_version": "grift-tool-source-tree-v1",
+      "file_count": 97,
+      "source_tree_digest": {
+        "algorithm": "sha256",
+        "value": "115e7ae4af4d6eaecce0c97812b0a70ab2a39416194a22f5e00c93d51af882c3"
+      }
+    },
+    "tool_version": "0.7.0"
+  },
+  "scenario_id": "R07-voicevox",
+  "schema_version": "tep-scenario-result-v1",
+  "target_oid": {
+    "algorithm": "sha1",
+    "value": "c72a94cbcf501be054a239446c7eb8cf53be34b4"
+  },
+  "verdict": "PASS"
+}

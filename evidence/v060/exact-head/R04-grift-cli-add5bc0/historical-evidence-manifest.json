@@ -1,0 +1,102 @@
+{
+  "artifact_set": {
+    "canonicalization": "sha256sum-lines-v1",
+    "digest": {
+      "algorithm": "sha256",
+      "value": "4f1136ce4ede54a5dbe28e14a8ba6938e0c75b2bdd9ac9bcbe9508eef792b60f"
+    },
+    "member_count": 11,
+    "members": [
+      {
+        "bytes": 1019,
+        "media_type": "text/markdown",
+        "path": "SUPERSEDED.md",
+        "sha256": "324b48a0a01bafce51ba6194c83ed3f9d15c2a81992a6f51c67b2ab3386d4c84"
+      },
+      {
+        "bytes": 1361,
+        "media_type": "application/json",
+        "path": "actor-index.json",
+        "sha256": "9603a12827983638bc4597c421180200957e52bded72aa834d93826afcaa792a"
+      },
+      {
+        "bytes": 757,
+        "media_type": "text/markdown",
+        "path": "actor-index.md",
+        "sha256": "156931f7ba0148e9b1e341902446ca8ddda7c9ce062158e642004eca32d55430"
+      },
+      {
+        "bytes": 961,
+        "media_type": "application/json",
+        "path": "actors/tep-proposer-claude.json",
+        "sha256": "5e144867257628f4e31d16ff619a025a494ba5f8ae9e464c45ae988e68263297"
+      },
+      {
+        "bytes": 400,
+        "media_type": "text/markdown",
+        "path": "actors/tep-proposer-claude.md",
+        "sha256": "f61501f08525cfd15e9bd4efda86215da3da04e777c4ef4bfa657571f456dd96"
+      },
+      {
+        "bytes": 957,
+        "media_type": "application/json",
+        "path": "actors/terada-kousuke.json",
+        "sha256": "a8cbad67c2835acc40d12bb98504bee1985939996e8c8212347c2ad6584fb61e"
+      },
+      {
+        "bytes": 396,
+        "media_type": "text/markdown",
+        "path": "actors/terada-kousuke.md",
+        "sha256": "65751ee3eca0b84012c63391ef4ccc2ea06be58b3a8429d85c66e72af87cd85f"
+      },
+      {
+        "bytes": 3151,
+        "media_type": "application/json",
+        "path": "collection-manifest.json",
+        "sha256": "9745e9cb6f277300f7a5c2948094e38bde3bbfceb80971f2fe09912646758797"
+      },
+      {
+        "bytes": 1900,
+        "media_type": "application/json",
+        "path": "exact-head-result.json",
+        "sha256": "db70183eb876edd8adc1b9f4ad40872d566942a7485b9a1eb59ed06621e91f69"
+      },
+      {
+        "bytes": 7364,
+        "media_type": "application/json",
+        "path": "repo-report.json",
+        "sha256": "e320ca48368ca21d44553f5972bb0e84a893874ba4c5ce938484754fd1a30013"
+      },
+      {
+        "bytes": 1069,
+        "media_type": "text/markdown",
+        "path": "repo-report.md",
+        "sha256": "fa588146605ca74e56c2e6279c6c8635350d19289e2b56de8fa6ba2dcab37514"
+      }
+    ]
+  },
+  "consumer_action": "REJECT_AS_FINAL",
+  "consumer_policy": {
+    "on_historical_status": "reject_as_final",
+    "on_missing_status": "reject_as_final"
+  },
+  "contract": {
+    "path": "../historical-exact-head-evidence.schema.json",
+    "sha256": "9b7db3f56218f6984b65d94b91007318fc7c226d6688e28b076f26b6dbfc53ce"
+  },
+  "evidence_id": "R04-grift-cli-add5bc0",
+  "evidence_status": "HISTORICAL_NON_FINAL",
+  "final_evidence_eligible": false,
+  "replacement": {
+    "required_evidence_kind": "external_ci_exact_pr_head",
+    "status": "NOT_PROVEN"
+  },
+  "schema_version": "tep-historical-exact-head-manifest-v1",
+  "source_snapshot": {
+    "repository": "grift-cli",
+    "target_oid": {
+      "algorithm": "sha1",
+      "value": "add5bc0f21c3946020804750d986a40c58f9eb92"
+    }
+  }
+}

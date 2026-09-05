@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://grift.dev/schema/v060/event-observation.schema.json",
+  "title": "Grift v0.6 normalized forge event observation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["event_id", "event_type", "occurred_at", "repository"],
+  "properties": {
+    "event_id": {"type": "string", "minLength": 1},
+    "event_type": {"type": "string", "enum": ["PushEvent", "IssuesEvent", "IssueCommentEvent", "PullRequestEvent", "PullRequestReviewEvent", "PullRequestReviewCommentEvent", "ReleaseEvent"]},
+    "occurred_at": {"type": "string", "format": "date-time"},
+    "repository": {"type": "string", "pattern": "^[^/]+/[^/]+$"},
+    "action": {"type": ["string", "null"]},
+    "ref": {"type": ["string", "null"]},
+    "object_number": {"type": ["integer", "null"], "minimum": 1},
+    "release_tag": {"type": ["string", "null"]},
+    "push_id": {"type": ["integer", "null"], "minimum": 1}
+  }
+}

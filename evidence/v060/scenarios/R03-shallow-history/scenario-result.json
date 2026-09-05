@@ -1,0 +1,354 @@
+{
+  "argv": [
+    "python",
+    "-m",
+    "tep_cli",
+    "repo",
+    "${DEVELOPER_ROOT}/grift-cli",
+    "--rev",
+    "fa9bc317cc0ac1953ed09cbab11d3de2232c2fb0",
+    "--actors",
+    "--format",
+    "both",
+    "--out",
+    "${OUTPUT_ROOT}/R03-shallow-history/artifacts"
+  ],
+  "assertions": [
+    {
+      "actual": 33,
+      "expected": 33,
+      "id": "git-total",
+      "status": "PASS"
+    },
+    {
+      "actual": 20,
+      "expected": 20,
+      "id": "git-nonmerge",
+      "status": "PASS"
+    },
+    {
+      "actual": 13,
+      "expected": 13,
+      "id": "git-merge",
+      "status": "PASS"
+    },
+    {
+      "actual": 33,
+      "expected": 33,
+      "id": "git-total-arithmetic",
+      "status": "PASS"
+    },
+    {
+      "actual": false,
+      "expected": false,
+      "id": "revision-completeness",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "expected": 0,
+      "id": "repo-command-exit",
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "id": "repo-json-generated",
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "id": "repo-markdown-generated",
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "id": "actor-index-json-generated",
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "id": "actor-index-markdown-generated",
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "id": "collection-manifest-generated",
+      "status": "PASS"
+    },
+    {
+      "actual": "valid",
+      "expected": "valid",
+      "id": "collection-json-parse",
+      "status": "PASS"
+    },
+    {
+      "actual": "VERIFIED",
+      "expected": "VERIFIED",
+      "id": "verify-collection-core",
+      "status": "PASS"
+    },
+    {
+      "actual": "0.7.0",
+      "expected": "0.7.0",
+      "id": "runner-tool-version",
+      "status": "PASS"
+    },
+    {
+      "actual": "fa9bc317cc0ac1953ed09cbab11d3de2232c2fb0",
+      "expected": "fa9bc317cc0ac1953ed09cbab11d3de2232c2fb0",
+      "id": "target-oid",
+      "status": "PASS"
+    },
+    {
+      "actual": 20,
+      "expected": 20,
+      "id": "report-human-nonmerge",
+      "status": "PASS"
+    },
+    {
+      "actual": 13,
+      "expected": 13,
+      "id": "report-merge",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "expected": 0,
+      "id": "report-bot",
+      "status": "PASS"
+    },
+    {
+      "actual": 1,
+      "expected": 1,
+      "id": "actor-count",
+      "status": "PASS"
+    },
+    {
+      "actual": "repo_human_nonmerge_commits + merge_count = attribution_human_including_merges + attribution_unresolved_commit_count",
+      "expected": "repo_human_nonmerge_commits + merge_count = attribution_human_including_merges + attribution_unresolved_commit_count",
+      "id": "merge-basis",
+      "status": "PASS"
+    },
+    {
+      "actual": "2026-03-03",
+      "expected": "2026-03-03",
+      "id": "window-start",
+      "status": "PASS"
+    },
+    {
+      "actual": "2026-08-30",
+      "expected": "2026-08-30",
+      "id": "window-end",
+      "status": "PASS"
+    },
+    {
+      "actual": 180,
+      "expected": 180,
+      "id": "window-days",
+      "status": "PASS"
+    },
+    {
+      "actual": "date-range",
+      "expected": "date-range",
+      "id": "window-unit",
+      "status": "PASS"
+    },
+    {
+      "actual": "legacy_head_date",
+      "expected": "legacy_head_date",
+      "id": "window-basis",
+      "status": "PASS"
+    },
+    {
+      "actual": 20,
+      "expected": 20,
+      "id": "metric-numerator",
+      "status": "PASS"
+    },
+    {
+      "actual": 33,
+      "expected": 33,
+      "id": "metric-denominator",
+      "status": "PASS"
+    },
+    {
+      "actual": false,
+      "expected": false,
+      "id": "report-revision-completeness",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "expected": 0,
+      "id": "degrade-report-exit",
+      "status": "PASS"
+    },
+    {
+      "actual": "valid",
+      "expected": "valid",
+      "id": "degrade-report-parse",
+      "status": "PASS"
+    },
+    {
+      "actual": "not_observed",
+      "expected": "not_observed",
+      "id": "degrade-context_profile-repo_age_days",
+      "status": "PASS"
+    },
+    {
+      "actual": "not_observed",
+      "expected": "not_observed",
+      "id": "degrade-context_profile-resolved_human_actors",
+      "status": "PASS"
+    },
+    {
+      "actual": "not_observed",
+      "expected": "not_observed",
+      "id": "degrade-context_profile-lifecycle_stage",
+      "status": "PASS"
+    },
+    {
+      "actual": "not_observed",
+      "expected": "not_observed",
+      "id": "degrade-context_profile-actor_turnover",
+      "status": "PASS"
+    },
+    {
+      "actual": "not_observed",
+      "expected": "not_observed",
+      "id": "degrade-context_profile-scale-first_commit",
+      "status": "PASS"
+    },
+    {
+      "actual": "not_observed",
+      "expected": "not_observed",
+      "id": "degrade-context_profile-scale-human_commits",
+      "status": "PASS"
+    },
+    {
+      "actual": "not_observed",
+      "expected": "not_observed",
+      "id": "degrade-activity-repo_human_nonmerge_commits",
+      "status": "PASS"
+    },
+    {
+      "actual": "not_observed",
+      "expected": "not_observed",
+      "id": "degrade-activity-repo_active_days",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "expected": 0,
+      "id": "verify-collection-cli",
+      "status": "PASS"
+    },
+    {
+      "actual": 1,
+      "expected": 1,
+      "id": "actor-json-card-count",
+      "status": "PASS"
+    },
+    {
+      "actual": 1,
+      "expected": 1,
+      "id": "actor-markdown-card-count",
+      "status": "PASS"
+    },
+    {
+      "actual": "safe",
+      "expected": "safe",
+      "id": "artifact-safety",
+      "status": "PASS"
+    }
+  ],
+  "counts": {
+    "actor_cards.json": 1,
+    "actor_cards.markdown": 1,
+    "actors.full": 1,
+    "actors.selected": 1,
+    "collection.members": 6,
+    "git.merge": 13,
+    "git.nonmerge": 20,
+    "git.total": 33,
+    "metric.human_nonmerge.denominator": 33,
+    "metric.human_nonmerge.numerator": 20,
+    "population.human": 33,
+    "population.merge": 13,
+    "population.nonmerge": 20,
+    "report.attributed_including_merges": 33,
+    "report.bot": 0,
+    "report.human_nonmerge": 20,
+    "report.merge": 13,
+    "report.unresolved": 0,
+    "verify.collection_cli_pass": 1
+  },
+  "duration_ms": 1303,
+  "exit_code": 0,
+  "output_digests": {
+    "artifacts/actor-index.json": {
+      "algorithm": "sha256",
+      "value": "9a3b64711004266c30585d75d6ca4f88031f8dd1ee7884273a45731fe29c1ce1"
+    },
+    "artifacts/actor-index.md": {
+      "algorithm": "sha256",
+      "value": "77e001644e99448d50fafe25a78fe88ef4b44e2960de2606cae0bf581c60aefa"
+    },
+    "artifacts/actors/terada-kousuke.json": {
+      "algorithm": "sha256",
+      "value": "244bc4e8ab4ac3eca155c1b727b2dc05d9e3eb795892c9ffbd580645aae6fc10"
+    },
+    "artifacts/actors/terada-kousuke.md": {
+      "algorithm": "sha256",
+      "value": "e88b4f460033227756e831b605e4f87d8f2796990a8d42bbfabb793adf6873f1"
+    },
+    "artifacts/collection-manifest.json": {
+      "algorithm": "sha256",
+      "value": "d0b8bc8d0860b2f5c6180a59ee285fb9aec075c677c5a3d3ba7d292b4085e931"
+    },
+    "artifacts/repo-report.json": {
+      "algorithm": "sha256",
+      "value": "d30a5afa9609615c8fc9484eddec4eb7c1d40210de1f8f4d6af3f30733e9ddb4"
+    },
+    "artifacts/repo-report.md": {
+      "algorithm": "sha256",
+      "value": "5031595d59e8dd244e00a88e2ec4e909d28a68d5f5be8dbad0a627c3a4f60ad5"
+    }
+  },
+  "partition_digest": {
+    "algorithm": "sha256",
+    "value": "e5f43f4c48847a5c8e5541b86ce37165802d7098d5412fbdaddf5b3c1c62dfc1"
+  },
+  "provider_coverage": {
+    "kind": "not_observed",
+    "provided": false,
+    "reason": "public_evidence_not_provided"
+  },
+  "runner": {
+    "source_binding": {
+      "commit_oid": {
+        "algorithm": "sha1",
+        "value": "f5ac2730e702935e57912f339d920c40202eb5de"
+      },
+      "definition_version": "grift-tool-source-tree-v1",
+      "file_count": 97,
+      "source_tree_digest": {
+        "algorithm": "sha256",
+        "value": "115e7ae4af4d6eaecce0c97812b0a70ab2a39416194a22f5e00c93d51af882c3"
+      }
+    },
+    "tool_version": "0.7.0"
+  },
+  "scenario_id": "R03-shallow-history",
+  "schema_version": "tep-scenario-result-v1",
+  "target_oid": {
+    "algorithm": "sha1",
+    "value": "fa9bc317cc0ac1953ed09cbab11d3de2232c2fb0"
+  },
+  "verdict": "PASS"
+}

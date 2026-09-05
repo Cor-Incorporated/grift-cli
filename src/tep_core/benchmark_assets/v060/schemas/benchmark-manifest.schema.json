@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://grift.dev/schema/v060/benchmark-manifest.schema.json",
+  "title": "Grift v0.6 benchmark manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["pack_id", "pack_version", "as_of", "purpose", "policy", "artifacts"],
+  "properties": {
+    "pack_id": {"type": "string", "minLength": 1},
+    "pack_version": {"type": "string", "minLength": 1},
+    "as_of": {"type": "string", "format": "date"},
+    "purpose": {"type": "string", "minLength": 1},
+    "policy": {"type": "object", "required": ["offline_core", "raw_external_datasets_bundled", "individual_ranking", "role_or_fit_truth", "required_report_fields"], "additionalProperties": true},
+    "artifacts": {"type": "array", "minItems": 1, "items": {"type": "object", "required": ["id", "kind", "source_url", "use_for", "do_not_use_for"], "additionalProperties": true}}
+  }
+}

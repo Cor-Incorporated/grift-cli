@@ -1,0 +1,58 @@
+{
+  "schema_version": "tep-v060-git-fixture-v1",
+  "repository_name": "v060-golden-repo",
+  "object_format": "sha1",
+  "commits": [
+    {
+      "message": "feat: initial implementation",
+      "author_name": "Alice Example",
+      "author_email": "alice@example.test",
+      "author_date": "2024-01-01T09:00:00Z",
+      "committer_name": "Alice Example",
+      "committer_email": "alice@example.test",
+      "committer_date": "2024-01-01T09:00:00Z",
+      "files": {
+        "README.md": "# deterministic fixture\n",
+        "src/app.py": "def answer():\n    return 41\n",
+        "tests/test_app.py": "from src.app import answer\n\ndef test_answer():\n    assert answer() == 41\n"
+      }
+    },
+    {
+      "message": "fix: preserve one actor across an author-name alias",
+      "author_name": "A. Example",
+      "author_email": "alice@example.test",
+      "author_date": "2024-01-15T10:00:00Z",
+      "committer_name": "A. Example",
+      "committer_email": "alice@example.test",
+      "committer_date": "2024-01-15T10:00:00Z",
+      "files": {
+        "src/app.py": "def answer():\n    return 42\n",
+        "tests/test_app.py": "from src.app import answer\n\ndef test_answer():\n    assert answer() == 42\n"
+      }
+    },
+    {
+      "message": "docs: document the result",
+      "author_name": "Bob Example",
+      "author_email": "bob@example.test",
+      "author_date": "2024-02-01T11:00:00Z",
+      "committer_name": "Bob Example",
+      "committer_email": "bob@example.test",
+      "committer_date": "2024-02-01T11:00:00Z",
+      "files": {
+        "README.md": "# deterministic fixture\n\nThe answer is 42.\n"
+      }
+    },
+    {
+      "message": "chore: automated lock refresh",
+      "author_name": "dependabot[bot]",
+      "author_email": "49699333+dependabot[bot]@users.noreply.github.com",
+      "author_date": "2024-02-02T12:00:00Z",
+      "committer_name": "dependabot[bot]",
+      "committer_email": "49699333+dependabot[bot]@users.noreply.github.com",
+      "committer_date": "2024-02-02T12:00:00Z",
+      "files": {
+        "requirements.lock": "fixture==1.0\n"
+      }
+    }
+  ]
+}

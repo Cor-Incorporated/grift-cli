@@ -37,9 +37,14 @@ ALWAYS_OBSERVED = frozenset(
     }
 )
 
-BOT_EMAIL_RE = re.compile(
-    r"\[bot\]@|^action@github\.com$|^github-actions|^dependabot|^renovate",
-    re.I,
+BOT_EMAIL_RE = re.compile(r"\[bot\]@", re.I)
+_REGISTERED_LEGACY_BOT_EMAILS = frozenset(
+    {
+        "action@github.com",
+        "dependabot@github.com",
+        "github-actions@github.com",
+        "renovate@whitesourcesoftware.com",
+    }
 )
 
 _VENDOR_PREFIXES = (
@@ -56,7 +61,10 @@ _VENDOR_SUFFIXES = (
 
 
 def is_bot_email(email: str) -> bool:
-    return BOT_EMAIL_RE.search(email) is not None
+    normalized = email.strip().casefold()
+    return (
+        normalized in _REGISTERED_LEGACY_BOT_EMAILS or BOT_EMAIL_RE.search(normalized) is not None
+    )
 
 
 def is_undecidable_email(email: str) -> bool:
@@ -84,6 +92,11 @@ class OriginResult:
     tenant_dates: list[str] = field(default_factory=list)
     tenant_day_counts: Counter[str] = field(default_factory=Counter)
     classes_by_sha: dict[str, str] = field(default_factory=dict)
+    # Commits whose primary-author email matches the one selected actor row.
+    # This population is independent of attribution_state so a public or
+    # otherwise non-consenting actor can be observed without being mislabeled
+    # as a tenant. Bot and generated/vendor commits never enter this set.
+    actor_cluster_shas: set[str] = field(default_factory=set)
 
     def origin_observations(
         self,
@@ -139,6 +152,8 @@ def classify_commits(
             result.counts["generated_or_vendor"] += 1
             result.classes_by_sha[commit.sha] = "generated_or_vendor"
             continue
+        if actor is not None:
+            result.actor_cluster_shas.add(commit.sha)
         tenant = identity.is_tenant_email(email)
         if tenant:
             if commit.is_merge:

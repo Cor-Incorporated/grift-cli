@@ -1,0 +1,62 @@
+{
+  "actors": [
+    {
+      "actor_id": "terisuke",
+      "commit_count": 3592,
+      "merge_commit_count": 1254,
+      "nonmerge_commit_count": 2338
+    },
+    {
+      "actor_id": "kisayama",
+      "commit_count": 399,
+      "merge_commit_count": 130,
+      "nonmerge_commit_count": 269
+    },
+    {
+      "actor_id": "cloudia",
+      "commit_count": 3,
+      "merge_commit_count": 3,
+      "nonmerge_commit_count": 0
+    }
+  ],
+  "limitations": [
+    "Actor IDs are repo-local Git primary-author clusters, not verified people.",
+    "Top selection is observed commit-count extraction, never a quality rank."
+  ],
+  "partition_digest": {
+    "algorithm": "sha256",
+    "value": "496e7490e3ed0da93ceda4445ed76b40b9eed5eb6b626b79cbb27abc69bc090d"
+  },
+  "population": {
+    "actor_count": 3,
+    "basis": "git_primary_author_cluster",
+    "human_commit_count": 3994,
+    "window": {
+      "basis": "legacy_head_date",
+      "end": "2026-08-30",
+      "start": "2026-03-03",
+      "unit": "date-range"
+    }
+  },
+  "population_digest": {
+    "algorithm": "sha256",
+    "value": "9acd6e76e38d059e30c13e40bda7506d5ab3bbb15166a6f5a7fde5d5490d2f47"
+  },
+  "report_kind": "actor_index",
+  "schema_version": "actor-index-v1",
+  "selection": {
+    "actor_ids": [
+      "terisuke",
+      "kisayama",
+      "cloudia"
+    ],
+    "mode": "all",
+    "selected_count": 3
+  },
+  "target": {
+    "oid": {
+      "algorithm": "sha1",
+      "value": "a650ffa6b5921b93fcc32398ab01e0043ce962ec"
+    }
+  }
+}

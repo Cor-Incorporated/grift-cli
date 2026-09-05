@@ -7,6 +7,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
+
 from tep_cli.__main__ import main
 from tep_core.analyze import analyze_repository
 from tep_core.identity import empty_identity
@@ -40,6 +42,30 @@ def _write_report(repo: Path, tmp_path: Path) -> Path:
     path = tmp_path / "report.json"
     path.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
     return path
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [
+        [],
+        {"schema_version": "report-v2", "provenance": "not-an-object"},
+    ],
+)
+def test_verify_invalid_report_shape_is_exit_2_without_traceback_or_artifact(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+    payload: object,
+) -> None:
+    report_path = tmp_path / "invalid-report.json"
+    report_path.write_text(json.dumps(payload), encoding="utf-8")
+    before = {path.name for path in tmp_path.iterdir()}
+
+    assert main(["verify", str(report_path), "--repo", str(tmp_path)]) == 2
+
+    captured = capsys.readouterr()
+    assert captured.out.startswith(f"{CANNOT_VERIFY}:")
+    assert "Traceback" not in captured.out + captured.err
+    assert {path.name for path in tmp_path.iterdir()} == before
 
 
 def test_verify_verified_roundtrip(tmp_path: Path, capsys: object) -> None:
@@ -101,7 +127,9 @@ def test_verify_cannot_verify_old_definition_version(tmp_path: Path, capsys: obj
     assert "definition version" in out
 
 
-def test_verify_bare_uses_grift_dir_and_cwd(tmp_path: Path, capsys: object, monkeypatch: object) -> None:
+def test_verify_bare_uses_grift_dir_and_cwd(
+    tmp_path: Path, capsys: object, monkeypatch: object
+) -> None:
     """v0.5.5: bare `grift verify` = verify .grift/report.json against the current repo."""
     import json as _json
 
@@ -116,7 +144,9 @@ def test_verify_bare_uses_grift_dir_and_cwd(tmp_path: Path, capsys: object, monk
     assert VERIFIED in capsys.readouterr().out
 
 
-def test_verify_bare_without_report_gives_guidance(tmp_path: Path, capsys: object, monkeypatch: object) -> None:
+def test_verify_bare_without_report_gives_guidance(
+    tmp_path: Path, capsys: object, monkeypatch: object
+) -> None:
     repo = _repo_with_commits(tmp_path)
     monkeypatch.chdir(repo)
     code = main(["verify"])

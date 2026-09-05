@@ -1,0 +1,4067 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://grift.dev/schema/v060/contracts.schema.json",
+  "title": "Grift CLI v0.6 strict contracts",
+  "x-grift-contracts": [
+    "report-v2",
+    "actor-card-v1",
+    "actor-index-v1",
+    "project-v1",
+    "alignment-v1",
+    "public-evidence-v1",
+    "contribution-v2",
+    "controlled-sidecar-v1",
+    "attest-v1",
+    "attest-bundle-v1",
+    "portfolio-v1",
+    "portfolio-manifest-v1",
+    "scenario-manifest-v1",
+    "scenario-result-v1",
+    "scenario-summary-v1",
+    "forge-export-v2",
+    "tracker-export-v2",
+    "identity-v2",
+    "experience-v1",
+    "role-profile-v1"
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "digest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "value"],
+      "properties": {
+        "algorithm": {"const": "sha256"},
+        "value": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "nullable_digest": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/digest"}
+      ]
+    },
+    "git_oid": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["algorithm", "value"],
+          "properties": {
+            "algorithm": {"const": "sha1"},
+            "value": {"type": "string", "pattern": "^[0-9a-f]{40}$"}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["algorithm", "value"],
+          "properties": {
+            "algorithm": {"const": "sha256"},
+            "value": {"$ref": "#/$defs/sha256"}
+          }
+        }
+      ]
+    },
+    "provenance_oid": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["algorithm", "value"],
+          "properties": {
+            "algorithm": {"const": "sha1"},
+            "value": {"type": "string", "pattern": "^[0-9a-f]{40}$"}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["algorithm", "value"],
+          "properties": {
+            "algorithm": {"const": "sha256"},
+            "value": {"$ref": "#/$defs/sha256"}
+          }
+        }
+      ]
+    },
+    "window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start", "end"],
+      "properties": {
+        "start": {"type": ["string", "null"], "minLength": 10},
+        "end": {"type": ["string", "null"], "minLength": 10},
+        "unit": {"enum": ["date-range", "datetime-range"]},
+        "basis": {"type": "string", "minLength": 1}
+      }
+    },
+    "period_window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start", "end", "unit"],
+      "properties": {
+        "start": {"type": "string", "minLength": 10},
+        "end": {"type": "string", "minLength": 10},
+        "unit": {"const": "date-range"}
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "string_list": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "metric_observed": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "value",
+        "numerator",
+        "denominator",
+        "unit",
+        "window",
+        "definition_version",
+        "limitations"
+      ],
+      "properties": {
+        "kind": {"const": "observed"},
+        "value": {"type": "number"},
+        "numerator": {"type": "integer", "minimum": 0},
+        "denominator": {"type": "integer", "minimum": 0},
+        "unit": {"type": "string", "minLength": 1},
+        "window": {"$ref": "#/$defs/window"},
+        "definition_version": {"type": "string", "minLength": 1},
+        "limitations": {"$ref": "#/$defs/limitations"},
+        "observation_state": {"const": "no_declared_ai_commits"}
+      }
+    },
+    "metric_not_observed": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "reason",
+        "denominator",
+        "unit",
+        "window",
+        "definition_version",
+        "limitations"
+      ],
+      "properties": {
+        "kind": {"enum": ["not_observed", "not_proven"]},
+        "reason": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*$"},
+        "denominator": {"type": ["integer", "null"], "minimum": 0},
+        "unit": {"type": "string", "minLength": 1},
+        "window": {"$ref": "#/$defs/window"},
+        "definition_version": {"type": "string", "minLength": 1},
+        "limitations": {"$ref": "#/$defs/limitations"}
+      }
+    },
+    "metric": {
+      "oneOf": [
+        {"$ref": "#/$defs/metric_observed"},
+        {"$ref": "#/$defs/metric_not_observed"}
+      ]
+    },
+    "cadence_metric": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "numerator", "median_gap_days", "longest_gap_days", "denominator", "unit", "window", "definition_version", "limitations"],
+          "properties": {
+            "kind": {"const": "observed"},
+            "numerator": {"type": "integer", "minimum": 0},
+            "median_gap_days": {"type": "number", "minimum": 0},
+            "longest_gap_days": {"type": "number", "minimum": 0},
+            "denominator": {"type": "integer", "minimum": 0},
+            "unit": {"const": "days"},
+            "window": {"$ref": "#/$defs/window"},
+            "definition_version": {"type": "string", "minLength": 1},
+            "limitations": {"$ref": "#/$defs/limitations"}
+          }
+        },
+        {"$ref": "#/$defs/metric_not_observed"}
+      ]
+    },
+    "path_distribution_value": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["n", "share"],
+      "properties": {
+        "n": {"type": "integer", "minimum": 0},
+        "share": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    },
+    "path_distribution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["denominator", "unit", "values"],
+      "properties": {
+        "denominator": {"type": "integer", "minimum": 0},
+        "unit": {"const": "path_touch_share"},
+        "values": {
+          "type": "object",
+          "propertyNames": {"pattern": "^[a-z][a-z0-9_.+-]*$"},
+          "additionalProperties": {"$ref": "#/$defs/path_distribution_value"}
+        }
+      }
+    },
+    "language_domain_period": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["period", "commit_n", "path_touch_commit_n", "languages", "domains"],
+      "properties": {
+        "period": {"type": "string", "pattern": "^[0-9]{4}$"},
+        "commit_n": {"type": "integer", "minimum": 1},
+        "path_touch_commit_n": {"type": "integer", "minimum": 0},
+        "languages": {"$ref": "#/$defs/path_distribution"},
+        "domains": {"$ref": "#/$defs/path_distribution"}
+      }
+    },
+    "language_domain_timeline": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "numerator", "denominator", "unit", "window", "definition_version", "periods", "limitations"],
+          "properties": {
+            "kind": {"const": "observed"},
+            "numerator": {"type": "integer", "minimum": 0},
+            "denominator": {"type": "integer", "minimum": 0},
+            "unit": {"const": "commits"},
+            "window": {"$ref": "#/$defs/window"},
+            "definition_version": {"type": "string", "minLength": 1},
+            "periods": {"type": "array", "items": {"$ref": "#/$defs/language_domain_period"}},
+            "limitations": {"$ref": "#/$defs/limitations"}
+          }
+        },
+        {"$ref": "#/$defs/metric_not_observed"}
+      ]
+    },
+    "repository_size_point": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target_contribution_rank", "commit_oid", "observed_at", "repository_commit_count", "repository_file_count", "repository_line_count"],
+      "properties": {
+        "target_contribution_rank": {"type": "integer", "minimum": 1},
+        "commit_oid": {"type": "string", "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"},
+        "observed_at": {"type": "string", "format": "date-time"},
+        "repository_commit_count": {"type": "integer", "minimum": 0},
+        "repository_file_count": {"type": "integer", "minimum": 0},
+        "repository_line_count": {"type": "integer", "minimum": 0}
+      }
+    },
+    "repository_size_points": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["first", "median", "last"],
+      "properties": {
+        "first": {"$ref": "#/$defs/repository_size_point"},
+        "median": {"$ref": "#/$defs/repository_size_point"},
+        "last": {"$ref": "#/$defs/repository_size_point"}
+      }
+    },
+    "repository_size_metric": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "numerator", "denominator", "unit", "window", "definition_version", "points", "limitations"],
+          "properties": {
+            "kind": {"const": "observed"},
+            "numerator": {"type": "integer", "minimum": 0},
+            "denominator": {"type": "integer", "minimum": 0},
+            "unit": {"const": "target_commits"},
+            "window": {"$ref": "#/$defs/window"},
+            "definition_version": {"type": "string", "minLength": 1},
+            "points": {"$ref": "#/$defs/repository_size_points"},
+            "limitations": {"$ref": "#/$defs/limitations"}
+          }
+        },
+        {"$ref": "#/$defs/metric_not_observed"}
+      ]
+    },
+    "founder_timing_metric": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "value", "numerator", "denominator", "unit", "window", "definition_version", "limitations"],
+          "properties": {
+            "kind": {"const": "observed"},
+            "value": {"type": "number"},
+            "numerator": {"type": "integer", "minimum": 0},
+            "denominator": {"type": "integer", "minimum": 0},
+            "unit": {"const": "repository_commit_share"},
+            "window": {"$ref": "#/$defs/window"},
+            "definition_version": {"type": "string", "minLength": 1},
+            "limitations": {"$ref": "#/$defs/limitations"},
+            "days_after_repository_start": {"type": "number", "minimum": 0},
+            "first_contribution_at": {"type": "string", "format": "date-time"},
+            "timing_state": {"const": "author_timestamp_skew"}
+          }
+        },
+        {"$ref": "#/$defs/metric_not_observed"}
+      ]
+    },
+    "lightweight_tag_metric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "reason", "denominator", "unit", "window", "definition_version", "limitations"],
+      "properties": {
+        "kind": {"const": "not_observed"},
+        "reason": {"enum": ["lightweight_tag_has_no_tagger", "no_lightweight_tags"]},
+        "denominator": {"type": "integer", "minimum": 0},
+        "unit": {"const": "tags"},
+        "window": {"$ref": "#/$defs/window"},
+        "definition_version": {"type": "string", "minLength": 1},
+        "limitations": {"$ref": "#/$defs/limitations"}
+      }
+    },
+    "metric_map": {
+      "type": "object",
+      "propertyNames": {"pattern": "^[a-z][a-z0-9_.-]*$"},
+      "additionalProperties": {"$ref": "#/$defs/metric"}
+    },
+    "role_commit_metric": {
+      "allOf": [
+        {"$ref": "#/$defs/metric"},
+        {"type": "object", "properties": {"unit": {"const": "commit_share"}}}
+      ]
+    },
+    "role_process_metric": {
+      "allOf": [
+        {"$ref": "#/$defs/metric"},
+        {"type": "object", "properties": {"unit": {"const": "process_signal_share"}}}
+      ]
+    },
+    "role_domain_dimension": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["core", "test", "docs", "infra", "deps", "unclassified"],
+      "properties": {
+        "core": {"$ref": "#/$defs/role_commit_metric"},
+        "test": {"$ref": "#/$defs/role_commit_metric"},
+        "docs": {"$ref": "#/$defs/role_commit_metric"},
+        "infra": {"$ref": "#/$defs/role_commit_metric"},
+        "deps": {"$ref": "#/$defs/role_commit_metric"},
+        "unclassified": {"$ref": "#/$defs/role_commit_metric"}
+      }
+    },
+    "role_work_type_dimension": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["create", "modify", "rename", "test", "dependency", "corrective"],
+      "properties": {
+        "create": {"$ref": "#/$defs/role_commit_metric"},
+        "modify": {"$ref": "#/$defs/role_commit_metric"},
+        "rename": {"$ref": "#/$defs/role_commit_metric"},
+        "test": {"$ref": "#/$defs/role_commit_metric"},
+        "dependency": {"$ref": "#/$defs/role_commit_metric"},
+        "corrective": {"$ref": "#/$defs/role_commit_metric"}
+      }
+    },
+    "role_time_phase_dimension": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["early", "middle", "recent"],
+      "properties": {
+        "early": {"$ref": "#/$defs/role_commit_metric"},
+        "middle": {"$ref": "#/$defs/role_commit_metric"},
+        "recent": {"$ref": "#/$defs/role_commit_metric"}
+      }
+    },
+    "role_calendar_year_dimension": {
+      "type": "object",
+      "minProperties": 0,
+      "additionalProperties": false,
+      "patternProperties": {
+        "^[0-9]{4}$": {"$ref": "#/$defs/role_commit_metric"}
+      }
+    },
+    "role_time_dimension": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["phase", "calendar_year"],
+      "properties": {
+        "phase": {"$ref": "#/$defs/role_time_phase_dimension"},
+        "calendar_year": {"$ref": "#/$defs/role_calendar_year_dimension"}
+      }
+    },
+    "role_process_position_dimension": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["creator", "maintainer", "integrator", "release"],
+      "properties": {
+        "creator": {"$ref": "#/$defs/role_process_metric"},
+        "maintainer": {"$ref": "#/$defs/role_process_metric"},
+        "integrator": {"$ref": "#/$defs/role_process_metric"},
+        "release": {"$ref": "#/$defs/role_process_metric"}
+      }
+    },
+    "subject_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method", "subject_id"],
+      "properties": {
+        "method": {"enum": ["self_declared", "attested"]},
+        "subject_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,127}$"}
+      }
+    },
+    "forge_project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "host", "project_id", "project_path"],
+      "properties": {
+        "provider": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]{0,31}$"},
+        "host": {"type": "string", "minLength": 1, "maxLength": 255},
+        "project_id": {"type": "string", "minLength": 1, "maxLength": 255},
+        "project_path": {"type": "string", "pattern": "^[^/\\s]+/[^\\s]+$", "maxLength": 1024}
+      }
+    },
+    "source_coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": {"enum": ["observed", "not_observed", "not_proven"]},
+        "provided": {"type": "boolean"},
+        "reason": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*$"}
+      }
+    },
+    "bound_coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "observed", "expected", "unit", "missing"],
+      "properties": {
+        "status": {"enum": ["complete", "partial"]},
+        "observed": {"type": "integer", "minimum": 0},
+        "expected": {"type": "integer", "minimum": 1},
+        "unit": {"type": "string", "minLength": 1},
+        "missing": {"type": "integer", "minimum": 0}
+      }
+    },
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider",
+        "host",
+        "project_id",
+        "project_path",
+        "target_oid",
+        "window",
+        "coverage"
+      ],
+      "properties": {
+        "provider": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]{0,31}$"},
+        "host": {"type": "string", "minLength": 1, "maxLength": 255},
+        "project_id": {"type": "string", "minLength": 1, "maxLength": 255},
+        "project_path": {"type": "string", "pattern": "^[^/\\s]+/[^\\s]+$", "maxLength": 1024},
+        "target_oid": {"$ref": "#/$defs/git_oid"},
+        "window": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["start", "end"],
+          "properties": {
+            "start": {"type": "string", "format": "date-time"},
+            "end": {"type": "string", "format": "date-time"}
+          }
+        },
+        "coverage": {"$ref": "#/$defs/bound_coverage"}
+      }
+    },
+    "actor_id": {
+      "type": "string",
+      "pattern": "^(?:[a-z0-9][a-z0-9._-]{0,63}|actor_[0-9a-f]{12,32}|actor_unknown)$"
+    },
+    "actor_partition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["definition", "repo_scope_digest", "object_format", "partition_digest", "sha_to_actor_digest", "provider_enrichment_changes_partition"],
+      "properties": {
+        "definition": {"const": "repo_local_git_primary_author_cluster"},
+        "repo_scope_digest": {"$ref": "#/$defs/sha256"},
+        "object_format": {"enum": ["sha1", "sha256"]},
+        "partition_digest": {"$ref": "#/$defs/sha256"},
+        "sha_to_actor_digest": {"$ref": "#/$defs/sha256"},
+        "provider_enrichment_changes_partition": {"const": false}
+      }
+    },
+    "public_join": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["matched", "unmatched", "ambiguous", "public_handle_actors", "fetched_login_count", "commit_login_count", "account_conflict_count", "count_note"],
+      "properties": {
+        "matched": {"type": "integer", "minimum": 0},
+        "unmatched": {"type": "integer", "minimum": 0},
+        "ambiguous": {"type": "integer", "minimum": 0},
+        "public_handle_actors": {"type": "integer", "minimum": 0},
+        "fetched_login_count": {"type": ["integer", "null"], "minimum": 0},
+        "commit_login_count": {"type": "integer", "minimum": 0},
+        "account_conflict_count": {"type": "integer", "minimum": 0},
+        "count_note": {"type": "string", "minLength": 1}
+      }
+    },
+    "attribution_coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "value", "unit", "sample_size"],
+      "properties": {
+        "kind": {"const": "observed"},
+        "value": {"type": "number", "minimum": 0, "maximum": 1},
+        "unit": {"const": "ratio"},
+        "sample_size": {"type": "integer", "minimum": 0}
+      }
+    },
+    "compat_observation": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "value", "unit"],
+          "properties": {
+            "kind": {"const": "observed"},
+            "value": {},
+            "unit": {"type": "string", "minLength": 1},
+            "sample_size": {"type": "integer", "minimum": 0}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "reason"],
+          "properties": {
+            "kind": {"enum": ["not_observed", "not_proven"]},
+            "reason": {"type": "string", "minLength": 1}
+          }
+        }
+      ]
+    },
+    "attribution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["observed_actor_count", "attributed_commit_count", "attribution_human_including_merges", "repo_human_nonmerge_commits", "unresolved_commit_count", "attribution_unresolved_commit_count", "attribution_coverage", "bot_count", "merge_count", "coauthored_count", "mailmap_present", "human_commit_count", "population_identity", "unresolved_definitions", "actor_partition", "public_join"],
+      "properties": {
+        "observed_actor_count": {"type": "integer", "minimum": 0},
+        "attributed_commit_count": {"type": "integer", "minimum": 0},
+        "attribution_human_including_merges": {"type": "integer", "minimum": 0},
+        "repo_human_nonmerge_commits": {"type": "integer", "minimum": 0},
+        "unresolved_commit_count": {"type": "integer", "minimum": 0},
+        "attribution_unresolved_commit_count": {"type": "integer", "minimum": 0},
+        "attribution_coverage": {"$ref": "#/$defs/attribution_coverage"},
+        "bot_count": {"type": "integer", "minimum": 0},
+        "merge_count": {"type": "integer", "minimum": 0},
+        "coauthored_count": {"type": "integer", "minimum": 0},
+        "mailmap_present": {"type": "boolean"},
+        "human_commit_count": {"type": "integer", "minimum": 0},
+        "population_identity": {"type": "string", "minLength": 1},
+        "unresolved_definitions": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["origin_unresolved", "attribution_unresolved"],
+          "properties": {
+            "origin_unresolved": {"type": "string", "minLength": 1},
+            "attribution_unresolved": {"type": "string", "minLength": 1}
+          }
+        },
+        "actor_partition": {"$ref": "#/$defs/actor_partition"},
+        "public_join": {"$ref": "#/$defs/public_join"},
+        "bot": {"$ref": "#/$defs/compat_observation"},
+        "origin_unresolved_commit_count": {"type": "integer", "minimum": 0}
+      }
+    },
+    "actor_directory_account": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "host", "account_id", "handle", "profile_url", "evidence"],
+      "properties": {
+        "provider": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]{0,31}$"},
+        "host": {"type": "string", "minLength": 1},
+        "account_id": {"type": "string", "minLength": 1},
+        "handle": {"type": ["string", "null"]},
+        "profile_url": {"type": ["string", "null"], "format": "uri"},
+        "evidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["basis", "account_match_status"],
+          "properties": {
+            "basis": {"type": "string", "minLength": 1},
+            "account_match_status": {"enum": ["not_requested", "unlinked", "linked", "ambiguous", "conflict"]}
+          }
+        }
+      }
+    },
+    "actor_directory_actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actor_id", "display_name", "display_status", "commit_count", "commit_count_includes_merges", "commit_count_nonmerge", "public_account_status", "public_accounts"],
+      "properties": {
+        "actor_id": {"$ref": "#/$defs/actor_id"},
+        "display_name": {"type": "string", "minLength": 1},
+        "display_status": {"enum": ["public_handle", "identity_alias", "git_author_name", "stable_hash", "actor_unknown"]},
+        "commit_count": {"type": "integer", "minimum": 0},
+        "commit_count_includes_merges": {"const": true},
+        "commit_count_nonmerge": {"type": "integer", "minimum": 0},
+        "public_account_status": {"enum": ["not_requested", "unlinked", "linked", "ambiguous", "conflict"]},
+        "public_accounts": {"type": "array", "items": {"$ref": "#/$defs/actor_directory_account"}, "uniqueItems": true}
+      }
+    },
+    "actor_directory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["observed_count", "actors", "attribution"],
+      "properties": {
+        "observed_count": {"type": "integer", "minimum": 0},
+        "actors": {"type": "array", "items": {"$ref": "#/$defs/actor_directory_actor"}, "uniqueItems": true},
+        "attribution": {"$ref": "#/$defs/attribution"}
+      }
+    },
+    "report_digest_value": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/sha256"},
+        {"$ref": "#/$defs/digest"}
+      ]
+    },
+    "report_lineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["is_fork", "parent"],
+      "properties": {
+        "is_fork": {"type": "boolean"},
+        "parent": {"type": ["string", "null"]}
+      }
+    },
+    "report_event_window": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["start", "end", "source_format"],
+          "properties": {
+            "start": {"type": "string", "format": "date"},
+            "end": {"type": "string", "format": "date"},
+            "source_format": {"type": "string", "minLength": 1}
+          }
+        }
+      ]
+    },
+    "report_git_window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start", "end", "days", "unit"],
+      "properties": {
+        "start": {"type": "string", "format": "date"},
+        "end": {"type": "string", "format": "date"},
+        "days": {"type": "integer", "minimum": 0},
+        "unit": {"const": "days"}
+      }
+    },
+    "report_scalar_or_string_list": {
+      "oneOf": [
+        {"type": ["string", "number", "boolean", "null"]},
+        {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      ]
+    },
+    "report_observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": {"enum": ["observed", "not_observed", "not_proven", "not_declared", "declared", "display_preset"]},
+        "reason": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*$"},
+        "value": {"$ref": "#/$defs/report_scalar_or_string_list"},
+        "unit": {"type": "string", "minLength": 1},
+        "sample_size": {"type": "integer", "minimum": 0},
+        "population": {"type": "integer", "minimum": 0},
+        "definition_version": {"type": "string", "minLength": 1},
+        "limitations": {"$ref": "#/$defs/limitations"},
+        "classification_basis": {"type": "string", "minLength": 1},
+        "timestamp_basis": {"type": "string", "minLength": 1},
+        "window_days": {"type": "integer", "minimum": 1},
+        "observation_date": {"type": "string", "format": "date"},
+        "provided": {"type": "boolean"},
+        "count": {"type": "integer", "minimum": 0},
+        "n": {"type": "integer", "minimum": 0},
+        "denominator": {"type": "integer", "minimum": 0},
+        "cochanged": {"type": "integer", "minimum": 0},
+        "test_only": {"type": "integer", "minimum": 0},
+        "docs_or_config_excluded": {"type": "integer", "minimum": 0},
+        "narrate_rate": {"type": "boolean"},
+        "evidence_claim": {"type": ["boolean", "null"]},
+        "corrective_commits": {"type": "integer", "minimum": 0},
+        "retouch_commits": {"type": "integer", "minimum": 0},
+        "reverts": {"type": "integer", "minimum": 0},
+        "test_touch": {"type": "integer", "minimum": 0},
+        "with_test": {"type": "integer", "minimum": 0}
+      }
+    },
+    "report_repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "remote"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "remote": {"type": ["string", "null"]},
+        "path": {"type": "string", "minLength": 1}
+      }
+    },
+    "report_identity_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pending_attribution", "actor_count"],
+      "properties": {
+        "pending_attribution": {"type": "boolean"},
+        "actor_count": {"type": "integer", "minimum": 0}
+      }
+    },
+    "report_lineage_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["is_fork", "parent", "has_upstream_lineage"],
+      "properties": {
+        "is_fork": {"type": "boolean"},
+        "parent": {"type": ["string", "null"]},
+        "has_upstream_lineage": {"type": "boolean"}
+      }
+    },
+    "report_origin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "inherited_upstream", "upstream_sync", "tenant_unique",
+        "tenant_merge_or_sync", "tenant_derivative",
+        "external_upstream_contribution", "template_inherited",
+        "generated_or_vendor", "ambiguous_origin", "unresolved", "bot"
+      ],
+      "properties": {
+        "inherited_upstream": {"$ref": "#/$defs/report_observation"},
+        "upstream_sync": {"$ref": "#/$defs/report_observation"},
+        "tenant_unique": {"$ref": "#/$defs/report_observation"},
+        "tenant_merge_or_sync": {"$ref": "#/$defs/report_observation"},
+        "tenant_derivative": {"$ref": "#/$defs/report_observation"},
+        "external_upstream_contribution": {"$ref": "#/$defs/report_observation"},
+        "template_inherited": {"$ref": "#/$defs/report_observation"},
+        "generated_or_vendor": {"$ref": "#/$defs/report_observation"},
+        "ambiguous_origin": {"$ref": "#/$defs/report_observation"},
+        "unresolved": {"$ref": "#/$defs/report_observation"},
+        "bot": {"$ref": "#/$defs/report_observation"}
+      }
+    },
+    "report_activity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tenant_commits", "active_days", "commits_per_active_day", "commits_per_active_day_median", "active_days_13w"],
+      "properties": {
+        "scope": {"enum": ["repo", "tenant", "actor_cluster"]},
+        "population": {"type": "string", "minLength": 1},
+        "repo_commits": {"$ref": "#/$defs/report_observation"},
+        "repo_human_nonmerge_commits": {"$ref": "#/$defs/report_observation"},
+        "repo_active_days": {"$ref": "#/$defs/report_observation"},
+        "tenant_commits": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/report_observation"}]},
+        "actor_cluster_commits": {"$ref": "#/$defs/report_observation"},
+        "active_days": {"$ref": "#/$defs/report_observation"},
+        "commits_per_active_day": {"$ref": "#/$defs/report_observation"},
+        "commits_per_active_day_median": {"$ref": "#/$defs/report_observation"},
+        "active_days_13w": {"$ref": "#/$defs/report_observation"},
+        "denominator_note": {"type": "string", "minLength": 1}
+      },
+      "allOf": [
+        {
+          "if": {"required": ["actor_cluster_commits"]},
+          "then": {
+            "required": ["scope", "population"],
+            "properties": {
+              "scope": {"const": "actor_cluster"},
+              "population": {"const": "repo_local_git_primary_author_cluster"},
+              "tenant_commits": {"type": "null"}
+            }
+          }
+        },
+        {
+          "if": {
+            "required": ["scope"],
+            "properties": {"scope": {"const": "actor_cluster"}}
+          },
+          "then": {"required": ["actor_cluster_commits"]}
+        }
+      ]
+    },
+    "report_core_activity_period": {
+      "oneOf": [
+        {"$ref": "#/$defs/report_observation"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "start", "end", "share", "unit", "definition_version"],
+          "properties": {
+            "kind": {"const": "observed"},
+            "start": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}$"},
+            "end": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}$"},
+            "share": {"type": "number", "minimum": 0, "maximum": 1},
+            "unit": {"const": "month-range"},
+            "definition_version": {"type": "string", "minLength": 1}
+          }
+        }
+      ]
+    },
+    "report_test_frameworks": {
+      "oneOf": [
+        {"$ref": "#/$defs/report_observation"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "value", "names", "directories", "unit"],
+          "properties": {
+            "kind": {"const": "observed"},
+            "value": {"const": true},
+            "names": {"$ref": "#/$defs/string_list"},
+            "directories": {"$ref": "#/$defs/string_list"},
+            "unit": {"const": "boolean"}
+          }
+        }
+      ]
+    },
+    "report_test_cochange": {
+      "oneOf": [
+        {"$ref": "#/$defs/report_observation"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "definition_version", "analysis_scope", "all_time", "last_13w"],
+          "properties": {
+            "kind": {"const": "observed"},
+            "definition_version": {"type": "string", "minLength": 1},
+            "analysis_scope": {"enum": ["repo", "tenant", "actor_cluster"]},
+            "all_time": {"$ref": "#/$defs/report_observation"},
+            "last_13w": {"$ref": "#/$defs/report_observation"}
+          }
+        }
+      ]
+    },
+    "report_rework": {
+      "oneOf": [
+        {"$ref": "#/$defs/report_observation"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "definition_version", "analysis_scope", "window_days", "evidence_claim", "corrective_rework_rate", "path_retouch_rate", "revert_rate", "line_rework"],
+          "properties": {
+            "kind": {"const": "observed"},
+            "definition_version": {"type": "string", "minLength": 1},
+            "analysis_scope": {"enum": ["repo", "tenant", "actor_cluster"]},
+            "window_days": {"type": "integer", "minimum": 1},
+            "evidence_claim": {"type": ["boolean", "null"]},
+            "corrective_rework_rate": {"$ref": "#/$defs/report_observation"},
+            "path_retouch_rate": {"$ref": "#/$defs/report_observation"},
+            "revert_rate": {"$ref": "#/$defs/report_observation"},
+            "line_rework": {"$ref": "#/$defs/report_observation"}
+          }
+        }
+      ]
+    },
+    "report_survival": {
+      "oneOf": [
+        {"$ref": "#/$defs/report_observation"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "definition_version", "tau_days", "files_sampled", "source_files", "lines_sampled", "survival_index", "unit"],
+          "properties": {
+            "kind": {"const": "observed"},
+            "definition_version": {"type": "string", "minLength": 1},
+            "tau_days": {"type": "integer", "minimum": 1},
+            "files_sampled": {"type": "integer", "minimum": 0},
+            "source_files": {"type": "integer", "minimum": 0},
+            "lines_sampled": {"type": "integer", "minimum": 0},
+            "survival_index": {"type": "number", "minimum": 0, "maximum": 1},
+            "unit": {"const": "dimensionless"}
+          }
+        }
+      ]
+    },
+    "report_number_map": {
+      "type": "object",
+      "propertyNames": {"pattern": "^[A-Za-z0-9][A-Za-z0-9_.+/-]*$"},
+      "additionalProperties": {"type": "number"}
+    },
+    "report_integer_map": {
+      "type": "object",
+      "propertyNames": {"pattern": "^[A-Za-z0-9][A-Za-z0-9_.+/-]*$"},
+      "additionalProperties": {"type": "integer", "minimum": 0}
+    },
+    "report_year_turnover": {
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^[0-9]{4}$": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["joined", "last_active"],
+          "properties": {
+            "joined": {"type": "integer", "minimum": 0},
+            "last_active": {"type": "integer", "minimum": 0}
+          }
+        }
+      }
+    },
+    "report_structured_observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "value", "unit"],
+      "properties": {
+        "kind": {"const": "observed"},
+        "value": {
+          "oneOf": [
+            {"$ref": "#/$defs/report_number_map"},
+            {"$ref": "#/$defs/report_year_turnover"}
+          ]
+        },
+        "unit": {"type": "string", "minLength": 1},
+        "sample_size": {"type": "integer", "minimum": 0}
+      }
+    },
+    "report_context_scale": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "denominator_note", "human_commits", "first_commit", "last_commit", "active_span_days", "top_level_dirs", "tags"],
+      "properties": {
+        "kind": {"const": "observed"},
+        "denominator_note": {"type": "string"},
+        "human_commits": {"$ref": "#/$defs/report_observation"},
+        "first_commit": {"$ref": "#/$defs/report_observation"},
+        "last_commit": {"$ref": "#/$defs/report_observation"},
+        "active_span_days": {"$ref": "#/$defs/report_observation"},
+        "top_level_dirs": {"$ref": "#/$defs/report_observation"},
+        "tags": {"$ref": "#/$defs/report_observation"}
+      }
+    },
+    "report_context_profile": {
+      "oneOf": [
+        {"$ref": "#/$defs/report_observation"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind", "definition_version", "analysis_scope", "resolved_human_actors",
+            "top_actor_share", "collaboration_class", "pr_flow_share", "scale",
+            "repo_age_days", "days_since_last_human_commit", "active_days_180d",
+            "lifecycle_stage", "actor_turnover", "release_cadence",
+            "conventional_commit_share", "language_composition", "test_file_ratio",
+            "docs_share", "dependency_manifests", "monorepo_markers", "issue_link_density"
+          ],
+          "properties": {
+            "kind": {"const": "observed"},
+            "definition_version": {"type": "string", "minLength": 1},
+            "analysis_scope": {"const": "repo"},
+            "resolved_human_actors": {"$ref": "#/$defs/report_observation"},
+            "top_actor_share": {"$ref": "#/$defs/report_observation"},
+            "collaboration_class": {"$ref": "#/$defs/report_observation"},
+            "pr_flow_share": {"$ref": "#/$defs/report_observation"},
+            "scale": {"$ref": "#/$defs/report_context_scale"},
+            "repo_age_days": {"$ref": "#/$defs/report_observation"},
+            "days_since_last_human_commit": {"$ref": "#/$defs/report_observation"},
+            "active_days_180d": {"$ref": "#/$defs/report_observation"},
+            "lifecycle_stage": {"$ref": "#/$defs/report_observation"},
+            "actor_turnover": {
+              "oneOf": [
+                {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["kind", "value", "unit"],
+                "properties": {
+                  "kind": {"const": "observed"},
+                  "value": {"$ref": "#/$defs/report_year_turnover"},
+                  "unit": {"const": "actors/year"}
+                }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["kind", "reason"],
+                  "properties": {
+                    "kind": {"const": "not_observed"},
+                    "reason": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*$"}
+                  }
+                }
+              ]
+            },
+            "release_cadence": {"$ref": "#/$defs/report_observation"},
+            "conventional_commit_share": {"$ref": "#/$defs/report_observation"},
+            "language_composition": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["kind", "value", "unit"],
+              "properties": {
+                "kind": {"const": "observed"},
+                "value": {"$ref": "#/$defs/report_number_map"},
+                "unit": {"const": "touch-share"}
+              }
+            },
+            "test_file_ratio": {"$ref": "#/$defs/report_observation"},
+            "docs_share": {"$ref": "#/$defs/report_observation"},
+            "dependency_manifests": {"$ref": "#/$defs/report_observation"},
+            "monorepo_markers": {"$ref": "#/$defs/report_observation"},
+            "issue_link_density": {"$ref": "#/$defs/report_observation"}
+          }
+        }
+      ]
+    },
+    "report_surface_value_map": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["test", "docs", "ci_cd", "platform", "data", "observability", "frontend", "backend", "config", "generated_vendor", "other"],
+      "properties": {
+        "test": {"type": "number", "minimum": 0},
+        "docs": {"type": "number", "minimum": 0},
+        "ci_cd": {"type": "number", "minimum": 0},
+        "platform": {"type": "number", "minimum": 0},
+        "data": {"type": "number", "minimum": 0},
+        "observability": {"type": "number", "minimum": 0},
+        "frontend": {"type": "number", "minimum": 0},
+        "backend": {"type": "number", "minimum": 0},
+        "config": {"type": "number", "minimum": 0},
+        "generated_vendor": {"type": "number", "minimum": 0},
+        "other": {"type": "number", "minimum": 0}
+      }
+    },
+    "report_surface_map_observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "unit", "values"],
+      "properties": {
+        "kind": {"const": "observed"},
+        "unit": {"type": "string", "minLength": 1},
+        "values": {"$ref": "#/$defs/report_surface_value_map"},
+        "definition_version": {"type": "string", "minLength": 1},
+        "sample_size": {"type": "integer", "minimum": 0},
+        "population": {"type": "integer", "minimum": 0},
+        "denominator_definition": {"type": "string", "minLength": 1}
+      }
+    },
+    "report_dynamic_map_observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "unit", "values"],
+      "properties": {
+        "kind": {"const": "observed"},
+        "unit": {"type": "string", "minLength": 1},
+        "values": {"$ref": "#/$defs/report_integer_map"},
+        "definition_version": {"type": "string", "minLength": 1},
+        "sample_size": {"type": "integer", "minimum": 0},
+        "population": {"type": "integer", "minimum": 0},
+        "denominator_definition": {"type": "string", "minLength": 1}
+      }
+    },
+    "report_share_map_observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "unit", "values"],
+      "properties": {
+        "kind": {"const": "observed"},
+        "unit": {"type": "string", "minLength": 1},
+        "values": {"$ref": "#/$defs/report_number_map"},
+        "definition_version": {"type": "string", "minLength": 1},
+        "sample_size": {"type": "integer", "minimum": 0},
+        "population": {"type": "integer", "minimum": 0},
+        "denominator_definition": {"type": "string", "minLength": 1}
+      }
+    },
+    "report_surface_profile": {
+      "oneOf": [
+        {"$ref": "#/$defs/report_observation"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "unit", "definition_version", "sample_size", "classification_basis", "denominator_definition", "population", "unclassified_count", "ambiguous_count", "surface_commit_counts", "surface_commit_share", "surface_file_counts", "surface_unique_file_counts", "surface_file_share", "cross_surface_cochange", "module_breadth", "top_module_share", "surface_line_counts", "limitations"],
+          "properties": {
+            "kind": {"const": "observed"},
+            "unit": {"const": "profile"},
+            "definition_version": {"type": "string", "minLength": 1},
+            "sample_size": {"type": "integer", "minimum": 0},
+            "classification_basis": {"type": "string", "minLength": 1},
+            "denominator_definition": {"type": "string", "minLength": 1},
+            "population": {"type": "integer", "minimum": 0},
+            "unclassified_count": {"type": "integer", "minimum": 0},
+            "ambiguous_count": {"type": "integer", "minimum": 0},
+            "surface_commit_counts": {"$ref": "#/$defs/report_surface_map_observation"},
+            "surface_commit_share": {"oneOf": [{"$ref": "#/$defs/report_observation"}, {"$ref": "#/$defs/report_surface_map_observation"}]},
+            "surface_file_counts": {"$ref": "#/$defs/report_surface_map_observation"},
+            "surface_unique_file_counts": {"$ref": "#/$defs/report_surface_map_observation"},
+            "surface_file_share": {"oneOf": [{"$ref": "#/$defs/report_observation"}, {"$ref": "#/$defs/report_surface_map_observation"}]},
+            "cross_surface_cochange": {"$ref": "#/$defs/report_dynamic_map_observation"},
+            "module_breadth": {"$ref": "#/$defs/report_observation"},
+            "top_module_share": {"$ref": "#/$defs/report_observation"},
+            "surface_line_counts": {"oneOf": [{"$ref": "#/$defs/report_observation"}, {"$ref": "#/$defs/report_surface_map_observation"}]},
+            "limitations": {"$ref": "#/$defs/limitations"}
+          }
+        }
+      ]
+    },
+    "report_change_rhythm": {
+      "oneOf": [
+        {"$ref": "#/$defs/report_observation"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "unit", "definition_version", "sample_size", "timestamp_basis", "observation_date", "window_days", "window_population", "history_outside_window_commit_count", "active_days_180d", "interval_sample_size", "limitations", "median_gap_days", "p90_gap_days", "burst_share_le_2d", "long_gap_share_ge_30d"],
+          "properties": {
+            "kind": {"const": "observed"},
+            "unit": {"const": "profile"},
+            "definition_version": {"type": "string", "minLength": 1},
+            "sample_size": {"type": "integer", "minimum": 0},
+            "timestamp_basis": {"type": "string", "minLength": 1},
+            "observation_date": {"type": "string", "format": "date"},
+            "window_days": {"type": "integer", "minimum": 1},
+            "window_population": {"type": "integer", "minimum": 0},
+            "history_outside_window_commit_count": {"$ref": "#/$defs/report_observation"},
+            "active_days_180d": {"$ref": "#/$defs/report_observation"},
+            "interval_sample_size": {"$ref": "#/$defs/report_observation"},
+            "limitations": {"$ref": "#/$defs/limitations"},
+            "median_gap_days": {"$ref": "#/$defs/report_observation"},
+            "p90_gap_days": {"$ref": "#/$defs/report_observation"},
+            "burst_share_le_2d": {"$ref": "#/$defs/report_observation"},
+            "long_gap_share_ge_30d": {"$ref": "#/$defs/report_observation"}
+          }
+        }
+      ]
+    },
+    "report_verification_profile": {
+      "oneOf": [
+        {"$ref": "#/$defs/report_observation"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "unit", "definition_version", "sample_size", "test_only_commit_count", "test_touch_share", "test_type_distribution", "test_type_share", "fix_with_test_pairing", "surface_test_cochange"],
+          "properties": {
+            "kind": {"const": "observed"},
+            "unit": {"const": "profile"},
+            "definition_version": {"type": "string", "minLength": 1},
+            "sample_size": {"type": "integer", "minimum": 0},
+            "test_only_commit_count": {"$ref": "#/$defs/report_observation"},
+            "test_touch_share": {"$ref": "#/$defs/report_observation"},
+            "test_type_distribution": {"$ref": "#/$defs/report_dynamic_map_observation"},
+            "test_type_share": {"oneOf": [{"$ref": "#/$defs/report_observation"}, {"$ref": "#/$defs/report_share_map_observation"}]},
+            "fix_with_test_pairing": {"$ref": "#/$defs/report_observation"},
+            "surface_test_cochange": {"$ref": "#/$defs/report_dynamic_map_observation"}
+          }
+        }
+      ]
+    },
+    "report_coordination_git": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "unit", "merge_commit_count", "merge_commit_share", "issue_link_count", "issue_link_share", "limitations"],
+      "properties": {
+        "kind": {"const": "observed"},
+        "unit": {"const": "profile"},
+        "merge_commit_count": {"$ref": "#/$defs/report_observation"},
+        "merge_commit_share": {"$ref": "#/$defs/report_observation"},
+        "issue_link_count": {"$ref": "#/$defs/report_observation"},
+        "issue_link_share": {"$ref": "#/$defs/report_observation"},
+        "limitations": {"$ref": "#/$defs/limitations"}
+      }
+    },
+    "report_coordination_input": {
+      "oneOf": [
+        {"$ref": "#/$defs/report_observation"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "unit", "limitations"],
+          "properties": {
+            "kind": {"const": "observed"},
+            "unit": {"const": "profile"},
+            "review_event_count": {"$ref": "#/$defs/report_observation"},
+            "reviewed_pr_count": {"$ref": "#/$defs/report_observation"},
+            "lifecycle_event_count": {"$ref": "#/$defs/report_observation"},
+            "event_count": {"$ref": "#/$defs/report_observation"},
+            "distinct_issue_count": {"$ref": "#/$defs/report_observation"},
+            "kind_counts": {"$ref": "#/$defs/report_integer_map"},
+            "limitations": {"$ref": "#/$defs/limitations"}
+          }
+        }
+      ]
+    },
+    "report_coordination_profile": {
+      "oneOf": [
+        {"$ref": "#/$defs/report_observation"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "unit", "definition_version", "sample_size", "git", "review", "tracker"],
+          "properties": {
+            "kind": {"const": "observed"},
+            "unit": {"const": "profile"},
+            "definition_version": {"type": "string", "minLength": 1},
+            "sample_size": {"type": "integer", "minimum": 0},
+            "git": {"$ref": "#/$defs/report_coordination_git"},
+            "review": {"$ref": "#/$defs/report_coordination_input"},
+            "tracker": {"$ref": "#/$defs/report_coordination_input"}
+          }
+        }
+      ]
+    },
+    "report_interval_coverage": {
+      "oneOf": [
+        {"$ref": "#/$defs/report_observation"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "unit", "status", "observed", "expected", "missing", "value"],
+          "properties": {
+            "kind": {"const": "observed"},
+            "unit": {"type": "string", "minLength": 1},
+            "status": {"enum": ["complete", "partial", "unspecified"]},
+            "observed": {"type": "integer", "minimum": 0},
+            "expected": {"type": "integer", "minimum": 0},
+            "missing": {"type": "integer", "minimum": 0},
+            "value": {"type": "number", "minimum": 0, "maximum": 1}
+          }
+        }
+      ]
+    },
+    "report_event_window_range": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start", "end"],
+      "properties": {
+        "start": {"type": "string", "format": "date-time"},
+        "end": {"type": "string", "format": "date-time"}
+      }
+    },
+    "report_event_repository_profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "unit", "sample_size", "active_utc_days", "event_type_counts", "coverage_status", "cadence"],
+      "properties": {
+        "kind": {"const": "observed"},
+        "unit": {"const": "profile"},
+        "sample_size": {"type": "integer", "minimum": 0},
+        "active_utc_days": {"type": "integer", "minimum": 0},
+        "event_type_counts": {"$ref": "#/$defs/report_integer_map"},
+        "coverage_status": {"enum": ["complete", "partial", "unspecified"]},
+        "cadence": {"$ref": "#/$defs/report_observation"}
+      }
+    },
+    "report_event_repository_profiles": {
+      "type": "object",
+      "propertyNames": {"pattern": "^[^/\\s]+/[^\\s]+$"},
+      "additionalProperties": {"$ref": "#/$defs/report_event_repository_profile"}
+    },
+    "report_event_observation": {
+      "oneOf": [
+        {"$ref": "#/$defs/report_observation"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "unit", "source_format", "sample_size", "population", "window", "interval_coverage", "repository_event_counts", "daily_event_counts", "event_type_counts", "active_utc_days", "first_observed_event", "last_observed_event", "unknown_event_type_count", "missing_event_types", "duplicate_count", "duplicate_rate", "timezone_rules", "limitations"],
+          "allOf": [
+            {
+              "if": {"properties": {"source_format": {"const": "tep-forge-export-v2"}}, "required": ["source_format"]},
+              "then": {"required": ["digest", "binding"]}
+            }
+          ],
+          "properties": {
+            "kind": {"const": "observed"},
+            "unit": {"const": "profile"},
+            "source_format": {"type": "string", "minLength": 1},
+            "digest": {"$ref": "#/$defs/sha256"},
+            "binding": {"$ref": "#/$defs/report_binding"},
+            "sample_size": {"type": "integer", "minimum": 0},
+            "population": {"type": "integer", "minimum": 0},
+            "window": {"$ref": "#/$defs/report_event_window_range"},
+            "interval_coverage": {"$ref": "#/$defs/report_interval_coverage"},
+            "repository_event_counts": {"$ref": "#/$defs/report_dynamic_map_observation"},
+            "daily_event_counts": {"$ref": "#/$defs/report_dynamic_map_observation"},
+            "event_type_counts": {"$ref": "#/$defs/report_dynamic_map_observation"},
+            "active_utc_days": {"$ref": "#/$defs/report_observation"},
+            "first_observed_event": {"$ref": "#/$defs/report_observation"},
+            "last_observed_event": {"$ref": "#/$defs/report_observation"},
+            "unknown_event_type_count": {"$ref": "#/$defs/report_observation"},
+            "missing_event_types": {"$ref": "#/$defs/string_list"},
+            "duplicate_count": {"$ref": "#/$defs/report_observation"},
+            "duplicate_rate": {"$ref": "#/$defs/report_observation"},
+            "timezone_rules": {"$ref": "#/$defs/string_list"},
+            "collection_kind": {"const": "multi_repository_benchmark"},
+            "repository_profiles": {"$ref": "#/$defs/report_event_repository_profiles"},
+            "limitations": {"$ref": "#/$defs/limitations"}
+          }
+        }
+      ]
+    },
+    "report_event_shape": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": {"enum": ["observed", "not_observed", "not_proven"]},
+        "reason": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*$"},
+        "unit": {"type": "string", "minLength": 1},
+        "value": {"type": "string", "minLength": 1},
+        "confidence": {"type": "string", "minLength": 1},
+        "n": {"type": "integer", "minimum": 0},
+        "window_days": {"type": "integer", "minimum": 0},
+        "limitations": {"$ref": "#/$defs/limitations"}
+      }
+    },
+    "report_event_rhythm_repositories": {
+      "type": "object",
+      "propertyNames": {"pattern": "^[^/\\s]+/[^\\s]+$"},
+      "additionalProperties": {"$ref": "#/$defs/report_event_rhythm"}
+    },
+    "report_event_rhythm": {
+      "oneOf": [
+        {"$ref": "#/$defs/report_observation"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "unit", "sample_size", "interval_coverage", "active_day_share", "limitations"],
+          "properties": {
+            "kind": {"enum": ["observed", "not_proven"]},
+            "reason": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*$"},
+            "unit": {"const": "profile"},
+            "window_days": {"type": "integer", "minimum": 1},
+            "sample_size": {"type": "integer", "minimum": 0},
+            "population": {"type": "integer", "minimum": 0},
+            "digest": {"$ref": "#/$defs/sha256"},
+            "timezone_rules": {"$ref": "#/$defs/string_list"},
+            "interval_coverage": {"$ref": "#/$defs/report_interval_coverage"},
+            "active_day_share": {"$ref": "#/$defs/report_observation"},
+            "inter_event_gap_median_hours": {"$ref": "#/$defs/report_observation"},
+            "inter_event_gap_iqr_hours": {"$ref": "#/$defs/report_observation"},
+            "same_day_event_share": {"$ref": "#/$defs/report_observation"},
+            "burst_day_share": {"$ref": "#/$defs/report_observation"},
+            "release_interval_days": {"$ref": "#/$defs/report_observation"},
+            "shape_label": {"$ref": "#/$defs/report_event_shape"},
+            "repositories": {"$ref": "#/$defs/report_event_rhythm_repositories"},
+            "limitations": {"$ref": "#/$defs/limitations"}
+          }
+        }
+      ]
+    },
+    "report_tracker_project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["active_days", "issue_created_to_in_progress_median_hours", "issue_created_to_closed_median_hours", "pr_created_to_first_review_median_hours", "pr_created_to_merged_median_hours", "release_count", "release_interval_days", "linked_issue_share", "linked_pr_share", "issue_to_close_median_hours", "pr_to_merge_median_hours"],
+      "properties": {
+        "active_days": {"$ref": "#/$defs/report_observation"},
+        "issue_created_to_in_progress_median_hours": {"$ref": "#/$defs/report_observation"},
+        "issue_created_to_closed_median_hours": {"$ref": "#/$defs/report_observation"},
+        "pr_created_to_first_review_median_hours": {"$ref": "#/$defs/report_observation"},
+        "pr_created_to_merged_median_hours": {"$ref": "#/$defs/report_observation"},
+        "release_count": {"$ref": "#/$defs/report_observation"},
+        "release_interval_days": {"$ref": "#/$defs/report_observation"},
+        "linked_issue_share": {"$ref": "#/$defs/report_observation"},
+        "linked_pr_share": {"$ref": "#/$defs/report_observation"},
+        "issue_to_close_median_hours": {"type": ["number", "null"], "minimum": 0},
+        "pr_to_merge_median_hours": {"type": ["number", "null"], "minimum": 0}
+      }
+    },
+    "report_tracker_projects": {
+      "type": "object",
+      "propertyNames": {"pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]*$"},
+      "additionalProperties": {"$ref": "#/$defs/report_tracker_project"}
+    },
+    "report_tracker_lifecycle": {
+      "oneOf": [
+        {"$ref": "#/$defs/report_observation"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "unit", "fixture_kind", "digest", "sample_size", "projects", "limitations"],
+          "properties": {
+            "kind": {"const": "observed"},
+            "unit": {"const": "profile"},
+            "fixture_kind": {"type": "string", "minLength": 1},
+            "digest": {"$ref": "#/$defs/sha256"},
+            "sample_size": {"type": "integer", "minimum": 0},
+            "projects": {"$ref": "#/$defs/report_tracker_projects"},
+            "limitations": {"$ref": "#/$defs/limitations"}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "unit", "source_format", "digest", "binding", "sample_size", "coverage_status", "window", "event_kind_counts", "record_state_counts", "active_utc_days", "first_observed_event", "last_observed_event", "projects", "limitations"],
+          "properties": {
+            "kind": {"const": "observed"},
+            "unit": {"const": "profile"},
+            "source_format": {"const": "tep-tracker-export-v2"},
+            "digest": {"$ref": "#/$defs/sha256"},
+            "binding": {"$ref": "#/$defs/report_binding"},
+            "sample_size": {"type": "integer", "minimum": 0},
+            "coverage_status": {"enum": ["complete", "partial"]},
+            "window": {"$ref": "#/$defs/report_event_window_range"},
+            "event_kind_counts": {"$ref": "#/$defs/report_integer_map"},
+            "record_state_counts": {"$ref": "#/$defs/report_integer_map"},
+            "active_utc_days": {"$ref": "#/$defs/report_observation"},
+            "first_observed_event": {"$ref": "#/$defs/report_observation"},
+            "last_observed_event": {"$ref": "#/$defs/report_observation"},
+            "projects": {"$ref": "#/$defs/report_tracker_projects"},
+            "limitations": {"$ref": "#/$defs/limitations"}
+          }
+        }
+      ]
+    },
+    "report_role_lens": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "name", "unit", "classifies_role", "emphasized_sections", "emphasized_keys", "intro", "limitations"],
+          "properties": {
+            "kind": {"const": "display_preset"},
+            "name": {"type": "string", "minLength": 1},
+            "unit": {"const": "lens"},
+            "classifies_role": {"const": false},
+            "emphasized_sections": {"$ref": "#/$defs/string_list"},
+            "emphasized_keys": {"$ref": "#/$defs/string_list"},
+            "intro": {"type": "string", "minLength": 1},
+            "limitations": {"$ref": "#/$defs/limitations"}
+          }
+        }
+      ]
+    },
+    "report_license_file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "blob_oid", "sha256", "bytes"],
+      "properties": {
+        "path": {"type": "string", "pattern": "^[^/]+$"},
+        "blob_oid": {"$ref": "#/$defs/git_oid"},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 0}
+      }
+    },
+    "report_license_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["definition_version", "status", "target_oid", "files", "terms_status", "digest"],
+      "properties": {
+        "definition_version": {"const": "revision-license-v1"},
+        "status": {"enum": ["observed", "not_observed"]},
+        "target_oid": {"$ref": "#/$defs/git_oid"},
+        "files": {"type": "array", "items": {"$ref": "#/$defs/report_license_file"}, "uniqueItems": true},
+        "terms_status": {"const": "separate_from_license_evidence"},
+        "digest": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "report_public_forge_coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "repository_license", "provider_api_terms"],
+      "properties": {
+        "kind": {"enum": ["observed", "not_observed", "not_proven"]},
+        "reason": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*$"},
+        "value": {"type": "string", "minLength": 1},
+        "status": {"type": "string", "minLength": 1},
+        "unit": {"const": "coverage_status"},
+        "expected_count": {"type": ["integer", "null"], "minimum": 0},
+        "observed_count": {"type": ["integer", "null"], "minimum": 0},
+        "missing_count": {"type": "integer", "minimum": 0},
+        "extra_count": {"type": "integer", "minimum": 0},
+        "duplicate_count": {"type": "integer", "minimum": 0},
+        "account_linkage": {"type": ["string", "null"]},
+        "repository_license": {"$ref": "#/$defs/report_license_evidence"},
+        "provider_api_terms": {"$ref": "#/$defs/report_observation"}
+      }
+    },
+    "report_coverage_source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": {"enum": ["observed", "not_observed", "not_proven"]},
+        "reason": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*$"},
+        "value": {"type": "boolean"},
+        "unit": {"const": "boolean"},
+        "provided": {"type": "boolean"},
+        "digest": {"$ref": "#/$defs/sha256"},
+        "source_format": {"type": "string", "minLength": 1},
+        "fixture_kind": {"type": ["string", "null"]},
+        "binding": {"$ref": "#/$defs/report_binding"}
+      }
+    },
+    "report_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "host", "project_id", "project_path", "target_oid", "window", "coverage", "digest"],
+      "properties": {
+        "provider": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]{0,31}$"},
+        "host": {"type": "string", "minLength": 1, "maxLength": 255},
+        "project_id": {"type": "string", "minLength": 1, "maxLength": 255},
+        "project_path": {"type": "string", "pattern": "^[^/\\s]+/[^\\s]+$", "maxLength": 1024},
+        "target_oid": {"$ref": "#/$defs/git_oid"},
+        "window": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["start", "end"],
+          "properties": {
+            "start": {"type": "string", "format": "date-time"},
+            "end": {"type": "string", "format": "date-time"}
+          }
+        },
+        "coverage": {"$ref": "#/$defs/bound_coverage"},
+        "digest": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "report_coverage_window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": {"enum": ["observed", "not_observed", "not_proven"]},
+        "reason": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*$"},
+        "value": {"type": ["string", "boolean"]},
+        "unit": {"type": "string", "minLength": 1},
+        "start": {"type": "string", "format": "date"},
+        "end": {"type": "string", "format": "date"},
+        "source_format": {"type": "string", "minLength": 1},
+        "binding_digest": {"$ref": "#/$defs/sha256"},
+        "coverage_status": {"enum": ["complete", "partial"]},
+        "git_window": {"$ref": "#/$defs/report_git_window"},
+        "event_window": {"$ref": "#/$defs/report_event_window"},
+        "forge_window": {"$ref": "#/$defs/report_event_window"},
+        "tracker_window": {"$ref": "#/$defs/report_coverage_window"}
+      }
+    },
+    "report_input_coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "git": {"$ref": "#/$defs/report_coverage_source"},
+        "forge": {"$ref": "#/$defs/report_coverage_source"},
+        "tracker": {"$ref": "#/$defs/report_coverage_source"},
+        "public_forge": {"$ref": "#/$defs/report_public_forge_coverage"},
+        "git_window": {"$ref": "#/$defs/report_git_window"},
+        "event_window": {"oneOf": [{"$ref": "#/$defs/report_event_window"}, {"$ref": "#/$defs/report_observation"}]},
+        "window_alignment": {"$ref": "#/$defs/report_coverage_window"},
+        "tracker_window": {"$ref": "#/$defs/report_coverage_window"},
+        "forge_tracker_window_alignment": {"$ref": "#/$defs/report_coverage_window"}
+      }
+    },
+    "report_interpretation_value": {
+      "oneOf": [
+        {"$ref": "#/$defs/report_observation"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "reference_version", "analysis_scope", "n", "decile", "value", "unit", "metric_id"],
+          "properties": {
+            "kind": {"const": "observed"},
+            "reference_version": {"type": "string", "minLength": 1},
+            "analysis_scope": {"const": "repo"},
+            "n": {"type": "integer", "minimum": 0},
+            "decile": {"type": "integer", "minimum": 1, "maximum": 10},
+            "value": {"type": "number"},
+            "unit": {"type": "string", "minLength": 1},
+            "metric_id": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*$"}
+          }
+        }
+      ]
+    },
+    "report_interpretation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "test_cochange": {"$ref": "#/$defs/report_interpretation_value"},
+        "corrective_rework": {"$ref": "#/$defs/report_interpretation_value"}
+      }
+    },
+    "report_reference_coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "missing"],
+      "properties": {
+        "status": {"enum": ["present", "partial"]},
+        "missing": {"$ref": "#/$defs/string_list"}
+      }
+    },
+    "report_reference_metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "source_id", "n"],
+      "properties": {
+        "kind": {"type": "string", "minLength": 1},
+        "reason": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*$"},
+        "source_id": {"type": "string", "minLength": 1},
+        "n": {"type": ["integer", "null"], "minimum": 0},
+        "window": {"type": ["string", "null"]},
+        "sha256": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/sha256"}]},
+        "sha256_unavailable_reason": {"type": ["string", "null"]},
+        "summary": {"type": "string", "minLength": 1}
+      }
+    },
+    "report_reference_comparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["metric_id", "observed", "reference", "coverage", "limitations", "interpretation"],
+      "properties": {
+        "metric_id": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*$"},
+        "observed": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/report_observation"}]},
+        "reference": {"$ref": "#/$defs/report_reference_metadata"},
+        "coverage": {"$ref": "#/$defs/report_reference_coverage"},
+        "limitations": {"$ref": "#/$defs/limitations"},
+        "interpretation": {"type": "string", "minLength": 1}
+      }
+    },
+    "report_reference_selection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repositories", "event_types", "actor_fields_removed", "raw_payload_removed"],
+      "properties": {
+        "repositories": {"$ref": "#/$defs/string_list"},
+        "event_types": {"$ref": "#/$defs/string_list"},
+        "actor_fields_removed": {"type": "boolean"},
+        "raw_payload_removed": {"type": "boolean"}
+      }
+    },
+    "report_reference_source_coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "observed", "expected", "missing", "unit", "rate"],
+      "properties": {
+        "status": {"enum": ["complete", "partial"]},
+        "observed": {"type": "integer", "minimum": 0},
+        "expected": {"type": "integer", "minimum": 0},
+        "missing": {"type": "integer", "minimum": 0},
+        "unit": {"type": "string", "minLength": 1},
+        "rate": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    },
+    "report_reference_catalog_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "source_url", "as_of", "window", "n", "denominator", "coverage", "limitations"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "kind": {"type": "string", "minLength": 1},
+        "source_url": {"type": "string", "format": "uri"},
+        "source_format": {"type": "string", "minLength": 1},
+        "source_window": {"type": "string", "minLength": 1},
+        "source_hours": {"$ref": "#/$defs/string_list"},
+        "source_version": {"type": "string", "minLength": 1},
+        "raw_snapshot_sha256": {
+          "type": "object",
+          "propertyNames": {"pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]*$"},
+          "additionalProperties": {"$ref": "#/$defs/sha256"}
+        },
+        "selection": {"$ref": "#/$defs/report_reference_selection"},
+        "artifact": {"type": ["string", "null"], "minLength": 1},
+        "rows": {"type": "integer", "minimum": 0},
+        "sha256": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/sha256"}]},
+        "sha256_unavailable_reason": {"type": ["string", "null"]},
+        "use_for": {"$ref": "#/$defs/string_list"},
+        "do_not_use_for": {"$ref": "#/$defs/string_list"},
+        "quality_notes": {"$ref": "#/$defs/string_list"},
+        "as_of": {"type": "string", "format": "date"},
+        "window": {"type": "string", "minLength": 1},
+        "n": {"type": "integer", "minimum": 0},
+        "denominator": {"type": "string", "minLength": 1},
+        "coverage": {"oneOf": [{"type": "string", "minLength": 1}, {"$ref": "#/$defs/report_reference_source_coverage"}]},
+        "limitations": {"$ref": "#/$defs/limitations"},
+        "doi": {"type": "string", "minLength": 1},
+        "raw_file": {"type": "string", "minLength": 1},
+        "raw_rows_including_header": {"type": "integer", "minimum": 0},
+        "raw_sha256": {"$ref": "#/$defs/sha256"},
+        "sample_rows": {"type": "integer", "minimum": 0},
+        "labels": {"$ref": "#/$defs/string_list"},
+        "population": {"type": "string", "minLength": 1},
+        "published": {"type": "string", "minLength": 1},
+        "last_updated": {"type": "string", "minLength": 1},
+        "license": {"type": "string", "minLength": 1},
+        "license_note": {"type": "string", "minLength": 1},
+        "research_paper_url": {"type": "string", "format": "uri"},
+        "raw_distribution": {"type": "string", "minLength": 1},
+        "reported_scale": {"$ref": "#/$defs/report_integer_map"},
+        "metrics": {"$ref": "#/$defs/string_list"}
+      }
+    },
+    "report_reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["catalog", "comparisons", "limitations"],
+      "properties": {
+        "catalog": {"$ref": "#/$defs/report_reference_catalog_entry"},
+        "comparisons": {"type": "array", "items": {"$ref": "#/$defs/report_reference_comparison"}, "minItems": 1},
+        "limitations": {"$ref": "#/$defs/limitations"}
+      }
+    },
+    "report-v2": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "report_kind",
+        "subject",
+        "target",
+        "provenance",
+        "population",
+        "attribution",
+        "window",
+        "metrics",
+        "limitations",
+        "notices"
+      ],
+      "properties": {
+        "schema_version": {"const": "report-v2"},
+        "report_kind": {"const": "evidence"},
+        "subject": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["kind", "selection"],
+              "properties": {
+                "kind": {"const": "repo"},
+                "selection": {"const": "repo_all_human"}
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["kind", "selection", "actor_id", "canonical_id"],
+              "properties": {
+                "kind": {"const": "actor"},
+                "selection": {"enum": ["explicit_actor", "inferred_actor"]},
+                "actor_id": {"$ref": "#/$defs/actor_id"},
+                "canonical_id": {"$ref": "#/$defs/actor_id"},
+                "attribution_state": {
+                  "enum": ["verified", "claimed", "inferred", "unresolved", "external", "bot"]
+                }
+              },
+              "allOf": [
+                {
+                  "if": {"properties": {"selection": {"const": "inferred_actor"}}},
+                  "then": {"not": {"required": ["attribution_state"]}}
+                }
+              ]
+            }
+          ]
+        },
+        "target": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["oid"],
+          "properties": {"oid": {"$ref": "#/$defs/git_oid"}}
+        },
+        "provenance": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "tool_name",
+            "tool_version",
+            "definition_version",
+            "analysis_scope",
+            "analyzed_at",
+            "input_digests",
+            "tagset_digest",
+            "target_oid",
+            "revision_completeness"
+          ],
+          "properties": {
+            "tool_name": {"const": "grift"},
+            "method_name": {"const": "TEP"},
+            "tool_version": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$"},
+            "definition_version": {"type": "string", "minLength": 1},
+            "origin_definition_version": {"type": "string", "minLength": 1},
+            "activity_definition_version": {"type": "string", "minLength": 1},
+            "analysis_scope": {"enum": ["repo", "tenant", "actor_cluster"]},
+            "analyzed_at": {"type": "string", "format": "date-time"},
+            "analyzed_commit_sha": {"type": "string", "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"},
+            "observation_date": {"type": "string", "format": "date"},
+            "window_basis": {"enum": ["explicit_as_of", "legacy_head_date"]},
+            "identity_digest": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/sha256"}]},
+            "vendor_scan": {"type": "boolean"},
+            "survival": {"type": "boolean"},
+            "include_local_path": {"type": "boolean"},
+            "as_of": {"type": ["string", "null"], "format": "date"},
+            "role_lens": {"type": ["string", "null"]},
+            "lineage": {"$ref": "#/$defs/report_lineage"},
+            "event_window": {"$ref": "#/$defs/report_event_window"},
+            "git_window": {"$ref": "#/$defs/report_git_window"},
+            "source_format": {"type": ["string", "null"]},
+            "reference_id": {"type": ["string", "null"]},
+            "reference_manifest": {"type": ["string", "null"]},
+            "reference_manifest_digest": {"$ref": "#/$defs/report_digest_value"},
+            "target_oid": {"$ref": "#/$defs/provenance_oid"},
+            "revision_completeness": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["shallow", "promisor", "complete"],
+              "properties": {
+                "shallow": {"type": "boolean"},
+                "promisor": {"type": "boolean"},
+                "complete": {"type": "boolean"}
+              }
+            },
+            "input_digests": {
+              "type": "object",
+              "required": ["tagset"],
+              "properties": {
+                "tagset": {"$ref": "#/$defs/sha256"}
+              },
+              "propertyNames": {"pattern": "^[a-z][a-z0-9_.-]*$"},
+              "additionalProperties": {"$ref": "#/$defs/report_digest_value"}
+            },
+            "tagset_digest": {"$ref": "#/$defs/sha256"},
+            "public_evidence_digest": {"$ref": "#/$defs/report_digest_value"}
+          }
+        },
+        "population": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "actor_count",
+            "human_commit_count",
+            "nonmerge_commit_count",
+            "merge_commit_count",
+            "basis",
+            "partition_digest",
+            "population_digest"
+          ],
+          "properties": {
+            "actor_count": {"type": "integer", "minimum": 0},
+            "human_commit_count": {"type": "integer", "minimum": 0},
+            "nonmerge_commit_count": {"type": "integer", "minimum": 0},
+            "merge_commit_count": {"type": "integer", "minimum": 0},
+            "basis": {"const": "git_primary_author_cluster"},
+            "partition_digest": {"$ref": "#/$defs/digest"},
+            "population_digest": {"$ref": "#/$defs/digest"}
+          }
+        },
+        "attribution": {"$ref": "#/$defs/attribution"},
+        "repository": {"$ref": "#/$defs/report_repository"},
+        "identity": {"$ref": "#/$defs/report_identity_summary"},
+        "lineage": {"$ref": "#/$defs/report_lineage_summary"},
+        "origin": {"$ref": "#/$defs/report_origin"},
+        "activity": {"$ref": "#/$defs/report_activity"},
+        "core_activity_period": {"$ref": "#/$defs/report_core_activity_period"},
+        "test_frameworks": {"$ref": "#/$defs/report_test_frameworks"},
+        "test_cochange": {"$ref": "#/$defs/report_test_cochange"},
+        "rework": {"$ref": "#/$defs/report_rework"},
+        "survival": {"$ref": "#/$defs/report_survival"},
+        "context_profile": {"$ref": "#/$defs/report_context_profile"},
+        "surface_profile": {"$ref": "#/$defs/report_surface_profile"},
+        "change_rhythm": {"$ref": "#/$defs/report_change_rhythm"},
+        "verification_profile": {"$ref": "#/$defs/report_verification_profile"},
+        "coordination_profile": {"$ref": "#/$defs/report_coordination_profile"},
+        "event_observation": {"$ref": "#/$defs/report_event_observation"},
+        "event_rhythm": {"$ref": "#/$defs/report_event_rhythm"},
+        "tracker_lifecycle": {"$ref": "#/$defs/report_tracker_lifecycle"},
+        "role_lens": {"$ref": "#/$defs/report_role_lens"},
+        "input_coverage": {"$ref": "#/$defs/report_input_coverage"},
+        "interpretation": {"$ref": "#/$defs/report_interpretation"},
+        "reference": {"$ref": "#/$defs/report_reference"},
+        "actor_directory": {"$ref": "#/$defs/actor_directory"},
+        "window": {"$ref": "#/$defs/window"},
+        "metrics": {"$ref": "#/$defs/metric_map"},
+        "actor_index_digest": {"$ref": "#/$defs/nullable_digest"},
+        "experience": {"$ref": "#/$defs/experience-v1"},
+        "role_profile": {"$ref": "#/$defs/role-profile-v1"},
+        "library_context": {"$ref": "#/$defs/report_library_context"},
+        "outcome": {"$ref": "#/$defs/report_outcome"},
+        "limitations": {"$ref": "#/$defs/limitations"},
+        "notices": {"$ref": "#/$defs/string_list"}
+      }
+    },
+    "actor_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actor_id", "commit_count", "nonmerge_commit_count", "merge_commit_count"],
+      "properties": {
+        "actor_id": {"$ref": "#/$defs/actor_id"},
+        "commit_count": {"type": "integer", "minimum": 0},
+        "nonmerge_commit_count": {"type": "integer", "minimum": 0},
+        "merge_commit_count": {"type": "integer", "minimum": 0}
+      }
+    },
+    "account_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "commit_oid"],
+      "properties": {
+        "kind": {"enum": ["commit_account_link", "declared_identity"]},
+        "commit_oid": {"$ref": "#/$defs/git_oid"}
+      }
+    },
+    "provider_account": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "host", "account_id", "handle", "profile_url", "evidence"],
+      "properties": {
+        "provider": {"enum": ["github", "gitlab"]},
+        "host": {"type": "string", "minLength": 1},
+        "account_id": {"type": "string", "minLength": 1},
+        "handle": {"type": "string", "minLength": 1},
+        "profile_url": {"type": "string", "format": "uri"},
+        "evidence": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/account_evidence"},
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      }
+    },
+    "actor-card-v1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "report_kind",
+        "actor_id",
+        "target",
+        "partition_digest",
+        "population_digest",
+        "n",
+        "denominator",
+        "window",
+        "basis",
+        "accounts",
+        "metrics",
+        "limitations",
+        "notices"
+      ],
+      "properties": {
+        "schema_version": {"const": "actor-card-v1"},
+        "report_kind": {"const": "actor_card"},
+        "actor_id": {"$ref": "#/$defs/actor_id"},
+        "target": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["oid"],
+          "properties": {"oid": {"$ref": "#/$defs/git_oid"}}
+        },
+        "partition_digest": {"$ref": "#/$defs/digest"},
+        "population_digest": {"$ref": "#/$defs/digest"},
+        "n": {"type": "integer", "minimum": 0},
+        "denominator": {"type": "integer", "minimum": 0},
+        "window": {"$ref": "#/$defs/window"},
+        "basis": {"const": "git_primary_author_cluster"},
+        "account_status": {"enum": ["not_requested", "unsupported", "unavailable", "unmatched", "matched", "ambiguous", "conflict"]},
+        "accounts": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/provider_account"},
+          "uniqueItems": true
+        },
+        "metrics": {"$ref": "#/$defs/metric_map"},
+        "experience": {"$ref": "#/$defs/experience-v1"},
+        "role_profile": {"$ref": "#/$defs/role-profile-v1"},
+        "limitations": {"$ref": "#/$defs/limitations"},
+        "notices": {"$ref": "#/$defs/string_list"}
+      }
+    },
+    "actor-index-v1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "report_kind",
+        "target",
+        "partition_digest",
+        "population_digest",
+        "population",
+        "actors",
+        "selection",
+        "limitations"
+      ],
+      "properties": {
+        "schema_version": {"const": "actor-index-v1"},
+        "report_kind": {"const": "actor_index"},
+        "target": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["oid"],
+          "properties": {"oid": {"$ref": "#/$defs/git_oid"}}
+        },
+        "partition_digest": {"$ref": "#/$defs/digest"},
+        "population_digest": {"$ref": "#/$defs/digest"},
+        "population": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["actor_count", "human_commit_count", "basis", "window"],
+          "properties": {
+            "actor_count": {"type": "integer", "minimum": 0},
+            "human_commit_count": {"type": "integer", "minimum": 0},
+            "basis": {"const": "git_primary_author_cluster"},
+            "window": {"$ref": "#/$defs/window"}
+          }
+        },
+        "actors": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/actor_summary"},
+          "uniqueItems": true
+        },
+        "selection": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mode", "selected_count", "actor_ids"],
+          "properties": {
+            "mode": {"enum": ["all", "top", "explicit"]},
+            "selected_count": {"type": "integer", "minimum": 0},
+            "actor_ids": {
+              "type": "array",
+              "items": {"$ref": "#/$defs/actor_id"},
+              "uniqueItems": true
+            }
+          }
+        },
+        "limitations": {"$ref": "#/$defs/limitations"}
+      }
+    },
+    "project-v1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "report_kind",
+        "project_id",
+        "target",
+        "provenance_digest",
+        "window",
+        "declared",
+        "observed",
+        "limitations",
+        "notices"
+      ],
+      "properties": {
+        "schema_version": {"const": "project-v1"},
+        "report_kind": {"const": "project"},
+        "project_id": {"type": ["string", "null"], "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"},
+        "target": {
+          "oneOf": [
+            {"type": "null"},
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["oid"],
+              "properties": {"oid": {"$ref": "#/$defs/git_oid"}}
+            }
+          ]
+        },
+        "provenance_digest": {"$ref": "#/$defs/digest"},
+        "window": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/window"}]},
+        "declared": {"$ref": "#/$defs/metric_map"},
+        "observed": {"$ref": "#/$defs/metric_map"},
+        "limitations": {"$ref": "#/$defs/limitations"},
+        "notices": {"$ref": "#/$defs/string_list"}
+      }
+    },
+    "alignment-v1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "report_kind",
+        "subject",
+        "actor_report_digest",
+        "project_report_digest",
+        "target",
+        "window",
+        "axes",
+        "limitations",
+        "notices"
+      ],
+      "properties": {
+        "schema_version": {"const": "alignment-v1"},
+        "report_kind": {"const": "alignment"},
+        "subject": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "actor_canonical_id", "actor_selection", "project_id"],
+          "properties": {
+            "kind": {"const": "alignment"},
+            "actor_canonical_id": {"$ref": "#/$defs/actor_id"},
+            "actor_selection": {"enum": ["explicit_actor", "inferred_actor"]},
+            "actor_attribution_state": {
+              "enum": ["verified", "claimed", "inferred", "unresolved", "external", "bot"]
+            },
+            "project_id": {
+              "oneOf": [
+                {"type": "null"},
+                {"type": "string", "minLength": 1}
+              ]
+            },
+            "mode": {"type": "string", "minLength": 1}
+          },
+          "allOf": [
+            {
+              "if": {
+                "required": ["actor_selection"],
+                "properties": {"actor_selection": {"const": "inferred_actor"}}
+              },
+              "then": {"not": {"required": ["actor_attribution_state"]}}
+            }
+          ]
+        },
+        "actor_report_digest": {"$ref": "#/$defs/digest"},
+        "project_report_digest": {"$ref": "#/$defs/digest"},
+        "target": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["oid"],
+          "properties": {"oid": {"$ref": "#/$defs/git_oid"}}
+        },
+        "window": {"$ref": "#/$defs/window"},
+        "axes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "axis",
+              "actor_observed",
+              "project_observed",
+              "project_declared",
+              "actor_n",
+              "project_n",
+              "actor_denominator",
+              "project_denominator",
+              "actor_source",
+              "project_source",
+              "actor_basis",
+              "project_basis",
+              "relationship",
+              "coverage",
+              "limitations"
+            ],
+            "properties": {
+              "axis": {"type": "string", "minLength": 1},
+              "actor_observed": {"$ref": "#/$defs/metric"},
+              "project_observed": {"$ref": "#/$defs/metric"},
+              "project_declared": {"$ref": "#/$defs/metric"},
+              "actor_n": {"type": ["integer", "null"], "minimum": 0},
+              "project_n": {"type": ["integer", "null"], "minimum": 0},
+              "actor_denominator": {"type": ["integer", "null"], "minimum": 0},
+              "project_denominator": {"type": ["integer", "null"], "minimum": 0},
+              "actor_source": {"$ref": "#/$defs/string_list"},
+              "project_source": {"$ref": "#/$defs/string_list"},
+              "actor_basis": {"type": "string", "minLength": 1},
+              "project_basis": {"type": "string", "minLength": 1},
+              "relationship": {"enum": ["similar_direction", "different_direction", "mixed", "not_comparable", "not_proven"]},
+              "coverage": {"enum": ["present", "partial", "not_observed", "not_proven"]},
+              "limitations": {"$ref": "#/$defs/limitations"}
+            }
+          }
+        },
+        "limitations": {"$ref": "#/$defs/limitations"},
+        "notices": {"$ref": "#/$defs/string_list"}
+      }
+    },
+    "public_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method", "url", "headers"],
+      "properties": {
+        "method": {"const": "GET"},
+        "url": {"type": "string", "pattern": "^https://"},
+        "headers": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "accept": {"type": "string", "minLength": 1},
+            "Accept": {"type": "string", "minLength": 1},
+            "user-agent": {"type": "string", "minLength": 1},
+            "User-Agent": {"type": "string", "minLength": 1},
+            "if-none-match": {"type": "string", "minLength": 1},
+            "If-None-Match": {"type": "string", "minLength": 1},
+            "if-modified-since": {"type": "string", "minLength": 1},
+            "If-Modified-Since": {"type": "string", "minLength": 1}
+          }
+        }
+      }
+    },
+    "public_page": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["number", "request", "http_status", "response_headers", "body_sha256", "body_bytes", "item_count"],
+      "properties": {
+        "number": {"type": "integer", "minimum": 1},
+        "request": {"$ref": "#/$defs/public_request"},
+        "http_status": {"type": "integer", "minimum": 100, "maximum": 599},
+        "response_headers": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "etag": {"type": "string"},
+            "last-modified": {"type": "string"},
+            "link": {"type": "string"},
+            "x-ratelimit-limit": {"type": "string"},
+            "x-ratelimit-remaining": {"type": "string"},
+            "x-ratelimit-reset": {"type": "string"},
+            "ratelimit-limit": {"type": "string"},
+            "ratelimit-remaining": {"type": "string"},
+            "ratelimit-reset": {"type": "string"},
+            "retry-after": {"type": "string"},
+            "x-next-page": {"type": "string"},
+            "x-page": {"type": "string"},
+            "x-per-page": {"type": "string"},
+            "x-total": {"type": "string"},
+            "x-total-pages": {"type": "string"}
+          }
+        },
+        "body_sha256": {"$ref": "#/$defs/sha256"},
+        "body_bytes": {"type": "integer", "minimum": 0},
+        "item_count": {"type": "integer", "minimum": 0},
+        "next_request": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/public_request"}]}
+      }
+    },
+    "public_account_mapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "host", "account_id", "handle", "profile_url", "evidence"],
+      "properties": {
+        "provider": {"enum": ["github", "gitlab"]},
+        "host": {"type": "string", "minLength": 1},
+        "account_id": {"type": "string", "minLength": 1},
+        "handle": {"type": ["string", "null"]},
+        "profile_url": {"type": ["string", "null"]},
+        "evidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["basis", "commit_oid"],
+          "properties": {
+            "basis": {"const": "commit.author.id"},
+            "commit_oid": {"type": "string", "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"}
+          }
+        }
+      }
+    },
+    "public-evidence-v1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "provider",
+        "api_version",
+        "source",
+        "target_oid",
+        "fetched_at",
+        "updated_at",
+        "collection_policy",
+        "account_linkage",
+        "coverage",
+        "pagination",
+        "pages",
+        "commit_oids",
+        "duplicate_commit_oids",
+        "sha_to_account",
+        "mapping_conflicts",
+        "unlinked_commit_count",
+        "bundle_payload_sha256"
+      ],
+      "properties": {
+        "schema_version": {"const": "public-evidence-v1"},
+        "provider": {"enum": ["github", "gitlab"]},
+        "api_version": {"type": "string", "minLength": 1},
+        "source": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["provider", "host", "project_path", "api_base", "sanitized_remote"],
+          "properties": {
+            "provider": {"enum": ["github", "gitlab"]},
+            "host": {"type": "string", "minLength": 1},
+            "project_path": {"type": "string", "pattern": "^[^/\\s]+/[^\\s]+$"},
+            "api_base": {"type": "string", "pattern": "^https://"},
+            "sanitized_remote": {"type": ["string", "null"]}
+          }
+        },
+        "target_oid": {"$ref": "#/$defs/git_oid"},
+        "fetched_at": {"type": ["string", "null"], "format": "date-time"},
+        "updated_at": {"type": ["string", "null"], "format": "date-time"},
+        "collection_policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["network", "robots", "api_terms"],
+          "properties": {
+            "network": {"enum": ["explicit_opt_in", "not_requested"]},
+            "robots": {"const": "not_applicable_to_rest_api"},
+            "api_terms": {"const": "provider_terms_apply"}
+          }
+        },
+        "account_linkage": {"enum": ["complete", "unsupported"]},
+        "coverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "item_count", "missing"],
+          "properties": {
+            "status": {"enum": ["not_requested", "unsupported", "unavailable", "partial", "complete"]},
+            "item_count": {"type": "integer", "minimum": 0},
+            "missing": {"$ref": "#/$defs/string_list"}
+          }
+        },
+        "pagination": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["pages", "per_page", "truncated", "stop_reason", "next_request"],
+          "properties": {
+            "pages": {"type": "integer", "minimum": 0},
+            "per_page": {"const": 100},
+            "truncated": {"type": "boolean"},
+            "stop_reason": {"type": ["string", "null"]},
+            "next_request": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/public_request"}]}
+          }
+        },
+        "pages": {"type": "array", "items": {"$ref": "#/$defs/public_page"}},
+        "commit_oids": {"type": "array", "items": {"type": "string", "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"}, "uniqueItems": true},
+        "duplicate_commit_oids": {"type": "array", "items": {"type": "string", "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"}, "uniqueItems": true},
+        "sha_to_account": {
+          "type": "object",
+          "propertyNames": {"pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"},
+          "additionalProperties": {"$ref": "#/$defs/public_account_mapping"}
+        },
+        "mapping_conflicts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["commit_oid", "first", "second"],
+            "properties": {
+              "commit_oid": {"type": "string", "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"},
+              "first": {"$ref": "#/$defs/public_account_mapping"},
+              "second": {"$ref": "#/$defs/public_account_mapping"}
+            }
+          }
+        },
+        "unlinked_commit_count": {"type": "integer", "minimum": 0},
+        "bundle_payload_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "bucketed_observation": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "bucket", "unit"],
+          "properties": {
+            "kind": {"const": "observed"},
+            "bucket": {"type": "string", "minLength": 1},
+            "unit": {"type": "string", "minLength": 1}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "reason"],
+          "properties": {
+            "kind": {"enum": ["not_observed", "not_proven"]},
+            "reason": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*$"}
+          }
+        }
+      ]
+    },
+    "bucket_map": {
+      "type": "object",
+      "propertyNames": {"pattern": "^[a-z][a-z0-9_.-]*$"},
+      "additionalProperties": {"$ref": "#/$defs/bucket_tree"}
+    },
+    "bucket_tree": {
+      "oneOf": [
+        {"type": "string", "minLength": 1, "maxLength": 120},
+        {"type": "boolean"},
+        {
+          "type": "object",
+          "propertyNames": {"pattern": "^[a-z][a-z0-9_.-]*$"},
+          "additionalProperties": {"$ref": "#/$defs/bucket_tree"}
+        }
+      ]
+    },
+    "missingness_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "kind", "reason"],
+      "properties": {
+        "path": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*$"},
+        "kind": {"enum": ["not_observed", "not_proven", "not_declared", "suppressed"]},
+        "reason": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*$"}
+      }
+    },
+    "contribution_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["access_class", "public_payload", "source_replay"],
+      "properties": {
+        "access_class": {"enum": ["public", "controlled_local"]},
+        "public_payload": {"type": "boolean"},
+        "source_replay": {
+          "enum": [
+            "unavailable_from_public_payload",
+            "public_api_recollect_required",
+            "controlled_sidecar_available"
+          ]
+        }
+      }
+    },
+    "precise_measurement_tree": {
+      "oneOf": [
+        {"type": "number"},
+        {"type": "boolean"},
+        {"type": "string", "minLength": 1, "maxLength": 2000},
+        {
+          "type": "array",
+          "items": {"$ref": "#/$defs/precise_measurement_tree"}
+        },
+        {
+          "type": "object",
+          "propertyNames": {"pattern": "^(?:[a-z][a-z0-9_.+-]*|[0-9]{4})$"},
+          "additionalProperties": {"$ref": "#/$defs/precise_measurement_tree"}
+        }
+      ]
+    },
+    "precise_measurements": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "activity": {"$ref": "#/$defs/precise_measurement_tree"},
+        "attribution": {"$ref": "#/$defs/precise_measurement_tree"},
+        "context_profile": {"$ref": "#/$defs/precise_measurement_tree"},
+        "surface_profile": {"$ref": "#/$defs/precise_measurement_tree"},
+        "change_rhythm": {"$ref": "#/$defs/precise_measurement_tree"},
+        "verification_profile": {"$ref": "#/$defs/precise_measurement_tree"},
+        "coordination_profile": {"$ref": "#/$defs/precise_measurement_tree"},
+        "event_observation": {"$ref": "#/$defs/precise_measurement_tree"},
+        "event_rhythm": {"$ref": "#/$defs/precise_measurement_tree"},
+        "tracker_lifecycle": {"$ref": "#/$defs/precise_measurement_tree"},
+        "role_lens": {"$ref": "#/$defs/precise_measurement_tree"},
+        "experience": {"$ref": "#/$defs/precise_measurement_tree"},
+        "role_profile": {"$ref": "#/$defs/precise_measurement_tree"}
+      }
+    },
+    "contribution_common_data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["measurements", "coverage", "missingness"],
+      "properties": {
+        "measurements": {"$ref": "#/$defs/bucket_map"},
+        "coverage": {
+          "type": "object",
+          "propertyNames": {"pattern": "^[a-z][a-z0-9_.-]*$"},
+          "additionalProperties": {"$ref": "#/$defs/source_coverage"}
+        },
+        "missingness": {"type": "array", "items": {"$ref": "#/$defs/missingness_item"}}
+      }
+    },
+    "contribution_aggregate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["measurements", "population", "coverage", "missingness"],
+      "properties": {
+        "measurements": {"$ref": "#/$defs/bucket_map"},
+        "population": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["n", "denominator"],
+          "properties": {
+            "n": {"type": "integer", "minimum": 0},
+            "denominator": {"type": "integer", "minimum": 0}
+          }
+        },
+        "coverage": {
+          "type": "object",
+          "propertyNames": {"pattern": "^[a-z][a-z0-9_.-]*$"},
+          "additionalProperties": {"$ref": "#/$defs/source_coverage"}
+        },
+        "missingness": {"type": "array", "items": {"$ref": "#/$defs/missingness_item"}}
+      }
+    },
+    "research_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key_id", "epoch", "study_id"],
+      "properties": {
+        "key_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,95}$"},
+        "epoch": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,95}$"},
+        "study_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,95}$"}
+      }
+    },
+    "contribution-v2": {
+      "oneOf": [
+        {"$ref": "#/$defs/contribution_aggregate_root"},
+        {"$ref": "#/$defs/contribution_named_root"},
+        {"$ref": "#/$defs/contribution_masked_root"},
+        {"$ref": "#/$defs/contribution_raw_root"}
+      ]
+    },
+    "contribution_aggregate_root": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contribution_schema", "privacy_profile", "door", "purpose", "provenance_receipt_id", "transformation_spec_digest", "policy", "data"],
+      "properties": {
+        "contribution_schema": {"const": "tep-contribution-v2"},
+        "privacy_profile": {"const": "aggregate"},
+        "door": {"enum": ["local", "public-pr"]},
+        "purpose": {"type": "string", "minLength": 1},
+        "provenance_receipt_id": {"type": "string", "pattern": "^receipt_[a-z2-7]{20,64}$"},
+        "transformation_spec_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "policy": {"$ref": "#/$defs/contribution_policy"},
+        "data": {"$ref": "#/$defs/contribution_aggregate"}
+      }
+    },
+    "named_actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["account", "measurements"],
+      "properties": {
+        "account": {"$ref": "#/$defs/contribution_account"},
+        "measurements": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["linked_commit_count_bucket", "actor_commit_count_bucket", "linkage_coverage_bucket", "commit_count_basis"],
+          "properties": {
+            "linked_commit_count_bucket": {"enum": ["0", "1-4", "5-19", "20-99", "100-499", "500-1999", "2000+"]},
+            "actor_commit_count_bucket": {"enum": ["0", "1-4", "5-19", "20-99", "100-499", "500-1999", "2000+"]},
+            "linkage_coverage_bucket": {"pattern": "^(?:00-10|10-20|20-30|30-40|40-50|50-60|60-70|70-80|80-90|90-100)%$"},
+            "commit_count_basis": {"const": "git_primary_author_cluster_including_merges"}
+          }
+        }
+      }
+    },
+    "contribution_account": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "host", "account_id", "handle", "profile_url", "evidence"],
+      "properties": {
+        "provider": {"const": "github"},
+        "host": {"type": "string", "minLength": 1},
+        "account_id": {"type": "string", "minLength": 1},
+        "handle": {"type": "string", "minLength": 1},
+        "profile_url": {"type": "string", "pattern": "^https://"},
+        "evidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["basis", "coverage_status", "account_match_status"],
+          "properties": {
+            "basis": {"const": "commit.author.id"},
+            "coverage_status": {"enum": ["complete", "partial"]},
+            "account_match_status": {"const": "linked"}
+          }
+        }
+      }
+    },
+    "contribution_named_authority_account": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "host", "project_id", "account_id", "basis", "scope", "assertion"],
+      "properties": {
+        "provider": {"const": "github"},
+        "host": {"type": "string", "minLength": 1, "maxLength": 255},
+        "project_id": {"type": "string", "minLength": 1, "maxLength": 255},
+        "account_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "basis": {"const": "account_holder_explicit"},
+        "scope": {"const": "project_and_account"},
+        "assertion": {"const": "authorized_for_public_research_contribution"}
+      }
+    },
+    "contribution_named_data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["project", "authority", "actors", "measurements", "coverage", "missingness"],
+      "properties": {
+        "project": {
+          "allOf": [
+            {"$ref": "#/$defs/forge_project"},
+            {"properties": {"provider": {"const": "github"}}}
+          ]
+        },
+        "authority": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["accounts"],
+          "properties": {
+            "accounts": {
+              "type": "array",
+              "items": {"$ref": "#/$defs/contribution_named_authority_account"},
+              "minItems": 1,
+              "uniqueItems": true
+            }
+          }
+        },
+        "actors": {"type": "array", "items": {"$ref": "#/$defs/named_actor"}, "minItems": 1},
+        "measurements": {"$ref": "#/$defs/bucket_map"},
+        "coverage": {
+          "type": "object",
+          "propertyNames": {"pattern": "^[a-z][a-z0-9_.-]*$"},
+          "additionalProperties": {"$ref": "#/$defs/source_coverage"}
+        },
+        "missingness": {"type": "array", "items": {"$ref": "#/$defs/missingness_item"}}
+      }
+    },
+    "contribution_named_root": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contribution_schema", "privacy_profile", "door", "purpose", "provenance_receipt_id", "transformation_spec_digest", "policy", "data"],
+      "properties": {
+        "contribution_schema": {"const": "tep-contribution-v2"},
+        "privacy_profile": {"const": "named-public"},
+        "door": {"enum": ["local", "public-pr"]},
+        "purpose": {"type": "string", "minLength": 1},
+        "provenance_receipt_id": {"type": "string", "pattern": "^receipt_[a-z2-7]{20,64}$"},
+        "transformation_spec_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "policy": {"$ref": "#/$defs/contribution_policy"},
+        "data": {"$ref": "#/$defs/contribution_named_data"}
+      }
+    },
+    "masked_actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actor_pid", "measurements"],
+      "properties": {
+        "actor_pid": {"type": "string", "pattern": "^pa_[a-z2-7]{20,32}$"},
+        "measurements": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["n", "denominator", "basis", "commit_count_includes_merges", "nonmerge_n", "merge_n"],
+          "properties": {
+            "n": {"type": "integer", "minimum": 0},
+            "denominator": {"type": "integer", "minimum": 0},
+            "basis": {"const": "git_primary_author_cluster"},
+            "commit_count_includes_merges": {"const": true},
+            "nonmerge_n": {"type": "integer", "minimum": 0},
+            "merge_n": {"type": "integer", "minimum": 0}
+          }
+        }
+      }
+    },
+    "contribution_masked_data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actors", "population", "measurements", "coverage", "missingness", "research"],
+      "properties": {
+        "actors": {"type": "array", "items": {"$ref": "#/$defs/masked_actor"}},
+        "population": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["n", "denominator", "basis"],
+          "properties": {
+            "n": {"type": "integer", "minimum": 0},
+            "denominator": {"type": "integer", "minimum": 0},
+            "basis": {"const": "git_primary_author_cluster"}
+          }
+        },
+        "measurements": {"$ref": "#/$defs/precise_measurements"},
+        "coverage": {
+          "type": "object",
+          "propertyNames": {"pattern": "^[a-z][a-z0-9_.-]*$"},
+          "additionalProperties": {"$ref": "#/$defs/source_coverage"}
+        },
+        "missingness": {"type": "array", "items": {"$ref": "#/$defs/missingness_item"}},
+        "research": {"$ref": "#/$defs/research_binding"}
+      }
+    },
+    "contribution_masked_root": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contribution_schema", "privacy_profile", "door", "purpose", "provenance_receipt_id", "transformation_spec_digest", "policy", "data"],
+      "properties": {
+        "contribution_schema": {"const": "tep-contribution-v2"},
+        "privacy_profile": {"const": "masked"},
+        "door": {"enum": ["local", "controlled"]},
+        "purpose": {"type": "string", "minLength": 1},
+        "provenance_receipt_id": {"type": "string", "pattern": "^receipt_[a-z2-7]{20,64}$"},
+        "transformation_spec_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "policy": {"$ref": "#/$defs/contribution_policy"},
+        "data": {"$ref": "#/$defs/contribution_masked_data"}
+      }
+    },
+    "contribution_raw_root": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contribution_schema", "privacy_profile", "door", "purpose", "provenance_receipt_id", "transformation_spec_digest", "policy", "data"],
+      "properties": {
+        "contribution_schema": {"const": "tep-contribution-v2"},
+        "privacy_profile": {"const": "raw"},
+        "door": {"enum": ["local", "controlled"]},
+        "purpose": {"type": "string", "minLength": 1},
+        "provenance_receipt_id": {"type": "string", "pattern": "^receipt_[a-z2-7]{20,64}$"},
+        "transformation_spec_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "policy": {"$ref": "#/$defs/contribution_policy"},
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["raw_material", "research"],
+          "properties": {
+            "raw_material": {"type": "object"},
+            "research": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["study_id"],
+              "properties": {"study_id": {"type": "string", "minLength": 1}}
+            }
+          }
+        }
+      }
+    },
+    "controlled-sidecar-v1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "receipt_id", "privacy_profile", "payload_sha256", "source", "governance"],
+      "properties": {
+        "schema_version": {"const": "tep-controlled-sidecar-v1"},
+        "receipt_id": {"type": "string", "pattern": "^receipt_[a-z2-7]{20,64}$"},
+        "privacy_profile": {"enum": ["masked", "raw"]},
+        "payload_sha256": {"$ref": "#/$defs/sha256"},
+        "source": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["report_sha256", "provenance", "repository", "identity", "actor_partition", "actor_correspondence"],
+          "properties": {
+            "report_sha256": {"$ref": "#/$defs/sha256"},
+            "provenance": {"type": "object"},
+            "repository": {"type": "object"},
+            "identity": {"type": "object"},
+            "actor_partition": {"type": ["object", "null"]},
+            "actor_correspondence": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["actor_pid", "source_actor_field", "source_actor_id"],
+                "properties": {
+                  "actor_pid": {"type": "string", "pattern": "^pa_[a-z2-7]{26}$"},
+                  "source_actor_field": {
+                    "enum": ["resolution_seed", "internal_actor_id", "actor_id"]
+                  },
+                  "source_actor_id": {"type": "string", "minLength": 1}
+                }
+              }
+            }
+          }
+        },
+        "governance": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["purpose", "controller", "authority", "consent", "study_id", "retention", "withdrawal", "access_class"],
+          "properties": {
+            "purpose": {"const": "TEP Report 集計と参照分布 vNext"},
+            "controller": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,95}$"},
+            "authority": {"const": "repository-owner-authorization"},
+            "consent": {"const": "recorded-explicit-consent"},
+            "study_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,95}$"},
+            "key_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,95}$"},
+            "epoch": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,95}$"},
+            "repo_subject_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,95}$"},
+            "retention": {"type": "string", "pattern": "^until-[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+            "withdrawal": {"const": "contact-controller-before-publication"},
+            "access_class": {"const": "named-research-team"}
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"privacy_profile": {"const": "masked"}}},
+          "then": {
+            "properties": {
+              "governance": {"required": ["key_id", "epoch"]}
+            }
+          },
+          "else": {
+            "properties": {
+              "governance": {
+                "not": {"anyOf": [{"required": ["key_id"]}, {"required": ["epoch"]}]}
+              }
+            }
+          }
+        }
+      ]
+    },
+    "signer_policy": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "namespace", "principal"],
+          "properties": {
+            "kind": {"const": "ssh"},
+            "namespace": {"const": "grift-attestation-v1"},
+            "principal": {"type": "string", "minLength": 1}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "certificate_identity", "certificate_oidc_issuer"],
+          "properties": {
+            "kind": {"const": "cosign-keyless"},
+            "certificate_identity": {"type": "string", "minLength": 1},
+            "certificate_oidc_issuer": {"type": "string", "format": "uri"}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "public_key_sha256"],
+          "properties": {
+            "kind": {"const": "cosign-key"},
+            "public_key_sha256": {"$ref": "#/$defs/sha256"}
+          }
+        }
+      ]
+    },
+    "attest-v1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "statement_type", "report", "target", "measurement", "scope", "inputs", "definition_versions", "public_evidence", "tagset", "runner_hint", "executed_at", "expected_signer_policy"],
+      "properties": {
+        "schema_version": {"const": "tep-attest-v1"},
+        "statement_type": {"const": "grift-report-attestation"},
+        "report": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["schema_version", "digest"],
+          "properties": {
+            "schema_version": {"enum": ["report-v1", "report-v2"]},
+            "digest": {"$ref": "#/$defs/digest"}
+          }
+        },
+        "target": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["oid"],
+          "properties": {"oid": {"$ref": "#/$defs/git_oid"}}
+        },
+        "measurement": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["tool_name", "tool_version", "definition_version", "analysis_scope"],
+          "properties": {
+            "tool_name": {"const": "grift"},
+            "tool_version": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$"},
+            "definition_version": {"type": "string", "minLength": 1},
+            "analysis_scope": {"enum": ["repo", "tenant", "actor_cluster"]}
+          }
+        },
+        "scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["analysis_scope"],
+          "properties": {"analysis_scope": {"enum": ["repo", "tenant", "actor_cluster"]}}
+        },
+        "inputs": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["aggregate_digest", "members"],
+          "properties": {
+            "aggregate_digest": {"$ref": "#/$defs/digest"},
+            "members": {
+              "type": "object",
+              "propertyNames": {"pattern": "^[a-z][a-z0-9_.-]*$"},
+              "additionalProperties": {"$ref": "#/$defs/nullable_digest"}
+            }
+          }
+        },
+        "definition_versions": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["digest"],
+          "properties": {"digest": {"$ref": "#/$defs/digest"}}
+        },
+        "public_evidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["digest"],
+          "properties": {"digest": {"$ref": "#/$defs/nullable_digest"}}
+        },
+        "tagset": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["digest"],
+          "properties": {"digest": {"$ref": "#/$defs/nullable_digest"}}
+        },
+        "runner_hint": {"type": "string", "minLength": 1, "maxLength": 1024},
+        "executed_at": {"type": "string", "format": "date-time"},
+        "expected_signer_policy": {"$ref": "#/$defs/signer_policy"},
+        "repo_hint": {"type": "string", "pattern": "^[^@\\s]+/[^@\\s]+$", "maxLength": 255}
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "report": {
+                "properties": {"schema_version": {"const": "report-v2"}},
+                "required": ["schema_version"]
+              }
+            },
+            "required": ["report"]
+          },
+          "then": {
+            "properties": {
+              "inputs": {
+                "properties": {
+                  "members": {"required": ["public_evidence", "tagset"]}
+                }
+              },
+              "tagset": {
+                "properties": {"digest": {"$ref": "#/$defs/digest"}}
+              }
+            }
+          }
+        }
+      ]
+    },
+    "file_artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "digest", "media_type"],
+      "properties": {
+        "path": {"type": "string", "pattern": "^[A-Za-z0-9._/-]+$", "maxLength": 255},
+        "digest": {"$ref": "#/$defs/digest"},
+        "media_type": {"type": "string", "minLength": 1}
+      }
+    },
+    "attest-bundle-v1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "statement", "signature"],
+      "properties": {
+        "schema_version": {"const": "tep-attest-bundle-v1"},
+        "statement": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "digest"],
+          "properties": {
+            "path": {"const": "statement.json"},
+            "digest": {"$ref": "#/$defs/digest"}
+          }
+        },
+        "signature": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "path", "digest"],
+          "properties": {
+            "kind": {"enum": ["ssh", "cosign-keyless", "cosign-key"]},
+            "path": {"enum": ["statement.json.sig", "cosign.bundle.json"]},
+            "digest": {"$ref": "#/$defs/digest"}
+          }
+        }
+      }
+    },
+    "evidence_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["report", "attestation"],
+      "properties": {
+        "report": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["schema_version", "digest", "target_oid", "definition_version"],
+          "properties": {
+            "schema_version": {"enum": ["report-v1", "report-v2"]},
+            "digest": {"$ref": "#/$defs/digest"},
+            "target_oid": {"$ref": "#/$defs/git_oid"},
+            "definition_version": {"type": "string", "minLength": 1}
+          }
+        },
+        "attestation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["statement_digest", "bundle_manifest_digest", "signature_digest", "signer_policy", "signature_verification"],
+          "properties": {
+            "statement_digest": {"$ref": "#/$defs/digest"},
+            "bundle_manifest_digest": {"$ref": "#/$defs/digest"},
+            "signature_digest": {"$ref": "#/$defs/digest"},
+            "signer_policy": {"$ref": "#/$defs/signer_policy"},
+            "signature_verification": {"enum": ["not_verified_self_declared", "recipient_trust_verified"]},
+            "bound_subject_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,127}$"}
+          }
+        }
+      }
+    },
+    "portfolio_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["entry_id", "subject_binding", "context", "role", "period", "activity_month_count", "repository_bindings", "evidence"],
+      "properties": {
+        "entry_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,127}$"},
+        "subject_binding": {"$ref": "#/$defs/subject_binding"},
+        "context": {"type": "string", "minLength": 1},
+        "role": {"type": "string", "minLength": 1},
+        "period": {"$ref": "#/$defs/period_window"},
+        "activity_month_count": {"type": "integer", "minimum": 0},
+        "repository_bindings": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/digest"}
+        },
+        "evidence": {"$ref": "#/$defs/evidence_ref"},
+        "repo_hint": {"type": "string", "pattern": "^[^@\\s]+/[^@\\s]+$", "maxLength": 255}
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "subject_binding": {
+                "properties": {"method": {"const": "attested"}},
+                "required": ["method"]
+              }
+            },
+            "required": ["subject_binding"]
+          },
+          "then": {
+            "properties": {
+              "evidence": {
+                "properties": {
+                  "attestation": {
+                    "required": ["bound_subject_id"],
+                    "properties": {
+                      "signature_verification": {"const": "recipient_trust_verified"}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "evidence": {
+                "properties": {
+                  "attestation": {
+                    "not": {"required": ["bound_subject_id"]},
+                    "properties": {
+                      "signature_verification": {"const": "not_verified_self_declared"}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "portfolio-v1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "report_kind", "portfolio_id", "subject_binding", "summary", "entries", "limitations", "notices"],
+      "properties": {
+        "schema_version": {"const": "tep-portfolio-v1"},
+        "report_kind": {"const": "portfolio"},
+        "portfolio_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,127}$"},
+        "subject_binding": {"$ref": "#/$defs/subject_binding"},
+        "summary": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["eligible_repository_count", "included_repository_count", "disclosure", "period"],
+          "properties": {
+            "eligible_repository_count": {"type": "integer", "minimum": 1},
+            "included_repository_count": {"type": "integer", "minimum": 0},
+            "disclosure": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["kind", "numerator", "denominator", "value", "unit"],
+              "properties": {
+                "kind": {"const": "declared"},
+                "numerator": {"type": "integer", "minimum": 0},
+                "denominator": {"type": "integer", "minimum": 1},
+                "value": {"type": "number", "minimum": 0, "maximum": 1},
+                "unit": {"const": "ratio"}
+              }
+            },
+            "period": {"$ref": "#/$defs/period_window"}
+          }
+        },
+        "entries": {"type": "array", "items": {"$ref": "#/$defs/portfolio_entry"}, "uniqueItems": true},
+        "limitations": {"$ref": "#/$defs/limitations"},
+        "notices": {"$ref": "#/$defs/string_list"}
+      }
+    },
+    "portfolio-manifest-v1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "portfolio_id", "subject_id", "subject_binding", "eligible_repository_count", "entries"],
+      "properties": {
+        "schema_version": {"const": "tep-portfolio-manifest-v1"},
+        "portfolio_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,127}$"},
+        "subject_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"},
+        "subject_binding": {"enum": ["self_declared", "attested"]},
+        "eligible_repository_count": {"type": "integer", "minimum": 1},
+        "entries": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["entry_id", "subject_id", "context", "role", "period_start", "period_end", "activity_month_count", "report", "attestation_bundle"],
+            "properties": {
+              "entry_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,127}$"},
+              "subject_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"},
+              "subject_binding": {"enum": ["self_declared", "attested"]},
+              "context": {"type": "string", "minLength": 1},
+              "role": {"type": "string", "minLength": 1},
+              "period_start": {"type": "string", "format": "date"},
+              "period_end": {"type": "string", "format": "date"},
+              "activity_month_count": {"type": "integer", "minimum": 0},
+              "report": {"type": "string", "minLength": 1},
+              "attestation_bundle": {"type": "string", "minLength": 1},
+              "repo_hint": {"type": "string", "pattern": "^[^@\\s]+/[^@\\s]+$", "maxLength": 255}
+            }
+          }
+        }
+      }
+    },
+    "scenario_assertion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "status", "expected", "actual"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "status": {"enum": ["PASS", "FAIL", "NOT_PROVEN", "SOURCE_DRIFT"]},
+        "expected": {"type": ["string", "number", "integer", "boolean", "null"]},
+        "actual": {"type": ["string", "number", "integer", "boolean", "null"]}
+      }
+    },
+    "scenario-manifest-v1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "suite_id", "definition_version", "scenarios"],
+      "properties": {
+        "schema_version": {"const": "tep-scenario-manifest-v1"},
+        "suite_id": {"type": "string", "minLength": 1},
+        "definition_version": {"type": "string", "minLength": 1},
+        "scenarios": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "tier", "target_oid", "expected_artifacts", "timeout_seconds"],
+            "properties": {
+              "id": {"type": "string", "minLength": 1},
+              "tier": {"enum": ["synthetic", "local", "replay", "live-pr", "live-release"]},
+              "target_oid": {"$ref": "#/$defs/git_oid"},
+              "expected_artifacts": {"$ref": "#/$defs/string_list"},
+              "timeout_seconds": {"type": "integer", "minimum": 1, "maximum": 1800}
+            }
+          }
+        }
+      }
+    },
+    "scenario_source_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["definition_version", "source_tree_digest", "file_count", "commit_oid"],
+      "properties": {
+        "definition_version": {"const": "grift-tool-source-tree-v1"},
+        "source_tree_digest": {"$ref": "#/$defs/digest"},
+        "file_count": {"type": "integer", "minimum": 1},
+        "commit_oid": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/git_oid"}
+          ]
+        }
+      }
+    },
+    "scenario_runner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tool_version", "source_binding"],
+      "properties": {
+        "tool_version": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$"},
+        "source_binding": {"$ref": "#/$defs/scenario_source_binding"}
+      }
+    },
+    "scenario-result-v1": {
+      "oneOf": [
+        {"$ref": "#/$defs/scenario-result-legacy-v1"},
+        {"$ref": "#/$defs/public-scenario-result-v2"}
+      ]
+    },
+    "scenario-result-legacy-v1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "scenario_id", "runner", "target_oid", "argv", "exit_code", "duration_ms", "counts", "partition_digest", "provider_coverage", "output_digests", "assertions", "verdict"],
+      "properties": {
+        "schema_version": {"const": "tep-scenario-result-v1"},
+        "scenario_id": {"type": "string", "minLength": 1},
+        "runner": {"$ref": "#/$defs/scenario_runner"},
+        "target_oid": {"$ref": "#/$defs/git_oid"},
+        "argv": {"$ref": "#/$defs/string_list"},
+        "exit_code": {"type": "integer", "minimum": 0, "maximum": 255},
+        "duration_ms": {"type": "integer", "minimum": 0},
+        "counts": {
+          "type": "object",
+          "propertyNames": {"pattern": "^[a-z][a-z0-9_.-]*$"},
+          "additionalProperties": {"type": "integer", "minimum": 0}
+        },
+        "partition_digest": {"$ref": "#/$defs/digest"},
+        "provider_coverage": {"$ref": "#/$defs/source_coverage"},
+        "output_digests": {
+          "type": "object",
+          "propertyNames": {"pattern": "^[A-Za-z0-9._/-]+$"},
+          "additionalProperties": {"$ref": "#/$defs/digest"}
+        },
+        "assertions": {"type": "array", "items": {"$ref": "#/$defs/scenario_assertion"}, "minItems": 1},
+        "verdict": {"enum": ["PASS", "FAIL", "NOT_PROVEN", "SOURCE_DRIFT"]}
+      }
+    },
+    "public-scenario-result-v2": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "scenario_id", "runner", "target_oid", "argv", "collection_mode", "prior_evidence_digests", "exit_code", "duration_ms", "counts", "partition_digest", "provider_coverage", "output_digests", "assertions", "verdict"],
+      "properties": {
+        "schema_version": {"const": "tep-public-scenario-result-v2"},
+        "scenario_id": {"type": "string", "minLength": 1},
+        "runner": {"$ref": "#/$defs/scenario_runner"},
+        "target_oid": {"$ref": "#/$defs/git_oid"},
+        "argv": {"$ref": "#/$defs/string_list"},
+        "collection_mode": {"enum": ["fresh", "resume"]},
+        "prior_evidence_digests": {
+          "oneOf": [
+            {"type": "null"},
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["manifest", "payload"],
+              "properties": {
+                "manifest": {"$ref": "#/$defs/digest"},
+                "payload": {"$ref": "#/$defs/digest"}
+              }
+            }
+          ]
+        },
+        "exit_code": {"type": "integer", "minimum": 0, "maximum": 255},
+        "duration_ms": {"type": "integer", "minimum": 0},
+        "counts": {
+          "type": "object",
+          "propertyNames": {"pattern": "^[a-z][a-z0-9_.-]*$"},
+          "additionalProperties": {"type": "integer", "minimum": 0}
+        },
+        "partition_digest": {"$ref": "#/$defs/digest"},
+        "provider_coverage": {"$ref": "#/$defs/source_coverage"},
+        "output_digests": {
+          "type": "object",
+          "propertyNames": {"pattern": "^[A-Za-z0-9._/-]+$"},
+          "additionalProperties": {"$ref": "#/$defs/digest"}
+        },
+        "assertions": {"type": "array", "items": {"$ref": "#/$defs/scenario_assertion"}, "minItems": 1},
+        "verdict": {"enum": ["PASS", "FAIL", "NOT_PROVEN", "SOURCE_DRIFT"]}
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"collection_mode": {"const": "fresh"}},
+            "required": ["collection_mode"]
+          },
+          "then": {"properties": {"prior_evidence_digests": {"type": "null"}}},
+          "else": {"properties": {"prior_evidence_digests": {"type": "object"}}}
+        }
+      ]
+    },
+    "scenario-summary-v1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "suite_id", "manifest_digest", "result_digests", "counts", "verdict"],
+      "properties": {
+        "schema_version": {"const": "tep-scenario-summary-v1"},
+        "suite_id": {"type": "string", "minLength": 1},
+        "manifest_digest": {"$ref": "#/$defs/digest"},
+        "result_digests": {"type": "array", "items": {"$ref": "#/$defs/digest"}, "uniqueItems": true},
+        "counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["total", "pass", "fail", "not_proven", "source_drift"],
+          "properties": {
+            "total": {"type": "integer", "minimum": 0},
+            "pass": {"type": "integer", "minimum": 0},
+            "fail": {"type": "integer", "minimum": 0},
+            "not_proven": {"type": "integer", "minimum": 0},
+            "source_drift": {"type": "integer", "minimum": 0}
+          }
+        },
+        "verdict": {"enum": ["PASS", "FAIL", "NOT_PROVEN", "SOURCE_DRIFT"]}
+      }
+    },
+    "forge_event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["event_id", "kind", "timestamp", "actor_canonical_id", "project_id", "project_path"],
+      "properties": {
+        "event_id": {"type": "string", "pattern": "^\\S(?:.*\\S)?$", "maxLength": 255},
+        "kind": {"enum": ["pull_request_review", "pull_request_opened", "pull_request_merged", "review_comment", "pull_request_lifecycle"]},
+        "timestamp": {"type": "string", "format": "date-time"},
+        "actor_canonical_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"},
+        "project_id": {"type": "string", "minLength": 1},
+        "project_path": {"type": "string", "pattern": "^[^/\\s]+/[^\\s]+$"},
+        "pr_number": {"type": ["integer", "null"], "minimum": 1},
+        "commit_sha": {"type": ["string", "null"], "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"}
+      }
+    },
+    "tracker_event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["event_id", "kind", "timestamp", "actor_canonical_id", "project_id", "project_path", "record_type", "record_id", "state", "previous_state", "previous_event_id", "linked_event_id", "duration_seconds"],
+      "properties": {
+        "event_id": {"type": "string", "pattern": "^\\S(?:.*\\S)?$", "maxLength": 255},
+        "kind": {"enum": ["issue_linked", "issue_opened", "issue_closed", "issue_triaged", "milestone_set", "milestone_closed"]},
+        "timestamp": {"type": "string", "format": "date-time"},
+        "actor_canonical_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"},
+        "project_id": {"type": "string", "minLength": 1},
+        "project_path": {"type": "string", "pattern": "^[^/\\s]+/[^\\s]+$"},
+        "record_type": {"enum": ["issue", "milestone"]},
+        "record_id": {"type": "string", "pattern": "^\\S(?:.*\\S)?$", "maxLength": 255},
+        "state": {"enum": ["open", "triaged", "active", "closed"]},
+        "previous_state": {"type": ["string", "null"], "enum": ["open", "triaged", "active", "closed", null]},
+        "previous_event_id": {"type": ["string", "null"], "pattern": "^\\S(?:.*\\S)?$", "maxLength": 255},
+        "linked_event_id": {"type": ["string", "null"], "pattern": "^\\S(?:.*\\S)?$", "maxLength": 255},
+        "duration_seconds": {"type": ["number", "null"], "minimum": 0},
+        "issue_number": {"type": ["integer", "null"], "minimum": 1},
+        "commit_sha": {"type": ["string", "null"], "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"}
+      }
+    },
+    "forge-export-v2": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "binding", "events"],
+      "properties": {
+        "schema_version": {"const": "tep-forge-export-v2"},
+        "binding": {"$ref": "#/$defs/binding"},
+        "events": {"type": "array", "items": {"$ref": "#/$defs/forge_event"}}
+      }
+    },
+    "tracker-export-v2": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "binding", "events"],
+      "properties": {
+        "schema_version": {"const": "tep-tracker-export-v2"},
+        "binding": {"$ref": "#/$defs/binding"},
+        "events": {"type": "array", "items": {"$ref": "#/$defs/tracker_event"}}
+      }
+    },
+    "identity_actor_v2": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["canonical_id", "attribution_state"],
+      "properties": {
+        "canonical_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"},
+        "attribution_state": {"enum": ["verified", "claimed", "inferred", "unresolved", "external", "bot"]},
+        "github_login": {"type": "string", "minLength": 1},
+        "emails": {"type": "array", "items": {"type": "string", "minLength": 3}, "minItems": 1, "uniqueItems": true},
+        "email_sha256": {"type": "array", "items": {"$ref": "#/$defs/sha256"}, "minItems": 1, "uniqueItems": true},
+        "consent": {"const": "recorded-explicit-consent"},
+        "authority": {"enum": ["repository-owner-authorization", "subject-authorization"]}
+      },
+      "allOf": [
+        {"not": {"required": ["emails", "email_sha256"]}},
+        {
+          "if": {"required": ["consent"]},
+          "then": {
+            "required": ["authority"],
+            "properties": {"attribution_state": {"enum": ["verified", "claimed"]}}
+          }
+        }
+      ]
+    },
+    "identity-v2": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "actors"],
+      "properties": {
+        "schema_version": {"const": "identity-v2"},
+        "tenant": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "email_patterns": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true}
+          }
+        },
+        "actors": {"type": "array", "items": {"$ref": "#/$defs/identity_actor_v2"}, "minItems": 1}
+      }
+    },
+    "experience-v1": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "actor_id", "consent_basis", "definition_version", "window", "metrics", "limitations"],
+          "properties": {
+            "kind": {"const": "observed"},
+            "actor_id": {"type": "string", "minLength": 1},
+            "consent_basis": {"type": "string", "minLength": 1},
+            "definition_version": {"type": "string", "minLength": 1},
+            "window": {"$ref": "#/$defs/window"},
+            "metrics": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["cross_author_modification_share", "adopted_creations", "self_maintenance_returns", "dependency_update_share", "post_release_fixes", "declared_ai_assist_share", "declared_ai_test_cochange", "human_coauthored_share", "cadence", "language_domain_timeline", "repository_size_at_contribution_points", "founder_timing", "initial_30d_scaffold_creation_share", "annotated_tag_creation", "lightweight_tag_attribution", "dependency_introduction"],
+              "properties": {
+                "cross_author_modification_share": {"$ref": "#/$defs/metric"},
+                "adopted_creations": {"$ref": "#/$defs/metric"},
+                "self_maintenance_returns": {"$ref": "#/$defs/metric"},
+                "dependency_update_share": {"$ref": "#/$defs/metric"},
+                "post_release_fixes": {"$ref": "#/$defs/metric"},
+                "declared_ai_assist_share": {"$ref": "#/$defs/metric"},
+                "declared_ai_test_cochange": {"$ref": "#/$defs/metric"},
+                "human_coauthored_share": {"$ref": "#/$defs/metric"},
+                "cadence": {"$ref": "#/$defs/cadence_metric"},
+                "language_domain_timeline": {"$ref": "#/$defs/language_domain_timeline"},
+                "repository_size_at_contribution_points": {"$ref": "#/$defs/repository_size_metric"},
+                "founder_timing": {"$ref": "#/$defs/founder_timing_metric"},
+                "initial_30d_scaffold_creation_share": {"$ref": "#/$defs/metric"},
+                "annotated_tag_creation": {"$ref": "#/$defs/metric"},
+                "lightweight_tag_attribution": {"$ref": "#/$defs/lightweight_tag_metric"},
+                "dependency_introduction": {"$ref": "#/$defs/dependency_introduction"}
+              }
+            },
+            "limitations": {"$ref": "#/$defs/limitations"}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "actor_id", "reason", "definition_version", "limitations"],
+          "properties": {
+            "kind": {"const": "not_observed"},
+            "actor_id": {"type": "string", "minLength": 1},
+            "reason": {
+              "enum": [
+                "consenting_actor_required",
+                "history_incomplete",
+                "experience_collection_timeout"
+              ]
+            },
+            "definition_version": {"type": "string", "minLength": 1},
+            "limitations": {"$ref": "#/$defs/limitations"}
+          }
+        }
+      ]
+    },
+    "role-profile-v1": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "actor_id", "consent_basis", "definition_version", "window", "basis", "overlap_allowed", "dimensions", "limitations"],
+          "properties": {
+            "kind": {"const": "observed"},
+            "actor_id": {"type": "string", "minLength": 1},
+            "consent_basis": {"type": "string", "minLength": 1},
+            "definition_version": {"type": "string", "minLength": 1},
+            "window": {"$ref": "#/$defs/window"},
+            "basis": {"const": "actor_commits"},
+            "overlap_allowed": {"const": true},
+            "dimensions": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["domain", "work_type", "time", "process_position"],
+              "properties": {
+                "domain": {"$ref": "#/$defs/role_domain_dimension"},
+                "work_type": {"$ref": "#/$defs/role_work_type_dimension"},
+                "time": {"$ref": "#/$defs/role_time_dimension"},
+                "process_position": {"$ref": "#/$defs/role_process_position_dimension"}
+              }
+            },
+            "limitations": {"$ref": "#/$defs/limitations"}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "actor_id", "reason", "definition_version", "limitations"],
+          "properties": {
+            "kind": {"const": "not_observed"},
+            "actor_id": {"type": "string", "minLength": 1},
+            "reason": {
+              "enum": [
+                "consenting_actor_required",
+                "history_incomplete",
+                "experience_collection_timeout"
+              ]
+            },
+            "definition_version": {"type": "string", "minLength": 1},
+            "limitations": {"$ref": "#/$defs/limitations"}
+          }
+        }
+      ]
+    },
+    "dependency_introduction": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "value",
+            "values",
+            "denominator",
+            "unit",
+            "window",
+            "definition_version",
+            "limitations",
+            "manifest_commits",
+            "unparseable_manifests"
+          ],
+          "properties": {
+            "kind": {
+              "const": "observed"
+            },
+            "value": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "values": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "denominator": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "manifest_commits": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "unparseable_manifests": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "unit": {
+              "const": "packages"
+            },
+            "window": {
+              "$ref": "#/$defs/window"
+            },
+            "definition_version": {
+              "type": "string",
+              "minLength": 1
+            },
+            "limitations": {
+              "$ref": "#/$defs/limitations"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "reason",
+            "unit",
+            "window",
+            "definition_version",
+            "limitations"
+          ],
+          "properties": {
+            "kind": {
+              "const": "not_observed"
+            },
+            "reason": {
+              "enum": [
+                "dependency_scan_not_provided",
+                "insufficient_population"
+              ]
+            },
+            "denominator": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "unit": {
+              "const": "packages"
+            },
+            "window": {
+              "$ref": "#/$defs/window"
+            },
+            "definition_version": {
+              "type": "string",
+              "minLength": 1
+            },
+            "limitations": {
+              "$ref": "#/$defs/limitations"
+            }
+          }
+        }
+      ]
+    },
+    "report_library_context": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "prevalence_version",
+            "libraries",
+            "limitations"
+          ],
+          "properties": {
+            "kind": {
+              "const": "observed"
+            },
+            "prevalence_version": {
+              "type": "string",
+              "minLength": 1
+            },
+            "corpus_repositories_scanned": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "corpus_repositories_with_manifest": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "libraries": {
+              "type": "object",
+              "additionalProperties": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "kind",
+                      "ecosystem",
+                      "declaring_repositories",
+                      "corpus_repositories",
+                      "share",
+                      "unit"
+                    ],
+                    "properties": {
+                      "kind": {
+                        "const": "observed"
+                      },
+                      "ecosystem": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "declaring_repositories": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "corpus_repositories": {
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      "share": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1
+                      },
+                      "unit": {
+                        "const": "repository_share"
+                      },
+                      "prevalence_version": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "limitations": {
+                        "$ref": "#/$defs/limitations"
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "kind",
+                      "reason"
+                    ],
+                    "properties": {
+                      "kind": {
+                        "const": "not_observed"
+                      },
+                      "reason": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_.-]*$"
+                      },
+                      "actor_id": {
+                        "type": "string"
+                      },
+                      "ecosystem": {
+                        "type": "string"
+                      },
+                      "corpus_repositories": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "limitations": {
+                        "$ref": "#/$defs/limitations"
+                      },
+                      "definition_version": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "limitations": {
+              "$ref": "#/$defs/limitations"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "reason"
+          ],
+          "properties": {
+            "kind": {
+              "const": "not_observed"
+            },
+            "reason": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_.-]*$"
+            },
+            "actor_id": {
+              "type": "string"
+            },
+            "ecosystem": {
+              "type": "string"
+            },
+            "corpus_repositories": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "limitations": {
+              "$ref": "#/$defs/limitations"
+            },
+            "definition_version": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "report_complementarity": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "definition_version",
+            "project_digest",
+            "team_size",
+            "observability",
+            "requirements",
+            "limitations"
+          ],
+          "properties": {
+            "kind": {
+              "const": "observed"
+            },
+            "definition_version": {
+              "type": "string",
+              "minLength": 1
+            },
+            "project_digest": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "team_size": {
+              "type": "integer",
+              "minimum": 3
+            },
+            "observability": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "declared_requirements",
+                "observable",
+                "not_observable",
+                "share"
+              ],
+              "properties": {
+                "declared_requirements": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "observable": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "not_observable": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "share": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              }
+            },
+            "requirements": {
+              "type": "array",
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "requirement",
+                      "state",
+                      "declared",
+                      "meeting_declared",
+                      "with_any_observation",
+                      "actors_observed",
+                      "team_size"
+                    ],
+                    "properties": {
+                      "requirement": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "state": {
+                        "enum": [
+                          "covered",
+                          "below_declared"
+                        ]
+                      },
+                      "declared": {
+                        "$ref": "#/$defs/report_observation"
+                      },
+                      "meeting_declared": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "with_any_observation": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "actors_observed": {
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      "team_size": {
+                        "type": "integer",
+                        "minimum": 3
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "requirement",
+                      "state",
+                      "reason",
+                      "declared",
+                      "team_size",
+                      "actors_observed"
+                    ],
+                    "properties": {
+                      "requirement": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "state": {
+                        "const": "not_observed"
+                      },
+                      "reason": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_.-]*$"
+                      },
+                      "declared": {
+                        "$ref": "#/$defs/report_observation"
+                      },
+                      "team_size": {
+                        "type": "integer",
+                        "minimum": 3
+                      },
+                      "actors_observed": {
+                        "const": 0
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "limitations": {
+              "$ref": "#/$defs/limitations"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "reason"
+          ],
+          "properties": {
+            "kind": {
+              "const": "not_observed"
+            },
+            "reason": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_.-]*$"
+            },
+            "definition_version": {
+              "type": "string",
+              "minLength": 1
+            },
+            "limitations": {
+              "$ref": "#/$defs/limitations"
+            }
+          }
+        }
+      ]
+    },
+    "report_outcome": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "definition_version",
+            "source_format",
+            "digest",
+            "declarations",
+            "limitations"
+          ],
+          "properties": {
+            "kind": {
+              "const": "declared"
+            },
+            "definition_version": {
+              "type": "string",
+              "minLength": 1
+            },
+            "source_format": {
+              "const": "tep-outcome-declaration-v1"
+            },
+            "digest": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "declarations": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "kind",
+                  "outcome",
+                  "attestation",
+                  "scope",
+                  "definition_version",
+                  "limitations"
+                ],
+                "properties": {
+                  "kind": {
+                    "const": "declared"
+                  },
+                  "outcome": {
+                    "enum": [
+                      "delivered",
+                      "not_delivered",
+                      "partially_delivered",
+                      "superseded"
+                    ]
+                  },
+                  "attestation": {
+                    "enum": [
+                      "counterparty_attested",
+                      "self_declared",
+                      "third_party_record"
+                    ]
+                  },
+                  "attested_by": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "scope": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "occurred_on": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "reference": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "definition_version": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "limitations": {
+                    "$ref": "#/$defs/limitations"
+                  }
+                },
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "attestation": {
+                          "const": "self_declared"
+                        }
+                      },
+                      "required": [
+                        "attestation"
+                      ]
+                    },
+                    "then": {
+                      "not": {
+                        "required": [
+                          "attested_by"
+                        ]
+                      }
+                    },
+                    "else": {
+                      "required": [
+                        "attested_by"
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "limitations": {
+              "$ref": "#/$defs/limitations"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "reason"
+          ],
+          "properties": {
+            "kind": {
+              "const": "not_observed"
+            },
+            "reason": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_.-]*$"
+            },
+            "definition_version": {
+              "type": "string",
+              "minLength": 1
+            },
+            "limitations": {
+              "$ref": "#/$defs/limitations"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,15 +1,15 @@
-# Provenance: this email comes from the public commit metadata of the
-# click repository (visible in its git log). Used solely for golden
-# reproduction checks (tenant-scope expected values). Indirecting it
-# (hashed identity) is tracked for v0.6.
+# Provenance: this domain-separated digest was derived from public commit
+# metadata in the click repository solely for tenant-scope golden replay.
+# The plaintext address is intentionally not distributed.
 # 削除依頼先 / removal requests: open an issue on the public repository
-schema_version = "identity-v1"
+schema_version = "identity-v2"
 
-# Pseudonymous canonical_id. The email is already public in the click git log.
+# Pseudonymous canonical_id. Digest contract:
+# sha256("tep-email-v1\0" + email.strip().lower()).
 [tenant]
 email_patterns = []
 
 [[actors]]
 canonical_id = "maintainer-1"
-emails = ["davidism@gmail.com"]
+email_sha256 = ["a728a6577ae42a0e375ab4481c6f87c1952f324587a252ddc022547c20c06a2f"]
 attribution_state = "verified"

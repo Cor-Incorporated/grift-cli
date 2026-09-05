@@ -1,0 +1,109 @@
+{
+  "actor_index_digest": {
+    "algorithm": "sha256",
+    "value": "6555e62b45a61f9c6eef35a30598cf712e5c944b3fe7cd6ab803e4cde9e731b0"
+  },
+  "full": {
+    "actor_count": 2,
+    "digest": {
+      "algorithm": "sha256",
+      "value": "f7c8ddfe18a635edc992464a3fc340438d6264ea9ceae66630f94d5ef6bed481"
+    },
+    "human_commit_count": 164,
+    "links": {
+      "index_json": "actor-index.json",
+      "index_markdown": "actor-index.md",
+      "repo_json": "repo-report.json",
+      "repo_markdown": "repo-report.md"
+    }
+  },
+  "members": [
+    {
+      "bytes": 1361,
+      "media_type": "application/json",
+      "path": "actor-index.json",
+      "sha256": "1abefc9835f557b08bd479858638173981143a8e98548dcd363875d8c6b51396"
+    },
+    {
+      "bytes": 757,
+      "media_type": "text/markdown",
+      "path": "actor-index.md",
+      "sha256": "51b813d7a397fe2e6965cf8c3edd78c16aa19b8c63f6b4be50dda9a66edb6f6b"
+    },
+    {
+      "bytes": 961,
+      "media_type": "application/json",
+      "path": "actors/tep-proposer-claude.json",
+      "sha256": "795a1d5a59ea494fe8a2f8ab46b8d54cb03a09febd38789f1bc25945c6970d6d"
+    },
+    {
+      "bytes": 400,
+      "media_type": "text/markdown",
+      "path": "actors/tep-proposer-claude.md",
+      "sha256": "4258ca0007213f8443ec487ded5da9ac6a746b29d9b4889447e8e3558f89af70"
+    },
+    {
+      "bytes": 957,
+      "media_type": "application/json",
+      "path": "actors/terada-kousuke.json",
+      "sha256": "a144b8137e6e87cc50e6e975f1a5818c75db4a95ca625cc9e4a68dfc64a95300"
+    },
+    {
+      "bytes": 396,
+      "media_type": "text/markdown",
+      "path": "actors/terada-kousuke.md",
+      "sha256": "d797f687ef86b7252abb6df8135f9910d832c90fc5713c655efe975e50939e4a"
+    },
+    {
+      "bytes": 7365,
+      "media_type": "application/json",
+      "path": "repo-report.json",
+      "sha256": "9cfac7cc8fa097b59601c06f13b70f9ee24a06c8f21da7bc6fabe108ea66eec6"
+    },
+    {
+      "bytes": 1069,
+      "media_type": "text/markdown",
+      "path": "repo-report.md",
+      "sha256": "fdb9a82b70a83c54923ae76bcc15b46101d47fc2f8e35cc085b0c877fe309f19"
+    }
+  ],
+  "partition_digest": {
+    "algorithm": "sha256",
+    "value": "939e1c331659877d1f11aa15f0fe7d2a8449177fda74f8f3cfad636993b0503a"
+  },
+  "population_digest": {
+    "algorithm": "sha256",
+    "value": "f7c8ddfe18a635edc992464a3fc340438d6264ea9ceae66630f94d5ef6bed481"
+  },
+  "schema_version": "actor-artifact-manifest-v1",
+  "selection": {
+    "actor_count": 2,
+    "actor_ids": [
+      "terada-kousuke",
+      "tep-proposer-claude"
+    ],
+    "digest": {
+      "algorithm": "sha256",
+      "value": "98bd2e74984ade8722ad8c18dc9aa4b287860585eab45b321b79233c76e38add"
+    },
+    "links": [
+      {
+        "actor_id": "terada-kousuke",
+        "json": "actors/terada-kousuke.json",
+        "markdown": "actors/terada-kousuke.md"
+      },
+      {
+        "actor_id": "tep-proposer-claude",
+        "json": "actors/tep-proposer-claude.json",
+        "markdown": "actors/tep-proposer-claude.md"
+      }
+    ],
+    "mode": "all"
+  },
+  "target": {
+    "oid": {
+      "algorithm": "sha1",
+      "value": "fa9bc317cc0ac1953ed09cbab11d3de2232c2fb0"
+    }
+  }
+}

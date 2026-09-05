@@ -85,6 +85,19 @@ def shared_block(report: dict[str, Any]) -> list[str]:
 
 
 def render_markdown(report: dict[str, Any]) -> str:
+    schema = report.get("schema_version")
+    if schema == "report-v2":
+        from tep_core.report_v2 import render_evidence_markdown
+
+        return render_evidence_markdown(report)
+    if schema == "project-v1":
+        from tep_core.report_v2 import render_project_markdown
+
+        return render_project_markdown(report)
+    if schema == "alignment-v1":
+        from tep_core.report_v2 import render_alignment_markdown
+
+        return render_alignment_markdown(report)
     prov = report["provenance"]
     identity = report["identity"]
     lineage = report["lineage"]

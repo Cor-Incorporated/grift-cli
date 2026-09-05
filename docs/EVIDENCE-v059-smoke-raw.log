@@ -1,0 +1,20 @@
+=== CMD: grift --version ===
+grift 0.5.9
+
+=== gate(1) 単位一致: 全gloss行の抽出（コミット単位の行がコミットglossを持つか） ===
+CMD: grift report | grep -E 'unresolved|tenant_unique|bot:' 
+- tenant_unique: 0 commits — 本人の独自コミット / this person's original commits
+- unresolved: 1 commits — identityに一致しなかったコミット / commits not matched by the identity
+- bot: 0 commits — 自動化アカウントのコミット / automation-account commits
+
+=== gate(2) 規範語ゼロ: grep 良い|悪い|優れ|劣る|健全|理想 ===
+CMD: grift report | grep -cE '良い|悪い|優れ|劣る|健全|理想'（0が理想）
+0
+
+=== gate(3) report.json 不変（glossマーカーなし） ===
+CMD: python -c 'json.load(.grift/report.json); "—" not in text'
+report.json clean: no gloss markers, schema report-v1
+
+=== gate(4) Shared block gloss-free ===
+CMD: grift report | sed -n '/## Shared block/,/## Provenance/p' | grep -c '—'（0が理想）
+0

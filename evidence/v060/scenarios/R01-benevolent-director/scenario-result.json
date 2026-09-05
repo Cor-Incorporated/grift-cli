@@ -1,0 +1,289 @@
+{
+  "argv": [
+    "python",
+    "-m",
+    "tep_cli",
+    "repo",
+    "${DEVELOPER_ROOT}/BenevolentDirector",
+    "--rev",
+    "a650ffa6b5921b93fcc32398ab01e0043ce962ec",
+    "--actors",
+    "--format",
+    "both",
+    "--out",
+    "${OUTPUT_ROOT}/R01-benevolent-director/artifacts"
+  ],
+  "assertions": [
+    {
+      "actual": 3994,
+      "expected": 3994,
+      "id": "git-total",
+      "status": "PASS"
+    },
+    {
+      "actual": 2607,
+      "expected": 2607,
+      "id": "git-nonmerge",
+      "status": "PASS"
+    },
+    {
+      "actual": 1387,
+      "expected": 1387,
+      "id": "git-merge",
+      "status": "PASS"
+    },
+    {
+      "actual": 3994,
+      "expected": 3994,
+      "id": "git-total-arithmetic",
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "id": "revision-completeness",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "expected": 0,
+      "id": "repo-command-exit",
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "id": "repo-json-generated",
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "id": "repo-markdown-generated",
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "id": "actor-index-json-generated",
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "id": "actor-index-markdown-generated",
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "id": "collection-manifest-generated",
+      "status": "PASS"
+    },
+    {
+      "actual": "valid",
+      "expected": "valid",
+      "id": "collection-json-parse",
+      "status": "PASS"
+    },
+    {
+      "actual": "VERIFIED",
+      "expected": "VERIFIED",
+      "id": "verify-collection-core",
+      "status": "PASS"
+    },
+    {
+      "actual": "0.7.0",
+      "expected": "0.7.0",
+      "id": "runner-tool-version",
+      "status": "PASS"
+    },
+    {
+      "actual": "a650ffa6b5921b93fcc32398ab01e0043ce962ec",
+      "expected": "a650ffa6b5921b93fcc32398ab01e0043ce962ec",
+      "id": "target-oid",
+      "status": "PASS"
+    },
+    {
+      "actual": 2607,
+      "expected": 2607,
+      "id": "report-human-nonmerge",
+      "status": "PASS"
+    },
+    {
+      "actual": 1387,
+      "expected": 1387,
+      "id": "report-merge",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "expected": 0,
+      "id": "report-bot",
+      "status": "PASS"
+    },
+    {
+      "actual": 3,
+      "expected": 3,
+      "id": "actor-count",
+      "status": "PASS"
+    },
+    {
+      "actual": "repo_human_nonmerge_commits + merge_count = attribution_human_including_merges + attribution_unresolved_commit_count",
+      "expected": "repo_human_nonmerge_commits + merge_count = attribution_human_including_merges + attribution_unresolved_commit_count",
+      "id": "merge-basis",
+      "status": "PASS"
+    },
+    {
+      "actual": "2026-03-03",
+      "expected": "2026-03-03",
+      "id": "window-start",
+      "status": "PASS"
+    },
+    {
+      "actual": "2026-08-30",
+      "expected": "2026-08-30",
+      "id": "window-end",
+      "status": "PASS"
+    },
+    {
+      "actual": 180,
+      "expected": 180,
+      "id": "window-days",
+      "status": "PASS"
+    },
+    {
+      "actual": "date-range",
+      "expected": "date-range",
+      "id": "window-unit",
+      "status": "PASS"
+    },
+    {
+      "actual": "legacy_head_date",
+      "expected": "legacy_head_date",
+      "id": "window-basis",
+      "status": "PASS"
+    },
+    {
+      "actual": 2607,
+      "expected": 2607,
+      "id": "metric-numerator",
+      "status": "PASS"
+    },
+    {
+      "actual": 3994,
+      "expected": 3994,
+      "id": "metric-denominator",
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "id": "report-revision-completeness",
+      "status": "PASS"
+    },
+    {
+      "actual": "safe",
+      "expected": "safe",
+      "id": "artifact-safety",
+      "status": "PASS"
+    }
+  ],
+  "counts": {
+    "actors.full": 3,
+    "actors.selected": 3,
+    "collection.members": 10,
+    "git.merge": 1387,
+    "git.nonmerge": 2607,
+    "git.total": 3994,
+    "metric.human_nonmerge.denominator": 3994,
+    "metric.human_nonmerge.numerator": 2607,
+    "population.human": 3994,
+    "population.merge": 1387,
+    "population.nonmerge": 2607,
+    "report.attributed_including_merges": 3994,
+    "report.bot": 0,
+    "report.human_nonmerge": 2607,
+    "report.merge": 1387,
+    "report.unresolved": 0
+  },
+  "duration_ms": 6966,
+  "exit_code": 0,
+  "output_digests": {
+    "artifacts/actor-index.json": {
+      "algorithm": "sha256",
+      "value": "04b0f4fe2e8f745890f1dd548421c4005d4fab20ba85fb2a1804ff07a56fc8ce"
+    },
+    "artifacts/actor-index.md": {
+      "algorithm": "sha256",
+      "value": "8f25039bdc271600281bd153c64e101a7ceb918d7bed03dcaeab0372b37c2509"
+    },
+    "artifacts/actors/cloudia.json": {
+      "algorithm": "sha256",
+      "value": "5ab9860cc1b231f72ea81526e6bdcc0d4748291242e928c9bc34dbd685f20c73"
+    },
+    "artifacts/actors/cloudia.md": {
+      "algorithm": "sha256",
+      "value": "d7d86f231757343e56a2336e7c78d2a93115b5628947b31fde68959965273704"
+    },
+    "artifacts/actors/kisayama.json": {
+      "algorithm": "sha256",
+      "value": "b1cac7563e903fd4eefb770aa95a6a244c9f41e44984622a6ff78f7f1b2d7b03"
+    },
+    "artifacts/actors/kisayama.md": {
+      "algorithm": "sha256",
+      "value": "7d80f17817ecaa95566e08eca94def7d10589630372d9ffbb980af919c864a5a"
+    },
+    "artifacts/actors/terisuke.json": {
+      "algorithm": "sha256",
+      "value": "27683497d96cde23c0ee8c5ae8ebd5e73d49ad1c80a37157fa431c4060b6b74c"
+    },
+    "artifacts/actors/terisuke.md": {
+      "algorithm": "sha256",
+      "value": "c9a0952448b9dd22ad06dcabee514278b6b4308ec1f95d4036a3af5a75a2801b"
+    },
+    "artifacts/collection-manifest.json": {
+      "algorithm": "sha256",
+      "value": "af559b2d8821badb43a0710b5f0cd0f785d0d71742d74d6bc09bc864b6cedd5d"
+    },
+    "artifacts/repo-report.json": {
+      "algorithm": "sha256",
+      "value": "492083e399a332f772a44cdcfad66b750521e4721d7b250b965565740cda46c0"
+    },
+    "artifacts/repo-report.md": {
+      "algorithm": "sha256",
+      "value": "e6494ccdae2fe2aa18c0c389dd500d71559d2c1685899aac31fc9db8f2fc8693"
+    }
+  },
+  "partition_digest": {
+    "algorithm": "sha256",
+    "value": "496e7490e3ed0da93ceda4445ed76b40b9eed5eb6b626b79cbb27abc69bc090d"
+  },
+  "provider_coverage": {
+    "kind": "not_observed",
+    "provided": false,
+    "reason": "public_evidence_not_provided"
+  },
+  "runner": {
+    "source_binding": {
+      "commit_oid": {
+        "algorithm": "sha1",
+        "value": "f5ac2730e702935e57912f339d920c40202eb5de"
+      },
+      "definition_version": "grift-tool-source-tree-v1",
+      "file_count": 97,
+      "source_tree_digest": {
+        "algorithm": "sha256",
+        "value": "115e7ae4af4d6eaecce0c97812b0a70ab2a39416194a22f5e00c93d51af882c3"
+      }
+    },
+    "tool_version": "0.7.0"
+  },
+  "scenario_id": "R01-benevolent-director",
+  "schema_version": "tep-scenario-result-v1",
+  "target_oid": {
+    "algorithm": "sha1",
+    "value": "a650ffa6b5921b93fcc32398ab01e0043ce962ec"
+  },
+  "verdict": "PASS"
+}

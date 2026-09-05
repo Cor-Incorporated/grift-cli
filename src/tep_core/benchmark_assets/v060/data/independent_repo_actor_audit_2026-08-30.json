@@ -1,0 +1,172 @@
+{
+  "schema_version": "grift-independent-audit-v1",
+  "purpose": "Independent v0.6.0 repo/actor/public-fetch/alignment smoke snapshot; not a role, skill, fit, hiring, or industry benchmark.",
+  "captured_at": "2026-08-30",
+  "tool_version": "0.6.0",
+  "measurement_policy": {
+    "local_git": "exact values are expected only for the recorded repository snapshot",
+    "public_forge": "moving source; compare source URL, fetched status, response digest, and invariants",
+    "ranking": false,
+    "role_truth": false,
+    "fit_truth": false,
+    "personal_data": "raw email and local absolute paths are intentionally excluded"
+  },
+  "official_semantics": [
+    {
+      "id": "github-contributors-caveat",
+      "url": "https://docs.github.com/en/repositories/viewing-activity-and-data-for-your-repository/viewing-a-projects-contributors?apiVersion=2022-11-28",
+      "use_for": [
+        "contributors are not a complete identity join",
+        "merge and empty commits are excluded from GitHub contributor statistics",
+        "commits are not linked when the author email is not connected to a GitHub account"
+      ]
+    },
+    {
+      "id": "cloudflare-os-public-source",
+      "url": "https://github.com/cloudflare/cloudflare-os",
+      "use_for": ["public repository and declared license/source context"]
+    },
+    {
+      "id": "vite-public-source",
+      "url": "https://github.com/vitejs/vite",
+      "use_for": ["public repository and frontend-tooling source context"]
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "repo_actor_separation",
+      "expect": [
+        "repo command emits report-v2 with subject.kind=repo and repo activity",
+        "actor --all and actor --top emit actor collections with ranking=false",
+        "actor command can select one observed actor without a required identity.toml",
+        "repo activity is not narrowed to one actor"
+      ],
+      "observed": {
+        "private-repo-01": {"snapshot_sha": "a650ffa6b5921b93fcc32398ab01e0043ce962ec", "repo_rc": 0, "repo_commits": 2607, "active_days": 125, "actor_count": 3, "actor_all": true, "actor_top": true},
+        "grift-landing-blueprint": {"snapshot_sha": "7efd09e22d06caa813149af891ae2001bebf6cb4", "repo_rc": 0, "repo_commits": 34, "active_days": 9, "actor_count": 2, "actor_all": true, "actor_top": true},
+        "cloudflare-os": {"snapshot_sha": "4f42d625a994a7bff4a3091a6b06897ab2e4d79c", "repo_rc": 0, "repo_commits": 438, "active_days": 140, "actor_count": 15, "actor_all": true, "actor_top": true},
+        "vite": {"snapshot_sha": "e2b597de0ef14598901703f5aa52f8c962007d02", "repo_rc": 0, "repo_commits": 9102, "active_days": 1741, "actor_count": 1324, "actor_all": true, "actor_top": true}
+      },
+      "status": "PASS_WITH_DATA_INTEGRITY_FINDINGS"
+    },
+    {
+      "id": "attribution_scope_consistency",
+      "expect": [
+        "repo_commits and human_commit_count must identify whether merge commits are included",
+        "attributed_commit_count, merge_count, and human_commit_count must reconcile without contradictory unresolved counts",
+        "actor commit_count must state whether it includes merge commits"
+      ],
+      "observed": {
+        "private-repo-01": {"snapshot_sha": "a650ffa6b5921b93fcc32398ab01e0043ce962ec", "repo_commits": 2607, "human_commit_count": 2607, "attributed_commit_count": 3994, "merge_count": 1387, "unresolved": 0},
+        "grift-landing-blueprint": {"snapshot_sha": "7efd09e22d06caa813149af891ae2001bebf6cb4", "repo_commits": 34, "human_commit_count": 34, "attributed_commit_count": 54, "merge_count": 20, "unresolved": 0},
+        "cloudflare-os": {"snapshot_sha": "4f42d625a994a7bff4a3091a6b06897ab2e4d79c", "repo_commits": 438, "human_commit_count": 438, "attributed_commit_count": 663, "merge_count": 225, "unresolved": 0},
+        "vite": {"snapshot_sha": "e2b597de0ef14598901703f5aa52f8c962007d02", "repo_commits": 9102, "human_commit_count": 9102, "attributed_commit_count": 9172, "merge_count": 70, "unresolved": 0}
+      },
+      "status": "FAIL_REQUIRES_EXPLICIT_MERGE_BASIS",
+      "reason": "The report exposes a repo activity population without making the actor attribution population (which includes merges) explicit enough for a non-engineer to reconcile it."
+    },
+    {
+      "id": "public_handle_attachment",
+      "expect": [
+        "public contributor data is joined to commit authors by a documented stable key or commit SHA",
+        "a successful HTTP 200 with handles does not by itself prove identity attachment",
+        "named-public output must expose attachment coverage"
+      ],
+      "observed": {
+        "cloudflare-os": {"http_status": 200, "fetched_handles": 19, "actor_display_status_public_handle": 0},
+        "vite": {"http_status": 200, "fetched_handles": 30, "actor_display_status_public_handle": 0}
+      },
+      "status": "FAIL_HANDLE_JOIN_NOT_PROVEN",
+      "reason": "The contributors endpoint returns login keys, while the current attribution join looks up lower-cased Git author email; fetched handles therefore do not attach to observed actors."
+    },
+    {
+      "id": "named_public_empty_cohort",
+      "expect": [
+        "named-public is either non-empty with attachment evidence or exits/labels not_available",
+        "exit 0 with observed_count=0 must not look like a successful named contribution"
+      ],
+      "observed": {"cloudflare-os": {"named_public_rc": 0, "named_public_observed_count": 0, "masked_rc": 0, "masked_observed_count": 15}},
+      "status": "FAIL_SILENT_EMPTY_SUCCESS"
+    },
+    {
+      "id": "actor_collection_alignment",
+      "expect": [
+        "the directory written by repo --actors can be consumed by align --actor-dir",
+        "actor cards contain enough report-v2 provenance and metric basis for alignment"
+      ],
+      "observed": {
+        "cloudflare-os": {"repo_actors_rc": 0, "align_actor_dir_rc": 2, "error": "actor-dir needs actor-report.json (report-v2) or report-v2 actor JSON files"},
+        "single_actor_report": {"actor_report_rc": 0, "align_actor_report_rc": 0, "axes": 10}
+      },
+      "status": "FAIL_DIRECTORY_NOT_CONSUMABLE",
+      "reason": "The formal single actor-report path works, but the collection produced by repo --actors is not directly consumable by the advertised actor-dir alignment path."
+    },
+    {
+      "id": "human_readable_actor_visibility",
+      "expect": [
+        "repo --actors Markdown makes the actor population visible or links to each actor card",
+        "a non-engineer can distinguish repository totals from actor totals without opening raw JSON"
+      ],
+      "observed": {
+        "vite": {"repo_markdown_actor_terms": 0, "actors_json_present": true, "actor_cards_present": true},
+        "cloudflare-os": {"repo_markdown_actor_terms": 0, "actors_json_present": true, "actor_cards_present": true}
+      },
+      "status": "FAIL_ACTOR_DATA_IS_JSON_ONLY",
+      "reason": "The collection files are written, but the report Markdown does not expose the actor directory or a navigable summary."
+    },
+    {
+      "id": "alignment_basis_completeness",
+      "expect": [
+        "each relationship axis exposes actor/project n, denominator, source, and window",
+        "missing project observed data yields not_comparable rather than a directional conclusion",
+        "stale consent-only notice is not emitted for inferred public actor selection"
+      ],
+      "observed": {
+        "single_actor_report": {
+          "rc": 0,
+          "axes": 10,
+          "actor_n_present": true,
+          "project_n_present": true,
+          "denominators_present": false,
+          "stderr_contains_consent_notice": true,
+          "relationship_kinds": ["not_comparable", "similar_direction", "different_direction", "mixed"]
+        }
+      },
+      "status": "FAIL_BASIS_AND_NOTICE_REVIEW_REQUIRED"
+    }
+  ],
+  "snapshot_references": {
+    "cloudflare_os": {
+      "source_url": "https://github.com/cloudflare/cloudflare-os",
+      "local_snapshot": "cloudflare-os",
+      "snapshot_sha": "4f42d625a994a7bff4a3091a6b06897ab2e4d79c",
+      "repo_commits": 438,
+      "actor_count": 15,
+      "public_fetch_http_status": 200,
+      "public_fetch_robots": "allowed",
+      "public_handles": 19
+    },
+    "vite": {
+      "source_url": "https://github.com/vitejs/vite",
+      "local_snapshot": "vite",
+      "snapshot_sha": "e2b597de0ef14598901703f5aa52f8c962007d02",
+      "repo_commits": 9102,
+      "actor_count": 1324,
+      "public_fetch_http_status": 200,
+      "public_fetch_robots": "allowed",
+      "public_handles": 30
+    }
+  },
+  "go_no_go": {
+    "go_for": ["offline repo/actor command smoke", "masked contribution generation without raw email"],
+    "no_go_for": ["experiment deployment", "public named actor analysis", "actor-dir alignment", "role/fit claims", "data accumulation as validated evidence"],
+    "required_next_fixes": [
+      "make merge-inclusive versus non-merge populations explicit and internally reconcilable",
+      "implement and test public contributor-to-commit/author attachment with coverage and ambiguity",
+      "make named-public empty cohort an explicit not_available result",
+      "make repo --actors output a report-v2 actor collection consumable by align --actor-dir",
+      "ensure every relationship axis carries complete basis metadata and suppresses conclusions when one side is not observed",
+      "add these cases to automated regression tests and rerun against frozen snapshots"
+    ]
+  }
+}

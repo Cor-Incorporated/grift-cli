@@ -1,0 +1,55 @@
+{
+  "actors": [
+    {
+      "actor_id": "terada-kousuke",
+      "commit_count": 49,
+      "merge_commit_count": 20,
+      "nonmerge_commit_count": 29
+    },
+    {
+      "actor_id": "kojiisayama",
+      "commit_count": 5,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 5
+    }
+  ],
+  "limitations": [
+    "Actor IDs are repo-local Git primary-author clusters, not verified people.",
+    "Top selection is observed commit-count extraction, never a quality rank."
+  ],
+  "partition_digest": {
+    "algorithm": "sha256",
+    "value": "ec12d3ad2b4a74f64067c8fa5fd3ac3b58c8577ca7e4118f2cb1ba9fd0c4e456"
+  },
+  "population": {
+    "actor_count": 2,
+    "basis": "git_primary_author_cluster",
+    "human_commit_count": 54,
+    "window": {
+      "basis": "legacy_head_date",
+      "end": "2026-07-16",
+      "start": "2026-01-17",
+      "unit": "date-range"
+    }
+  },
+  "population_digest": {
+    "algorithm": "sha256",
+    "value": "baf73ee698dda8a7a6a1e706551601f327afb58987c72f3e592c0a872f593fb4"
+  },
+  "report_kind": "actor_index",
+  "schema_version": "actor-index-v1",
+  "selection": {
+    "actor_ids": [
+      "terada-kousuke",
+      "kojiisayama"
+    ],
+    "mode": "all",
+    "selected_count": 2
+  },
+  "target": {
+    "oid": {
+      "algorithm": "sha1",
+      "value": "7efd09e22d06caa813149af891ae2001bebf6cb4"
+    }
+  }
+}
