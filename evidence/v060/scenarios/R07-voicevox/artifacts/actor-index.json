@@ -1,0 +1,867 @@
+{
+  "actors": [
+    {
+      "actor_id": "actor_0f8674812e150c768f0a33220bdc0a22",
+      "commit_count": 641,
+      "merge_commit_count": 81,
+      "nonmerge_commit_count": 560
+    },
+    {
+      "actor_id": "actor_5c603e5f841fc6be84ded251be17f9ca",
+      "commit_count": 271,
+      "merge_commit_count": 4,
+      "nonmerge_commit_count": 267
+    },
+    {
+      "actor_id": "actor_a2b4ba1f54b9cc3edece0874d267e233",
+      "commit_count": 93,
+      "merge_commit_count": 2,
+      "nonmerge_commit_count": 91
+    },
+    {
+      "actor_id": "sabonerune",
+      "commit_count": 90,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 90
+    },
+    {
+      "actor_id": "actor_650f92231d0de4803109a2ec99b09d35",
+      "commit_count": 72,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 72
+    },
+    {
+      "actor_id": "yuto-ashida",
+      "commit_count": 58,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 58
+    },
+    {
+      "actor_id": "segu",
+      "commit_count": 52,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 52
+    },
+    {
+      "actor_id": "tiramisu_otato",
+      "commit_count": 46,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 46
+    },
+    {
+      "actor_id": "actor_dde4e6ec8096f199a20e4e1fd4b12ef2",
+      "commit_count": 45,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 45
+    },
+    {
+      "actor_id": "madosuki",
+      "commit_count": 39,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 39
+    },
+    {
+      "actor_id": "romot",
+      "commit_count": 36,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 36
+    },
+    {
+      "actor_id": "actor_c4533a36ec5b9efbab1987c0820d3c6d",
+      "commit_count": 30,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 30
+    },
+    {
+      "actor_id": "aoirint",
+      "commit_count": 28,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 28
+    },
+    {
+      "actor_id": "patchethium",
+      "commit_count": 20,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 20
+    },
+    {
+      "actor_id": "motoki-saito",
+      "commit_count": 19,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 19
+    },
+    {
+      "actor_id": "riku-kanayama",
+      "commit_count": 19,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 19
+    },
+    {
+      "actor_id": "kchop",
+      "commit_count": 17,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 17
+    },
+    {
+      "actor_id": "yusuke-yamada",
+      "commit_count": 15,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 15
+    },
+    {
+      "actor_id": "kai",
+      "commit_count": 14,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 14
+    },
+    {
+      "actor_id": "gray-suitcase",
+      "commit_count": 13,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 13
+    },
+    {
+      "actor_id": "oech3",
+      "commit_count": 13,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 13
+    },
+    {
+      "actor_id": "haruki-tazoe",
+      "commit_count": 10,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 10
+    },
+    {
+      "actor_id": "raa0121",
+      "commit_count": 10,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 10
+    },
+    {
+      "actor_id": "yosshi999",
+      "commit_count": 9,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 9
+    },
+    {
+      "actor_id": "masanobu-yoshioka",
+      "commit_count": 8,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 8
+    },
+    {
+      "actor_id": "nanae1914",
+      "commit_count": 8,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 8
+    },
+    {
+      "actor_id": "sousuke0422",
+      "commit_count": 8,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 8
+    },
+    {
+      "actor_id": "takana-v",
+      "commit_count": 8,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 8
+    },
+    {
+      "actor_id": "copilot",
+      "commit_count": 7,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 7
+    },
+    {
+      "actor_id": "yuta-hayashibe",
+      "commit_count": 7,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 7
+    },
+    {
+      "actor_id": "actor_f30c88a0d1d8e2763dafd1b0c6ee6fdf",
+      "commit_count": 6,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 6
+    },
+    {
+      "actor_id": "akikukeo",
+      "commit_count": 6,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 6
+    },
+    {
+      "actor_id": "cm-ayf",
+      "commit_count": 6,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 6
+    },
+    {
+      "actor_id": "haruna",
+      "commit_count": 6,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 6
+    },
+    {
+      "actor_id": "mes51",
+      "commit_count": 6,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 6
+    },
+    {
+      "actor_id": "nao",
+      "commit_count": 6,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 6
+    },
+    {
+      "actor_id": "actor_27f8450ce23d4be99326fd5911a725d3",
+      "commit_count": 5,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 5
+    },
+    {
+      "actor_id": "actor_3332ce147a38dea476662a6ecfbd7c15",
+      "commit_count": 5,
+      "merge_commit_count": 2,
+      "nonmerge_commit_count": 3
+    },
+    {
+      "actor_id": "han-yeong-woo",
+      "commit_count": 5,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 5
+    },
+    {
+      "actor_id": "actor_02d931d2be690de3178041c7a6d1d432",
+      "commit_count": 4,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 4
+    },
+    {
+      "actor_id": "actor_10d02ed0a40d0f047ec3816c6c041da2",
+      "commit_count": 4,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 4
+    },
+    {
+      "actor_id": "actor_1e882f81815bb5bf16a60b24ec84d32b",
+      "commit_count": 4,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 4
+    },
+    {
+      "actor_id": "actor_57cf3a611c9ff059f4baa48e7113692e",
+      "commit_count": 4,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 4
+    },
+    {
+      "actor_id": "hyoda-kazuaki",
+      "commit_count": 4,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 4
+    },
+    {
+      "actor_id": "kantas-spike",
+      "commit_count": 4,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 4
+    },
+    {
+      "actor_id": "terapotan",
+      "commit_count": 4,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 4
+    },
+    {
+      "actor_id": "tsym",
+      "commit_count": 4,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 4
+    },
+    {
+      "actor_id": "actor_63b28497c0e0bf22940d40424b5780f5",
+      "commit_count": 3,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 3
+    },
+    {
+      "actor_id": "actor_fe2f98946676130af9c023b220e115a8",
+      "commit_count": 3,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 3
+    },
+    {
+      "actor_id": "akihiko-koizuka",
+      "commit_count": 3,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 3
+    },
+    {
+      "actor_id": "kebin",
+      "commit_count": 3,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 3
+    },
+    {
+      "actor_id": "keisuke-ishii",
+      "commit_count": 3,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 3
+    },
+    {
+      "actor_id": "masarakki",
+      "commit_count": 3,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 3
+    },
+    {
+      "actor_id": "nebocco",
+      "commit_count": 3,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 3
+    },
+    {
+      "actor_id": "nogino",
+      "commit_count": 3,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 3
+    },
+    {
+      "actor_id": "qwerty2501",
+      "commit_count": 3,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 3
+    },
+    {
+      "actor_id": "tksn07",
+      "commit_count": 3,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 3
+    },
+    {
+      "actor_id": "tunamaguro",
+      "commit_count": 3,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 3
+    },
+    {
+      "actor_id": "x-20a",
+      "commit_count": 3,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 3
+    },
+    {
+      "actor_id": "yuqquu",
+      "commit_count": 3,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 3
+    },
+    {
+      "actor_id": "actor_5a85c8845c9faeacc40b8988a2aaa93d",
+      "commit_count": 2,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 2
+    },
+    {
+      "actor_id": "actor_c46e6b7540e168fadc97939e5b439220",
+      "commit_count": 2,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 2
+    },
+    {
+      "actor_id": "arigayas",
+      "commit_count": 2,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 2
+    },
+    {
+      "actor_id": "gurrium",
+      "commit_count": 2,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 2
+    },
+    {
+      "actor_id": "henteko",
+      "commit_count": 2,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 2
+    },
+    {
+      "actor_id": "kota-kato",
+      "commit_count": 2,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 2
+    },
+    {
+      "actor_id": "noronoro56",
+      "commit_count": 2,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 2
+    },
+    {
+      "actor_id": "sheltie",
+      "commit_count": 2,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 2
+    },
+    {
+      "actor_id": "tasteless0wash",
+      "commit_count": 2,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 2
+    },
+    {
+      "actor_id": "wertyus11",
+      "commit_count": 2,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 2
+    },
+    {
+      "actor_id": "white-green",
+      "commit_count": 2,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 2
+    },
+    {
+      "actor_id": "yuki",
+      "commit_count": 2,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 2
+    },
+    {
+      "actor_id": "yukio-nozawa",
+      "commit_count": 2,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 2
+    },
+    {
+      "actor_id": "actor_19dc2bc80cbffefe2c511a0085d990e0",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "actor_2e8bf4f4f70d3bf5e1e122b5be15c703",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "actor_501962469534947816d4ee4d724e3223",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "actor_60cefbf628e87f782984182dc0df836f",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "actor_6dceed931a85614a8a240d3794a8af89",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "actor_7de98ef902b711cf71da9e0a99497066",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "actor_a362c99a437ee94d879a036aee6e8322",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "actor_a8922a83e22c029c7814c2163b81ef73",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "actor_b0f7244f99157f8cd1b40892482020a2",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "aruneko",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "bobonba",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "finict",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "gigi434",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "hiroaki-kajiyama",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "ishida-naoto",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "jun-1il",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "koharuyuzuki",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "kurehajime",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "liszt01",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "matt-van-horn",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "mikage-asuka",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "my",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "o108minmin",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "oyaki",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "palm209",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "r17n",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "rikitonoto",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "risu",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "ryo-yamashita",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "scarletdango1204",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "shimagayasatoka",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "shirowanisan",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "so-c",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "sota-ichikawa",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "tatsuya_yd",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "tomofumi-kondo",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "tsunekazu-omija",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "umi",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "vuchvu",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "yohaku7",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "yoshiki-higuchi",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "ytjvdcm",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "yuki-igarashi",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "yuki1229ushioda",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "yuriko0505",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    }
+  ],
+  "limitations": [
+    "Actor IDs are repo-local Git primary-author clusters, not verified people.",
+    "Top selection is observed commit-count extraction, never a quality rank."
+  ],
+  "partition_digest": {
+    "algorithm": "sha256",
+    "value": "6387bbe252a91f89e2e1b1bc73f9563820f4e32ba0bddbce7a202903217cd093"
+  },
+  "population": {
+    "actor_count": 118,
+    "basis": "git_primary_author_cluster",
+    "human_commit_count": 1899,
+    "window": {
+      "basis": "legacy_head_date",
+      "end": "2026-08-22",
+      "start": "2026-02-23",
+      "unit": "date-range"
+    }
+  },
+  "population_digest": {
+    "algorithm": "sha256",
+    "value": "a35d13f3d22b886c7531b62ee4456a373d37f0b41271058617fa9640debbd1d4"
+  },
+  "report_kind": "actor_index",
+  "schema_version": "actor-index-v1",
+  "selection": {
+    "actor_ids": [
+      "actor_0f8674812e150c768f0a33220bdc0a22",
+      "actor_5c603e5f841fc6be84ded251be17f9ca",
+      "actor_a2b4ba1f54b9cc3edece0874d267e233",
+      "sabonerune",
+      "actor_650f92231d0de4803109a2ec99b09d35",
+      "yuto-ashida",
+      "segu",
+      "tiramisu_otato",
+      "actor_dde4e6ec8096f199a20e4e1fd4b12ef2",
+      "madosuki",
+      "romot",
+      "actor_c4533a36ec5b9efbab1987c0820d3c6d",
+      "aoirint",
+      "patchethium",
+      "motoki-saito",
+      "riku-kanayama",
+      "kchop",
+      "yusuke-yamada",
+      "kai",
+      "gray-suitcase",
+      "oech3",
+      "haruki-tazoe",
+      "raa0121",
+      "yosshi999",
+      "masanobu-yoshioka",
+      "nanae1914",
+      "sousuke0422",
+      "takana-v",
+      "copilot",
+      "yuta-hayashibe",
+      "actor_f30c88a0d1d8e2763dafd1b0c6ee6fdf",
+      "akikukeo",
+      "cm-ayf",
+      "haruna",
+      "mes51",
+      "nao",
+      "actor_27f8450ce23d4be99326fd5911a725d3",
+      "actor_3332ce147a38dea476662a6ecfbd7c15",
+      "han-yeong-woo",
+      "actor_02d931d2be690de3178041c7a6d1d432",
+      "actor_10d02ed0a40d0f047ec3816c6c041da2",
+      "actor_1e882f81815bb5bf16a60b24ec84d32b",
+      "actor_57cf3a611c9ff059f4baa48e7113692e",
+      "hyoda-kazuaki",
+      "kantas-spike",
+      "terapotan",
+      "tsym",
+      "actor_63b28497c0e0bf22940d40424b5780f5",
+      "actor_fe2f98946676130af9c023b220e115a8",
+      "akihiko-koizuka",
+      "kebin",
+      "keisuke-ishii",
+      "masarakki",
+      "nebocco",
+      "nogino",
+      "qwerty2501",
+      "tksn07",
+      "tunamaguro",
+      "x-20a",
+      "yuqquu",
+      "actor_5a85c8845c9faeacc40b8988a2aaa93d",
+      "actor_c46e6b7540e168fadc97939e5b439220",
+      "arigayas",
+      "gurrium",
+      "henteko",
+      "kota-kato",
+      "noronoro56",
+      "sheltie",
+      "tasteless0wash",
+      "wertyus11",
+      "white-green",
+      "yuki",
+      "yukio-nozawa",
+      "actor_19dc2bc80cbffefe2c511a0085d990e0",
+      "actor_2e8bf4f4f70d3bf5e1e122b5be15c703",
+      "actor_501962469534947816d4ee4d724e3223",
+      "actor_60cefbf628e87f782984182dc0df836f",
+      "actor_6dceed931a85614a8a240d3794a8af89",
+      "actor_7de98ef902b711cf71da9e0a99497066",
+      "actor_a362c99a437ee94d879a036aee6e8322",
+      "actor_a8922a83e22c029c7814c2163b81ef73",
+      "actor_b0f7244f99157f8cd1b40892482020a2",
+      "aruneko",
+      "bobonba",
+      "finict",
+      "gigi434",
+      "hiroaki-kajiyama",
+      "ishida-naoto",
+      "jun-1il",
+      "koharuyuzuki",
+      "kurehajime",
+      "liszt01",
+      "matt-van-horn",
+      "mikage-asuka",
+      "my",
+      "o108minmin",
+      "oyaki",
+      "palm209",
+      "r17n",
+      "rikitonoto",
+      "risu",
+      "ryo-yamashita",
+      "scarletdango1204",
+      "shimagayasatoka",
+      "shirowanisan",
+      "so-c",
+      "sota-ichikawa",
+      "tatsuya_yd",
+      "tomofumi-kondo",
+      "tsunekazu-omija",
+      "umi",
+      "vuchvu",
+      "yohaku7",
+      "yoshiki-higuchi",
+      "ytjvdcm",
+      "yuki-igarashi",
+      "yuki1229ushioda",
+      "yuriko0505"
+    ],
+    "mode": "all",
+    "selected_count": 118
+  },
+  "target": {
+    "oid": {
+      "algorithm": "sha1",
+      "value": "c72a94cbcf501be054a239446c7eb8cf53be34b4"
+    }
+  }
+}

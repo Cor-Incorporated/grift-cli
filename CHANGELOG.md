@@ -4,6 +4,134 @@
 
 タグ・PyPI・リポ public 化は本ファイルの記載対象外（人間ゲート）。
 
+## [0.7.0] — 2026-09-03
+
+### Added
+
+- **`library_context`**（actor scope）: 導入したライブラリが同梱の参照コーパスで
+  どれだけ普及しているか。ライブラリを記述するのであって人を記述しない。
+  不在は `absent_from_reference_corpus` であって希少の証拠ではない。
+  ecosystem の n が 30 未満なら答えを出さない。バンド分けもしない
+- **`grift align --team`**: 宣言された要求をチームが覆えているかを人数のみで出す。
+  個人の測定値は匿名の最大値としても出ない。3 名未満は `not_observed`
+  （`insufficient_team_size`）を返し、個人を特定しうる数を出さない
+- **`outcome`**（`--outcome-declaration`）: git に写らない納品結果の申告経路。
+  必ず `kind: "declared"` で、`observed` の分岐がスキーマに存在しない。
+  `grift verify` は再計算しない。自己申告と第三者証跡を型で区別する
+- **`grift contribute --purpose`**: 提出データの目的を提出者が選ぶ。
+  無指定時は v0.6.0 と同じ意味
+- **`scripts/v070_benchmark.py`**: v0.7.0 の主張を第三者が再実行できる形で測る。
+  fixture は本リポジトリ自身の履歴の pin した commit から自前生成する
+
+### Fixed
+
+- **切り詰めた履歴を「リポジトリの実測値」として報告しない**。shallow クローン
+  （`actions/checkout` の既定 `fetch-depth: 1` を含む）で 9 フィールドが
+  truncation 由来の値を `observed` として申告していた。CI で生成した v0.6.0 の
+  証跡は誤っている。promisor は degrade させない（全 commit を取得しており
+  commit 数・日付・author は正確なため）
+- `context_profile.scale` と `activity` が異なる母集団を持ちながら片方しか
+  denominator note を持たなかった
+- `grift contribute` の payload が denylist で組まれており、新しいトップレベル
+  キーが既定で公開されていた。allowlist に転換
+- 秘密検出が単語一致で誤拒否していた
+- 範囲外タイムゾーン（`+518:00`）でのクラッシュ
+- 測れなかったものを 0 として報告していた
+- `time_phase` を本人の観測期間で三分割する
+- **`verification_profile.test_type_share` を新設し、verification 軸の逆転を止めた**。
+  `test_type_distribution` は commit 数しか持たず、type に対して床を宣言しても
+  比較する share が無かった。`alignment._obs_share` は非ゼロの type すべてを
+  `not_observed`、ゼロの type だけを `below_declared` にしていた（実際に手を
+  動かした type が「未測定」と読める）。分母は「テストを触った commit 数」であり、
+  各 type の share は独立に割るので **合計は 1 にならない**
+- **`grift align --team` の入力を report-v2 に限定した**。`grift actor --out DIR` が
+  書く `actor-card-v1` を受理していたが、card は surface 観測を持たないため
+  全要求が `not_observed` になり、沈黙が「チームを測った結果」の形で出ていた。
+  拒否時に report-v2 の作り方を示す
+- **`grift verify` が `outcome` を比較しないことを明記した**。宣言 outcome には
+  再計算する元が無く、verifier に宣言ファイルは渡されない。全 report の outcome が
+  MISMATCH になっていたのを diff から外し、代わりに「**宣言を書き換えても verify は
+  検知しない**」を report 自身の limitations に毎回載せる。「再計算しない」だけでは
+  保護のように読めるが、実際は逆である
+- **`--outcome-declaration` を `repo` / `actor` に限定した**。`project` / `align` は
+  `report_outcome` を出さないため、フラグを提供するとファイルを受け取って何も
+  読まず、outcome の無い report を返していた（「何も宣言されなかった」と読める）
+
+### Changed
+
+- **規範を 2 条項だけ改訂**。複数 actor 条項に `align --team` の例外を 1 つ追加し、
+  目的拘束を提出者の選択に移した。§1 §2 §3 §4 §5 §6 §7、alignment no-verdict、
+  保持期間、撤回手続き、推測リスク開示、profile 別アクセスは変更していない
+- リリース整合性ゲートからバージョンリテラルを外した。移行文書のパスも
+  version.py から導出する
+
+### Notes
+
+- v0.6.0 の面はすべて残る。`provider-neutral Forge証跡`（`GitHub/GitLab/self-managed`、
+  `PARTIAL/resume`）、`attest / portfolio`、`contribution-v2`、
+  `暗黙 PyPI update check` を持たない設計は v0.7.0 でも変わらない
+- AI 同条件比較ゲートの判定は **PARITY**（4 軸中 2 勝 2 敗）。
+  事前登録に従い SUPERIOR は宣言しない
+- **offline 主張の範囲は Python プロセス層のみ**。`evidence/v070/benchmark.json` の
+  `offline` は既定の解析経路が Python プロセスから socket を開かないことだけを
+  測っている（`scope: "python_process_only"`）。**git subprocess の通信は測っていない**
+  （`git_subprocess_network: "not_measured"`）。「grift はネットワークに触れない」という
+  一般化の根拠には使えない
+- **δ = -0.7871 は v0.7.0 では再現できない**。`validity-person-signal` の値は
+  `role-profile-v1` の上で、同意ゲートより前に測ったものである。v0.7.0 は
+  identity-v2 の `consent` + `authority` を記録した actor にしか `role_profile` を
+  出さず、研究コーパスは公開 OSS contributor でその記録を持たない。再測定は
+  本人に代わって同意を主張することになるため行わない
+  （`reproducibility: "not_reproducible_on_this_version"`）
+
+## [0.6.0] — 2026-08-31
+
+### Added
+
+- **Subject-first CLI**: `grift repo` / `grift actor` / `grift project` / `grift align`
+- **report-v2**（repo / actor 証拠）。`observation_date` と `window_basis` を明示
+- **project-v1** 宣言と観測を別セクション。`--init` は空 template のみ
+- **alignment-v1** 軸ごとの comparison。総合点・順位・推奨は持たない
+- surface / change_rhythm / verification / coordination 観測。role_lens は表示プリセット
+- ローカル `tep-forge-export-v1` / `tep-tracker-export-v1`（API 接続なし）
+- `change_rhythm` の gap 母集団を observation_date から 180 日窓に限定
+- Markdown を非エンジニア向けの7節構成に。raw dict を出さない
+- report-v2 validator が空の observed node を拒否
+- **固定OID Actor partition**: 明示alias → 固定tree `.mailmap` → email →
+  email欠落時nameの順でrepo-local clusterを確定し、公開account表示から分離
+- **provider-neutral Forge証跡**: GitHub/GitLab/self-managed、SHA-1/SHA-256、
+  full pagination、CAS bundle、offline replay、safe PARTIAL/resume
+- **同意済みexperience / role**: rename/copy/re-add/delete、30/180日境界、
+  release/tag、AI申告/human coauthorをversion付き四つ組で観測し、母数20未満を抑制
+- **attest / portfolio**: OpenSSH/cosign detached signatureと受領者trust、
+  明示subject bindingによる複数repo証拠台帳（score/rankなし）
+- **contribution-v2**: aggregate / named-public / masked / rawをdoor別に分離。
+  controlled HMAC sidecarとpublic intake allowlistを追加
+- forge/tracker export-v2のprovider/host/project/OID/window/coverage bindingと
+  不完全coverageのfail-closed検証
+- 20種のclosed Draft 2020-12 schema、stdlib validator、schema mutation検査
+- explicit package allowlist、runtime benchmark/schema assets、dirty-source package smoke
+
+### Changed
+
+- 測定コマンドの新入口は既定 `--format md`、既定では `.grift/` を作らない
+- `analyze` / `report` / `verify` の暗黙 PyPI update check を廃止し、ネットワーク経路を明示的な `grift update --check` に分離
+- `grift analyze --export` は解決後の scope を書く（省略時に `"None"` と出さない）
+- `grift contribute` はreport-v1から既存v1を維持し、report-v2からprofile別v2を生成する
+- 公開REST取得からcrawler用robots判定を除き、provider API terms/rate stateと
+  固定tree licenseを別provenanceとして記録
+- report-v2公開成果物をrepo report、actor index、選択cardへ分離し、
+  population/partition/artifact digestを形式間で固定
+
+### Compatibility
+
+- `grift analyze` / `report` / `verify` / `contribute` の report-v1 意味は維持
+- 明示パスの tenant default、裸 analyze の repo default は維持
+- actor の `--export` と `--scope actor` は拒否
+- report-v1 / export-v1は凍結互換を維持し、v0.6新schemaは未知キーを拒否
+- GitLab commits APIにdocumented account linkageがない場合は推測せず
+  `unsupported/not_proven`を維持
+
 ## [0.5.9] — 2026-08-25
 
 ### Changed（代表 UX フィードバック）

@@ -1,0 +1,24 @@
+# gitleaks configuration.
+#
+# This repository's documentation, evidence, and benchmark fixtures cite
+# pinned *public* Git object IDs (40/64-hex commit SHAs) as reproducibility
+# pins. Generic hex-shaped secret rules (e.g. cloudflare-api-key) false
+# positive on those OIDs. These paths document public data only; credentials
+# never belong there, and runtime secrets are injected via environment
+# variables in CI, never committed.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Pinned public Git OIDs in docs/evidence/benchmarks are not secrets."
+paths = [
+    '''docs/.*''',
+    '''evidence/.*''',
+    '''benchmarks/.*''',
+    '''golden/.*''',
+    '''corpus/.*''',
+    # Bundled library-prevalence reference table (W4): every row pins the
+    # public upstream commit it was observed at as a 40-hex OID. The
+    # sourcegraph-access-token rule matched all 112 of them on PR #66.
+    '''src/tep_core/data/prevalence/.*''',
+]

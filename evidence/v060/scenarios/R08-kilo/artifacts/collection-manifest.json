@@ -1,0 +1,199 @@
+{
+  "actor_index_digest": {
+    "algorithm": "sha256",
+    "value": "a1681ba8ec85f3c97f0eb380b21524610c5b7c5288c87bcffa045857ef5a0cec"
+  },
+  "full": {
+    "actor_count": 7,
+    "digest": {
+      "algorithm": "sha256",
+      "value": "398bd9ef4d4d84768b08d6aff026766c7b1ae7920d9988e37219e72e00cc661a"
+    },
+    "human_commit_count": 20,
+    "links": {
+      "index_json": "actor-index.json",
+      "index_markdown": "actor-index.md",
+      "repo_json": "repo-report.json",
+      "repo_markdown": "repo-report.md"
+    }
+  },
+  "members": [
+    {
+      "bytes": 2114,
+      "media_type": "application/json",
+      "path": "actor-index.json",
+      "sha256": "4a4bfb0bcb1bfbe8507cd127d71fc4bc5c778832b4acc457cdb00991102300f9"
+    },
+    {
+      "bytes": 1219,
+      "media_type": "text/markdown",
+      "path": "actor-index.md",
+      "sha256": "2a4d1f84be37112421e756206654b5666804ffa2683f07968d8653d3d15eba96"
+    },
+    {
+      "bytes": 948,
+      "media_type": "application/json",
+      "path": "actors/antirez.json",
+      "sha256": "a26c1cc71dd72e27655a23d1dc483c4876094eca62e13840a765890ae7bda7ae"
+    },
+    {
+      "bytes": 387,
+      "media_type": "text/markdown",
+      "path": "actors/antirez.md",
+      "sha256": "114aa60687f630a36a19f1d056711ca5e14bae955140c66af178ae09ac771651"
+    },
+    {
+      "bytes": 959,
+      "media_type": "application/json",
+      "path": "actors/christopher-wellons.json",
+      "sha256": "daf5e8bfd28f7b432560b1ad2cb1f11f739c61928ffb15c04f267027f496b669"
+    },
+    {
+      "bytes": 398,
+      "media_type": "text/markdown",
+      "path": "actors/christopher-wellons.md",
+      "sha256": "74094b3b768c57450259eb803fdb8de561a09761db03b53400151ed30cfa0fac"
+    },
+    {
+      "bytes": 944,
+      "media_type": "application/json",
+      "path": "actors/dayu.json",
+      "sha256": "6b069748308cd30b25a515bebb9eabdb51d1cf78ab0ff75aba4ac80d0ed797e6"
+    },
+    {
+      "bytes": 383,
+      "media_type": "text/markdown",
+      "path": "actors/dayu.md",
+      "sha256": "bd7db745c49c258adc63fb3efe00a4910714a747f5235c80b967421b0ba726b6"
+    },
+    {
+      "bytes": 955,
+      "media_type": "application/json",
+      "path": "actors/leandro-pereira.json",
+      "sha256": "a349ea1146e34258fc9854f7438cd90be28326e7910f19b102fd0edfc17e99ca"
+    },
+    {
+      "bytes": 394,
+      "media_type": "text/markdown",
+      "path": "actors/leandro-pereira.md",
+      "sha256": "b9e28cc4a0536fb796a5a18939a4054d3c8b87d235fc704c5f8b7a8c218f5ba1"
+    },
+    {
+      "bytes": 951,
+      "media_type": "application/json",
+      "path": "actors/property404.json",
+      "sha256": "d647042c374b906eeb92de2deae3013a6b0f7cab8e08db11d502bd9600f8afce"
+    },
+    {
+      "bytes": 390,
+      "media_type": "text/markdown",
+      "path": "actors/property404.md",
+      "sha256": "b9a014300ee56b7ae432dcfec00360762b49a8f206077976ba146e57ceb5898a"
+    },
+    {
+      "bytes": 950,
+      "media_type": "application/json",
+      "path": "actors/unknowntpo.json",
+      "sha256": "c7ef46d4a23ad9cf858e7b04277056ad486428fc3f4103bad4689796d756d8ff"
+    },
+    {
+      "bytes": 389,
+      "media_type": "text/markdown",
+      "path": "actors/unknowntpo.md",
+      "sha256": "39b5798d88d882b7704a19ca19db937191103a455da9291caa25306ead249d6b"
+    },
+    {
+      "bytes": 951,
+      "media_type": "application/json",
+      "path": "actors/vuong-hoang.json",
+      "sha256": "c4b3ae341aab9645da5285ec0e86357bc6b798a1a92ff761053691cb5979aeb5"
+    },
+    {
+      "bytes": 390,
+      "media_type": "text/markdown",
+      "path": "actors/vuong-hoang.md",
+      "sha256": "1f6ed38cffc93c8a86e9b019f919a11288280dd1c6f2fe44427caecf9010aa45"
+    },
+    {
+      "bytes": 7350,
+      "media_type": "application/json",
+      "path": "repo-report.json",
+      "sha256": "c54e3ad68b80736586ba14b8ccbc2e89570e57e142f7a6f42035aa20d880c146"
+    },
+    {
+      "bytes": 1068,
+      "media_type": "text/markdown",
+      "path": "repo-report.md",
+      "sha256": "e3378bfc4f8ce4d43a399275884f1614acc34998386988796ffd6459a8e288a4"
+    }
+  ],
+  "partition_digest": {
+    "algorithm": "sha256",
+    "value": "51ad206179df0b650ad72563fb1eb57e027fab302aee143d84523ce4d151fc74"
+  },
+  "population_digest": {
+    "algorithm": "sha256",
+    "value": "398bd9ef4d4d84768b08d6aff026766c7b1ae7920d9988e37219e72e00cc661a"
+  },
+  "schema_version": "actor-artifact-manifest-v1",
+  "selection": {
+    "actor_count": 7,
+    "actor_ids": [
+      "antirez",
+      "christopher-wellons",
+      "dayu",
+      "leandro-pereira",
+      "property404",
+      "unknowntpo",
+      "vuong-hoang"
+    ],
+    "digest": {
+      "algorithm": "sha256",
+      "value": "53504707c0b35de0aa6905e7f42f39d0297ab4b501a6f971a22b60474fe00997"
+    },
+    "links": [
+      {
+        "actor_id": "antirez",
+        "json": "actors/antirez.json",
+        "markdown": "actors/antirez.md"
+      },
+      {
+        "actor_id": "christopher-wellons",
+        "json": "actors/christopher-wellons.json",
+        "markdown": "actors/christopher-wellons.md"
+      },
+      {
+        "actor_id": "dayu",
+        "json": "actors/dayu.json",
+        "markdown": "actors/dayu.md"
+      },
+      {
+        "actor_id": "leandro-pereira",
+        "json": "actors/leandro-pereira.json",
+        "markdown": "actors/leandro-pereira.md"
+      },
+      {
+        "actor_id": "property404",
+        "json": "actors/property404.json",
+        "markdown": "actors/property404.md"
+      },
+      {
+        "actor_id": "unknowntpo",
+        "json": "actors/unknowntpo.json",
+        "markdown": "actors/unknowntpo.md"
+      },
+      {
+        "actor_id": "vuong-hoang",
+        "json": "actors/vuong-hoang.json",
+        "markdown": "actors/vuong-hoang.md"
+      }
+    ],
+    "mode": "all"
+  },
+  "target": {
+    "oid": {
+      "algorithm": "sha1",
+      "value": "323d93b29bd89a2cb446de90c4ed4fea1764176e"
+    }
+  }
+}

@@ -1,0 +1,490 @@
+{
+  "answers_source": "docs/pilot/ANSWERS-20260822.csv",
+  "blocked_count": 14,
+  "inference_policy": "only exactly asked legacy fields are carried forward; free text is not role-mapped",
+  "ready_count": 0,
+  "repos": [
+    {
+      "answers": {
+        "ai_primary_method": "主たる実装手段",
+        "ai_trailer_memory": "NOT_ANSWERED",
+        "authority": "NOT_ANSWERED",
+        "handoff": "一部モジュール",
+        "identity_consent": "NOT_ANSWERED",
+        "identity_subject": "NOT_ANSWERED",
+        "role.domain": "NOT_ANSWERED",
+        "role.process_position": "NOT_ANSWERED",
+        "role.time": "NOT_ANSWERED",
+        "role.work_type": "NOT_ANSWERED",
+        "startup": "一から"
+      },
+      "directory": "BenevolentDirector",
+      "legacy_context_not_mapped_to_role_cells": {
+        "current_state": "集中開発",
+        "role_free_text": "複数人→現ほぼソロ（kisayama0725参画歴）"
+      },
+      "legacy_response_present": true,
+      "missing_required_questions": [
+        "authority",
+        "identity_consent",
+        "identity_subject",
+        "role.domain",
+        "role.work_type",
+        "role.time",
+        "role.process_position",
+        "ai_trailer_memory"
+      ],
+      "repo_id": "BenevolentDirector",
+      "status": "NOT_ANSWERED"
+    },
+    {
+      "answers": {
+        "ai_primary_method": "主たる実装手段",
+        "ai_trailer_memory": "NOT_ANSWERED",
+        "authority": "NOT_ANSWERED",
+        "handoff": "過半が他人",
+        "identity_consent": "NOT_ANSWERED",
+        "identity_subject": "NOT_ANSWERED",
+        "role.domain": "NOT_ANSWERED",
+        "role.process_position": "NOT_ANSWERED",
+        "role.time": "NOT_ANSWERED",
+        "role.work_type": "NOT_ANSWERED",
+        "startup": "テンプレ"
+      },
+      "directory": "corsweb",
+      "legacy_context_not_mapped_to_role_cells": {
+        "current_state": "保守",
+        "role_free_text": "複数人（Astro基盤、kisayama0725 / nagi0705）"
+      },
+      "legacy_response_present": true,
+      "missing_required_questions": [
+        "authority",
+        "identity_consent",
+        "identity_subject",
+        "role.domain",
+        "role.work_type",
+        "role.time",
+        "role.process_position",
+        "ai_trailer_memory"
+      ],
+      "repo_id": "corsweb",
+      "status": "NOT_ANSWERED"
+    },
+    {
+      "answers": {
+        "ai_primary_method": "主たる実装手段",
+        "ai_trailer_memory": "NOT_ANSWERED",
+        "authority": "NOT_ANSWERED",
+        "handoff": "過半が他人",
+        "identity_consent": "NOT_ANSWERED",
+        "identity_subject": "NOT_ANSWERED",
+        "role.domain": "NOT_ANSWERED",
+        "role.process_position": "NOT_ANSWERED",
+        "role.time": "NOT_ANSWERED",
+        "role.work_type": "NOT_ANSWERED",
+        "startup": "分からない"
+      },
+      "directory": "bd-sandbox-runner",
+      "legacy_context_not_mapped_to_role_cells": {
+        "current_state": "休眠",
+        "role_free_text": "指示のみ自分、AIがドキュメント生成"
+      },
+      "legacy_response_present": true,
+      "missing_required_questions": [
+        "authority",
+        "identity_consent",
+        "identity_subject",
+        "role.domain",
+        "role.work_type",
+        "role.time",
+        "role.process_position",
+        "ai_trailer_memory"
+      ],
+      "repo_id": "bd-sandbox-runner",
+      "status": "NOT_ANSWERED"
+    },
+    {
+      "answers": {
+        "ai_primary_method": "主たる実装手段",
+        "ai_trailer_memory": "NOT_ANSWERED",
+        "authority": "NOT_ANSWERED",
+        "handoff": "一部モジュール",
+        "identity_consent": "NOT_ANSWERED",
+        "identity_subject": "NOT_ANSWERED",
+        "role.domain": "NOT_ANSWERED",
+        "role.process_position": "NOT_ANSWERED",
+        "role.time": "NOT_ANSWERED",
+        "role.work_type": "NOT_ANSWERED",
+        "startup": "一から"
+      },
+      "directory": "claude-code-skills",
+      "legacy_context_not_mapped_to_role_cells": {
+        "current_state": "保守",
+        "role_free_text": "実質 solo（ワークフロー拝借・追加）"
+      },
+      "legacy_response_present": true,
+      "missing_required_questions": [
+        "authority",
+        "identity_consent",
+        "identity_subject",
+        "role.domain",
+        "role.work_type",
+        "role.time",
+        "role.process_position",
+        "ai_trailer_memory"
+      ],
+      "repo_id": "claude-code-skills",
+      "status": "NOT_ANSWERED"
+    },
+    {
+      "answers": {
+        "ai_primary_method": "主たる実装手段",
+        "ai_trailer_memory": "NOT_ANSWERED",
+        "authority": "NOT_ANSWERED",
+        "handoff": "コードなし",
+        "identity_consent": "NOT_ANSWERED",
+        "identity_subject": "NOT_ANSWERED",
+        "role.domain": "NOT_ANSWERED",
+        "role.process_position": "NOT_ANSWERED",
+        "role.time": "NOT_ANSWERED",
+        "role.work_type": "NOT_ANSWERED",
+        "startup": "一から"
+      },
+      "directory": "cor-repository-boundary-records",
+      "legacy_context_not_mapped_to_role_cells": {
+        "current_state": "休眠",
+        "role_free_text": "実質 solo（ほぼドキュメント）"
+      },
+      "legacy_response_present": true,
+      "missing_required_questions": [
+        "authority",
+        "identity_consent",
+        "identity_subject",
+        "role.domain",
+        "role.work_type",
+        "role.time",
+        "role.process_position",
+        "ai_trailer_memory"
+      ],
+      "repo_id": "cor-repository-boundary-records",
+      "status": "NOT_ANSWERED"
+    },
+    {
+      "answers": {
+        "ai_primary_method": "主たる実装手段",
+        "ai_trailer_memory": "NOT_ANSWERED",
+        "authority": "NOT_ANSWERED",
+        "handoff": "ほぼ自分",
+        "identity_consent": "NOT_ANSWERED",
+        "identity_subject": "NOT_ANSWERED",
+        "role.domain": "NOT_ANSWERED",
+        "role.process_position": "NOT_ANSWERED",
+        "role.time": "NOT_ANSWERED",
+        "role.work_type": "NOT_ANSWERED",
+        "startup": "一から"
+      },
+      "directory": "deck-forge",
+      "legacy_context_not_mapped_to_role_cells": {
+        "current_state": "集中開発",
+        "role_free_text": "実質 solo"
+      },
+      "legacy_response_present": true,
+      "missing_required_questions": [
+        "authority",
+        "identity_consent",
+        "identity_subject",
+        "role.domain",
+        "role.work_type",
+        "role.time",
+        "role.process_position",
+        "ai_trailer_memory"
+      ],
+      "repo_id": "deck-forge",
+      "status": "NOT_ANSWERED"
+    },
+    {
+      "answers": {
+        "ai_primary_method": "主たる実装手段",
+        "ai_trailer_memory": "NOT_ANSWERED",
+        "authority": "NOT_ANSWERED",
+        "handoff": "ほぼ自分",
+        "identity_consent": "NOT_ANSWERED",
+        "identity_subject": "NOT_ANSWERED",
+        "role.domain": "NOT_ANSWERED",
+        "role.process_position": "NOT_ANSWERED",
+        "role.time": "NOT_ANSWERED",
+        "role.work_type": "NOT_ANSWERED",
+        "startup": "テンプレ"
+      },
+      "directory": "grift-cli",
+      "legacy_context_not_mapped_to_role_cells": {
+        "current_state": "集中開発",
+        "role_free_text": "実質 solo（別プロダクトGrift技術借用）"
+      },
+      "legacy_response_present": true,
+      "missing_required_questions": [
+        "authority",
+        "identity_consent",
+        "identity_subject",
+        "role.domain",
+        "role.work_type",
+        "role.time",
+        "role.process_position",
+        "ai_trailer_memory"
+      ],
+      "repo_id": "grift-cli",
+      "status": "NOT_ANSWERED"
+    },
+    {
+      "answers": {
+        "ai_primary_method": "主たる実装手段",
+        "ai_trailer_memory": "NOT_ANSWERED",
+        "authority": "NOT_ANSWERED",
+        "handoff": "ほぼ自分",
+        "identity_consent": "NOT_ANSWERED",
+        "identity_subject": "NOT_ANSWERED",
+        "role.domain": "NOT_ANSWERED",
+        "role.process_position": "NOT_ANSWERED",
+        "role.time": "NOT_ANSWERED",
+        "role.work_type": "NOT_ANSWERED",
+        "startup": "一から"
+      },
+      "directory": "persona-village-v2",
+      "legacy_context_not_mapped_to_role_cells": {
+        "current_state": "保守",
+        "role_free_text": "実質 solo"
+      },
+      "legacy_response_present": true,
+      "missing_required_questions": [
+        "authority",
+        "identity_consent",
+        "identity_subject",
+        "role.domain",
+        "role.work_type",
+        "role.time",
+        "role.process_position",
+        "ai_trailer_memory"
+      ],
+      "repo_id": "persona-village-v2",
+      "status": "NOT_ANSWERED"
+    },
+    {
+      "answers": {
+        "ai_primary_method": "主たる実装手段",
+        "ai_trailer_memory": "NOT_ANSWERED",
+        "authority": "NOT_ANSWERED",
+        "handoff": "過半が他人",
+        "identity_consent": "NOT_ANSWERED",
+        "identity_subject": "NOT_ANSWERED",
+        "role.domain": "NOT_ANSWERED",
+        "role.process_position": "NOT_ANSWERED",
+        "role.time": "NOT_ANSWERED",
+        "role.work_type": "NOT_ANSWERED",
+        "startup": "一から"
+      },
+      "directory": "phone-training-system",
+      "legacy_context_not_mapped_to_role_cells": {
+        "current_state": "集中開発",
+        "role_free_text": "設計担当（実装: kisayama0725）"
+      },
+      "legacy_response_present": true,
+      "missing_required_questions": [
+        "authority",
+        "identity_consent",
+        "identity_subject",
+        "role.domain",
+        "role.work_type",
+        "role.time",
+        "role.process_position",
+        "ai_trailer_memory"
+      ],
+      "repo_id": "phone-training-system",
+      "status": "NOT_ANSWERED"
+    },
+    {
+      "answers": {
+        "ai_primary_method": "主たる実装手段",
+        "ai_trailer_memory": "NOT_ANSWERED",
+        "authority": "NOT_ANSWERED",
+        "handoff": "ほぼ自分",
+        "identity_consent": "NOT_ANSWERED",
+        "identity_subject": "NOT_ANSWERED",
+        "role.domain": "NOT_ANSWERED",
+        "role.process_position": "NOT_ANSWERED",
+        "role.time": "NOT_ANSWERED",
+        "role.work_type": "NOT_ANSWERED",
+        "startup": "一から"
+      },
+      "directory": "ramen-perfectimer",
+      "legacy_context_not_mapped_to_role_cells": {
+        "current_state": "休眠",
+        "role_free_text": "実質 solo"
+      },
+      "legacy_response_present": true,
+      "missing_required_questions": [
+        "authority",
+        "identity_consent",
+        "identity_subject",
+        "role.domain",
+        "role.work_type",
+        "role.time",
+        "role.process_position",
+        "ai_trailer_memory"
+      ],
+      "repo_id": "ramen-perfectimer",
+      "status": "NOT_ANSWERED"
+    },
+    {
+      "answers": {
+        "ai_primary_method": "主たる実装手段",
+        "ai_trailer_memory": "NOT_ANSWERED",
+        "authority": "NOT_ANSWERED",
+        "handoff": "一部モジュール",
+        "identity_consent": "NOT_ANSWERED",
+        "identity_subject": "NOT_ANSWERED",
+        "role.domain": "NOT_ANSWERED",
+        "role.process_position": "NOT_ANSWERED",
+        "role.time": "NOT_ANSWERED",
+        "role.work_type": "NOT_ANSWERED",
+        "startup": "テンプレ"
+      },
+      "directory": "speech-assistant-openai-realtime-api-node",
+      "legacy_context_not_mapped_to_role_cells": {
+        "current_state": "休眠",
+        "role_free_text": "ベース他人、自身で最新化"
+      },
+      "legacy_response_present": true,
+      "missing_required_questions": [
+        "authority",
+        "identity_consent",
+        "identity_subject",
+        "role.domain",
+        "role.work_type",
+        "role.time",
+        "role.process_position",
+        "ai_trailer_memory"
+      ],
+      "repo_id": "speech-assistant-openai-realtime-api-node",
+      "status": "NOT_ANSWERED"
+    },
+    {
+      "answers": {
+        "ai_primary_method": "主たる実装手段",
+        "ai_trailer_memory": "NOT_ANSWERED",
+        "authority": "NOT_ANSWERED",
+        "handoff": "一部モジュール",
+        "identity_consent": "NOT_ANSWERED",
+        "identity_subject": "NOT_ANSWERED",
+        "role.domain": "NOT_ANSWERED",
+        "role.process_position": "NOT_ANSWERED",
+        "role.time": "NOT_ANSWERED",
+        "role.work_type": "NOT_ANSWERED",
+        "startup": "一から"
+      },
+      "directory": "TapForge",
+      "legacy_context_not_mapped_to_role_cells": {
+        "current_state": "保守",
+        "role_free_text": "実質 solo（Canvas.js等）"
+      },
+      "legacy_response_present": true,
+      "missing_required_questions": [
+        "authority",
+        "identity_consent",
+        "identity_subject",
+        "role.domain",
+        "role.work_type",
+        "role.time",
+        "role.process_position",
+        "ai_trailer_memory"
+      ],
+      "repo_id": "TapForge",
+      "status": "NOT_ANSWERED"
+    },
+    {
+      "answers": {
+        "ai_primary_method": "補助",
+        "ai_trailer_memory": "NOT_ANSWERED",
+        "authority": "NOT_ANSWERED",
+        "handoff": "一部モジュール",
+        "identity_consent": "NOT_ANSWERED",
+        "identity_subject": "NOT_ANSWERED",
+        "role.domain": "NOT_ANSWERED",
+        "role.process_position": "NOT_ANSWERED",
+        "role.time": "NOT_ANSWERED",
+        "role.work_type": "NOT_ANSWERED",
+        "startup": "テンプレ"
+      },
+      "directory": "voicevox-intonation-dict",
+      "legacy_context_not_mapped_to_role_cells": {
+        "current_state": "休眠",
+        "role_free_text": "実質 solo（イントネーション部実装）"
+      },
+      "legacy_response_present": true,
+      "missing_required_questions": [
+        "authority",
+        "identity_consent",
+        "identity_subject",
+        "role.domain",
+        "role.work_type",
+        "role.time",
+        "role.process_position",
+        "ai_trailer_memory"
+      ],
+      "repo_id": "voicevox-intonation-dict",
+      "status": "NOT_ANSWERED"
+    },
+    {
+      "answers": {
+        "ai_primary_method": "主たる実装手段",
+        "ai_trailer_memory": "NOT_ANSWERED",
+        "authority": "NOT_ANSWERED",
+        "handoff": "ほぼ自分",
+        "identity_consent": "NOT_ANSWERED",
+        "identity_subject": "NOT_ANSWERED",
+        "role.domain": "NOT_ANSWERED",
+        "role.process_position": "NOT_ANSWERED",
+        "role.time": "NOT_ANSWERED",
+        "role.work_type": "NOT_ANSWERED",
+        "startup": "一から"
+      },
+      "directory": "視力を良くするアプリ",
+      "legacy_context_not_mapped_to_role_cells": {
+        "current_state": "休眠",
+        "role_free_text": "実質 solo"
+      },
+      "legacy_response_present": true,
+      "missing_required_questions": [
+        "authority",
+        "identity_consent",
+        "identity_subject",
+        "role.domain",
+        "role.work_type",
+        "role.time",
+        "role.process_position",
+        "ai_trailer_memory"
+      ],
+      "repo_id": "視力を良くするアプリ",
+      "status": "NOT_ANSWERED"
+    }
+  ],
+  "required_question_keys": [
+    "authority",
+    "identity_consent",
+    "identity_subject",
+    "startup",
+    "handoff",
+    "role.domain",
+    "role.work_type",
+    "role.time",
+    "role.process_position",
+    "ai_primary_method",
+    "ai_trailer_memory"
+  ],
+  "schema_version": "tep-v060-blind-pilot-answer-audit-v1",
+  "selection": {
+    "candidate_count": 14,
+    "kind": "preregistered_draw",
+    "sha256": "aa2cdbbcb93b3cbda08ed1d0a3e18575abe1ca218619e2fba343bc021d5c1776",
+    "source": "docs/pilot/DRAW-20260822.json"
+  }
+}

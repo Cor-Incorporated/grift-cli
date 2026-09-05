@@ -52,7 +52,7 @@ def test_49_consent_writes_default_and_prints_steps(tmp_path, capsys, monkeypatc
     path = tmp_path / "report.json"
     path.write_text(json.dumps(report), encoding="utf-8")
     monkeypatch.chdir(tmp_path)
-    code = main(["contribute", "--yes"])
+    code = main(["contribute", "--yes", "--door", "public-pr"])
     assert code == 0
     target = tmp_path / ".grift" / "contribution.json"
     assert target.is_file(), "consented contribute must write a payload by default"
@@ -64,7 +64,7 @@ def test_49_consent_writes_default_and_prints_steps(tmp_path, capsys, monkeypatc
     assert re.search(r'"id":"\d{4}-\d{4}-[0-9a-f]{8}"', err), "manifest line with submission id"
     assert '"door":"pr"' in err
     assert "tep-contributions" in err
-    assert "非公開ドア" in err
+    assert "代理PR経路" in err and "payload自体は最終的に公開" in err
     assert "nothing was sent" in err
 
 
@@ -74,7 +74,7 @@ def test_49_manifest_line_matches_written_payload(tmp_path, capsys, monkeypatch)
     report = _repo_report(tmp_path)
     (tmp_path / "report.json").write_text(json.dumps(report), encoding="utf-8")
     monkeypatch.chdir(tmp_path)
-    main(["contribute", "--yes"])
+    main(["contribute", "--yes", "--door", "public-pr"])
     raw = (tmp_path / ".grift" / "contribution.json").read_text(encoding="utf-8")
     digest = hashlib.sha256(raw.encode("utf-8")).hexdigest()
     err = capsys.readouterr().err
@@ -117,17 +117,17 @@ def test_51_update_check_reports_installed(capsys):
     assert "installed:" in out
 
 
-def test_51_update_notice_is_tty_only_and_optout(capsys, monkeypatch):
-    """Non-TTY (tests/CI) must stay silent; env opt-out works."""
-    import tep_cli.__main__ as m
+def test_51_measurement_commands_have_no_implicit_update_check(monkeypatch, tmp_path, capsys):
+    """v0.6: measurement stays offline; only ``update --check`` may query PyPI."""
+    repo = init_repo(tmp_path / "repo")
+    commit(repo, email="a@example.com", date="2026-01-05", message="feat: seed")
 
-    monkeypatch.setattr("sys.stdout.isatty", lambda: False)
-    m._maybe_update_notice()
-    assert capsys.readouterr().err == ""
+    def refuse_network(*_args, **_kwargs):
+        raise AssertionError("measurement command attempted network access")
 
-    monkeypatch.setenv("GRIFT_NO_UPDATE_NOTICE", "1")
-    m._maybe_update_notice()
-    assert capsys.readouterr().err == ""
+    monkeypatch.setattr("urllib.request.urlopen", refuse_network)
+    assert main(["analyze", str(repo), "--scope", "repo", "--format", "json"]) == 0
+    assert '"schema_version": "report-v1"' in capsys.readouterr().out
 
 
 def test_report_md_carries_meaning_one_liners(tmp_path, capsys):
@@ -143,7 +143,9 @@ def test_report_md_carries_meaning_one_liners(tmp_path, capsys):
     assert "unique days with human commits in the last 180 days" in markdown
     assert "commits by identity-matched people" in markdown
     # reader's guide is bilingual
-    assert "## この数値でしてはいけない判断 / Decisions these numbers must NOT be used for" in markdown
+    assert (
+        "## この数値でしてはいけない判断 / Decisions these numbers must NOT be used for" in markdown
+    )
     assert "not grades" in markdown and "non-compliant with the TEP norms" in markdown
     # no leftover section-level explanation blocks
     assert "（何を測るか / What this measures" not in markdown

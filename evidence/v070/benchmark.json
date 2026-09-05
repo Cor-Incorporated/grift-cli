@@ -1,0 +1,197 @@
+{
+  "corpus_dependent": [
+    {
+      "claim": "role_profile tracks the person more than the project: same-person distances are lower than different-person distances -- measured on role-profile-v1, before the v0.7.0 consent gate.",
+      "corpus": "352 actor-repository pairs over 41 public repositories; see PREREGISTRATION-2.md for the selection rule fixed before results.",
+      "id": "validity-person-signal",
+      "measured": {
+        "actors": 300,
+        "cliffs_delta": -0.7871,
+        "definition_version_at_measurement": "role-profile-v1",
+        "different_person_median": 0.1565,
+        "external_maintainers_only_delta": -0.8096,
+        "leave_one_actor_out_min_abs_delta": 0.769,
+        "pairs": 352,
+        "repositories": 41,
+        "same_person_median": 0.0537
+      },
+      "reproducibility": "not_reproducible_on_this_version",
+      "why_not_reproducible": "v0.7.0 emits role_profile only for actors with a recorded explicit consent (identity-v2 `consent` + `authority`). The study corpus is public OSS contributors with no such record; re-measuring would require asserting consent on their behalf, which the project refuses to do."
+    },
+    {
+      "claim": "Matching credential-shaped values instead of credential vocabulary stopped the guard refusing repositories whose ordinary public identifiers merely contained words like `secret`.",
+      "corpus": "181 locally available repositories, 2026-09-02.",
+      "id": "secrets-guard-false-rejection",
+      "measured": {
+        "after": "0/181 with credential-shaped patterns",
+        "before": "18/181 repositories refused by bare-word match"
+      },
+      "reproducibility": "requires_corpus"
+    },
+    {
+      "claim": "Measurements do not depend on the hosting provider.",
+      "corpus": "One repository re-pointed at five remote configurations.",
+      "id": "provider-independence",
+      "measured": {
+        "configurations": [
+          "no remote",
+          "GitLab",
+          "self-hosted",
+          "Bitbucket SSH",
+          "Gitea"
+        ],
+        "identical_reports": true
+      },
+      "reproducibility": "requires_corpus"
+    },
+    {
+      "claim": "Against a blind LLM given the same repositories, grift wins determinism and third-party verifiability and loses accuracy and calibration. SUPERIOR is not claimed.",
+      "corpus": "12 full-clone repositories from 1 to 13,149 non-merge commits; see PREREGISTRATION-3.md, fixed before results.",
+      "id": "ai-comparison-gate",
+      "measured": {
+        "g1_accuracy": {
+          "grift": 0.75,
+          "llm": 1.0,
+          "note": "only the LLM was given the definitions"
+        },
+        "g2_determinism": {
+          "grift": 1.0,
+          "llm": 0.938
+        },
+        "g3_calibration_fabrications": {
+          "grift_at_gate_time": 9,
+          "llm": 0
+        },
+        "g4_verifiability": {
+          "grift_tamper_detected": "2/2",
+          "llm": "no binding"
+        },
+        "verdict": "PARITY"
+      },
+      "reproducibility": "requires_corpus"
+    }
+  ],
+  "how_to_reproduce": "python scripts/v070_benchmark.py",
+  "limitations": [
+    "Self-contained claims are re-measured on every run from this repository's own history at the pinned revision. They are properties of the tool, not statements about anyone's work.",
+    "Corpus claims were measured once against repositories that do not ship with this package. They are recorded verbatim and cannot be re-run here.",
+    "The offline claim is about the Python process layer only: the probe is an audit hook, which sees nothing a subprocess does. Git subprocess egress is not measured here; that proof is the upstream intake_contract_parity egress proof, not this artifact.",
+    "report_sha256 is taken over the report with wall-clock fields and the checkout's directory name removed, so the value is a property of the pinned revision rather than of the directory it was measured in.",
+    "The pinned subject is a tag-free fetch of the pinned commit. Tags are not part of a revision and differ between clones, and tag-derived fields (scale.tags, release_cadence, tagset_digest) would otherwise change report_sha256 from one machine to the next.",
+    "No claim here is a benchmark of a person, a team, or a project."
+  ],
+  "pinned_revision": "fa9bc317cc0ac1953ed09cbab11d3de2232c2fb0",
+  "schema_version": "tep-benchmark-v070",
+  "self_contained": [
+    {
+      "claim": "Two runs over one fixed revision produce an identical report (SHA-256 over the whole document, excluding wall-clock fields and the checkout's directory name).",
+      "elapsed_seconds": 1.15,
+      "holds": true,
+      "id": "determinism",
+      "measured": {
+        "identical": true,
+        "report_sha256": "35b330ccd74252212bcc2838cff9560620cb0d36422d2eafacae3e0e1916f735",
+        "runs": 2
+      },
+      "reproducibility": "self_contained"
+    },
+    {
+      "claim": "`grift verify` exits non-zero on a modified report and names the reported and recomputed values.",
+      "elapsed_seconds": 1.24,
+      "holds": true,
+      "id": "tamper-detection",
+      "measured": {
+        "clean_exit_code": 0,
+        "diagnostic": "  - context_profile.repo_age_days.value: report=4251 recomputed=9",
+        "diagnostic_names_reported_and_recomputed": true,
+        "tampered_exit_code": 1
+      },
+      "reproducibility": "self_contained"
+    },
+    {
+      "claim": "On a shallow clone, repository-wide fields degrade to not_observed while HEAD-anchored facts survive.",
+      "elapsed_seconds": 0.47,
+      "holds": true,
+      "id": "truncated-history",
+      "measured": {
+        "degraded_to_not_observed": 8,
+        "depth_dependent_fields": 8,
+        "fields": {
+          "activity.repo_active_days": "not_observed",
+          "activity.repo_human_nonmerge_commits": "not_observed",
+          "context_profile.actor_turnover": "not_observed",
+          "context_profile.lifecycle_stage": "not_observed",
+          "context_profile.repo_age_days": "not_observed",
+          "context_profile.resolved_human_actors": "not_observed",
+          "context_profile.scale.first_commit": "not_observed",
+          "context_profile.scale.human_commits": "not_observed"
+        },
+        "head_anchored_still_observed": 2,
+        "shallow": true
+      },
+      "reproducibility": "self_contained"
+    },
+    {
+      "claim": "No emitted key or unit is a score, rank, fit, hire, percentile, or recommendation.",
+      "elapsed_seconds": 0.45,
+      "holds": true,
+      "id": "no-verdict-vocabulary",
+      "measured": {
+        "forbidden_vocabulary": [
+          "fit",
+          "hire",
+          "percentile",
+          "rank",
+          "recommendation",
+          "score"
+        ],
+        "occurrences": []
+      },
+      "reproducibility": "self_contained"
+    },
+    {
+      "claim": "The default analysis path opens no socket from the Python process; git subprocesses run with GIT_NO_LAZY_FETCH=1 and their network behaviour is not measured here.",
+      "elapsed_seconds": 0.47,
+      "holds": true,
+      "id": "offline",
+      "measured": {
+        "exit_code": 0,
+        "git_subprocess_network": "not_measured",
+        "network_attempted": false,
+        "scope": "python_process_only",
+        "watched_audit_events": [
+          "socket.connect",
+          "socket.getaddrinfo",
+          "socket.gethostbyname",
+          "urllib.Request"
+        ]
+      },
+      "reproducibility": "self_contained"
+    },
+    {
+      "claim": "Run through the CLI over a repository written by three distinct people, `grift align --team` reports coverage counts at the minimum team size and refuses below it instead of emitting a count that identifies an individual.",
+      "elapsed_seconds": 8.71,
+      "holds": true,
+      "id": "team-minimum",
+      "measured": {
+        "at_minimum_exit_code": 0,
+        "at_minimum_kind": "observed",
+        "at_minimum_requirement_states": [
+          "covered"
+        ],
+        "at_minimum_requirements_measured": true,
+        "at_minimum_team_size": 3,
+        "below_minimum_exit_code": 0,
+        "below_minimum_kind": "not_observed",
+        "below_minimum_reason": "insufficient_team_size",
+        "below_minimum_team_size": 2,
+        "distinct_actor_ids_in_reports": 3,
+        "distinct_actors": 3,
+        "minimum_team_size": 3,
+        "path": "cli_subprocess"
+      },
+      "reproducibility": "self_contained"
+    }
+  ],
+  "tool_version": "0.7.0"
+}

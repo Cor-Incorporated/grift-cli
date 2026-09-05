@@ -1,0 +1,211 @@
+{
+  "actor_index_digest": {
+    "algorithm": "sha256",
+    "value": "65bb51a8ac9aa3b8ad63fe9c26d78179772ddc72faa00aa21e7f0ee1923df1dd"
+  },
+  "attribution": {
+    "actor_partition": {
+      "definition": "repo_local_git_primary_author_cluster",
+      "object_format": "sha1",
+      "partition_digest": "6387bbe252a91f89e2e1b1bc73f9563820f4e32ba0bddbce7a202903217cd093",
+      "provider_enrichment_changes_partition": false,
+      "repo_scope_digest": "ae514736e79138eb750ab860498f5c72d3d210eddfa43404cab08950c75ef561",
+      "sha_to_actor_digest": "b2fe78105e3bd1e962dcfd3c7e3c3f80419061601037ba8cf488cbbe9c0679a8"
+    },
+    "attributed_commit_count": 1899,
+    "attribution_coverage": {
+      "kind": "observed",
+      "sample_size": 1899,
+      "unit": "ratio",
+      "value": 1.0
+    },
+    "attribution_human_including_merges": 1899,
+    "attribution_unresolved_commit_count": 0,
+    "bot_count": 0,
+    "coauthored_count": 526,
+    "human_commit_count": 1810,
+    "mailmap_present": false,
+    "merge_count": 89,
+    "observed_actor_count": 118,
+    "population_identity": "repo_human_nonmerge_commits + merge_count = attribution_human_including_merges + attribution_unresolved_commit_count",
+    "public_join": {
+      "account_conflict_count": 0,
+      "ambiguous": 0,
+      "commit_login_count": 0,
+      "count_note": "fetched_login_count is a legacy unbound account-list count and is not a commit-author join; production CAS collection leaves it null; commit_login_count = distinct stable accounts proven by CAS commit OID evidence",
+      "fetched_login_count": null,
+      "matched": 0,
+      "public_handle_actors": 0,
+      "unmatched": 0
+    },
+    "repo_human_nonmerge_commits": 1810,
+    "unresolved_commit_count": 0,
+    "unresolved_definitions": {
+      "attribution_unresolved": "no stable actor key after bot exclusion",
+      "origin_unresolved": "origin class unresolved (undecidable email)"
+    }
+  },
+  "input_coverage": {
+    "event_window": {
+      "kind": "not_observed",
+      "reason": "bound_export_not_provided"
+    },
+    "forge": {
+      "kind": "not_observed",
+      "provided": false,
+      "reason": "forge_export_not_provided"
+    },
+    "git": {
+      "kind": "observed",
+      "provided": true,
+      "unit": "boolean",
+      "value": true
+    },
+    "git_window": {
+      "days": 180,
+      "end": "2026-08-22",
+      "start": "2026-02-23",
+      "unit": "days"
+    },
+    "public_forge": {
+      "kind": "not_observed",
+      "provider_api_terms": {
+        "kind": "not_observed",
+        "reason": "provider_api_terms_not_recorded"
+      },
+      "reason": "public_evidence_not_provided",
+      "repository_license": {
+        "definition_version": "revision-license-v1",
+        "digest": {
+          "algorithm": "sha256",
+          "value": "52db8900cd6fed444344b1c91a8a6c6674d239b90638ff8b70dd6598d2110cdf"
+        },
+        "files": [
+          {
+            "blob_oid": {
+              "algorithm": "sha1",
+              "value": "66148ef648aa2374982179d24d51c77add72082c"
+            },
+            "bytes": 344,
+            "path": "LICENSE",
+            "sha256": "6ec5d5928a194e6a8cf8466add9ad778faf0216a5d11d7a3449ee9dec759e007"
+          }
+        ],
+        "status": "observed",
+        "target_oid": {
+          "algorithm": "sha1",
+          "value": "c72a94cbcf501be054a239446c7eb8cf53be34b4"
+        },
+        "terms_status": "separate_from_license_evidence"
+      }
+    },
+    "tracker": {
+      "kind": "not_observed",
+      "provided": false,
+      "reason": "tracker_export_not_provided"
+    },
+    "tracker_window": {
+      "kind": "not_observed",
+      "reason": "tracker_export_not_provided"
+    },
+    "window_alignment": {
+      "kind": "not_observed",
+      "reason": "event_window_not_provided"
+    }
+  },
+  "limitations": [
+    "この数値は、過去の Git / ローカル export に残った変更の形を示します。人の優劣、職種の確定、採用の合否、将来の成果を示すものではありません。",
+    "これは変更提出の時系列であり、実際の労働時間、勤怠、能力、納期遵守を測るものではありません。",
+    "forge export が提供されていないため、review は観測できません。Git の merge commit 比率を pull request review とは呼びません。",
+    "tracker export が提供されていないため、issue triage / milestone coordination は観測できません。これは活動が無かったことを意味しません。",
+    "Actor IDs are repo-local Git primary-author clusters, not verified people.",
+    "Provider enrichment is display evidence and cannot change the actor partition."
+  ],
+  "metrics": {
+    "human_nonmerge_commit_share": {
+      "definition_version": "tep-v0.7.0-2026-09-03",
+      "denominator": 1899,
+      "kind": "observed",
+      "limitations": [
+        "This is a population accounting ratio, not a quality or productivity score."
+      ],
+      "numerator": 1810,
+      "unit": "commit_share",
+      "value": 0.9531,
+      "window": {
+        "basis": "legacy_head_date",
+        "end": "2026-08-22",
+        "start": "2026-02-23",
+        "unit": "date-range"
+      }
+    }
+  },
+  "notices": [
+    "この数値は、過去の Git / ローカル export に残った変更の形を示します。人の優劣、職種の確定、採用の合否、将来の成果を示すものではありません。",
+    "Evidence, not a score, rank, hiring decision, or personhood claim."
+  ],
+  "population": {
+    "actor_count": 118,
+    "basis": "git_primary_author_cluster",
+    "human_commit_count": 1899,
+    "merge_commit_count": 89,
+    "nonmerge_commit_count": 1810,
+    "partition_digest": {
+      "algorithm": "sha256",
+      "value": "6387bbe252a91f89e2e1b1bc73f9563820f4e32ba0bddbce7a202903217cd093"
+    },
+    "population_digest": {
+      "algorithm": "sha256",
+      "value": "a35d13f3d22b886c7531b62ee4456a373d37f0b41271058617fa9640debbd1d4"
+    }
+  },
+  "provenance": {
+    "analysis_scope": "repo",
+    "analyzed_at": "2026-09-04T01:11:36Z",
+    "analyzed_commit_sha": "c72a94cbcf501be054a239446c7eb8cf53be34b4",
+    "definition_version": "tep-v0.7.0-2026-09-03",
+    "input_digests": {
+      "benchmark_manifest": null,
+      "forge": null,
+      "forge_binding": null,
+      "license_evidence": {
+        "algorithm": "sha256",
+        "value": "52db8900cd6fed444344b1c91a8a6c6674d239b90638ff8b70dd6598d2110cdf"
+      },
+      "public_evidence": null,
+      "tagset": "ff8e15f6e04e03ad153b7b7ab7e60c2df088583ab8cb1d8792fd05f03d4bf221",
+      "tracker": null,
+      "tracker_binding": null
+    },
+    "revision_completeness": {
+      "complete": true,
+      "promisor": false,
+      "shallow": false
+    },
+    "tagset_digest": "ff8e15f6e04e03ad153b7b7ab7e60c2df088583ab8cb1d8792fd05f03d4bf221",
+    "target_oid": {
+      "algorithm": "sha1",
+      "value": "c72a94cbcf501be054a239446c7eb8cf53be34b4"
+    },
+    "tool_name": "grift",
+    "tool_version": "0.7.0"
+  },
+  "report_kind": "evidence",
+  "schema_version": "report-v2",
+  "subject": {
+    "kind": "repo",
+    "selection": "repo_all_human"
+  },
+  "target": {
+    "oid": {
+      "algorithm": "sha1",
+      "value": "c72a94cbcf501be054a239446c7eb8cf53be34b4"
+    }
+  },
+  "window": {
+    "basis": "legacy_head_date",
+    "end": "2026-08-22",
+    "start": "2026-02-23",
+    "unit": "date-range"
+  }
+}

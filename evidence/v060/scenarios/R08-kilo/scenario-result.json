@@ -1,0 +1,321 @@
+{
+  "argv": [
+    "python",
+    "-m",
+    "tep_cli",
+    "repo",
+    "${DEVELOPER_ROOT}/oss/kilo",
+    "--rev",
+    "323d93b29bd89a2cb446de90c4ed4fea1764176e",
+    "--actors",
+    "--format",
+    "both",
+    "--out",
+    "${OUTPUT_ROOT}/R08-kilo/artifacts"
+  ],
+  "assertions": [
+    {
+      "actual": 20,
+      "expected": 20,
+      "id": "git-total",
+      "status": "PASS"
+    },
+    {
+      "actual": 16,
+      "expected": 16,
+      "id": "git-nonmerge",
+      "status": "PASS"
+    },
+    {
+      "actual": 4,
+      "expected": 4,
+      "id": "git-merge",
+      "status": "PASS"
+    },
+    {
+      "actual": 20,
+      "expected": 20,
+      "id": "git-total-arithmetic",
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "id": "revision-completeness",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "expected": 0,
+      "id": "repo-command-exit",
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "id": "repo-json-generated",
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "id": "repo-markdown-generated",
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "id": "actor-index-json-generated",
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "id": "actor-index-markdown-generated",
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "id": "collection-manifest-generated",
+      "status": "PASS"
+    },
+    {
+      "actual": "valid",
+      "expected": "valid",
+      "id": "collection-json-parse",
+      "status": "PASS"
+    },
+    {
+      "actual": "VERIFIED",
+      "expected": "VERIFIED",
+      "id": "verify-collection-core",
+      "status": "PASS"
+    },
+    {
+      "actual": "0.7.0",
+      "expected": "0.7.0",
+      "id": "runner-tool-version",
+      "status": "PASS"
+    },
+    {
+      "actual": "323d93b29bd89a2cb446de90c4ed4fea1764176e",
+      "expected": "323d93b29bd89a2cb446de90c4ed4fea1764176e",
+      "id": "target-oid",
+      "status": "PASS"
+    },
+    {
+      "actual": 16,
+      "expected": 16,
+      "id": "report-human-nonmerge",
+      "status": "PASS"
+    },
+    {
+      "actual": 4,
+      "expected": 4,
+      "id": "report-merge",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "expected": 0,
+      "id": "report-bot",
+      "status": "PASS"
+    },
+    {
+      "actual": 7,
+      "expected": 7,
+      "id": "actor-count",
+      "status": "PASS"
+    },
+    {
+      "actual": "repo_human_nonmerge_commits + merge_count = attribution_human_including_merges + attribution_unresolved_commit_count",
+      "expected": "repo_human_nonmerge_commits + merge_count = attribution_human_including_merges + attribution_unresolved_commit_count",
+      "id": "merge-basis",
+      "status": "PASS"
+    },
+    {
+      "actual": "2024-07-08",
+      "expected": "2024-07-08",
+      "id": "window-start",
+      "status": "PASS"
+    },
+    {
+      "actual": "2025-01-04",
+      "expected": "2025-01-04",
+      "id": "window-end",
+      "status": "PASS"
+    },
+    {
+      "actual": 180,
+      "expected": 180,
+      "id": "window-days",
+      "status": "PASS"
+    },
+    {
+      "actual": "date-range",
+      "expected": "date-range",
+      "id": "window-unit",
+      "status": "PASS"
+    },
+    {
+      "actual": "legacy_head_date",
+      "expected": "legacy_head_date",
+      "id": "window-basis",
+      "status": "PASS"
+    },
+    {
+      "actual": 16,
+      "expected": 16,
+      "id": "metric-numerator",
+      "status": "PASS"
+    },
+    {
+      "actual": 20,
+      "expected": 20,
+      "id": "metric-denominator",
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "id": "report-revision-completeness",
+      "status": "PASS"
+    },
+    {
+      "actual": "safe",
+      "expected": "safe",
+      "id": "artifact-safety",
+      "status": "PASS"
+    }
+  ],
+  "counts": {
+    "actors.full": 7,
+    "actors.selected": 7,
+    "collection.members": 18,
+    "git.merge": 4,
+    "git.nonmerge": 16,
+    "git.total": 20,
+    "metric.human_nonmerge.denominator": 20,
+    "metric.human_nonmerge.numerator": 16,
+    "population.human": 20,
+    "population.merge": 4,
+    "population.nonmerge": 16,
+    "report.attributed_including_merges": 20,
+    "report.bot": 0,
+    "report.human_nonmerge": 16,
+    "report.merge": 4,
+    "report.unresolved": 0
+  },
+  "duration_ms": 614,
+  "exit_code": 0,
+  "output_digests": {
+    "artifacts/actor-index.json": {
+      "algorithm": "sha256",
+      "value": "4a4bfb0bcb1bfbe8507cd127d71fc4bc5c778832b4acc457cdb00991102300f9"
+    },
+    "artifacts/actor-index.md": {
+      "algorithm": "sha256",
+      "value": "2a4d1f84be37112421e756206654b5666804ffa2683f07968d8653d3d15eba96"
+    },
+    "artifacts/actors/antirez.json": {
+      "algorithm": "sha256",
+      "value": "a26c1cc71dd72e27655a23d1dc483c4876094eca62e13840a765890ae7bda7ae"
+    },
+    "artifacts/actors/antirez.md": {
+      "algorithm": "sha256",
+      "value": "114aa60687f630a36a19f1d056711ca5e14bae955140c66af178ae09ac771651"
+    },
+    "artifacts/actors/christopher-wellons.json": {
+      "algorithm": "sha256",
+      "value": "daf5e8bfd28f7b432560b1ad2cb1f11f739c61928ffb15c04f267027f496b669"
+    },
+    "artifacts/actors/christopher-wellons.md": {
+      "algorithm": "sha256",
+      "value": "74094b3b768c57450259eb803fdb8de561a09761db03b53400151ed30cfa0fac"
+    },
+    "artifacts/actors/dayu.json": {
+      "algorithm": "sha256",
+      "value": "6b069748308cd30b25a515bebb9eabdb51d1cf78ab0ff75aba4ac80d0ed797e6"
+    },
+    "artifacts/actors/dayu.md": {
+      "algorithm": "sha256",
+      "value": "bd7db745c49c258adc63fb3efe00a4910714a747f5235c80b967421b0ba726b6"
+    },
+    "artifacts/actors/leandro-pereira.json": {
+      "algorithm": "sha256",
+      "value": "a349ea1146e34258fc9854f7438cd90be28326e7910f19b102fd0edfc17e99ca"
+    },
+    "artifacts/actors/leandro-pereira.md": {
+      "algorithm": "sha256",
+      "value": "b9e28cc4a0536fb796a5a18939a4054d3c8b87d235fc704c5f8b7a8c218f5ba1"
+    },
+    "artifacts/actors/property404.json": {
+      "algorithm": "sha256",
+      "value": "d647042c374b906eeb92de2deae3013a6b0f7cab8e08db11d502bd9600f8afce"
+    },
+    "artifacts/actors/property404.md": {
+      "algorithm": "sha256",
+      "value": "b9a014300ee56b7ae432dcfec00360762b49a8f206077976ba146e57ceb5898a"
+    },
+    "artifacts/actors/unknowntpo.json": {
+      "algorithm": "sha256",
+      "value": "c7ef46d4a23ad9cf858e7b04277056ad486428fc3f4103bad4689796d756d8ff"
+    },
+    "artifacts/actors/unknowntpo.md": {
+      "algorithm": "sha256",
+      "value": "39b5798d88d882b7704a19ca19db937191103a455da9291caa25306ead249d6b"
+    },
+    "artifacts/actors/vuong-hoang.json": {
+      "algorithm": "sha256",
+      "value": "c4b3ae341aab9645da5285ec0e86357bc6b798a1a92ff761053691cb5979aeb5"
+    },
+    "artifacts/actors/vuong-hoang.md": {
+      "algorithm": "sha256",
+      "value": "1f6ed38cffc93c8a86e9b019f919a11288280dd1c6f2fe44427caecf9010aa45"
+    },
+    "artifacts/collection-manifest.json": {
+      "algorithm": "sha256",
+      "value": "b4d266a4aa9dbf83bc8c19fff2e8fb43a0420d44c226183336d6567d4335515f"
+    },
+    "artifacts/repo-report.json": {
+      "algorithm": "sha256",
+      "value": "c54e3ad68b80736586ba14b8ccbc2e89570e57e142f7a6f42035aa20d880c146"
+    },
+    "artifacts/repo-report.md": {
+      "algorithm": "sha256",
+      "value": "e3378bfc4f8ce4d43a399275884f1614acc34998386988796ffd6459a8e288a4"
+    }
+  },
+  "partition_digest": {
+    "algorithm": "sha256",
+    "value": "51ad206179df0b650ad72563fb1eb57e027fab302aee143d84523ce4d151fc74"
+  },
+  "provider_coverage": {
+    "kind": "not_observed",
+    "provided": false,
+    "reason": "public_evidence_not_provided"
+  },
+  "runner": {
+    "source_binding": {
+      "commit_oid": {
+        "algorithm": "sha1",
+        "value": "5c45215ca9322d37f29dc73a53c168cbdf5543aa"
+      },
+      "definition_version": "grift-tool-source-tree-v1",
+      "file_count": 97,
+      "source_tree_digest": {
+        "algorithm": "sha256",
+        "value": "115e7ae4af4d6eaecce0c97812b0a70ab2a39416194a22f5e00c93d51af882c3"
+      }
+    },
+    "tool_version": "0.7.0"
+  },
+  "scenario_id": "R08-kilo",
+  "schema_version": "tep-scenario-result-v1",
+  "target_oid": {
+    "algorithm": "sha1",
+    "value": "323d93b29bd89a2cb446de90c4ed4fea1764176e"
+  },
+  "verdict": "PASS"
+}

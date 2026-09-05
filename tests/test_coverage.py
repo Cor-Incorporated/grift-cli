@@ -15,7 +15,15 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tests"))
 
-from coverage_matrix import FIELD_ROWS, STATUS_HOLE, compute_matrix, pin_ids, row_status  # noqa: E402
+from coverage_matrix import (  # noqa: E402
+    FIELD_ROWS,
+    REQUIREMENT_SYNTHETIC,
+    STATUS_HOLE,
+    STATUS_SYNTHETIC,
+    compute_matrix,
+    pin_ids,
+    row_status,
+)
 
 COVERAGE_MD = ROOT / "golden" / "coverage.md"
 
@@ -59,6 +67,26 @@ def test_committed_table_matches_computed() -> None:
         assert cells[3 + len(ids)] == status, (
             f"{row.label}: status cell {cells[3 + len(ids)]} != computed {status}"
         )
+
+
+def test_actor_exactness_uses_synthetic_lane_not_public_expected() -> None:
+    text = COVERAGE_MD.read_text(encoding="utf-8")
+    assert "v0.6 supersession（2026-08-31）" in text
+    assert "synthetic greenをblind pilotの代替にしない" in text
+
+    matrix = compute_matrix()
+    synthetic = [row for row in FIELD_ROWS if row.requirement == REQUIREMENT_SYNTHETIC]
+    assert {row.path for row in synthetic} == {
+        "experience.declared_ai_assist_share",
+        "experience.cross_author_modification_share",
+        "experience.founder_timing",
+        "role_profile",
+    }
+    for row in synthetic:
+        assert set(matrix[row.path].values()) == {"-"}, (
+            f"{row.path}: actor fields must not be excited from public expected JSON"
+        )
+        assert row_status(row, matrix[row.path]) == STATUS_SYNTHETIC
 
 
 def test_holes_are_issue_tracked_and_not_stale() -> None:

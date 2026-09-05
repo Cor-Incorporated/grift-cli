@@ -1,0 +1,37 @@
+{
+  "account_status": "not_requested",
+  "accounts": [],
+  "actor_id": "terisuke",
+  "basis": "git_primary_author_cluster",
+  "denominator": 3994,
+  "limitations": [
+    "This card describes one repo-local cluster and is not a person or quality score."
+  ],
+  "metrics": {},
+  "n": 3592,
+  "notices": [
+    "Provider accounts are display evidence only."
+  ],
+  "partition_digest": {
+    "algorithm": "sha256",
+    "value": "496e7490e3ed0da93ceda4445ed76b40b9eed5eb6b626b79cbb27abc69bc090d"
+  },
+  "population_digest": {
+    "algorithm": "sha256",
+    "value": "9acd6e76e38d059e30c13e40bda7506d5ab3bbb15166a6f5a7fde5d5490d2f47"
+  },
+  "report_kind": "actor_card",
+  "schema_version": "actor-card-v1",
+  "target": {
+    "oid": {
+      "algorithm": "sha1",
+      "value": "a650ffa6b5921b93fcc32398ab01e0043ce962ec"
+    }
+  },
+  "window": {
+    "basis": "legacy_head_date",
+    "end": "2026-08-30",
+    "start": "2026-03-03",
+    "unit": "date-range"
+  }
+}

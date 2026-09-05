@@ -1,0 +1,349 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://grift.dev/schema/v060/historical-exact-head-evidence.schema.json",
+  "title": "TEP historical exact-head evidence",
+  "description": "Closed contract for evidence that is retained for audit history but is never eligible as final PR-head evidence.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/historical_exact_head_result"
+    },
+    {
+      "$ref": "#/$defs/historical_evidence_manifest"
+    }
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "digest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "value"
+      ],
+      "properties": {
+        "algorithm": {
+          "const": "sha256"
+        },
+        "value": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "git_oid": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "value"
+      ],
+      "properties": {
+        "algorithm": {
+          "enum": [
+            "sha1",
+            "sha256"
+          ]
+        },
+        "value": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{7,64}$"
+        }
+      }
+    },
+    "replacement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required_evidence_kind",
+        "status"
+      ],
+      "properties": {
+        "required_evidence_kind": {
+          "const": "external_ci_exact_pr_head"
+        },
+        "status": {
+          "const": "NOT_PROVEN"
+        }
+      }
+    },
+    "historical_exact_head_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "argv",
+        "consumer_action",
+        "counts",
+        "evidence_status",
+        "final_evidence_eligible",
+        "historical_manifest",
+        "limitations",
+        "note",
+        "output_sha256",
+        "partition_digest",
+        "replacement",
+        "schema_version",
+        "target_oid",
+        "verify"
+      ],
+      "properties": {
+        "argv": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "consumer_action": {
+          "const": "REJECT_AS_FINAL"
+        },
+        "counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "actors.full",
+            "git.merge",
+            "git.nonmerge",
+            "git.total",
+            "report.bot",
+            "report.human_nonmerge"
+          ],
+          "properties": {
+            "actors.full": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "git.merge": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "git.nonmerge": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "git.total": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "report.bot": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "report.human_nonmerge": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "evidence_status": {
+          "const": "HISTORICAL_NON_FINAL"
+        },
+        "final_evidence_eligible": {
+          "const": false
+        },
+        "historical_manifest": {
+          "const": "historical-evidence-manifest.json"
+        },
+        "limitations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "note": {
+          "type": "string",
+          "pattern": "^HISTORICAL_NON_FINAL:"
+        },
+        "output_sha256": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "actor-index.json",
+            "actor-index.md",
+            "collection-manifest.json",
+            "repo-report.json",
+            "repo-report.md"
+          ],
+          "properties": {
+            "actor-index.json": {
+              "$ref": "#/$defs/sha256"
+            },
+            "actor-index.md": {
+              "$ref": "#/$defs/sha256"
+            },
+            "collection-manifest.json": {
+              "$ref": "#/$defs/sha256"
+            },
+            "repo-report.json": {
+              "$ref": "#/$defs/sha256"
+            },
+            "repo-report.md": {
+              "$ref": "#/$defs/sha256"
+            }
+          }
+        },
+        "partition_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "replacement": {
+          "$ref": "#/$defs/replacement"
+        },
+        "schema_version": {
+          "const": "tep-exact-head-note-v1"
+        },
+        "target_oid": {
+          "$ref": "#/$defs/git_oid"
+        },
+        "verify": {
+          "type": "string",
+          "pattern": "^VERIFIED:"
+        }
+      }
+    },
+    "artifact_member": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bytes",
+        "media_type",
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "bytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "media_type": {
+          "enum": [
+            "application/json",
+            "text/markdown"
+          ]
+        },
+        "path": {
+          "type": "string",
+          "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*//)[A-Za-z0-9._/-]+$"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "historical_evidence_manifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_set",
+        "consumer_action",
+        "consumer_policy",
+        "contract",
+        "evidence_id",
+        "evidence_status",
+        "final_evidence_eligible",
+        "replacement",
+        "schema_version",
+        "source_snapshot"
+      ],
+      "properties": {
+        "artifact_set": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "canonicalization",
+            "digest",
+            "member_count",
+            "members"
+          ],
+          "properties": {
+            "canonicalization": {
+              "const": "sha256sum-lines-v1"
+            },
+            "digest": {
+              "$ref": "#/$defs/digest"
+            },
+            "member_count": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "members": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/artifact_member"
+              }
+            }
+          }
+        },
+        "consumer_action": {
+          "const": "REJECT_AS_FINAL"
+        },
+        "consumer_policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "on_historical_status",
+            "on_missing_status"
+          ],
+          "properties": {
+            "on_historical_status": {
+              "const": "reject_as_final"
+            },
+            "on_missing_status": {
+              "const": "reject_as_final"
+            }
+          }
+        },
+        "contract": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "const": "../historical-exact-head-evidence.schema.json"
+            },
+            "sha256": {
+              "$ref": "#/$defs/sha256"
+            }
+          }
+        },
+        "evidence_id": {
+          "const": "R04-grift-cli-add5bc0"
+        },
+        "evidence_status": {
+          "const": "HISTORICAL_NON_FINAL"
+        },
+        "final_evidence_eligible": {
+          "const": false
+        },
+        "replacement": {
+          "$ref": "#/$defs/replacement"
+        },
+        "schema_version": {
+          "const": "tep-historical-exact-head-manifest-v1"
+        },
+        "source_snapshot": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "repository",
+            "target_oid"
+          ],
+          "properties": {
+            "repository": {
+              "const": "grift-cli"
+            },
+            "target_oid": {
+              "$ref": "#/$defs/git_oid"
+            }
+          }
+        }
+      }
+    }
+  }
+}

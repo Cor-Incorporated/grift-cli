@@ -4,12 +4,18 @@
 **手書き編集禁止** — テスト `tests/test_coverage.py` がこの表と expected ファイルの突合を行う。
 
 記号: `o` = observed（励起。0 も合法な観測値）/ `x` = not_observed / `-` = 期待値に未ピン。
-要件: `excited` = o>=1 / `both` = o>=1 かつ x>=1（新観測は both を満たすこと — golden-v2 指示 1-1）。
+要件: `excited` = o>=1 / `both` = o>=1 かつ x>=1（public golden対象の新観測）/
+`synthetic` = actor exactnessをpublic goldenではなくexact synthetic testsで固定。
 HOLE 行は機械検出された穴。**穴は静かに放置しない** — 表の HOLE と issue 番号の対応を
 tests/test_coverage.py の KNOWN_HOLES が強制する。
 
-波2/3行（context v2 / experience）はプレースホルダ: 該当実装の PR で expected に追記し
-both 要件の機械検証を有効化するまで `-` が並ぶ。
+**v0.6 supersession（2026-08-31）**: 公開OSS goldenはreport-v1回帰とrepo-level
+detectorを固定する。wave 2のcontext v2はこのpublic-golden laneに残る。第三者public
+actorまたはidentityなしrepoのexperience / role_profileは
+`not_observed(consenting_actor_required)`であり、公開OSSにidentityを推測して励起しない。
+wave 3のactor行は`synthetic`、`-`は意図した非適用である。決定論・境界・fail-closedは
+exact synthetic tests、実在repoでの現実妥当性はblind pilotで検証する。既存expectedを
+再生成してこの境界を迂回せず、synthetic greenをblind pilotの代替にしない。
 
 
 | field | wave | req | G1-click | G2-gitignore | G3-spoon-knife | G4-express | G5-typer | G6-claude-code | G7-axios | G8-co | G9-pyscript | G10-scvi-tools | G11-kilo | G12-httpx | G13-voicevox | status | note |
@@ -37,11 +43,12 @@ both 要件の機械検証を有効化するまで `-` が並ぶ。
 | rework: revert_rate | 1 | excited | o | x | x | x | x | x | x | x | x | x | x | x | x | ok | G1 expected は subset（revert_rate 未ピン）→ 再生成必要 |
 | survival | 1 | info | x | x | x | x | x | x | x | x | x | x | x | x | x | ok | opt-in（--survival）。golden では恒常 not_observed。corpus runs で実測 |
 | interpretation | 1 | info | - | - | - | - | - | - | - | - | - | - | - | - | - | ok | repo スコープ専用。golden は tenant スコープ（scope_is_tenant）。corpus v2026.09 で励起 |
-| context v2: lifecycle_stage | 2 | both | - | - | - | - | - | - | - | - | - | - | - | - | - | future | G8 (dormant) / G7,G13 (active) で両側を予定期 |
-| context v2: language_composition | 2 | both | - | - | - | - | - | - | - | - | - | - | - | - | - | future | G9 polyglot で励起予定期 |
-| experience: declared_ai_assist_share | 3 | both | - | - | - | - | - | - | - | - | - | - | - | - | - | future | G6 (AI 共著トレーラー実在) で励起・G1〜G5,G11 で not_observed 予定期 |
-| experience: cross_author_modification_share | 3 | both | - | - | - | - | - | - | - | - | - | - | - | - | - | future | G7 (handoff 多数) で励起・G11 (solo) で not_observed/低位 予定期 |
-| experience: founder 時期性 | 3 | both | - | - | - | - | - | - | - | - | - | - | - | - | - | future | G12 (Tom Christie) で励起予定期 |
+| context v2: lifecycle_stage | 2 | both | - | - | - | - | - | - | - | - | - | - | - | - | - | future | repo-level detector。public golden expected未ピン、release acceptance未証明 |
+| context v2: language_composition | 2 | both | - | - | - | - | - | - | - | - | - | - | - | - | - | future | repo-level detector。public golden expected未ピン、release acceptance未証明 |
+| experience: declared_ai_assist_share | 3 | synthetic | - | - | - | - | - | - | - | - | - | - | - | - | - | synthetic | public OSSではactor観測しない。exact synthetic + blind pilotで検証 |
+| experience: cross_author_modification_share | 3 | synthetic | - | - | - | - | - | - | - | - | - | - | - | - | - | synthetic | public OSSではactor観測しない。exact synthetic + blind pilotで検証 |
+| experience: founder 時期性 | 3 | synthetic | - | - | - | - | - | - | - | - | - | - | - | - | - | synthetic | public OSSではactor観測しない。exact synthetic + blind pilotで検証 |
+| role_profile: 4 dimensions | 3 | synthetic | - | - | - | - | - | - | - | - | - | - | - | - | - | synthetic | public OSSではactor観測しない。exact synthetic + blind pilotで検証 |
 
 pins: 13 / 上限 13（master §3-1）
 

@@ -1,0 +1,73 @@
+{
+  "schema_version": "project-v1",
+  "report_kind": "project",
+  "subject": {
+    "kind": "project",
+    "project_id": null
+  },
+  "provenance": {
+    "tool_name": "grift",
+    "tool_version": "0.6.0",
+    "definition_version": "tep-v0.6.0-2026-08-29",
+    "analyzed_at": "2026-08-29T05:41:46Z",
+    "analyzed_commit_sha": null,
+    "observation_date": null,
+    "window_basis": "legacy_head_date",
+    "input_digests": {
+      "project": "bdda81ddfd5d82e3af40485da3019416ac1a06356e4ff840c80d43616ddb4856",
+      "forge": null,
+      "tracker": null
+    }
+  },
+  "declared": {
+    "project_id": {
+      "kind": "not_declared",
+      "reason": "requirement_not_provided"
+    },
+    "title": {
+      "kind": "not_declared",
+      "reason": "requirement_not_provided"
+    },
+    "change_rhythm": {
+      "active_days_180d_min": {
+        "kind": "not_declared",
+        "reason": "requirement_not_provided"
+      },
+      "median_gap_days_max": {
+        "kind": "not_declared",
+        "reason": "requirement_not_provided"
+      },
+      "p90_gap_days_max": {
+        "kind": "not_declared",
+        "reason": "requirement_not_provided"
+      }
+    },
+    "surfaces": {
+      "kind": "not_declared",
+      "reason": "requirement_not_provided"
+    },
+    "verification": {
+      "kind": "not_declared",
+      "reason": "requirement_not_provided"
+    },
+    "inputs": {
+      "kind": "not_declared",
+      "reason": "requirement_not_provided"
+    },
+    "role_lens": {
+      "kind": "not_declared",
+      "reason": "requirement_not_provided"
+    }
+  },
+  "limitations": [
+    "この数値は、過去の Git / ローカル export に残った変更の形を示します。人の優劣、職種の確定、採用の合否、将来の成果を示すものではありません。",
+    "declared requirements are owner input, not observations."
+  ],
+  "notices": [
+    "案件側の宣言と観測された運用の形は別セクションです。空欄を推測で埋めません。"
+  ],
+  "observed": {
+    "kind": "not_observed",
+    "reason": "repository_not_provided"
+  }
+}

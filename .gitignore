@@ -16,3 +16,12 @@ corpus/runs/results.jsonl
 *.whl
 .DS_Store
 .hygiene-needles.txt
+docs/pilot/runs/
+corpus/runs-v2026.11/results.jsonl
+corpus/runs-v2026.11/results-with-metrics.jsonl
+# grift CLI output
+.grift/
+
+# Claude Code session bookkeeping (per-session, never shared)
+.claude/sessions/
+.claude/state/

@@ -1,0 +1,43 @@
+=== CMD: grift --version ===
+grift 0.5.8
+
+=== F-1実測（gh不在・report後に --open）===
+CMD: PATH=/usr/bin:/bin で _open_browser ラップ → URL 捕獲
+この提出について（必読）/ About this submission (read first):
+1. 上記の payload 全文が提出内容のすべてです / The payload above is the entirety of the submission
+2. この提出は公開コーパスに載ります（受け口は公開リポジトリのため、payload は公開になります）/ It will appear in the public corpus (the intake is a public repository)
+3. repo 名は含まれません（付記は opt-in）。ただし特徴の組合せから推測されるリスクはゼロではありません / No repo name is included (opt-in aside); the risk of re-identification from feature combinations is not zero
+4. 用途は「TEP Report 集計と参照分布 vNext」に限定され、それ以外（SaaS 等への転用を含む）には使われません（docs/norms.md 保持・削除条項）/ Use is restricted to "TEP Report 集計と参照分布 vNext" — nothing else, including SaaS reuse (see the norms retention section)
+5. 測定コマンド（analyze/report/verify）はネットワークに触れません。contribute は自動送信しません — 提出はあなた自身が行います / The measurement commands never touch the network; contribute never auto-sends — submission is your action
+6. 提出は二枚扉です / Two doors: 公開ドア（本人 PR・https://github.com/Cor-Incorporated/tep-contributions）/ 非公開ドア（フォーム・メール → 当社が代理 PR・身元は非公開）/ public door (your own PR) or private door (form/email; we open the PR; your identity stays private)
+7. --open を使う場合 / If you use --open: **この方法は公開ドアです。あなたの GitHub アカウント名が PR に表示されます / this is the PUBLIC door; your GitHub account name will appear on the PR**。fork がまだ無い場合は自動作成されます / a fork under your account will be auto-created if you do not have one
+payload summary: schema=tep-contribution-v1 purpose=TEP Report 集計と参照分布 vNext definition=tep-v0.5.8-2026-08-25 metric_sections=['attribution', 'core_activity_period', 'lineage', 'origin', 'provenance', 'rework', 'survival', 'test_cochange', 'test_frameworks']
+payload full text follows on stdout.
+
+payload written to .grift/contribution.json (nothing was sent)
+
+=== 次の提出手順（あなた自身が行います・CLIは送信しません） ===
+1. 公開ドア: https://github.com/Cor-Incorporated/tep-contributions に PR を出す
+   - ファイル名: payloads/2026/0825-0638-9056b995.json（上記 payload をそのまま）
+   - 同じ場所に 0825-0638-9056b995.meta.json も追加（--open は自動でコミット済み / Public door adds a sidecar meta file; --open commits it automatically）:
+     {"id":"0825-0638-9056b995","sha256":"9056b9951821a8b9b2ad933aacc9088edcf72be7cb305775188387d08c5b1dae","received_at":"2026-08-25T06:38:50Z","door":"pr"}
+   - manifest.jsonl は main で自動生成されるため編集不要（並行提出と衝突しません）/ manifest.jsonl is generated on main; do not edit it
+2. 非公開ドア: payload ファイルを会社へ送付（代理PR・身元は非公開 / private door: send the payload file; we open the PR anonymously）
+   詳細: tep-contributions の README/CONTRIBUTING
+opened the intake repository in your browser — attach .grift/contribution.json as payloads/2026/0825-0638-9056b995.json (gh CLI not found for the automated branch flow)
+=== contribution payload (full) — [trimmed: payload 全文。含まれる字段は schema/purpose/provenance/metrics/context_profile のみ] ===
+
+この提出について（必読）/ About this submission (read first):
+1. 上記の payload 全文が提出内容のすべてです / The payload above is the entirety of the submission
+2. この提出は公開コーパスに載ります（受け口は公開リポジトリのため、payload は公開になります）/ It will appear in the public corpus (the intake is a public repository)
+3. repo 名は含まれません（付記は opt-in）。ただし特徴の組合せから推測されるリスクはゼロではありません / No repo name is included (opt-in aside); the risk of re-identification from feature combinations is not zero
+4. 用途は「TEP Report 集計と参照分布 vNext」に限定され、それ以外（SaaS 等への転用を含む）には使われません（docs/norms.md 保持・削除条項）/ Use is restricted to "TEP Report 集計と参照分布 vNext" — nothing else, including SaaS reuse (see the norms retention section)
+5. 測定コマンド（analyze/report/verify）はネットワークに触れません。contribute は自動送信しません — 提出はあなた自身が行います / The measurement commands never touch the network; contribute never auto-sends — submission is your action
+6. 提出は二枚扉です / Two doors: 公開ドア（本人 PR・https://github.com/Cor-Incorporated/tep-contributions）/ 非公開ドア（フォーム・メール → 当社が代理 PR・身元は非公開）/ public door (your own PR) or private door (form/email; we open the PR; your identity stays private)
+7. --open を使う場合 / If you use --open: **この方法は公開ドアです。あなたの GitHub アカウント名が PR に表示されます / this is the PUBLIC door; your GitHub account name will appear on the PR**。fork がまだ無い場合は自動作成されます / a fork under your account will be auto-created if you do not have one
+exit: 0 | opened URL: https://github.com/Cor-Incorporated/tep-contributions#how-to-submit
+F-1 PASS: fallback = intake repo real path (no compare/)
+
+=== F-2 grep ===
+README.md:1
+README.en.md:1

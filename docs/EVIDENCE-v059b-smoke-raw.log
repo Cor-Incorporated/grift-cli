@@ -1,0 +1,12 @@
+=== CMD: grift --version ===
+grift 0.5.9
+
+=== G-1実測: 検出ありリポで Test frameworks が二重表示されない ===
+CMD: grift report | sed -n '/## Test frameworks/,/## Test co-change/p'
+## Test frameworks
+- observed: pytest (boolean True) — 検出されたテスト基盤 / detected test substrate
+
+## Test co-change
+
+CMD: grift report | grep -c '検出されたテスト基盤'（1が理想=値行のみ）
+1

@@ -1,0 +1,42 @@
+{
+  "counts": {
+    "fail": 0,
+    "not_proven": 0,
+    "pass": 6,
+    "source_drift": 0,
+    "total": 6
+  },
+  "manifest_digest": {
+    "algorithm": "sha256",
+    "value": "0803875d4090979a7be23262ab2a306a9632189829dccac9164246889e1f29ae"
+  },
+  "result_digests": [
+    {
+      "algorithm": "sha256",
+      "value": "71e8b577c4839ad6634760cc8e17b0140108f966b92db7ae0cfa8cece39aa92f"
+    },
+    {
+      "algorithm": "sha256",
+      "value": "c9295bb4d21c1963e6823c9cbc4f94502c789a661f56b883ed56a971ac80c14a"
+    },
+    {
+      "algorithm": "sha256",
+      "value": "81adebabf0c3765fe54d4c5e92337edbd69d0d7ac7e45d756bb575649835139c"
+    },
+    {
+      "algorithm": "sha256",
+      "value": "b930cad7b3b5469c27098441599a84d3c73d219e90f11d11a81aa56391301b70"
+    },
+    {
+      "algorithm": "sha256",
+      "value": "60dd4d5a7f9a69cb57f3e1dca3897ed3a881251132735ed6380675967d70f11b"
+    },
+    {
+      "algorithm": "sha256",
+      "value": "0aace5c0ca8ac3501227199733b7a52e53fc7bac7e593bf40090a4799632535a"
+    }
+  ],
+  "schema_version": "tep-scenario-summary-v1",
+  "suite_id": "v060-real-repositories",
+  "verdict": "PASS"
+}

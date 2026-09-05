@@ -1,0 +1,30 @@
+{
+  "counts": {
+    "fail": 0,
+    "not_proven": 0,
+    "pass": 3,
+    "source_drift": 0,
+    "total": 3
+  },
+  "manifest_digest": {
+    "algorithm": "sha256",
+    "value": "f704ecdb6c35b2ac856fea114c9ee83f543aad61e754cb4d7dbef38d59bf20b9"
+  },
+  "result_digests": [
+    {
+      "algorithm": "sha256",
+      "value": "da12d4f1adb12376ffec6539b45e6d9de5959de1a0b445f85130ab5b9ab7fa6d"
+    },
+    {
+      "algorithm": "sha256",
+      "value": "8c5b3a202abfc4ce4b7c251ee38198c51b2c937ce200a69be8b89028d218400e"
+    },
+    {
+      "algorithm": "sha256",
+      "value": "b5673bb1e2642e8e737f914fe91e15a2c303e345de5dc9bf543096db8934fafb"
+    }
+  ],
+  "schema_version": "tep-scenario-summary-v1",
+  "suite_id": "v060-public-live-gates",
+  "verdict": "PASS"
+}

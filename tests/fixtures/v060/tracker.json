@@ -1,0 +1,14 @@
+{
+  "schema_version": "tep-tracker-export-v1",
+  "provider": "github",
+  "events": [
+    {
+      "event_id": "opaque-2",
+      "kind": "issue_linked",
+      "timestamp": "2026-08-29T00:00:00Z",
+      "actor_canonical_id": "candidate_001",
+      "issue_number": 21,
+      "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  ]
+}

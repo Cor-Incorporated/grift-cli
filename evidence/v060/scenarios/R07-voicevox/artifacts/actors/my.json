@@ -1,0 +1,37 @@
+{
+  "account_status": "not_requested",
+  "accounts": [],
+  "actor_id": "my",
+  "basis": "git_primary_author_cluster",
+  "denominator": 1899,
+  "limitations": [
+    "This card describes one repo-local cluster and is not a person or quality score."
+  ],
+  "metrics": {},
+  "n": 1,
+  "notices": [
+    "Provider accounts are display evidence only."
+  ],
+  "partition_digest": {
+    "algorithm": "sha256",
+    "value": "6387bbe252a91f89e2e1b1bc73f9563820f4e32ba0bddbce7a202903217cd093"
+  },
+  "population_digest": {
+    "algorithm": "sha256",
+    "value": "a35d13f3d22b886c7531b62ee4456a373d37f0b41271058617fa9640debbd1d4"
+  },
+  "report_kind": "actor_card",
+  "schema_version": "actor-card-v1",
+  "target": {
+    "oid": {
+      "algorithm": "sha1",
+      "value": "c72a94cbcf501be054a239446c7eb8cf53be34b4"
+    }
+  },
+  "window": {
+    "basis": "legacy_head_date",
+    "end": "2026-08-22",
+    "start": "2026-02-23",
+    "unit": "date-range"
+  }
+}

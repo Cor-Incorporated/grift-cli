@@ -1,0 +1,37 @@
+{
+  "account_status": "not_requested",
+  "accounts": [],
+  "actor_id": "tep-proposer-claude",
+  "basis": "git_primary_author_cluster",
+  "denominator": 164,
+  "limitations": [
+    "This card describes one repo-local cluster and is not a person or quality score."
+  ],
+  "metrics": {},
+  "n": 19,
+  "notices": [
+    "Provider accounts are display evidence only."
+  ],
+  "partition_digest": {
+    "algorithm": "sha256",
+    "value": "939e1c331659877d1f11aa15f0fe7d2a8449177fda74f8f3cfad636993b0503a"
+  },
+  "population_digest": {
+    "algorithm": "sha256",
+    "value": "f7c8ddfe18a635edc992464a3fc340438d6264ea9ceae66630f94d5ef6bed481"
+  },
+  "report_kind": "actor_card",
+  "schema_version": "actor-card-v1",
+  "target": {
+    "oid": {
+      "algorithm": "sha1",
+      "value": "fa9bc317cc0ac1953ed09cbab11d3de2232c2fb0"
+    }
+  },
+  "window": {
+    "basis": "legacy_head_date",
+    "end": "2026-08-30",
+    "start": "2026-03-03",
+    "unit": "date-range"
+  }
+}

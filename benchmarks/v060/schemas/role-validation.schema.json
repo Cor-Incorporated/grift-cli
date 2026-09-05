@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://grift.dev/schema/v060/role-validation.schema.json",
+  "title": "Grift v0.6 external technical-role validation row",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["source_row", "role_label"],
+  "properties": {
+    "source_row": {"type": "integer", "minimum": 2},
+    "role_label": {"type": "string", "enum": ["Backend", "Frontend", "Mobile", "DevOps", "DataScientist"]},
+    "bio_backend": {"type": "number", "minimum": 0},
+    "bio_frontend": {"type": "number", "minimum": 0},
+    "bio_devops": {"type": "number", "minimum": 0},
+    "bio_data": {"type": "number", "minimum": 0},
+    "bio_java": {"type": "number", "minimum": 0},
+    "bio_javascript": {"type": "number", "minimum": 0},
+    "bio_python": {"type": "number", "minimum": 0},
+    "rate_java": {"type": "number", "minimum": 0},
+    "rate_python": {"type": "number", "minimum": 0},
+    "rate_typescript": {"type": "number", "minimum": 0},
+    "author_javascript": {"type": "number", "minimum": 0},
+    "author_typescript": {"type": "number", "minimum": 0}
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "account_status": "not_requested",
+  "accounts": [],
+  "actor_id": "leandro-pereira",
+  "basis": "git_primary_author_cluster",
+  "denominator": 20,
+  "limitations": [
+    "This card describes one repo-local cluster and is not a person or quality score."
+  ],
+  "metrics": {},
+  "n": 1,
+  "notices": [
+    "Provider accounts are display evidence only."
+  ],
+  "partition_digest": {
+    "algorithm": "sha256",
+    "value": "51ad206179df0b650ad72563fb1eb57e027fab302aee143d84523ce4d151fc74"
+  },
+  "population_digest": {
+    "algorithm": "sha256",
+    "value": "398bd9ef4d4d84768b08d6aff026766c7b1ae7920d9988e37219e72e00cc661a"
+  },
+  "report_kind": "actor_card",
+  "schema_version": "actor-card-v1",
+  "target": {
+    "oid": {
+      "algorithm": "sha1",
+      "value": "323d93b29bd89a2cb446de90c4ed4fea1764176e"
+    }
+  },
+  "window": {
+    "basis": "legacy_head_date",
+    "end": "2025-01-04",
+    "start": "2024-07-08",
+    "unit": "date-range"
+  }
+}

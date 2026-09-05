@@ -57,6 +57,13 @@ def test_payload_contents_repo_scope_only(tmp_path: Path) -> None:
     assert payload["provenance"]["definition_version"] == report["provenance"]["definition_version"]
 
 
+def test_report_v1_legacy_mode_remains_contribution_v1(tmp_path: Path) -> None:
+    report = _repo_report(tmp_path)
+    payload = build_contribution(report, mode="masked")
+    assert payload["contribution_schema"] == "tep-contribution-v1"
+    assert "privacy_profile" not in payload
+
+
 def test_payload_excludes_private_layers(tmp_path: Path) -> None:
     report = _repo_report(tmp_path)
     payload = build_contribution(report)
@@ -109,14 +116,20 @@ def test_context_profile_slimmed_but_scale_dropped(tmp_path: Path) -> None:
 
 
 def test_confirmation_mentions_public_disclosure() -> None:
-    assert "公開コーパスに載ります" in CONFIRMATION_TEXT and "public corpus" in CONFIRMATION_TEXT
-    assert "ネットワークに触れません" in CONFIRMATION_TEXT  # scoped (A): measurement commands
-    assert "自動送信しません" in CONFIRMATION_TEXT and "never auto-sends" in CONFIRMATION_TEXT
+    assert "公開コーパス" in CONFIRMATION_TEXT and "public corpus" in CONFIRMATION_TEXT
+    assert "明示network経路" in CONFIRMATION_TEXT
+    assert "自動提出されません" in CONFIRMATION_TEXT and "not auto-submitted" in CONFIRMATION_TEXT
     assert CONTRIBUTE_PURPOSE in CONFIRMATION_TEXT
-    assert "repo 名は含まれません" in CONFIRMATION_TEXT
-    assert "推測されるリスクはゼロではありません" in CONFIRMATION_TEXT and "not zero" in CONFIRMATION_TEXT
-    assert "二枚扉" in CONFIRMATION_TEXT and "非公開ドア" in CONFIRMATION_TEXT
-    assert "公開ドアです" in CONFIRMATION_TEXT and "PUBLIC door" in CONFIRMATION_TEXT  # B: --open warning
+    assert "aggregate に repo 名は含まれません" in CONFIRMATION_TEXT
+    assert (
+        "推測されるリスクはゼロではありません" in CONFIRMATION_TEXT
+        and "not zero" in CONFIRMATION_TEXT
+    )
+    assert "local / controlled / public-pr" in CONFIRMATION_TEXT
+    assert "private-payload door" in CONFIRMATION_TEXT
+    assert (
+        "公開ドアです" in CONFIRMATION_TEXT and "PUBLIC door" in CONFIRMATION_TEXT
+    )  # B: --open warning
 
 
 def test_cli_contribute_writes_payload_and_never_silent(tmp_path: Path, capsys: object) -> None:
@@ -156,7 +169,9 @@ def test_f_c1_non_tty_without_yes_is_refused(tmp_path: Path, capsys: object) -> 
     assert code == 2, "non-TTY without --yes must be refused"
     captured = capsys.readouterr()
     assert "公開コーパスに載ります" in captured.err, "disclosure must be shown on stderr"
-    assert "推測されるリスクはゼロではありません" in captured.err, "inference-risk disclosure required"
+    assert "推測されるリスクはゼロではありません" in captured.err, (
+        "inference-risk disclosure required"
+    )
     assert "--yes" in captured.err
     assert not out.exists(), "nothing may be written when refused"
 

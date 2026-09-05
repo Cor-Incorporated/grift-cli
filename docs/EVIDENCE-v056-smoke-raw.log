@@ -1,0 +1,31 @@
+=== CMD: ./smoke/bin/grift --version ===
+grift 0.5.6
+
+=== CMD: grift analyze (bare) — D-1: stdout表示・.grift/未作成 ===
+# TEP analysis
+
+## Shared block (copy-pasteable)
+- tool: grift 0.5.6 (method TEP, definition tep-v0.5.6-2026-08-23)
+- scope: repo (analyzed at commit `8095a0ba9c69`)
+...(stdout head only)
+exit=0
+.grift exists? NO
+
+=== CMD: grift analyze --format json | python -c 'scope check' — D-3b: 既定repo ===
+analysis_scope = repo
+
+=== CMD: grift report (bare) — D-2: .grift/記録・scope=repo ===
+exit=0
+report.json
+report.md
+recorded scope = repo
+
+=== CMD: grift report --scope tenant — D-3a ===
+exit=0
+recorded scope = tenant
+
+=== CMD: grift verify (bare) ===
+VERIFIED: all fields match recomputation under recorded provenance
+
+=== CMD: grift report --help | grep default — D-2 doc: ./out残存なし ===
+(help line check: .grift/ 記載あり)

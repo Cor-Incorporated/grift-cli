@@ -1,11 +1,15 @@
-"""Analysis scope: tenant (evidence) vs repo (process / reference distribution)."""
+"""Analysis population scopes used by report-v2 internals.
+
+``actor_cluster`` is deliberately distinct from ``tenant``: it represents one
+repo-local Git primary-author cluster without asserting consent or personhood.
+"""
 
 from __future__ import annotations
 
 from tep_core.gitutil import GitCommit
 from tep_core.origin import OriginResult
 
-SCOPES = ("tenant", "repo")
+SCOPES = ("tenant", "repo", "actor_cluster")
 DEFAULT_SCOPE = "tenant"
 TENANT_ORIGIN = frozenset({"tenant_unique"})
 
@@ -31,6 +35,14 @@ def population_shas(
         raise ValueError(f"unknown scope: {scope}")
     if scope == "tenant":
         return {sha for sha, klass in origin.classes_by_sha.items() if klass in TENANT_ORIGIN}
+    if scope == "actor_cluster":
+        return {
+            commit.sha
+            for commit in commits
+            if commit.sha in origin.actor_cluster_shas
+            and origin.classes_by_sha.get(commit.sha) != "bot"
+            and not commit.is_merge
+        }
     return {
         commit.sha
         for commit in commits

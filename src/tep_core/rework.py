@@ -47,9 +47,12 @@ def rework_metrics(
     if scope == "tenant" and pending_attribution and not shas:
         return NotObserved("pending_attribution").to_dict()
     if not shas:
-        return NotObserved(
-            "no_tenant_commits" if scope == "tenant" else "no_human_commits"
-        ).to_dict()
+        reason = {
+            "tenant": "no_tenant_commits",
+            "actor_cluster": "no_actor_commits",
+            "repo": "no_human_commits",
+        }[scope]
+        return NotObserved(reason).to_dict()
     if not any(c.files for c in commits):
         return NotObserved("commit_paths_unavailable").to_dict()
 

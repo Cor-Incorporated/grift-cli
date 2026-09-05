@@ -88,9 +88,9 @@ def test_a_no_universal_no_send_claims(rel: str) -> None:
     import re
 
     for match in re.finditer(r"CLI の無送信", text):
-        tail = text[match.end():match.end() + 40]
+        tail = text[match.end() : match.end() + 40]
         assert "測定コマンド" in tail or "ネットワーク" in tail, (
-            f"{rel}: un-scoped 'CLI の無送信' re-introduced at ...{text[match.start()-10:match.end()+20]}..."
+            f"{rel}: un-scoped 'CLI の無送信' re-introduced at ...{text[match.start() - 10 : match.end() + 20]}..."
         )
 
 
@@ -98,9 +98,9 @@ def test_a_scoped_claims_present() -> None:
     root = Path(__file__).resolve().parents[1]
     ja = (root / "README.md").read_text(encoding="utf-8")
     en = (root / "README.en.md").read_text(encoding="utf-8")
-    assert "測定コマンド（analyze/report/verify）はネットワークに触れず" in ja
+    assert "明示したときだけ" in ja and "--fetch-public" in ja
     assert "自動送信は恒久にありません" in ja or "こちらへの自動送信は恒久にない" in ja
-    assert "never touch the network" in en
+    assert "explicit network" in en.lower()
     assert "never auto-sends" in en
     assert "the final button is yours" in en  # --open scoped description
     # disclosure: public-door warning for --open (B) is bilingual
@@ -186,31 +186,19 @@ def test_b_pre_push_validation_blocks_bad_payload() -> None:
     assert any("email" in v for v in validate_contribution_payload(email))
 
 
-def test_f1_fallback_url_is_real_path_not_compare() -> None:
+def test_f1_fallback_url_is_real_path_not_compare(tmp_path, monkeypatch) -> None:
     """F-1: the gh-absent fallback must land on the intake repo root, never a
     compare/ URL (compare/main...new was invalid). Pin: no 'compare/' in the
     opened URL, and the URL is the intake repository itself."""
     import shutil as _sh
-    import tempfile
-    from pathlib import Path as _P
 
-    with tempfile.TemporaryDirectory() as tmp:
-        tmp_path = _P(tmp)
-        report = _write_report(tmp_path)
-        monkeypatched_open: list[str] = []
-        original = cli_main._open_browser
-        cli_main._open_browser = lambda url: monkeypatched_open.append(url)
-        try:
-            real_which = _sh.which
-            _sh.which = lambda name: None
-            try:
-                code = main(["contribute", str(report), "--yes", "--open"])
-            finally:
-                _sh.which = real_which
-        finally:
-            cli_main._open_browser = original
-        assert code == 0
-        assert monkeypatched_open, "browser must have been opened"
-        url = monkeypatched_open[0]
-        assert "compare/" not in url, f"F-1 regression: fallback URL is a compare URL: {url}"
-        assert url.startswith("https://github.com/Cor-Incorporated/tep-contributions"), url
+    report = _write_report(tmp_path)
+    opened: list[str] = []
+    monkeypatch.setattr(cli_main, "_open_browser", opened.append)
+    monkeypatch.setattr(_sh, "which", lambda name: None)
+    code = main(["contribute", str(report), "--yes", "--open"])
+    assert code == 0
+    assert opened, "browser must have been opened"
+    url = opened[0]
+    assert "compare/" not in url, f"F-1 regression: fallback URL is a compare URL: {url}"
+    assert url.startswith("https://github.com/Cor-Incorporated/tep-contributions"), url

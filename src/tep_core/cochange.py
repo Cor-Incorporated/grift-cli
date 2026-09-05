@@ -31,7 +31,8 @@ def test_cochange(
 ) -> dict[str, object]:
     """Co-change among production-changing commits in the analysis scope.
 
-    tenant: identity-matched tenant_unique (evidence).
+    tenant: identity-matched consenting tenant (evidence).
+    actor_cluster: one repo-local primary-author cluster, without consent claim.
     repo: all non-bot, non-merge humans (process / reference distribution).
     """
     if not tests_observed:
@@ -41,9 +42,12 @@ def test_cochange(
     if scope == "tenant" and pending_attribution and not shas:
         return NotObserved("pending_attribution").to_dict()
     if not shas:
-        return NotObserved(
-            "no_tenant_commits" if scope == "tenant" else "no_human_commits"
-        ).to_dict()
+        reason = {
+            "tenant": "no_tenant_commits",
+            "actor_cluster": "no_actor_commits",
+            "repo": "no_human_commits",
+        }[scope]
+        return NotObserved(reason).to_dict()
     if not any(c.files for c in commits):
         return NotObserved("commit_paths_unavailable").to_dict()
 

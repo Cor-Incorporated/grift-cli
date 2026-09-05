@@ -27,12 +27,18 @@ HEADER = """# Golden coverage matrix — 観測フィールド x golden repo（v
 **手書き編集禁止** — テスト `tests/test_coverage.py` がこの表と expected ファイルの突合を行う。
 
 記号: `o` = observed（励起。0 も合法な観測値）/ `x` = not_observed / `-` = 期待値に未ピン。
-要件: `excited` = o>=1 / `both` = o>=1 かつ x>=1（新観測は both を満たすこと — golden-v2 指示 1-1）。
+要件: `excited` = o>=1 / `both` = o>=1 かつ x>=1（public golden対象の新観測）/
+`synthetic` = actor exactnessをpublic goldenではなくexact synthetic testsで固定。
 HOLE 行は機械検出された穴。**穴は静かに放置しない** — 表の HOLE と issue 番号の対応を
 tests/test_coverage.py の KNOWN_HOLES が強制する。
 
-波2/3行（context v2 / experience）はプレースホルダ: 該当実装の PR で expected に追記し
-both 要件の機械検証を有効化するまで `-` が並ぶ。
+**v0.6 supersession（2026-08-31）**: 公開OSS goldenはreport-v1回帰とrepo-level
+detectorを固定する。wave 2のcontext v2はこのpublic-golden laneに残る。第三者public
+actorまたはidentityなしrepoのexperience / role_profileは
+`not_observed(consenting_actor_required)`であり、公開OSSにidentityを推測して励起しない。
+wave 3のactor行は`synthetic`、`-`は意図した非適用である。決定論・境界・fail-closedは
+exact synthetic tests、実在repoでの現実妥当性はblind pilotで検証する。既存expectedを
+再生成してこの境界を迂回せず、synthetic greenをblind pilotの代替にしない。
 """
 
 

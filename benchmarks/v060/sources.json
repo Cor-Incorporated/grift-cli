@@ -1,0 +1,535 @@
+{
+  "pack_id": "grift-v060-reference-pack",
+  "pack_version": "2026-08-31.1",
+  "as_of": "2026-08-29",
+  "purpose": "Offline, source-backed fixtures and metadata for Grift v0.6 repo, actor, project, and alignment validation.",
+  "policy": {
+    "offline_core": true,
+    "raw_external_datasets_bundled": false,
+    "individual_ranking": false,
+    "role_or_fit_truth": false,
+    "required_report_fields": [
+      "source",
+      "source_version",
+      "as_of",
+      "window",
+      "n",
+      "denominator",
+      "coverage",
+      "limitations"
+    ]
+  },
+  "local_artifact_sha256": {
+    "data/alignment_cases.jsonl": "901fe3fbba889d61d0a84d0465d7876c9bba9ba573bd434a5f4c69ba5df60b99",
+    "data/gharchive_daily_summary.csv": "5561379e276ecd057479412f0129fe17691778bdef722bd0be7bd9a5d0a7dcce",
+    "data/gharchive_events_2024-01-15_to_21.ndjson": "acd0827c694028730c4ed61808d7d1b72333497c73c73c72aa1b11c677d2838c",
+    "data/gharchive_repository_summary.csv": "1b4eebc28614a20081294ad52709974cd7dced6c0ea70dbc17b19b3b2941280c",
+    "data/independent_repo_actor_audit_2026-08-30.json": "7a724b090f44e26f182f1b40f634d56be8714225e3079be9228ca0b496f8729e",
+    "data/metric_catalog.csv": "58cc72c54576dea087fbda74a45ba2e62901cee332fac568fe9c2f77a0de4ca5",
+    "data/role_ground_truth_sample.csv": "92d53bb0e8d2bffeb119ef423981d286d2b551520a07824742544be8e990a8e3",
+    "data/role_label_counts.csv": "fd512f3ab13dfb67a74522a1a9c0d0398a06d03096c516eea53d0d0ea7be2e8b",
+    "data/tracker_lifecycle_fixture.csv": "d7e107f1be0b500d2a2cfcdc5fd78d6f6ec3035cdc1e91c9fdfc5182add1da2f",
+    "expected/tracker_fixture_expected.json": "6f902e3e8f3459c8508d553261421719824c2fcec91f01ad9a930577fb06b1c9",
+    "schemas/benchmark-manifest.schema.json": "32d3abb5f6a114f41ba3b9ab8e2b16f3203867c3c80bcd4942d91e7b227254b7",
+    "schemas/event-observation.schema.json": "0bc5842aaf66492dba999d2ff3d6ca5c268f367aabbcc5e27c7edb45c60ec984",
+    "schemas/role-validation.schema.json": "ea5582caed606e67ffdea9c422982e2fa72d5cf6daea0398a309dfa27a4166b1"
+  },
+  "artifacts": [
+    {
+      "id": "gharchive-2024-01-15-to-21-selected-repos",
+      "kind": "acquired_derived_event_snapshot",
+      "source_url": "https://www.gharchive.org/",
+      "source_format": "hourly JSON.GZ public GitHub event archive",
+      "source_window": "2024-01-15T00:00:00Z/2024-01-22T00:00:00Z",
+      "source_hours": [
+        "2024-01-15-0",
+        "2024-01-16-0",
+        "2024-01-17-0",
+        "2024-01-18-0",
+        "2024-01-19-0",
+        "2024-01-20-0",
+        "2024-01-21-0"
+      ],
+      "raw_snapshot_sha256": {
+        "2024-01-15-0.json.gz": "019cd01bb263573ae1d633fd965cdc9869fa5eefc31bd409376d10052ed7acd8",
+        "2024-01-16-0.json.gz": "62fa17f986933b8692719ce00a8fa049aa528544a676096af629b3986aebfc95",
+        "2024-01-17-0.json.gz": "f9811fb12b004d3f96c4bd1007324d574ad6a469f01a4bbcc3230b8da33ad291",
+        "2024-01-18-0.json.gz": "db5b6287779708ee5e9eeb7cb815e09d6dc51160a8c57c15296d457be3ba48aa",
+        "2024-01-19-0.json.gz": "44425be9352b9c1f3dde4c4aa420601d2cc14e20103cfd20afe3360d58933798",
+        "2024-01-20-0.json.gz": "d22bf0d329db85abbaa15e86d7e822ffbec58320ff6813d34aa1c6bc011e631f",
+        "2024-01-21-0.json.gz": "72e2238d21b1719e606ee9768740aa29e823259e6b7b9a5c3ffbb3792513c109"
+      },
+      "selection": {
+        "repositories": [
+          "apache/airflow",
+          "grafana/gotip",
+          "kubernetes/kubernetes",
+          "microsoft/vscode",
+          "numpy/numpy",
+          "pandas-dev/pandas",
+          "python/cpython",
+          "rust-lang/rust"
+        ],
+        "event_types": [
+          "PushEvent",
+          "IssuesEvent",
+          "IssueCommentEvent",
+          "PullRequestEvent",
+          "PullRequestReviewEvent",
+          "PullRequestReviewCommentEvent",
+          "ReleaseEvent"
+        ],
+        "actor_fields_removed": true,
+        "raw_payload_removed": true
+      },
+      "artifact": "data/gharchive_events_2024-01-15_to_21.ndjson",
+      "rows": 554,
+      "sha256": "acd0827c694028730c4ed61808d7d1b72333497c73c73c72aa1b11c677d2838c",
+      "use_for": [
+        "event normalization",
+        "daily activity",
+        "issue/pr/review/release counting",
+        "short-window rhythm smoke test"
+      ],
+      "do_not_use_for": [
+        "production delivery speed",
+        "individual skill",
+        "employment role",
+        "project fit"
+      ],
+      "quality_notes": [
+        "public GitHub only",
+        "single UTC hour per day",
+        "bots and automation may be present",
+        "event completeness must not be assumed"
+      ],
+      "as_of": "2026-08-29",
+      "window": "2024-01-15T00:00:00Z/2024-01-22T00:00:00Z",
+      "n": 554,
+      "denominator": "expected source hours=168; observed source hours=7",
+      "coverage": {
+        "status": "partial",
+        "observed": 7,
+        "expected": 168,
+        "missing": 161,
+        "unit": "hours",
+        "rate": 0.0417
+      },
+      "limitations": [
+        "public GitHub only",
+        "single UTC hour per day",
+        "bots and automation may be present",
+        "7 of 168 source hours are present (4.17%); absence and cadence metrics are not observed",
+        "production delivery speed",
+        "individual skill",
+        "employment role",
+        "project fit"
+      ],
+      "source_version": "2026-08-29"
+    },
+    {
+      "id": "technical-role-ground-truth-zenodo-3986172",
+      "kind": "research_labeled_validation_data",
+      "source_url": "https://zenodo.org/records/3986172",
+      "doi": "10.5281/zenodo.3986172",
+      "source_version": "2.0",
+      "raw_file": "processed_ground_truth.csv",
+      "raw_rows_including_header": 1663,
+      "raw_sha256": "1f50bdcaf11d2f49c69f88d6f05c3588795ddfce74c3d5035138786308649bb3",
+      "artifact": "data/role_ground_truth_sample.csv",
+      "sample_rows": 40,
+      "sha256": "92d53bb0e8d2bffeb119ef423981d286d2b551520a07824742544be8e990a8e3",
+      "labels": [
+        "Backend",
+        "Frontend",
+        "Mobile",
+        "DevOps",
+        "DataScientist"
+      ],
+      "use_for": [
+        "role-lens feature validation",
+        "precision/recall/F1 fixture",
+        "confusion matrix smoke test"
+      ],
+      "do_not_use_for": [
+        "current actor identity",
+        "PM label",
+        "employment decision",
+        "fit score"
+      ],
+      "quality_notes": [
+        "research data created in 2020",
+        "identity clues removed",
+        "sample is not a direct Grift actor input",
+        "full-stack is a separate source file"
+      ],
+      "as_of": "2026-08-29",
+      "window": "not_applicable",
+      "n": 40,
+      "denominator": "artifact n=40",
+      "coverage": "local_pack",
+      "limitations": [
+        "research data created in 2020",
+        "identity clues removed",
+        "sample is not a direct Grift actor input",
+        "full-stack is a separate source file",
+        "current actor identity",
+        "PM label",
+        "employment decision",
+        "fit score"
+      ]
+    },
+    {
+      "id": "numfocus-2022-to-2024",
+      "kind": "external_reference_metadata",
+      "source_url": "https://zenodo.org/records/14230406",
+      "doi": "10.5281/zenodo.14230406",
+      "source_window": "2022-01/2024-12",
+      "population": "58 NumFOCUS open-source projects",
+      "published": "2025-01-16",
+      "reported_scale": {
+        "actions": 2716910,
+        "activities": 2278299
+      },
+      "use_for": [
+        "activity abstraction design",
+        "project rhythm reference",
+        "release/issue/pr/review event vocabulary"
+      ],
+      "do_not_use_for": [
+        "general industry threshold",
+        "individual ranking"
+      ],
+      "raw_distribution": "not bundled; check source terms before redistribution",
+      "as_of": "2026-08-29",
+      "window": "2022-01/2024-12",
+      "n": 0,
+      "denominator": "artifact n=0",
+      "coverage": "metadata_only",
+      "limitations": [
+        "general industry threshold",
+        "individual ranking"
+      ],
+      "source_version": "2025-01-16",
+      "quality_notes": [
+        "metadata-only local pack entry"
+      ]
+    },
+    {
+      "id": "tawos-v1-1",
+      "kind": "external_reference_metadata",
+      "source_url": "https://github.com/SOLAR-group/TAWOS",
+      "research_paper_url": "https://solar.cs.ucl.ac.uk/pdf/tawosi2022msr.pdf",
+      "source_version": "1.1",
+      "reported_scale": {
+        "issues": 458232,
+        "projects": 39,
+        "jira_repositories": 12
+      },
+      "use_for": [
+        "tracker lifecycle",
+        "issue resolution time",
+        "state transition features"
+      ],
+      "do_not_use_for": [
+        "actor identity join",
+        "PM success label",
+        "current private project baseline"
+      ],
+      "quality_notes": [
+        "repository page and older paper report different counts; pin version explicitly",
+        "research-oriented source"
+      ],
+      "as_of": "2026-08-29",
+      "window": "not_applicable",
+      "n": 39,
+      "denominator": "artifact n=39",
+      "coverage": "metadata_only",
+      "limitations": [
+        "repository page and older paper report different counts; pin version explicitly",
+        "research-oriented source",
+        "actor identity join",
+        "PM success label",
+        "current private project baseline"
+      ]
+    },
+    {
+      "id": "public-jira-dataset-2025-06-23",
+      "kind": "external_reference_metadata",
+      "source_url": "https://zenodo.org/records/15719919",
+      "published": "2025-06-23",
+      "reported_scale": {
+        "jira_repositories": 16,
+        "projects": 1822,
+        "issues": 2700000,
+        "changes": 32000000,
+        "comments": 9000000,
+        "issue_links": 1000000
+      },
+      "use_for": [
+        "issue state history",
+        "comments",
+        "issue links",
+        "tracker schema validation"
+      ],
+      "do_not_use_for": [
+        "person-level role truth",
+        "fit or outcome truth"
+      ],
+      "quality_notes": [
+        "personal information is anonymized",
+        "raw archive is multi-gigabyte and not bundled"
+      ],
+      "as_of": "2026-08-29",
+      "window": "not_applicable",
+      "n": 1822,
+      "denominator": "artifact n=1822",
+      "coverage": "metadata_only",
+      "limitations": [
+        "personal information is anonymized",
+        "raw archive is multi-gigabyte and not bundled",
+        "person-level role truth",
+        "fit or outcome truth"
+      ],
+      "source_version": "2025-06-23"
+    },
+    {
+      "id": "smartshark-2-2",
+      "kind": "external_reference_metadata",
+      "source_url": "https://smartshark.github.io/dbreleases/",
+      "source_version": "2.2",
+      "license": "CC BY 4.0",
+      "reported_scale": {
+        "full_gb": 740,
+        "small_gb": 65
+      },
+      "use_for": [
+        "Git/Jira/GitHub/CI cross-source validation",
+        "bug fix",
+        "rework",
+        "code review",
+        "static analysis"
+      ],
+      "do_not_use_for": [
+        "bundling the full dataset in Grift",
+        "individual performance ranking"
+      ],
+      "quality_notes": [
+        "new projects in release 2.2 have no manual validations according to the release page"
+      ],
+      "as_of": "2026-08-29",
+      "window": "not_applicable",
+      "n": 0,
+      "denominator": "artifact n=0",
+      "coverage": "metadata_only",
+      "limitations": [
+        "new projects in release 2.2 have no manual validations according to the release page",
+        "bundling the full dataset in Grift",
+        "individual performance ranking"
+      ]
+    },
+    {
+      "id": "swe-bench",
+      "kind": "external_reference_metadata",
+      "source_url": "https://www.swebench.com/SWE-bench/guides/datasets/",
+      "reported_scale": {
+        "full_instances": 2294,
+        "lite_instances": 534,
+        "verified_instances": 500
+      },
+      "use_for": [
+        "issue to patch linkage",
+        "test-confirmed change outcome fixture"
+      ],
+      "do_not_use_for": [
+        "individual role",
+        "PM fit",
+        "general project delivery speed"
+      ],
+      "quality_notes": [
+        "benchmark is selected issue-resolution tasks, not a workforce sample"
+      ],
+      "as_of": "2026-08-29",
+      "window": "not_applicable",
+      "n": 2294,
+      "denominator": "artifact n=2294",
+      "coverage": "metadata_only",
+      "limitations": [
+        "benchmark is selected issue-resolution tasks, not a workforce sample",
+        "individual role",
+        "PM fit",
+        "general project delivery speed"
+      ],
+      "source_version": "2026-08-29"
+    },
+    {
+      "id": "dora-metrics-2026",
+      "kind": "metric_definition",
+      "source_url": "https://dora.dev/guides/dora-metrics/",
+      "last_updated": "2026-01-05",
+      "metrics": [
+        "change_lead_time",
+        "deployment_frequency",
+        "failed_deployment_recovery_time",
+        "change_fail_rate",
+        "deployment_rework_rate"
+      ],
+      "use_for": [
+        "metric naming",
+        "production boundary",
+        "throughput/stability separation"
+      ],
+      "do_not_use_for": [
+        "inferring deployment metrics from Git commit timestamps alone"
+      ],
+      "as_of": "2026-08-29",
+      "window": "not_applicable",
+      "n": 0,
+      "denominator": "artifact n=0",
+      "coverage": "metadata_only",
+      "limitations": [
+        "inferring deployment metrics from Git commit timestamps alone"
+      ],
+      "source_version": "2026-01-05",
+      "quality_notes": [
+        "metadata-only local pack entry"
+      ]
+    },
+    {
+      "id": "space-framework",
+      "kind": "measurement_framework",
+      "source_url": "https://www.microsoft.com/en-us/research/publication/the-space-of-developer-productivity-theres-more-to-it-than-you-think/",
+      "use_for": [
+        "multi-dimensional measurement",
+        "anti-single-score guardrail",
+        "survey and qualitative companion signals"
+      ],
+      "do_not_use_for": [
+        "a fixed Grift threshold table"
+      ],
+      "as_of": "2026-08-29",
+      "window": "not_applicable",
+      "n": 0,
+      "denominator": "artifact n=0",
+      "coverage": "metadata_only",
+      "limitations": [
+        "a fixed Grift threshold table"
+      ],
+      "source_version": "2026-08-29",
+      "quality_notes": [
+        "metadata-only local pack entry"
+      ]
+    },
+    {
+      "id": "github-essp-2025",
+      "kind": "measurement_guidance",
+      "source_url": "https://github.com/resources/insights/engineering-system-success-playbook",
+      "published": "2025-05-01",
+      "use_for": [
+        "team perspective",
+        "leading and lagging metrics",
+        "GitHub plus Jira/ServiceNow context",
+        "anti-gamification"
+      ],
+      "do_not_use_for": [
+        "individual surveillance score"
+      ],
+      "as_of": "2026-08-29",
+      "window": "not_applicable",
+      "n": 0,
+      "denominator": "artifact n=0",
+      "coverage": "metadata_only",
+      "limitations": [
+        "individual surveillance score"
+      ],
+      "source_version": "2025-05-01",
+      "quality_notes": [
+        "metadata-only local pack entry"
+      ]
+    },
+    {
+      "id": "levtech-it-human-resources-whitepaper-2026",
+      "kind": "market_taxonomy_context",
+      "source_url": "https://levtech.jp/files/doc/levtech_research_2026.pdf",
+      "use_for": [
+        "Japanese role taxonomy",
+        "candidate and employer requirement vocabulary",
+        "future partner pilot strata"
+      ],
+      "do_not_use_for": [
+        "GitHub actor labels",
+        "repository behavior thresholds"
+      ],
+      "as_of": "2026-08-29",
+      "window": "not_applicable",
+      "n": 0,
+      "denominator": "artifact n=0",
+      "coverage": "metadata_only",
+      "limitations": [
+        "GitHub actor labels",
+        "repository behavior thresholds"
+      ],
+      "source_version": "2026-08-29",
+      "quality_notes": [
+        "metadata-only local pack entry"
+      ]
+    },
+    {
+      "id": "stackoverflow-developer-survey",
+      "kind": "market_taxonomy_context",
+      "source_url": "https://github.com/StackExchange/Survey",
+      "license_note": "Survey data uses ODbL 1.0 and DbCL 1.0 as stated by the official repository.",
+      "use_for": [
+        "technology and role vocabulary",
+        "population context"
+      ],
+      "do_not_use_for": [
+        "linking survey respondents to GitHub actors"
+      ],
+      "as_of": "2026-08-29",
+      "window": "not_applicable",
+      "n": 0,
+      "denominator": "artifact n=0",
+      "coverage": "metadata_only",
+      "limitations": [
+        "linking survey respondents to GitHub actors"
+      ],
+      "source_version": "2026-08-29",
+      "quality_notes": [
+        "metadata-only local pack entry"
+      ]
+    },
+    {
+      "id": "github-innovation-graph",
+      "kind": "macro_context_only",
+      "source_url": "https://github.com/github/innovationgraph",
+      "source_version": "v1.0.11 / Q1 2026 release",
+      "license": "CC0-1.0",
+      "use_for": [
+        "macro public GitHub context",
+        "representativeness caveat"
+      ],
+      "do_not_use_for": [
+        "individual project benchmark",
+        "individual developer benchmark"
+      ],
+      "quality_notes": [
+        "economy-level quarterly aggregation",
+        "public GitHub only",
+        "datasheet explicitly excludes individual project/developer activity use"
+      ],
+      "as_of": "2026-08-29",
+      "window": "not_applicable",
+      "n": 0,
+      "denominator": "artifact n=0",
+      "coverage": "metadata_only",
+      "limitations": [
+        "economy-level quarterly aggregation",
+        "public GitHub only",
+        "datasheet explicitly excludes individual project/developer activity use",
+        "individual project benchmark",
+        "individual developer benchmark"
+      ]
+    }
+  ]
+}

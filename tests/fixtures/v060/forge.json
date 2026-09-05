@@ -1,0 +1,14 @@
+{
+  "schema_version": "tep-forge-export-v1",
+  "provider": "github",
+  "events": [
+    {
+      "event_id": "opaque-1",
+      "kind": "pull_request_review",
+      "timestamp": "2026-08-29T00:00:00Z",
+      "actor_canonical_id": "candidate_001",
+      "pr_number": 12,
+      "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  ]
+}

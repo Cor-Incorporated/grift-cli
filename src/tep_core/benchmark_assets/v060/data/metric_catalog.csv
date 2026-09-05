@@ -1,0 +1,18 @@
+metric_id,entity,axis,unit,formula_or_definition,required_source,unknown_when,forbidden_interpretation
+surface.frontend_share,repo_or_actor,surface,ratio,frontend changed files divided by all classified changed files,git diff paths,zero classified files,frontend employment role
+surface.backend_share,repo_or_actor,surface,ratio,backend changed files divided by all classified changed files,git diff paths,zero classified files,backend employment role
+surface.unknown_share,repo_or_actor,surface,ratio,unclassified or other changed files divided by all changed files,git diff paths,no changed files,measurement failure without caveat
+rhythm.active_day_share,project_or_actor,rhythm,ratio,days with at least one qualifying event divided by window days,git or forge events,no timestamp or empty window,delivery speed
+rhythm.inter_event_gap_median_hours,project_or_actor,rhythm,hours,median gap between ordered events in the declared source,git or forge events,fewer than two events,work duration or productivity
+rhythm.inter_event_gap_iqr_hours,project_or_actor,rhythm,hours,75th percentile gap minus 25th percentile gap,git or forge events,fewer than four events,work consistency
+rhythm.same_day_event_share,project,rhythm,ratio,events on days containing more than one event divided by all events,forge events,fewer than one event,team performance score
+rhythm.release_interval_days,project,delivery_context,days,time between observed releases,release events,fewer than two releases,production reliability
+forge.pr_to_first_review_hours,project_or_actor,collaboration,hours,PR creation to first review event,PR and review events,review data absent or no reviewed PR,review quality
+forge.pr_to_merge_hours,project_or_actor,flow,hours,PR creation to merge,PR events,merge timestamp absent,developer speed
+tracker.issue_to_close_hours,project_or_actor,flow,hours,issue creation to close,tracker lifecycle,close timestamp absent,PM success
+tracker.issue_in_progress_hours,project_or_actor,flow,hours,time in in-progress states,tracker changelog,state transitions absent,work effort
+delivery.change_lead_time,project,delivery,days,commit to successful production deployment,DORA-compatible deploy telemetry,deploy timestamp absent,git commit interval
+delivery.change_fail_rate,project,stability,ratio,deployments requiring immediate intervention,DORA-compatible deploy and incident telemetry,incident/deploy linkage absent,individual quality
+role.observed_surface_profile,actor,role_lens,profile,distribution of changed surfaces,git diff paths,identity or changes absent,confirmed employment role
+role.external_validation_f1,model_validation,role_lens,ratio,macro F1 against labeled research fixture,role_ground_truth_sample.csv,small or missing labeled data,actor fit
+alignment.axis_support,actor_project,alignment,qualitative,requirement and observed values shown with coverage and limitations,project requirements plus actor/project observations,any axis missing,composite suitability score

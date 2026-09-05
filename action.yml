@@ -14,9 +14,16 @@ inputs:
     required: false
     default: "repo"
   version:
-    description: "grift-cli version to install (pinned)"
+    description: "Exact grift-cli version to install (X.Y.Z, optionally aN/bN/rcN)"
     required: false
-    default: "0.5.9"
+    default: "0.7.0"
+  install-source:
+    description: >-
+      Where to install grift-cli from: 'pypi' (default, production) or
+      'checkout' (install this action's immutable source checkout — used by
+      this repo's own CI before a version is published).
+    required: false
+    default: "pypi"
   comment:
     description: "Opt-in: post the shared block as a PR comment (default off)"
     required: false
@@ -25,10 +32,76 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Install grift-cli (pinned)
+    - name: Validate action inputs
+      shell: bash
+      env:
+        GRIFT_ACTION_SCOPE: ${{ inputs.scope }}
+        GRIFT_ACTION_VERSION: ${{ inputs.version }}
+        GRIFT_ACTION_INSTALL_SOURCE: ${{ inputs.install-source }}
+        GRIFT_ACTION_COMMENT: ${{ inputs.comment }}
+      run: |
+        set -euo pipefail
+
+        case "$GRIFT_ACTION_SCOPE" in
+          repo|tenant) ;;
+          *)
+            echo "::error::scope must be one of: repo, tenant" >&2
+            exit 2
+            ;;
+        esac
+        version_pattern='^[0-9]+\.[0-9]+\.[0-9]+((a|b|rc)[0-9]+)?$'
+        if [[ ! "$GRIFT_ACTION_VERSION" =~ $version_pattern ]]; then
+          echo "::error::version must be an exact release; use 0.6.0 or 0.6.0rc1" >&2
+          exit 2
+        fi
+        case "$GRIFT_ACTION_INSTALL_SOURCE" in
+          pypi|checkout) ;;
+          *)
+            echo "::error::install-source must be one of: pypi, checkout" >&2
+            exit 2
+            ;;
+        esac
+        case "$GRIFT_ACTION_COMMENT" in
+          true|false) ;;
+          *)
+            echo "::error::comment must be one of: true, false" >&2
+            exit 2
+            ;;
+        esac
+
+    - name: Validate repository checkout
       shell: bash
       run: |
-        python -m pip install --no-input "grift-cli==${{ inputs.version }}"
+        set -euo pipefail
+        if [[ "$(git rev-parse --is-inside-work-tree 2>/dev/null || true)" != "true" ]]; then
+          echo "::error::grift requires the caller repository to be checked out" >&2
+          exit 2
+        fi
+        if [[ "$(git rev-parse --is-shallow-repository)" != "false" ]]; then
+          echo "::error::grift requires complete history; use actions/checkout with fetch-depth: 0" >&2
+          exit 2
+        fi
+
+    - name: Install grift-cli (pinned)
+      shell: bash
+      env:
+        GRIFT_ACTION_VERSION: ${{ inputs.version }}
+        GRIFT_ACTION_INSTALL_SOURCE: ${{ inputs.install-source }}
+        GRIFT_ACTION_PATH: ${{ github.action_path }}
+      run: |
+        set -euo pipefail
+        case "$GRIFT_ACTION_INSTALL_SOURCE" in
+          checkout)
+            python -m pip install --no-input "$GRIFT_ACTION_PATH"
+            ;;
+          pypi)
+            python -m pip install --no-input "grift-cli==$GRIFT_ACTION_VERSION"
+            ;;
+          *)
+            echo "::error::install-source validation was bypassed" >&2
+            exit 2
+            ;;
+        esac
 
     - name: Run grift analyze (observation only)
       shell: bash
@@ -41,7 +114,7 @@ runs:
         # Shared block = the copy-pasteable summary section of report.md.
         # Extract from '## Shared block' to the next '## ' heading.
         awk '/^## Shared block/{flag=1;next}/^## /{flag=0}flag' .grift/report.md > .grift/shared-block.md
-        cat .grift/shared-block.md >> "$GITHUB_STEP_SUMMARY"
+        test -s .grift/shared-block.md
         {
           echo "### grift (observation only — no pass/fail)"
           echo '```'

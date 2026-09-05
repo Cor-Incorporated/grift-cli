@@ -1,0 +1,161 @@
+name: v060-provider-live
+
+# Explicit human gate. This workflow is intentionally absent from push,
+# pull_request, schedule, and the ordinary CI dependency graph.
+on:
+  workflow_dispatch:
+    inputs:
+      tier:
+        description: "Provider live gate tier"
+        required: true
+        default: pr
+        type: choice
+        options:
+          - pr
+          - release
+
+permissions:
+  contents: read
+
+concurrency:
+  group: v060-provider-live-${{ inputs.tier }}
+  cancel-in-progress: false
+
+jobs:
+  credential-preflight:
+    runs-on: ubuntu-latest
+    steps:
+      # This runs before checkout or any provider request. Release evidence is
+      # never silently downgraded to unauthenticated collection.
+      - name: Require release provider credentials before network collection
+        env:
+          LIVE_TIER: ${{ inputs.tier }}
+          V060_GITHUB_TOKEN: ${{ secrets.V060_GITHUB_TOKEN }}
+          V060_GITLAB_TOKEN: ${{ secrets.V060_GITLAB_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [[ "$LIVE_TIER" == "release" ]]; then
+            test -n "$V060_GITHUB_TOKEN" || {
+              echo "release gate requires V060_GITHUB_TOKEN" >&2
+              exit 2
+            }
+            test -n "$V060_GITLAB_TOKEN" || {
+              echo "release gate requires V060_GITLAB_TOKEN" >&2
+              exit 2
+            }
+          fi
+
+  provider-live:
+    needs: credential-preflight
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Establish the suite deadline before checkout and clones
+        env:
+          LIVE_TIER: ${{ inputs.tier }}
+        run: |
+          set -euo pipefail
+          # Leave two minutes for the always-upload step while keeping every
+          # collection, clone, install, and verification inside the 30m job.
+          echo "LIVE_GATE_DEADLINE_EPOCH=$(($(date +%s) + 1680))" >> "$GITHUB_ENV"
+          mkdir -p provider-live-evidence
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          placeholder = {
+              "schema_version": "v060-provider-live-preflight-v1",
+              "tier": os.environ["LIVE_TIER"],
+              "verdict": "FAIL",
+              "reason": "runner_not_completed",
+          }
+          root = Path("provider-live-evidence")
+          (root / "scenario-summary.json").write_text(
+              json.dumps(placeholder, sort_keys=True) + "\n", encoding="utf-8"
+          )
+          (root / "guard-ledger.jsonl").write_text(
+              json.dumps({**placeholder, "guard_id": "v060-provider-live"}, sort_keys=True)
+              + "\n",
+              encoding="utf-8",
+          )
+          PY
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install exact checkout
+        run: |
+          set -euo pipefail
+          run_before_deadline() {
+            local remaining=$((LIVE_GATE_DEADLINE_EPOCH - $(date +%s) - 120))
+            ((remaining > 0)) || return 124
+            timeout "${remaining}s" "$@"
+          }
+          run_before_deadline python -m pip install --upgrade pip
+          run_before_deadline python -m pip install -e .
+      - name: Materialize full fixed-OID source repositories
+        env:
+          LIVE_TIER: ${{ inputs.tier }}
+        run: |
+          set -euo pipefail
+          clone_before_deadline() {
+            local requested="$1"
+            shift
+            local remaining=$((LIVE_GATE_DEADLINE_EPOCH - $(date +%s) - 120))
+            ((remaining > 0)) || return 124
+            ((requested < remaining)) || requested="$remaining"
+            timeout "${requested}s" git clone --quiet "$@"
+          }
+          repo_root="${RUNNER_TEMP}/grift-v060-provider-live/repos"
+          mkdir -p "$repo_root"
+          clone_before_deadline 180 https://github.com/cloudflare/cloudflare-os.git "$repo_root/cloudflare-os"
+          clone_before_deadline 600 https://github.com/vitejs/vite.git "$repo_root/vite"
+          clone_before_deadline 180 https://gitlab.com/gitlab-org/release-cli.git "$repo_root/release-cli"
+          if [[ "$LIVE_TIER" == "release" ]]; then
+            clone_before_deadline 180 https://github.com/VOICEVOX/voicevox.git "$repo_root/voicevox"
+            clone_before_deadline 600 https://gitlab.com/gitlab-org/cli.git "$repo_root/cli"
+          fi
+      - name: Run fixed-OID provider live gate
+        env:
+          LIVE_TIER: ${{ inputs.tier }}
+          V060_GITHUB_TOKEN: ${{ secrets.V060_GITHUB_TOKEN }}
+          V060_GITLAB_TOKEN: ${{ secrets.V060_GITLAB_TOKEN }}
+        run: |
+          set -euo pipefail
+          mkdir -p provider-live-evidence
+          remaining=$((LIVE_GATE_DEADLINE_EPOCH - $(date +%s) - 120))
+          ((remaining > 0)) || exit 124
+          registry_args=()
+          if [[ "$LIVE_TIER" == "pr" ]]; then
+            registry_args=(
+              --registry-output provider-live-evidence/public-registry
+            )
+          fi
+          # Raw CAS is run-local on hosted runners. It can resume a later
+          # local invocation only when an operator supplies a persistent
+          # private path; this workflow never uploads or claims cross-run
+          # persistence for raw provider bodies.
+          timeout "${remaining}s" python scripts/v060_provider_live_gate.py \
+            --tier "${{ inputs.tier }}" \
+            --repo-root "${RUNNER_TEMP}/grift-v060-provider-live/repos" \
+            --summary provider-live-evidence/scenario-summary.json \
+            --ledger provider-live-evidence/guard-ledger.jsonl \
+            --partial-bundle-root "${RUNNER_TEMP}/grift-v060-provider-live/private-resume-bundles" \
+            --github-token-env V060_GITHUB_TOKEN \
+            --gitlab-token-env V060_GITLAB_TOKEN \
+            --source-commit "${GITHUB_SHA}" \
+            --suite-deadline-epoch "${LIVE_GATE_DEADLINE_EPOCH}" \
+            "${registry_args[@]}"
+      - name: Upload sanitized provider evidence only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v060-provider-live-${{ inputs.tier }}-${{ github.sha }}
+          path: |
+            provider-live-evidence/scenario-summary.json
+            provider-live-evidence/guard-ledger.jsonl
+            provider-live-evidence/public-registry/
+          if-no-files-found: error
+          retention-days: 14

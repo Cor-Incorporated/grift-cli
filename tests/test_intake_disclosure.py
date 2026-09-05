@@ -28,12 +28,11 @@ def test_disclosure_and_norms_carry_the_same_promises() -> None:
             "推測リスク",
             "推測" in CONFIRMATION_TEXT and "推測" in norms and "re-identification" in norms_en,
         ),
-        ("repo名なし", "repo 名は含まれません" in CONFIRMATION_TEXT),
+        ("aggregate repo名なし", "aggregate に repo 名は含まれません" in CONFIRMATION_TEXT),
         (
-            "二枚扉",
-            "二枚扉" in CONFIRMATION_TEXT
-            and "公開ドア" in CONFIRMATION_TEXT
-            and "非公開ドア" in CONFIRMATION_TEXT,
+            "profile別door",
+            "local / controlled / public-pr" in CONFIRMATION_TEXT
+            and "private-payload door" in CONFIRMATION_TEXT,
         ),
         ("intake URL", "tep-contributions" in INTAKE_REPO and INTAKE_REPO in CONFIRMATION_TEXT),
     ]
@@ -87,9 +86,15 @@ def test_payload_with_repo_name_field_is_rejected() -> None:
                 found |= keys_of(value)
         return found
 
-    assert not keys_of(payload) & {"repository", "repo", "canonical_id", "actor", "actors", "emails", "path"}, (
-        "payload must not carry identifying keys (values like analysis_scope='repo' are fine)"
-    )
+    assert not keys_of(payload) & {
+        "repository",
+        "repo",
+        "canonical_id",
+        "actor",
+        "actors",
+        "emails",
+        "path",
+    }, "payload must not carry identifying keys (values like analysis_scope='repo' are fine)"
     # falsify: smuggle a repo-name key back into the payload — the same key
     # walk the intake validator runs must detect it (mirror of intake CI)
     smuggled = json.loads(text)

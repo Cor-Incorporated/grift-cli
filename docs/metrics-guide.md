@@ -1,6 +1,6 @@
-# grift レポートの読み方 — 指標ごとの平易な解説（v2・2026-08-23）
+# grift レポートの読み方 — 指標ごとの平易な解説（v3・2026-08-31）
 
-**対象**: grift 0.5.4 以降（指標の定義は全ての 0.5.x で共通）。非エンジニアの方向け。
+**対象**: grift 0.5.4 以降。report-v1 の既存定義は0.5.x互換、v0.6のexperience / roleは別のversion付き定義です。非エンジニアの方向け。v0.6 の subject コマンド（repo / actor / project / align）の数値も同じ原則です。
 **原則の再掲**: すべての数値は**観測された事実の記録**であって、優劣の評価ではありません。単独の数値での合否判断・人と人の比較は TEP 非準拠です（[docs/norms.md](norms.md)）。書かれていないこと（= not observed）は「無かったこと」を意味しません。
 **参考値の出典**: 特に断らない限り、公開リポジトリ 117 件のコーパス（v2026.11・repo スコープ）と v0.5.2 実地調査（requests / flask / GitHub CLI / chalk ほか）に基づきます。参考値は「だいたいの目安」であり、分布は成長とともに新版として出ます。
 
@@ -65,6 +65,61 @@ grift のレポートは3層の観測で構成されます。**層 = その数�
 | conventional_commit_share / issue_link_density | 定型件名（`feat:` 等）の割合 / `#N` 参照を含む件名の割合 |
 | language_composition / dependency_manifests / monorepo_markers | 言語構成・依存管理ファイル・monorepo 兆候 |
 | test_file_ratio / docs_share | テスト/ドキュメントパスを触れたコミットの割合 |
+
+### 同意済み本人のexperience / role —「どの文脈の観測か」
+
+この層は、固定OID treeの`.tep/identity.toml`または明示`--identity FILE`で1 Actorを
+選び、その行に`attribution_state=verified|claimed`と
+`consent=recorded-explicit-consent`の両方がある場合だけ出ます。stateや`authority`だけ
+では解放せず、CLIは記録の存在だけを検証します。`inferred`、`external`、
+`unresolved`、`bot`、公開OSSの第三者Actor、identityなしrepo、マーカーのないidentityは
+`not_observed(consenting_actor_required)`です。別repo観測時のCWD identityと
+working-treeだけのidentity変更は同意根拠にしません。
+
+| 観測 | 一言定義 |
+|---|---|
+| cross_author_modification_share | 作成者が既知のM/R対象commitのうち、別Actorが作成したfileを含む割合 |
+| adopted_creations | 30日以上観測できる自作fileのうち、30日後以降に別human ActorがM/Rした数 |
+| self_maintenance_returns | 自作fileへの前回接触から180日以上後に戻ったM/R event数 |
+| dependency_update_share | manifest/lockfileを触ったactor非merge commitの割合 |
+| post_release_fixes | tag targetを祖先に持ち、tag時刻から30日以内（境界を含む）の既存corrective classifierによるfix/revert commit |
+| declared_ai_assist_share | version管理されたtrailer/AI identityで**申告された**AI支援commitの割合 |
+| human co-authored share | human `Co-authored-by`を含むcommitの割合 |
+
+AI coauthor identityのSSOTは固定OID treeの`.tep/ai-identities.toml`
+（`ai-identity-v1`、exact `emails` / domain-separated `email_sha256`）です。
+working-treeだけの変更、名前、handleでは推測しません。`AI-Assisted-By`、
+`AI-Generated-By`、`Agent-Lane`は従来どおり申告として扱い、固定treeで未宣言の
+`Co-authored-by`はhuman側へ残します。
+いずれも`git interpret-trailers --parse`と同じ、本文から空行で分離された末尾trailer
+blockだけを読み、本文中の例示行は申告に数えません。AI申告commitのtest co-changeは
+既存test-cochangeと同じproduction path分類を使い、README/docs/LICENSE等を母数から
+除外します。
+
+全観測は `kind`、numerator、denominator、unit、window、definition version、limitations
+を伴います。denominatorが20未満なら率とnumeratorを隠し、denominatorと
+`insufficient_population`だけを示します。母数gate通過後にAI申告が0なら
+`no_declared_ai_commits`であり、AI不使用・能力・優劣を意味しません。
+
+特殊な記述観測でもnumeratorを省略しません。cadenceは隣接commit間隔の件数、
+language/domain timelineはpath touchが1件以上あるtarget commit数、repo size pointは
+first/median/lastで実際に参照した一意commit snapshot数です。各denominatorはtargetの
+human non-merge commit数で、cadenceの`unit=days`はmedian/longest descriptorの単位です。
+tag時刻だけではpost-releaseを判定せず、tag targetがfix commitのGit祖先であることを
+固定OIDのparent DAGで検証します。tag target、parent pathが欠ける場合やcycleの場合は
+数値を出さず`not_observed`にし、兄弟branchのfixは0件として扱います。annotated tagと
+lightweight tagはrelease境界に使えますが、lightweight tagのtagger帰属は行いません。
+shallow/promisor/missing-object履歴ではexperience/role全体を
+`not_observed(history_incomplete)`にします。file lineageはcommit DAGのparent stateで
+追跡し、mergeの既存pathはfirst parent、secondaryから一意に追加されたpathはそのcreatorを
+継承し、衝突はunresolvedにします。annotated taggerはplaintext emailとidentity-v2の
+`email_sha256`を同じ帰属規則で照合します。
+
+`role_profile-v1`は単一職種やscoreではなく、top-levelを`domain`、`work_type`、
+`time`、`process_position`の4次元だけに固定します。`time`の内側に`phase`
+（early/middle/recent）と`calendar_year`を置き、暦年を第5の次元にはしません。
+process positionはcreator/maintainer/integrator/releaseです。案件宣言と並べる場合も
+fit/hire/rankへ変換せず、人間が確認する質問を作るために使います。
 
 ---
 
@@ -188,10 +243,10 @@ A クラス（検証文化）の中央値は 0.05 と低めですが、因果の
 
 | 名前 | 一言でいうと |
 |---|---|
-| **machuz/eis（Engineering Impact Signal）** | TEP の survival 観測は EIS 流の blame サンプリング（"EIS-style blame sampling"）を系譜として採り、設計上の差がある: EIS は 7 軸を固定比重で 0-100 の合成スコアに丸め、型ラベルとチーム横並び比較を出す。TEP は合成スコア・文脈による重み付け・等級語彙を設計で禁止し（6禁止・norms）、判別検証（コーパス A vs C/D）と `grift verify`（再現検証）・無送信設計（測定コマンドはネットワーク非接触・こちらへの自動送信は恒久にない）で信頼を担保する |
+| **machuz/eis（Engineering Impact Signal）** | TEP の survival 観測は EIS 流の blame サンプリング（"EIS-style blame sampling"）を系譜として採り、設計上の差がある: EIS は 7 軸を固定比重で 0-100 の合成スコアに丸め、型ラベルとチーム横並び比較を出す。TEP は合成スコア・文脈による重み付け・等級語彙を設計で禁止し（6禁止・norms）、判別検証と `grift verify` で信頼を担保する。測定は既定offlineで、公開Forge取得だけが明示opt-inである |
 | DORA | デリバリ性能の4指標（デプロイ頻度・リードタイム・MTTR・変更失敗率）とそのベンチマーク調査。TEP の norms 型の利用規範（ガイドラインで運用を律する）は DORA 方式を参考にしている |
 | SPACE | 生産性を満足・パフォーマンス・活動・コミュニケーション・効率・時間フローで捉えるフレーム。「単一指標で生産性は測れない」TEP の立場と親和 |
-| GitClear | コードの健全性（技術的負債・リワーク傾向）を商業データで追う調査・SaaS。重複する観測（rework 系）もあるが、TEP は個人の比較表を出さない点と CLI の無送信設計（測定コマンドはネットワーク非接触）が異なる |
+| GitClear | コードの健全性（技術的負債・リワーク傾向）を商業データで追う調査・SaaS。重複する観測（rework 系）もあるが、TEP は個人の比較表を出さず、既定offline・明示opt-inの公開Forge取得を分離する点が異なる |
 | MSR（Mining Software Repositories） | ソフトウェアリポジトリからの実証研究の学術分野。TEP の git 由来指標の多くはこの分野の蓄積の応用 |
 | bus factor | 中心開発者の離脱でプロジェクトが止まる度合い。TEP の top_actor_share / collaboration_class はこの問いに観測で答える側面を持つ |
 
@@ -222,6 +277,31 @@ A クラス（検証文化）の中央値は 0.05 と低めですが、因果の
 | `pending_attribution` | identity（誰の仕事か）が未設定 |
 | `scope_is_tenant` | 参照分布は repo スコープ専用のため tenant 実行では付かない |
 | `survival_scan_disabled` | survival は `--survival` 指定時のみ |
+| `no_actor_commits` | 指定 canonical_id の commit がこの履歴に無い（能力不足ではない） |
+| `forge_export_not_provided` | ローカル forge export が無い。review は観測不能 |
+| `tracker_export_not_provided` | ローカル tracker export が無い。活動が無かったことではない |
+| `partial_source_coverage` | bound export の一部だけが提供された。含まれる件数は下限として観測するが、absence・cadence・割合は確定しない |
+| `event_kind_not_collected` | tracker v2 契約がその event 種別を収集していない。0件とは扱わない |
+| `requirement_not_provided` | 案件側が要求を書いていない（不足ではない） |
+
+### v0.6 の数値 / 単位 / 入力 / 言えないこと
+
+| 数値 | 単位 | 入力 | 言えないこと |
+|---|---|---|---|
+| surface_commit_counts | commits | git paths | 職種の確定 |
+| active_days_180d | days | git author timestamp | 労働時間・勤怠・意欲 |
+| median_gap_days | days | observation_date から 180 日以内の git author timestamp | 納期遵守・労働時間 |
+| test_only_commit_count | commits | git + test paths | QA 適性 |
+| merge_commit_share | ratio | git | PR review の質 |
+| review_event_count | events | local forge export | 議論の良し悪し |
+| event_observation.sample_size / active_utc_days | events / days | target-bound forge export-v2 | 未収集期間のabsence、速度、品質 |
+| tracker_lifecycle issue transition | hours | target-bound tracker export-v2の検証済みtimestamp差 | 労働時間、工数、PM適性、納期遵守 |
+| comparison=overlap 等 | enum | declared × observed | 採用の合否 |
+
+v0.6 subject command はprovider名に依存せず、provider/host/stable project ID/path、
+target OID、window、coverageで束縛したv2 exportだけを受理します。Actor別表示は
+`actor_canonical_id`の完全一致だけで絞り、name/email/handleから人物を推測しません。
+入力仕様と拒否条件は[ローカルexport契約](input-export-schema.md)を参照してください。
 
 ---
 

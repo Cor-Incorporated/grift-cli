@@ -1,0 +1,16 @@
+{
+  "fixture_kind": "synthetic_contract",
+  "project_constant": {
+    "active_days": 4,
+    "issue_to_close_median_hours": 54,
+    "pr_to_merge_median_hours": 7,
+    "release_count": 1
+  },
+  "project_burst": {
+    "active_days": 1,
+    "issue_to_close_median_hours": 0.5,
+    "pr_to_merge_median_hours": 2,
+    "release_count": 1
+  },
+  "must_not_emit": ["developer_speed", "pm_fit_score", "overall_alignment_score"]
+}

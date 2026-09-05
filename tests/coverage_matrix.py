@@ -2,9 +2,10 @@
 
 Shared by scripts/gen_coverage_table.py (writes golden/coverage.md) and
 tests/test_coverage.py (verifies the committed table does not drift and that
-holes are explicit, not silent). Wave-1 tracks existing report-v1 fields;
-wave-2/3 rows are placeholders for new observations (context v2 / experience)
-which will additionally require the both-excited-and-not-observed rule.
+holes are explicit, not silent). Wave-1 tracks existing report-v1 fields and
+wave-2 tracks repo-level context detectors.  The historical wave-3
+experience/role rows are retained as an explicit synthetic-only lane: current
+v0.6 policy does not infer an identity in public-OSS golden repositories.
 """
 
 from __future__ import annotations
@@ -19,7 +20,9 @@ EXPECTED = ROOT / "golden" / "expected"
 REQUIREMENT_EXCITED = "excited"  # need >= 1 observed ('o')
 REQUIREMENT_BOTH = "both"  # need >= 1 'o' AND >= 1 'x' (new observations)
 REQUIREMENT_INFO = "info"  # shown for context; no machine requirement
+REQUIREMENT_SYNTHETIC = "synthetic"  # actor exactness is tested outside public golden
 STATUS_HOLE = "HOLE"  # requirement unmet — must be listed with an issue
+STATUS_SYNTHETIC = "synthetic"  # intentional '-' cells; not a public-golden gap
 
 
 @dataclass(frozen=True)
@@ -112,41 +115,52 @@ FIELD_ROWS: tuple[FieldRow, ...] = (
         REQUIREMENT_INFO,
         "repo スコープ専用。golden は tenant スコープ（scope_is_tenant）。corpus v2026.09 で励起",
     ),
-    # --- wave 2/3 placeholders (new observations; enforced from their wave) ---
+    # --- wave 2: public-OSS, repo-level detector placeholders ---
     FieldRow(
         "context_profile.lifecycle_stage",
         "context v2: lifecycle_stage",
         "2",
         REQUIREMENT_BOTH,
-        "G8 (dormant) / G7,G13 (active) で両側を予定期",
+        "repo-level detector。public golden expected未ピン、release acceptance未証明",
     ),
     FieldRow(
         "context_profile.language_composition",
         "context v2: language_composition",
         "2",
         REQUIREMENT_BOTH,
-        "G9 polyglot で励起予定期",
+        "repo-level detector。public golden expected未ピン、release acceptance未証明",
     ),
+    # --- historical wave 3: actor exactness moved to exact synthetic tests ---
+    # A public actor or identity-less repository must remain not_observed for
+    # experience/role.  '-' is intentional here; never manufacture an identity
+    # or regenerate expected JSON merely to excite these rows.
     FieldRow(
         "experience.declared_ai_assist_share",
         "experience: declared_ai_assist_share",
         "3",
-        REQUIREMENT_BOTH,
-        "G6 (AI 共著トレーラー実在) で励起・G1〜G5,G11 で not_observed 予定期",
+        REQUIREMENT_SYNTHETIC,
+        "public OSSではactor観測しない。exact synthetic + blind pilotで検証",
     ),
     FieldRow(
         "experience.cross_author_modification_share",
         "experience: cross_author_modification_share",
         "3",
-        REQUIREMENT_BOTH,
-        "G7 (handoff 多数) で励起・G11 (solo) で not_observed/低位 予定期",
+        REQUIREMENT_SYNTHETIC,
+        "public OSSではactor観測しない。exact synthetic + blind pilotで検証",
     ),
     FieldRow(
         "experience.founder_timing",
         "experience: founder 時期性",
         "3",
-        REQUIREMENT_BOTH,
-        "G12 (Tom Christie) で励起予定期",
+        REQUIREMENT_SYNTHETIC,
+        "public OSSではactor観測しない。exact synthetic + blind pilotで検証",
+    ),
+    FieldRow(
+        "role_profile",
+        "role_profile: 4 dimensions",
+        "3",
+        REQUIREMENT_SYNTHETIC,
+        "public OSSではactor観測しない。exact synthetic + blind pilotで検証",
     ),
 )
 
@@ -203,6 +217,8 @@ def compute_matrix() -> dict[str, dict[str, str]]:
 
 
 def row_status(row: FieldRow, cells: dict[str, str]) -> str:
+    if row.requirement == REQUIREMENT_SYNTHETIC:
+        return STATUS_SYNTHETIC
     if int(row.wave) > CURRENT_WAVE:
         return "future"
     values = list(cells.values())

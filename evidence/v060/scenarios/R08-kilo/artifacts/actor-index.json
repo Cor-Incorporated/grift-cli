@@ -1,0 +1,90 @@
+{
+  "actors": [
+    {
+      "actor_id": "antirez",
+      "commit_count": 14,
+      "merge_commit_count": 4,
+      "nonmerge_commit_count": 10
+    },
+    {
+      "actor_id": "christopher-wellons",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "dayu",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "leandro-pereira",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "property404",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "unknowntpo",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    },
+    {
+      "actor_id": "vuong-hoang",
+      "commit_count": 1,
+      "merge_commit_count": 0,
+      "nonmerge_commit_count": 1
+    }
+  ],
+  "limitations": [
+    "Actor IDs are repo-local Git primary-author clusters, not verified people.",
+    "Top selection is observed commit-count extraction, never a quality rank."
+  ],
+  "partition_digest": {
+    "algorithm": "sha256",
+    "value": "51ad206179df0b650ad72563fb1eb57e027fab302aee143d84523ce4d151fc74"
+  },
+  "population": {
+    "actor_count": 7,
+    "basis": "git_primary_author_cluster",
+    "human_commit_count": 20,
+    "window": {
+      "basis": "legacy_head_date",
+      "end": "2025-01-04",
+      "start": "2024-07-08",
+      "unit": "date-range"
+    }
+  },
+  "population_digest": {
+    "algorithm": "sha256",
+    "value": "398bd9ef4d4d84768b08d6aff026766c7b1ae7920d9988e37219e72e00cc661a"
+  },
+  "report_kind": "actor_index",
+  "schema_version": "actor-index-v1",
+  "selection": {
+    "actor_ids": [
+      "antirez",
+      "christopher-wellons",
+      "dayu",
+      "leandro-pereira",
+      "property404",
+      "unknowntpo",
+      "vuong-hoang"
+    ],
+    "mode": "all",
+    "selected_count": 7
+  },
+  "target": {
+    "oid": {
+      "algorithm": "sha1",
+      "value": "323d93b29bd89a2cb446de90c4ed4fea1764176e"
+    }
+  }
+}

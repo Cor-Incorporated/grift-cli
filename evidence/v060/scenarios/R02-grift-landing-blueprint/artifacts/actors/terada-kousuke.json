@@ -1,0 +1,37 @@
+{
+  "account_status": "not_requested",
+  "accounts": [],
+  "actor_id": "terada-kousuke",
+  "basis": "git_primary_author_cluster",
+  "denominator": 54,
+  "limitations": [
+    "This card describes one repo-local cluster and is not a person or quality score."
+  ],
+  "metrics": {},
+  "n": 49,
+  "notices": [
+    "Provider accounts are display evidence only."
+  ],
+  "partition_digest": {
+    "algorithm": "sha256",
+    "value": "ec12d3ad2b4a74f64067c8fa5fd3ac3b58c8577ca7e4118f2cb1ba9fd0c4e456"
+  },
+  "population_digest": {
+    "algorithm": "sha256",
+    "value": "baf73ee698dda8a7a6a1e706551601f327afb58987c72f3e592c0a872f593fb4"
+  },
+  "report_kind": "actor_card",
+  "schema_version": "actor-card-v1",
+  "target": {
+    "oid": {
+      "algorithm": "sha1",
+      "value": "7efd09e22d06caa813149af891ae2001bebf6cb4"
+    }
+  },
+  "window": {
+    "basis": "legacy_head_date",
+    "end": "2026-07-16",
+    "start": "2026-01-17",
+    "unit": "date-range"
+  }
+}
