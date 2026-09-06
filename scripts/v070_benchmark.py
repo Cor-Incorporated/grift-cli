@@ -43,12 +43,12 @@ BENCHMARK_SCHEMA_VERSION = "tep-benchmark-v070"
 
 # A commit every clone of this repository has. Pinning it is what makes the
 # fixtures reproducible while the branch keeps moving.
-# Public snapshot (v0.7.0): the pinned revision must exist in THIS repository's
-# history so a third party can reproduce the artifact. grift-cli-dev pins its own
-# commit (fa9bc317..., 164 commits deep) and uses depth 20; the public history is a
-# 21-commit snapshot chain, so the pin is the v0.5.9b merge and the truncated
-# fixture is cut at depth 10. Follow-up (0.7.1): measure a synthetic fixture
-# instead of the repository's own history so both trees share one constant.
+# Public snapshot: the pinned revision must exist in THIS repository's history so
+# a third party can reproduce the artifact. grift-cli-dev pins its own commit
+# (fa9bc317..., 164 commits deep, depth 20); the public history is a short
+# snapshot chain, so the pin is the v0.5.9b merge and the truncated fixture is
+# cut at depth 10. Follow-up: measure a synthetic fixture instead of the
+# repository's own history so both trees share one constant.
 PINNED_OID = "6711a3cdcb71f2a2a84276ac5e7a5abd4a7bf79f"
 SHALLOW_DEPTH = 10
 

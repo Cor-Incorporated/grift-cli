@@ -439,7 +439,18 @@ def test_github_author_id_accepts_canonical_positive_decimal(
     locator = parse_forge_locator("https://github.com/acme/widget.git")
 
     def transport(_request: RequestSpec) -> HttpResponse:
-        body = json.dumps([{"sha": "1" * 40, "author": {"id": account_id, "login": "alice"}}])
+        body = json.dumps(
+            [
+                {
+                    "sha": "1" * 40,
+                    "author": {
+                        "id": account_id,
+                        "login": "alice",
+                        "html_url": "https://github.com/alice",
+                    },
+                }
+            ]
+        )
         return HttpResponse(status=200, body=body.encode(), headers={})
 
     manifest = collect_public_evidence(
@@ -524,9 +535,11 @@ def test_github_profile_url_rejects_credentials_and_noncanonical_locations(
         transport=transport,
         evidence_dir=bundle,
     )
-    account = manifest["sha_to_account"]["1" * 40]
-    assert account["account_id"] == "42"
-    assert account["profile_url"] is None
+    # A non-canonical profile cannot become a public account row: such a row
+    # would have to carry a null profile URL, which actor artifact emission
+    # rejects outright.  The commit is unlinked instead.
+    assert manifest["sha_to_account"] == {}
+    assert manifest["unlinked_commit_count"] == 1
     manifest_text = (bundle / "manifest.json").read_text(encoding="utf-8")
     assert "super-secret" not in manifest_text
     assert "credential@" not in manifest_text
@@ -1581,7 +1594,11 @@ def test_legacy_public_fetch_uses_rest_terms_not_robots(tmp_path: Path) -> None:
                     [
                         {
                             "sha": "4" * 40,
-                            "author": {"id": 7, "login": "alice"},
+                            "author": {
+                                "id": 7,
+                                "login": "alice",
+                                "html_url": "https://github.com/alice",
+                            },
                         }
                     ]
                 ),

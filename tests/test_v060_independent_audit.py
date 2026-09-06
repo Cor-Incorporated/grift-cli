@@ -257,13 +257,35 @@ def test_commit_pagination_and_offline() -> None:
         if "page=2" in url or url.endswith("page=2"):
             return (
                 200,
-                json.dumps([{"sha": "b" * 40, "author": {"id": 2, "login": "bob"}}]),
+                json.dumps(
+                    [
+                        {
+                            "sha": "b" * 40,
+                            "author": {
+                                "id": 2,
+                                "login": "bob",
+                                "html_url": "https://github.com/bob",
+                            },
+                        }
+                    ]
+                ),
                 {},
             )
         if "/commits" in url:
             return (
                 200,
-                json.dumps([{"sha": "a" * 40, "author": {"id": 1, "login": "alice"}}]),
+                json.dumps(
+                    [
+                        {
+                            "sha": "a" * 40,
+                            "author": {
+                                "id": 1,
+                                "login": "alice",
+                                "html_url": "https://github.com/alice",
+                            },
+                        }
+                    ]
+                ),
                 {
                     "Link": (
                         "<https://api.github.com/repos/acme/app/commits?sha="

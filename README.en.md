@@ -107,6 +107,21 @@ Legacy verbs stay **analyze = display (stdout)** · **report = record (`.grift/`
 
 Reference distribution v2026.09 is compared **only at repo scope**. Do not plot tenant values on the repo distribution (mixing scopes makes the distribution a lie).
 
+## What v0.7.1 fixes
+
+No new surface. A patch release for public forge fetch defects. For the details see
+[docs/migration-v071.md](docs/migration-v071.md).
+
+- **`--fetch-public` no longer aborts on bot / app accounts.** A Bot author such as
+  `Copilot` or `dependabot[bot]` was given a public account it could not satisfy, and the
+  run exited 2 without writing a single report. Those commits are now counted as unlinked
+  instead. **Account linkage counts change for repositories with bot commits, so re-collect.**
+- **A terminated transfer is detected and retried a bounded number of times.** A response
+  that delivered fewer bytes than its `Content-Length` was read as JSON anyway. The length
+  is now checked and the identical request is attempted at most three times.
+- **The live gate records why a scenario failed.** `failure_detail` carries the exception
+  class and the first 200 characters of its message, with tokens and local paths removed.
+
 ## What v0.7.0 adds
 
 Every v0.6.0 surface remains. For the details and migration caveats see
@@ -406,7 +421,7 @@ steps:
   - uses: actions/setup-python@v5
     with:
       python-version: "3.12"
-  - uses: Cor-Incorporated/grift-cli@v0.7.0
+  - uses: Cor-Incorporated/grift-cli@v0.7.1
     with:
       scope: repo
       comment: false

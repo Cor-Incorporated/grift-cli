@@ -4,6 +4,67 @@
 
 タグ・PyPI・リポ public 化は本ファイルの記載対象外（人間ゲート）。
 
+## [0.7.1] — 2026-09-06
+
+面は 1 つも増えない。公開 Forge 取得（provider-neutral Forge証跡、
+GitHub/GitLab/self-managed、PARTIAL/resume）の 2 つの欠陥を直す patch release。
+CLI フラグ・出力スキーマ・contribution-v2 の payload・attest / portfolio の
+契約はいずれも変わらない。`暗黙 PyPI update check` を持たない設計も変わらない。
+
+### Fixed
+
+- **bot / app アカウントで `grift repo --actors --fetch-public` が exit 2 に
+  なる欠陥**。GitHub の commit author が Bot / app installation
+  （`Copilot`、`dependabot[bot]`、`renovate[bot]`、`github-actions[bot]`）の
+  場合、`html_url` は `https://github.com/apps/<slug>` を指し、handle は
+  角括弧を含む。0.7.0 はこの行にも public account を付けようとして
+  `profile_url` が空の account を作り、actor 成果物の生成が
+  `account '<provider>|<host>|<id>' needs a handle and profile URL` で
+  落ちていた。fetch は 19 ページ coverage complete で成功しているのに
+  report が 1 つも書かれない。
+
+  **bot は 0.7.1 でも public account にしない。** これらの commit は
+  `unlinked_commit_count` に数える。人の account が handle と canonical な
+  profile URL を必ず持つ条件（`actor_artifacts._account_rows`）は
+  変えていない。新しい payload キー・status 値・counter も増やしていないので、
+  受け口（`tep-contributions`）の契約は不変である。実測: 公開 repo
+  VOICEVOX を rev `c72a94cb` で収集すると rc=2 → rc=0、bundle の
+  `sha_to_account` から account `198982749` が消える
+
+- **切れた転送を検出せず、切れたまま JSON にしていた欠陥**。GitHub の
+  commits ページは 1 ページ約 400KB あり、転送が宣言した長さに届かないまま
+  終わることがある。実測で `Content-Length: 436443` に対し受信 372299 バイト、
+  次の `read()` は即 `b""`。0.7.0 はこの切れた bytes をそのまま JSON として
+  読み、`Forge response body is not valid UTF-8 JSON` という「Forge の応答が
+  壊れている」形のエラーを出していた。実際は転送が途中で終わっただけである。
+
+  0.7.1 は受信バイト数を `Content-Length` と照合し、足りなければ
+  `ForgeTruncatedBodyError`（message に `truncated_body` /
+  `content_length` / `received`）として扱う。**切れた body を JSON デコーダに
+  渡さない。** そのうえで収集ループが同一 request を**最大 3 回**まで
+  試す（backoff 0.5s / 1.0s）。使い切った場合は従来どおり
+  `stop_reason: transport_error:ForgeTruncatedBodyError` で止まる。
+  `TimeoutError` など他の transport error も同じ扱いになる。
+  `Content-Length` を宣言しない chunked 応答は従来どおり EOF まで読む。
+  1 ページあたりのバイト上限は hard stop としてそのまま残る。
+
+  リトライ回数は bundle manifest に**書かない**。`public-evidence-v1` の
+  page（`$defs.public_page`）は `additionalProperties: false` の閉じた
+  オブジェクトであり、キーを足すことは patch release での契約変更に当たる。
+  発生頻度は環境依存で、検収環境では 25 回中 2〜3 回、こちらの回線では
+  145 回中 0 回だった
+
+- **live gate が失敗の理由を残さない欠陥**。`scenario-execution-failed` /
+  `resume-preflight-failed` は mismatch id だけを summary に残していたため、
+  0.7.0 の release tier は上の exit 2 を「何かが失敗した」以上の情報なしに
+  記録していた。例外クラス名と message 先頭 200 文字を `failure_detail` として
+  残す。message は untrusted なので他の出力バイトと同じ sanitization に
+  かけ、token やローカルパスを含む場合は `<redacted>` に落とす
+
+### Changed
+
+- 版数 0.7.1 / 定義版数 `tep-v0.7.1-2026-09-06`
+
 ## [0.7.0] — 2026-09-03
 
 ### Added

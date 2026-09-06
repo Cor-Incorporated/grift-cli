@@ -22,8 +22,8 @@
   ],
   "assertions": [
     {
-      "actual": "0.7.0",
-      "expected": "0.7.0",
+      "actual": "0.7.1",
+      "expected": "0.7.1",
       "id": "runner-tool-version",
       "status": "PASS"
     },
@@ -166,15 +166,15 @@
       "status": "PASS"
     },
     {
-      "actual": "494669ab7447655f009919aee2ac934936444fa7cb853c46fbb71ac898aa0013",
-      "expected": "494669ab7447655f009919aee2ac934936444fa7cb853c46fbb71ac898aa0013",
+      "actual": "cc83222bbec8c13d910b553c1cc102fbf3289665045b864ec0b52650fdb222af",
+      "expected": "cc83222bbec8c13d910b553c1cc102fbf3289665045b864ec0b52650fdb222af",
       "id": "acquisition-receipt-digest",
       "status": "PASS"
     }
   ],
   "collection_mode": "fresh",
   "counts": {
-    "account.commit-linked": 100,
+    "account.commit-linked": 94,
     "account.public-handle-actors": 28,
     "account.stable": 28,
     "account.status-matched-actors": 28,
@@ -194,12 +194,12 @@
     "oid.observed": 100,
     "provider.items": 100,
     "provider.pages": 1,
-    "provider.sha-to-account": 100,
+    "provider.sha-to-account": 94,
     "verify.cannot-verify": 2,
     "verify.collections": 3,
     "verify.verified": 1
   },
-  "duration_ms": 129825,
+  "duration_ms": 69717,
   "exit_code": 3,
   "output_digests": {
     "derived/actor-provider-independent": {
@@ -220,7 +220,7 @@
     },
     "derived/repo-provider-independent": {
       "algorithm": "sha256",
-      "value": "63992f73130234b1eaf27736800142256fc01dd39f76b762e7284f6dad9565d8"
+      "value": "54eec8afc63cfbc7917b9508bdfb9f43666b3d5cc5775276abb4f12a1fab71d4"
     },
     "derived/repo-provider-independent-numeric": {
       "algorithm": "sha256",
@@ -240,11 +240,11 @@
     },
     "offline/collection-manifest.json": {
       "algorithm": "sha256",
-      "value": "f311f32507d2895551a4f2e44cdafb5129a443ec96ea138c9b4fea1e69399e98"
+      "value": "10ab78fee4dde6eac40633d27406fd6b6f3169e7922e01ca78639dec19a1455e"
     },
     "offline/repo-report.json": {
       "algorithm": "sha256",
-      "value": "ba8d0e6bffc59992ff05550427e7adf494a81a97601c430530a9a97a2f92e2a2"
+      "value": "8eac3d20132e40ecc48d0d7bcfe10d84c6ae61a5fbcf7f52c968ebefae62f35c"
     },
     "offline/repo-report.md": {
       "algorithm": "sha256",
@@ -260,11 +260,11 @@
     },
     "partial/collection-manifest.json": {
       "algorithm": "sha256",
-      "value": "215eff7ac1a3e4ca74be9c43880e11d27e3eb2d942ae96e6e0e76b5d2995063e"
+      "value": "7f1a6e11ce8e6ac672509f1fa63babd34f03a9531e682ed1fc7022c4f4b95978"
     },
     "partial/repo-report.json": {
       "algorithm": "sha256",
-      "value": "a7296aab30f98b0be982525967f5cb17e26acd08d668f73596052ac6cd9d45fd"
+      "value": "5d10a621a13f0cc7cfef20c73e783d2f0a92a4ed1d6308a09e8cc0dfeac62fb5"
     },
     "partial/repo-report.md": {
       "algorithm": "sha256",
@@ -272,7 +272,7 @@
     },
     "public-evidence/manifest.json": {
       "algorithm": "sha256",
-      "value": "a4697c450950b8eb7ca84b51ce6557174cc5f462991613ecd2594ba83fcfe56a"
+      "value": "200b81af05959ca5b25cdb65d6c3b7f2c04adf3990e179f01fcfc9d8f5d7ebeb"
     },
     "public-evidence/page-01.body": {
       "algorithm": "sha256",
@@ -280,7 +280,7 @@
     },
     "public-evidence/payload": {
       "algorithm": "sha256",
-      "value": "56cb840c41b41525583f95a2df3c631d0c568903536e88151bb0bfa85646a91a"
+      "value": "9fece9b65b51ee49c6e385cb4d4ca5b91c1b69704299c9c655a0dd7ca4ca4135"
     },
     "replay/actor-index.json": {
       "algorithm": "sha256",
@@ -292,11 +292,11 @@
     },
     "replay/collection-manifest.json": {
       "algorithm": "sha256",
-      "value": "cfb665bb8b5f97bb672530ce80cc2040b86f300c55602f5252a7ed3c92ac2abc"
+      "value": "9f0b10ba70e207f70c69121bdd155171909a33f039b60bafe931079ee360b4ca"
     },
     "replay/repo-report.json": {
       "algorithm": "sha256",
-      "value": "700aefb65d240cf3135ed674fb9ed2881ff1501bfaace581c96016e74d63c82f"
+      "value": "441bae11b9620985f4ba464c4f411542bd505ff5d14b42935efee88b6ca96cc4"
     },
     "replay/repo-report.md": {
       "algorithm": "sha256",
@@ -317,16 +317,16 @@
     "source_binding": {
       "commit_oid": {
         "algorithm": "sha1",
-        "value": "1a5682675faeca8949481b6ef13c406d14d7b832"
+        "value": "1b0f144bd3e02d197ee6df0c3b53846bc8c77303"
       },
       "definition_version": "grift-tool-source-tree-v1",
       "file_count": 97,
       "source_tree_digest": {
         "algorithm": "sha256",
-        "value": "115e7ae4af4d6eaecce0c97812b0a70ab2a39416194a22f5e00c93d51af882c3"
+        "value": "aed267d9b02927e617d428ee1de51b9e1e5f51c137d65f8a4e00bbe8401c8180"
       }
     },
-    "tool_version": "0.7.0"
+    "tool_version": "0.7.1"
   },
   "scenario_id": "P02-vite-forced-partial",
   "schema_version": "tep-public-scenario-result-v2",

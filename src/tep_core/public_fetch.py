@@ -19,6 +19,7 @@ from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 from tep_core.digest import sha256_text
 from tep_core.forge_public import (
+    ForgeTruncatedBodyError,
     GitObjectId,
     HttpResponse,
     RequestSpec,
@@ -160,6 +161,50 @@ class _NoRedirect(HTTPRedirectHandler):
         return None
 
 
+def _declared_content_length(value: Any) -> int | None:
+    """Return the non-negative ``Content-Length`` a response declared, or ``None``."""
+
+    if value is None:
+        return None
+    try:
+        length = int(str(value).strip())
+    except (TypeError, ValueError):
+        return None
+    return length if length >= 0 else None
+
+
+def _read_body(stream: Any, *, content_length: Any = None) -> bytes:
+    """Read one whole response body and prove it is whole.
+
+    Reading to EOF is not enough.  The observed failure is a *terminated*
+    transfer, not a short-but-continuing one: one ``read()`` returns fewer bytes
+    than ``Content-Length`` and the next returns ``b""``, so a read loop exits
+    happily with a cut body.  When the response declared a length, compare
+    against it and raise rather than hand truncated bytes to the JSON decoder.
+
+    A chunked response declares no length; there EOF is the only end marker and
+    the loop result is accepted as-is.
+    """
+
+    chunks: list[bytes] = []
+    remaining = _MAX_RESPONSE_BYTES + 1
+    while remaining > 0:
+        chunk = stream.read(remaining)
+        if not chunk:
+            break
+        chunks.append(chunk)
+        remaining -= len(chunk)
+    body = b"".join(chunks)
+    if len(body) > _MAX_RESPONSE_BYTES:
+        raise ValueError("Forge response exceeds the per-page byte limit")
+    expected = _declared_content_length(content_length)
+    if expected is not None and len(body) != expected:
+        raise ForgeTruncatedBodyError(
+            f"truncated_body: content_length={expected} received={len(body)}"
+        )
+    return body
+
+
 def _read_request(request: RequestSpec, timeout: int = 10) -> HttpResponse:
     request.sanitized()
     native = Request(request.url, headers=dict(request.headers), method=request.method)
@@ -167,15 +212,11 @@ def _read_request(request: RequestSpec, timeout: int = 10) -> HttpResponse:
     try:
         with opener.open(native, timeout=timeout) as response:  # noqa: S310
             headers = {key: str(value) for key, value in response.headers.items()}
-            body = response.read(_MAX_RESPONSE_BYTES + 1)
-            if len(body) > _MAX_RESPONSE_BYTES:
-                raise ValueError("Forge response exceeds the per-page byte limit")
+            body = _read_body(response, content_length=response.headers.get("Content-Length"))
             return HttpResponse(response.status, body, headers)
     except HTTPError as exc:
-        body = exc.read(_MAX_RESPONSE_BYTES + 1) if exc.fp else b""
-        if len(body) > _MAX_RESPONSE_BYTES:
-            raise ValueError("Forge response exceeds the per-page byte limit") from exc
         headers = {key: str(value) for key, value in (exc.headers or {}).items()}
+        body = _read_body(exc, content_length=headers.get("Content-Length")) if exc.fp else b""
         return HttpResponse(exc.code, body, headers)
 
 

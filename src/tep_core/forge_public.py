@@ -22,6 +22,20 @@ class ForgeResponseError(ValueError):
     """A Forge response does not satisfy the documented response contract."""
 
 
+class ForgeTruncatedBodyError(OSError):
+    """A response ended before its declared ``Content-Length`` was delivered.
+
+    This is a transport failure, not a malformed response.  GitHub's ~400 KB
+    commit pages intermittently terminate early: one ``read()`` returns fewer
+    bytes than ``Content-Length`` and the next returns ``b""``.  Handing those
+    cut bytes to the JSON decoder reports ``Forge response body is not valid
+    UTF-8 JSON``, which blames the provider for our own incomplete read.  It
+    subclasses ``OSError`` so the collection loop treats it like any other
+    transport error: retry a bounded number of times, then stop with
+    ``transport_error:ForgeTruncatedBodyError``.
+    """
+
+
 _HEX_RE = re.compile(r"^[0-9a-f]+$")
 _SCP_REMOTE_RE = re.compile(r"^(?:(?P<user>[^@/:]+)@)?(?P<host>\[[^]]+\]|[^/:]+):(?P<path>.+)$")
 _CREDENTIAL_QUERY_KEYS = frozenset(
@@ -577,6 +591,16 @@ class GitHubAdapter:
             if not account_id:
                 unlinked += 1
                 continue
+            # A Bot / app installation author (``dependabot[bot]``,
+            # ``renovate[bot]``, ``Copilot``) is not a person.  Its profile
+            # lives under ``/apps/<slug>`` and its login carries brackets the
+            # downstream intake handle contract rejects, so it can never
+            # satisfy the human-account requirement in ``_account_rows``.
+            # Count the commit as unlinked instead of attaching an account
+            # that would abort artifact emission.
+            if author.get("type") == "Bot":
+                unlinked += 1
+                continue
             handle = author.get("login")
             if not isinstance(handle, str) or not handle:
                 handle = None
@@ -592,6 +616,14 @@ class GitHubAdapter:
                 handle=handle,
                 value=raw_profile_url if isinstance(raw_profile_url, str) else None,
             )
+            # A public account row must carry both a handle and a canonical
+            # credential-free profile URL (actor_artifacts._account_rows).
+            # Attaching an account that cannot satisfy that requirement turns
+            # a display gap into a hard artifact failure, so drop the linkage
+            # and count the commit as unlinked.
+            if handle is None or profile_url is None:
+                unlinked += 1
+                continue
             accounts[sha] = PublicAccount(
                 provider="github",
                 # The account namespace is the Forge hostname, not the clone
