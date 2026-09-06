@@ -1229,9 +1229,7 @@ def validate_scenario_result(spec: Scenario, result: Mapping[str, Any]) -> list[
                 digest = prior_digests.get(label)
                 if not isinstance(digest, Mapping) or digest != {
                     "algorithm": "sha256",
-                    "value": str(digest.get("value") or "")
-                    if isinstance(digest, Mapping)
-                    else "",
+                    "value": str(digest.get("value") or "") if isinstance(digest, Mapping) else "",
                 }:
                     mismatch.append(f"resume-prior-{label}-closed")
                 elif _SHA256.fullmatch(str(digest.get("value") or "")) is None:
@@ -1760,11 +1758,7 @@ def _run_scenario_inner(
             spec,
             create_root=False,
         )
-        if (
-            spec.expected_partial
-            and preserved_source is not None
-            and preserved_source.exists()
-        ):
+        if spec.expected_partial and preserved_source is not None and preserved_source.exists():
             # A forced-partial scenario is a fixed one-page measurement, not a
             # resumable acquisition.  Remove only our owned legacy staging
             # directory so a prior run cannot silently grow the fixture.
@@ -1819,8 +1813,7 @@ def _run_scenario_inner(
                 interim_pagination = interim_manifest.get("pagination")
                 if (
                     not spec.expected_partial
-                    and
-                    isinstance(interim_coverage, Mapping)
+                    and isinstance(interim_coverage, Mapping)
                     and interim_coverage.get("status") != "complete"
                     and isinstance(interim_pagination, Mapping)
                     and isinstance(interim_pagination.get("next_request"), Mapping)
@@ -1867,11 +1860,7 @@ def _run_scenario_inner(
                 spec,
                 provider_tokens=provider_tokens,
             )
-        if (
-            not spec.expected_partial
-            and provider.get("resumable") is True
-            and not staged
-        ):
+        if not spec.expected_partial and provider.get("resumable") is True and not staged:
             _preserve_private_bundle(
                 bundle,
                 partial_bundle_root,
@@ -1932,6 +1921,27 @@ def _run_scenario(
             )
 
 
+def _failure_detail(error: BaseException | None, secrets: Sequence[str] = ()) -> str | None:
+    """Return one sanitized ``ClassName: message`` line, or ``None``.
+
+    A bare ``scenario-execution-failed`` mismatch id says nothing about why the
+    run died, which is how the v0.7.0 release tier hid a hard ``exit 2``.  The
+    detail is display text on an untrusted exception message, so it is held to
+    the same sanitization contract as every other emitted byte: if it would not
+    survive ``_assert_sanitized`` the message is dropped and only the exception
+    class survives.  Never widen this by pre-scrubbing the message in place.
+    """
+
+    if error is None:
+        return None
+    detail = f"{type(error).__name__}: {str(error)[:200]}"
+    try:
+        _assert_sanitized(detail.encode("utf-8"), secrets=secrets)
+    except GateError:
+        return f"{type(error).__name__}: <redacted>"
+    return detail
+
+
 def _failure_result(
     spec: Scenario,
     reason: str,
@@ -1939,6 +1949,8 @@ def _failure_result(
     *,
     partial_staged: bool = False,
     acquisition: AcquisitionContext | None = None,
+    error: BaseException | None = None,
+    secrets: Sequence[str] = (),
 ) -> dict[str, Any]:
     fixed = acquisition or AcquisitionContext()
     return {
@@ -1957,6 +1969,7 @@ def _failure_result(
         "prior_evidence_digests": fixed.prior_evidence_digests,
         "resumable_partial_staged": partial_staged,
         "mismatch_ids": [reason],
+        "failure_detail": _failure_detail(error, secrets),
         "outcome": "FAIL",
     }
 
@@ -2049,7 +2062,7 @@ def run_gate(args: argparse.Namespace) -> int:
                 spec,
                 secrets=tuple(provider_tokens.values()),
             )
-        except (GateError, OSError, ValueError):
+        except (GateError, OSError, ValueError) as error:
             results.append(
                 _failure_result(
                     spec,
@@ -2057,6 +2070,8 @@ def run_gate(args: argparse.Namespace) -> int:
                     scenario_started,
                     partial_staged=False,
                     acquisition=acquisition,
+                    error=error,
+                    secrets=tuple(provider_tokens.values()),
                 )
             )
             continue
@@ -2085,13 +2100,15 @@ def run_gate(args: argparse.Namespace) -> int:
                 suite_deadline=suite_deadline,
                 partial_bundle_root=partial_bundle_root,
             )
-        except (GateError, OSError, subprocess.SubprocessError, ValueError):
+        except (GateError, OSError, subprocess.SubprocessError, ValueError) as error:
             result = _failure_result(
                 spec,
                 "scenario-execution-failed",
                 scenario_started,
                 partial_staged=_has_private_bundle(partial_bundle_root, spec),
                 acquisition=acquisition,
+                error=error,
+                secrets=tuple(provider_tokens.values()),
             )
         results.append(result)
 

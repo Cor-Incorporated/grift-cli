@@ -8,6 +8,7 @@ import os
 import re
 import stat
 import subprocess
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Mapping
@@ -27,6 +28,15 @@ from tep_core.schema import validate_schema
 EvidenceTransport = Callable[[RequestSpec], HttpResponse]
 _DEFAULT_MAX_BODY_BYTES = 16 * 1024 * 1024
 _DEFAULT_MAX_TOTAL_BYTES = 256 * 1024 * 1024
+# A terminated transfer or a timeout is a property of one attempt, not of the
+# page.  Retrying the identical request a bounded number of times turns an
+# intermittent network fault back into a complete collection; exhausting the
+# budget still stops the run with the recorded ``transport_error`` reason
+# rather than pretending the page was fetched.
+_TRANSPORT_ATTEMPTS = 3
+_TRANSPORT_BACKOFF_SECONDS = (0.5, 1.0, 2.0)
+# Indirected so a test can drive the retry path without real wall-clock delay.
+_sleep = time.sleep
 
 _RESPONSE_HEADER_ALLOWLIST = frozenset(
     {
@@ -572,10 +582,29 @@ def collect_public_evidence(
     while next_request is not None and pages_this_run < max_pages:
         _assert_runtime_token_not_in_url(next_request, auth_token)
         safe_request = assert_valid_commit_request(next_request, locator, target_oid)
-        try:
-            response = transport(next_request)
-        except (OSError, TimeoutError) as exc:
-            stop_reason = f"transport_error:{type(exc).__name__}"
+        # Retry the identical, already-validated request.  ``next_request`` is
+        # immutable and was checked for a runtime token and commit-request shape
+        # above, so no attempt can widen what is sent.
+        #
+        # The attempt count is deliberately NOT written into the manifest.  A
+        # page record is a closed object in ``public-evidence-v1``
+        # (``$defs.public_page``, ``additionalProperties: false``), so adding a
+        # key would change that published contract; and the manifest is the
+        # digested bundle payload, which must describe the repository, not the
+        # weather on the wire.
+        response = None
+        last_error: BaseException | None = None
+        for attempt in range(1, _TRANSPORT_ATTEMPTS + 1):
+            try:
+                response = transport(next_request)
+                break
+            except (OSError, TimeoutError) as exc:
+                last_error = exc
+                response = None
+                if attempt < _TRANSPORT_ATTEMPTS:
+                    _sleep(_TRANSPORT_BACKOFF_SECONDS[attempt - 1])
+        if response is None:
+            stop_reason = f"transport_error:{type(last_error).__name__}"
             break
         if not isinstance(response, HttpResponse):
             raise TypeError("public evidence transport must return HttpResponse")

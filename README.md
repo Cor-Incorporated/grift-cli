@@ -104,6 +104,14 @@ legacy 動詞の意味は「**analyze = 表示（stdout）**・**report = 記録
 
 参照分布 v2026.09 は **repo スコープ同士**でのみ照合する。tenant の値を repo 分布に載せない（混ぜたら分布が嘘になる）。
 
+## v0.7.1 で直したもの
+
+面は増えません。公開 Forge 取得の欠陥を直した patch release です。詳細は [docs/migration-v071.md](docs/migration-v071.md) を参照してください。
+
+- **bot / app アカウントで `--fetch-public` が落ちなくなりました。** `Copilot` や `dependabot[bot]` のような Bot author に public account を付けようとして、report を 1 つも書かずに exit 2 になっていました。これらは public account にせず unlinked commit として数えます。**bot commit を含む repo は account linkage の観測値が変わるので、収集をやり直してください。**
+- **切れた転送を検出し、有限回リトライするようになりました。** 受信バイト数が `Content-Length` に届かない応答を、切れたまま JSON として読んでいました。照合して検出し、同一 request を最大 3 回まで試します。
+- **live gate が失敗の理由を残すようになりました。** `failure_detail` に例外クラス名と message 先頭 200 文字を、token やローカルパスを除いた形で記録します。
+
 ## v0.7.0 で加わったもの
 
 v0.6.0 の面はすべて残ります。詳細と移行時の注意は [docs/migration-v070.md](docs/migration-v070.md) を参照してください。
@@ -350,7 +358,7 @@ steps:
   - uses: actions/setup-python@v5
     with:
       python-version: "3.12"
-  - uses: Cor-Incorporated/grift-cli@v0.7.0
+  - uses: Cor-Incorporated/grift-cli@v0.7.1
     with:
       scope: repo
       comment: false

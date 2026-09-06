@@ -113,7 +113,7 @@
   ],
   "metrics": {
     "human_nonmerge_commit_share": {
-      "definition_version": "tep-v0.7.0-2026-09-03",
+      "definition_version": "tep-v0.7.1-2026-09-06",
       "denominator": 3994,
       "kind": "observed",
       "limitations": [
@@ -151,9 +151,9 @@
   },
   "provenance": {
     "analysis_scope": "repo",
-    "analyzed_at": "2026-09-05T02:04:48Z",
+    "analyzed_at": "2026-09-06T09:04:07Z",
     "analyzed_commit_sha": "a650ffa6b5921b93fcc32398ab01e0043ce962ec",
-    "definition_version": "tep-v0.7.0-2026-09-03",
+    "definition_version": "tep-v0.7.1-2026-09-06",
     "input_digests": {
       "benchmark_manifest": null,
       "forge": null,
@@ -178,7 +178,7 @@
       "value": "a650ffa6b5921b93fcc32398ab01e0043ce962ec"
     },
     "tool_name": "grift",
-    "tool_version": "0.7.0"
+    "tool_version": "0.7.1"
   },
   "report_kind": "evidence",
   "schema_version": "report-v2",
