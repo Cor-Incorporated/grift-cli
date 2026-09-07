@@ -207,7 +207,7 @@
     "report.merge": 20,
     "report.unresolved": 0
   },
-  "duration_ms": 826,
+  "duration_ms": 851,
   "exit_code": 0,
   "output_digests": {
     "artifacts/actor-index.json": {
@@ -236,11 +236,11 @@
     },
     "artifacts/collection-manifest.json": {
       "algorithm": "sha256",
-      "value": "a0003ca477c0173f1d0d996737989f027539cace9f83d2fedfe04e1bf5057735"
+      "value": "e6cc3da823e653f55a9aeae8f4eed2aec84a6b2df16582a4119174450c768eaa"
     },
     "artifacts/repo-report.json": {
       "algorithm": "sha256",
-      "value": "cf5f4e8fc6a229bdeef3c52d68d03a376dee46d44d23aa6be91b81061cb86b2c"
+      "value": "252e643c44ad965538f3938f81d005fa8fc6bb6350ca742d7091c7aee19c00e7"
     },
     "artifacts/repo-report.md": {
       "algorithm": "sha256",
@@ -260,7 +260,7 @@
     "source_binding": {
       "commit_oid": {
         "algorithm": "sha1",
-        "value": "cd4d3c0dce16c1bcf1601beb88906b1a04909f03"
+        "value": "eb47d1bdb0881369cd5239b98683d628e7414580"
       },
       "definition_version": "grift-tool-source-tree-v1",
       "file_count": 97,
