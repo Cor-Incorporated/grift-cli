@@ -1001,14 +1001,27 @@
             "release_cadence": {"$ref": "#/$defs/report_observation"},
             "conventional_commit_share": {"$ref": "#/$defs/report_observation"},
             "language_composition": {
-              "type": "object",
-              "additionalProperties": false,
-              "required": ["kind", "value", "unit"],
-              "properties": {
-                "kind": {"const": "observed"},
-                "value": {"$ref": "#/$defs/report_number_map"},
-                "unit": {"const": "touch-share"}
-              }
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["kind", "value", "unit"],
+                  "properties": {
+                    "kind": {"const": "observed"},
+                    "value": {"$ref": "#/$defs/report_number_map"},
+                    "unit": {"const": "touch-share"}
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["kind", "reason"],
+                  "properties": {
+                    "kind": {"const": "not_observed"},
+                    "reason": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*$"}
+                  }
+                }
+              ]
             },
             "test_file_ratio": {"$ref": "#/$defs/report_observation"},
             "docs_share": {"$ref": "#/$defs/report_observation"},

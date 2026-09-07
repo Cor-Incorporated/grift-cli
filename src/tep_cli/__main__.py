@@ -177,7 +177,6 @@ def _run_actor_artifact_verify(
                 identity,
                 Lineage(),
                 include_files=True,
-                scope="repo",
             )
             canonical_origin = remote_url(fixed.worktree)
             scope_digest, _object_format = derive_repo_scope_digest(commits, canonical_origin)

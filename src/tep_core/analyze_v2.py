@@ -385,7 +385,7 @@ def analyze_subject(
         raise InputValidationError(
             "repository HEAD changed before subject analysis; refusing a mixed-revision report"
         )
-    commits, origin = prepare_inputs(repo, identity, lineage, include_files=True, scope=scope)
+    commits, origin = prepare_inputs(repo, identity, lineage, include_files=True)
     if repo_scope_digest is None:
         repo_scope_digest, _object_format = derive_repo_scope_digest(
             commits, canonical_origin=canonical_origin
@@ -692,7 +692,10 @@ def analyze_subject(
         # The directory is built from the same truncated history, so this
         # override must respect the degradation v1 already applied — otherwise
         # it silently restores the count context_profile just suppressed.
-        if not revision_completeness["shallow"]:
+        # A repository with no human commits has no observed context layer at
+        # all; grafting a field onto that `not_observed` container produced a
+        # shape no contract allows and refused the whole report.
+        if not revision_completeness["shallow"] and context.get("kind") == "observed":
             context["resolved_human_actors"] = Observed(
                 directory["observed_count"], "actors"
             ).to_dict()

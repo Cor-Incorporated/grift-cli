@@ -104,6 +104,14 @@ legacy 動詞の意味は「**analyze = 表示（stdout）**・**report = 記録
 
 参照分布 v2026.09 は **repo スコープ同士**でのみ照合する。tenant の値を repo 分布に載せない（混ぜたら分布が嘘になる）。
 
+## v0.7.2 で直したもの
+
+面は増えません。commit ゼロの actor で report が 1 つも出なくなっていた回帰を直す patch release です。詳細は [docs/migration-v072.md](docs/migration-v072.md) を参照してください。
+
+- **commit がまだ無い actor でも report が出るようになりました。** v0.7.0 / v0.7.1 は `grift actor <ID> REPO` を exit 2 で終わらせ、`report-v2 validation failed: $.context_profile` だけを表示していました。観測できないことは理由付きの `not_observed` として書くのが規範なので、report ごと消えるのは誤りです。`change_rhythm` などは従来どおり `reason: no_actor_commits` を持ちます。
+- **bot だけの repo でも `grift repo` が通るようになりました。** 人のコミットが 1 つも無い repo は `context_profile` が `not_observed`（`reason: no_human_commits`）になりますが、そこへ人数の観測値を後付けしていたため、どの形にも当たらず拒否されていました。
+- **選んだ actor によって repository 自身の観測が変わらなくなりました。** `context_profile` は repo スコープの層です。commit ゼロの actor を選ぶと、repository の `language_composition` や `test_file_ratio` が `not_observed` に落ちていました。**この経路を通る `grift export --scope tenant` は、identity に載った人の commit が 0 件のとき、全 commit の `prod_paths_touched` / `test_paths_touched` を 0 と書いていました。0.7.2 は実測値を書きます。**該当する export をやり直してください。commit が 1 件でもある actor の出力は 0.7.1 と同一です。
+
 ## v0.7.1 で直したもの
 
 面は増えません。公開 Forge 取得の欠陥を直した patch release です。詳細は [docs/migration-v071.md](docs/migration-v071.md) を参照してください。
@@ -358,7 +366,7 @@ steps:
   - uses: actions/setup-python@v5
     with:
       python-version: "3.12"
-  - uses: Cor-Incorporated/grift-cli@v0.7.1
+  - uses: Cor-Incorporated/grift-cli@v0.7.2
     with:
       scope: repo
       comment: false

@@ -16,7 +16,7 @@ inputs:
   version:
     description: "Exact grift-cli version to install (X.Y.Z, optionally aN/bN/rcN)"
     required: false
-    default: "0.7.1"
+    default: "0.7.2"
   install-source:
     description: >-
       Where to install grift-cli from: 'pypi' (default, production) or
