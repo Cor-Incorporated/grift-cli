@@ -80,29 +80,29 @@
     "The pinned subject is a tag-free fetch of the pinned commit. Tags are not part of a revision and differ between clones, and tag-derived fields (scale.tags, release_cadence, tagset_digest) would otherwise change report_sha256 from one machine to the next.",
     "No claim here is a benchmark of a person, a team, or a project."
   ],
-  "pinned_revision": "fa9bc317cc0ac1953ed09cbab11d3de2232c2fb0",
+  "pinned_revision": "6711a3cdcb71f2a2a84276ac5e7a5abd4a7bf79f",
   "schema_version": "tep-benchmark-v070",
   "self_contained": [
     {
       "claim": "Two runs over one fixed revision produce an identical report (SHA-256 over the whole document, excluding wall-clock fields and the checkout's directory name).",
-      "elapsed_seconds": 1.24,
+      "elapsed_seconds": 1.01,
       "holds": true,
       "id": "determinism",
       "measured": {
         "identical": true,
-        "report_sha256": "e780793a06cdcf5fa84614aefba4096d0e90dff27b80372b5d57fd2305fb5ad6",
+        "report_sha256": "6e4306d20c546d737e2093da8d060142cf4a478e74058b2bc5bf70e5ce16423f",
         "runs": 2
       },
       "reproducibility": "self_contained"
     },
     {
       "claim": "`grift verify` exits non-zero on a modified report and names the reported and recomputed values.",
-      "elapsed_seconds": 1.37,
+      "elapsed_seconds": 1.22,
       "holds": true,
       "id": "tamper-detection",
       "measured": {
         "clean_exit_code": 0,
-        "diagnostic": "  - context_profile.repo_age_days.value: report=4251 recomputed=9",
+        "diagnostic": "  - context_profile.repo_age_days.value: report=4245 recomputed=3",
         "diagnostic_names_reported_and_recomputed": true,
         "tampered_exit_code": 1
       },
@@ -110,7 +110,7 @@
     },
     {
       "claim": "On a shallow clone, repository-wide fields degrade to not_observed while HEAD-anchored facts survive.",
-      "elapsed_seconds": 0.48,
+      "elapsed_seconds": 0.49,
       "holds": true,
       "id": "truncated-history",
       "measured": {
@@ -151,7 +151,7 @@
     },
     {
       "claim": "The default analysis path opens no socket from the Python process; git subprocesses run with GIT_NO_LAZY_FETCH=1 and their network behaviour is not measured here.",
-      "elapsed_seconds": 0.42,
+      "elapsed_seconds": 0.46,
       "holds": true,
       "id": "offline",
       "measured": {
@@ -170,7 +170,7 @@
     },
     {
       "claim": "Run through the CLI over a repository written by three distinct people, `grift align --team` reports coverage counts at the minimum team size and refuses below it instead of emitting a count that identifies an individual.",
-      "elapsed_seconds": 8.2,
+      "elapsed_seconds": 10.54,
       "holds": true,
       "id": "team-minimum",
       "measured": {
