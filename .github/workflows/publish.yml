@@ -38,10 +38,13 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: Cor-Incorporated/grift-cli
-          # The public repository has no v0.5.9 tag. Pin the exact historical
-          # commit whose source version is 0.5.9 so the compatibility oracle is
-          # immutable and independently auditable.
-          ref: 055ec099aeabdcb0b470027b42e13dc52014501e
+          # Pin the exact historical commit whose source version is 0.5.9 so the
+          # compatibility oracle is immutable and independently auditable. This
+          # must be a commit of the PUBLIC repository (the v0.5.9 tag there points
+          # at it); the previous pin was a grift-cli-dev commit and the checkout
+          # failed with 'not our ref' on the first real publish (run 34046881828).
+          # tests/test_publish_baseline_pin.py links the three occurrences below.
+          ref: 6711a3cdcb71f2a2a84276ac5e7a5abd4a7bf79f
           path: .release-baselines/grift-cli-v059
           fetch-depth: 1
       - name: Verify annotated tag and version binding
@@ -138,7 +141,7 @@ jobs:
           set -euo pipefail
           mkdir -p release-evidence
           test "$(git -C "$GRIFT_V059_ROOT" rev-parse HEAD)" = \
-            "055ec099aeabdcb0b470027b42e13dc52014501e"
+            "6711a3cdcb71f2a2a84276ac5e7a5abd4a7bf79f"
           python - <<'PY'
           import hashlib
           import json
@@ -148,7 +151,7 @@ jobs:
           from pathlib import Path
 
           root = Path(os.environ["GRIFT_V059_ROOT"])
-          expected_commit = "055ec099aeabdcb0b470027b42e13dc52014501e"
+          expected_commit = "6711a3cdcb71f2a2a84276ac5e7a5abd4a7bf79f"
           commit = subprocess.check_output(
               ["git", "-C", str(root), "rev-parse", "HEAD"], text=True
           ).strip()
