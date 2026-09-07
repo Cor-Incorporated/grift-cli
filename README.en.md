@@ -107,6 +107,26 @@ Legacy verbs stay **analyze = display (stdout)** · **report = record (`.grift/`
 
 Reference distribution v2026.09 is compared **only at repo scope**. Do not plot tenant values on the repo distribution (mixing scopes makes the distribution a lie).
 
+## What v0.7.2 fixes
+
+No new surface. A patch release for a regression that suppressed the report entirely for an
+actor with no commits. For the details see [docs/migration-v072.md](docs/migration-v072.md).
+
+- **An actor with no commits yet gets a report.** v0.7.0 and v0.7.1 ended `grift actor <ID> REPO`
+  with exit 2 and printed only `report-v2 validation failed: $.context_profile`. Absence of input
+  is written as a reasoned `not_observed`, never as a refusal, so losing the whole report was
+  wrong. `change_rhythm` and its neighbours still carry `reason: no_actor_commits`.
+- **`grift repo` succeeds on a repository whose commits are all bot commits.** With no human
+  commits the `context_profile` is `not_observed` (`reason: no_human_commits`), and grafting an
+  actor count onto that container produced a shape no contract allows.
+- **The repository's own observations no longer depend on which actor you select.**
+  `context_profile` is a repo-scope layer. Selecting an actor with no commits used to drop the
+  repository's `language_composition` and `test_file_ratio` to `not_observed`.
+  The same path made `grift export --scope tenant` write `prod_paths_touched` and
+  `test_paths_touched` as 0 for every commit when no identity actor had any commits.
+  **0.7.2 writes the measured counts, so re-run any such export.** Output for an actor with at
+  least one commit is identical to 0.7.1.
+
 ## What v0.7.1 fixes
 
 No new surface. A patch release for public forge fetch defects. For the details see
@@ -421,7 +441,7 @@ steps:
   - uses: actions/setup-python@v5
     with:
       python-version: "3.12"
-  - uses: Cor-Incorporated/grift-cli@v0.7.1
+  - uses: Cor-Incorporated/grift-cli@v0.7.2
     with:
       scope: repo
       comment: false

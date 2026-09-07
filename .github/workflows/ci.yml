@@ -72,6 +72,63 @@ jobs:
             exit 1
           fi
 
+  p0-falsify:
+    # The P0 falsification suite is the norms gate: it proves that missing
+    # input is reported as a reasoned not_observed instead of a refusal or a
+    # fabricated zero. It ran only in publish.yml, so v0.7.0 and v0.7.1 both
+    # shipped with `grift actor <actor with no commits>` exiting 2, and the
+    # failure was first seen in the release run (34069987423) rather than on
+    # the pull request that caused it. Running it here moves that discovery
+    # left of the tag.
+    #
+    # H5-PAIR: publish.yml baseline pin ↔ this job's baseline pin;
+    # mutation=changing one pin alone is red in
+    # tests/test_publish_baseline_pin.py.
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      # Same immutable commit and same env var name as publish.yml, so a green
+      # CI run and a green release run mean the same thing.
+      # tests/test_publish_baseline_pin.py links the pins in the two files.
+      - name: Checkout frozen v0.5.9 compatibility baseline
+        uses: actions/checkout@v4
+        with:
+          repository: Cor-Incorporated/grift-cli
+          ref: 6711a3cdcb71f2a2a84276ac5e7a5abd4a7bf79f
+          path: .release-baselines/grift-cli-v059
+          fetch-depth: 1
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+      - name: P0 falsification suite
+        env:
+          GRIFT_V059_ROOT: ${{ github.workspace }}/.release-baselines/grift-cli-v059
+        run: |
+          set -euo pipefail
+          mkdir -p p0-evidence
+          test "$(git -C "$GRIFT_V059_ROOT" rev-parse HEAD)" = \
+            "6711a3cdcb71f2a2a84276ac5e7a5abd4a7bf79f"
+          python tests/fixtures/v060/run_p0_falsify.py
+          cp /tmp/grift-v060-falsify/p0-results.json p0-evidence/p0-results.json
+      - name: Upload P0 falsification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p0-falsify-${{ github.event.pull_request.head.sha || github.sha }}
+          path: p0-evidence/
+          if-no-files-found: error
+
   intake-contract-parity:
     # H5-guard: yes
     # H5-NEGATIVE: six of eight real sender->receiver cases must fail closed

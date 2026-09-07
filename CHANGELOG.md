@@ -4,6 +4,85 @@
 
 タグ・PyPI・リポ public 化は本ファイルの記載対象外（人間ゲート）。
 
+## [0.7.2] — 2026-09-07
+
+面は 1 つも増えない。commit がまだ 1 件も無い actor に対して report が
+1 つも出なくなっていた 0.7.0 回帰を直す patch release。CLI フラグ・出力
+スキーマ・contribution-v2 の payload・attest / portfolio の契約はいずれも
+変わらない。公開 Forge 取得（provider-neutral Forge証跡、
+GitHub/GitLab/self-managed、PARTIAL/resume）も 0.7.1 から変わらない。
+`暗黙 PyPI update check` を持たない設計も変わらない。
+
+### Fixed
+
+- **commit ゼロの actor で `grift actor` が exit 2 になる回帰**。0.7.0 /
+  0.7.1 は `report-v2 validation failed: $.context_profile: must match
+  exactly one allowed shape (matched 0)` だけを出して終わっていた。
+  `docs/norms.md` は「入力不足・履歴なしは理由付き not_observed であり
+  能力否定ではない」と定めるので、report ごと消えるのは規範違反である。
+  公開 repo の publish run 34069987423 の `verify-release`「Unit and schema
+  gates」で P0 反証スイートが 42 PASS / 1 FAIL
+  （`P0-not-observed-not-absence` の「actorのcommitなし」）としてこれを
+  捉えていた。
+
+  原因は独立に 2 つある。
+
+  1. `analyze.prepare_inputs` が per-commit path の読み込みを
+     `origin.counts["tenant_unique"] > 0` で門番していた。
+     `context_profile` は `analysis_scope: "repo"` を宣言する repo スコープ
+     の層なのに、選ばれた actor に commit が無いというだけで repository
+     自身の `language_composition` が
+     `not_observed(commit_paths_unavailable)` に落ちていた。門番が実際に
+     読み込みを飛ばしていたのは commit ゼロの場合だけなので、常に読む形に
+     直した。用済みになった `scope` 引数は呼び出し 6 箇所ごと落とした。
+  2. 契約カタログ `v060-contracts.schema.json` の
+     `$defs.report_context_profile.language_composition` が `observed` 固定
+     を宣言していた。builder は 268c0c5（「測れなかったものを 0 や
+     クラッシュとして報告しない」）以降 `not_observed` を出しうるのに、
+     カタログはその形を禁じたままだった。宣言と強制の片側だけが動いた
+     状態で、兄弟 field（`test_file_ratio` ほか）と同じ oneOf に揃えた。
+
+  実測: 1 commit の repo に commit ゼロの actor `empty` を足して
+  `grift actor empty REPO --identity ID --format json` を実行すると
+  rc=2 → rc=0。`change_rhythm` は 0.6.0 と同じく
+  `{kind: not_observed, reason: no_actor_commits}` のまま。
+
+- **人のコミットが 1 つも無い repo で `grift repo` が exit 2 になる欠陥**
+  （0.6.0 から存在）。`context_profile` が
+  `not_observed(no_human_commits)` になる器へ `resolved_human_actors` を
+  後付けしていたため、どの shape にも当たらなかった。observed の profile に
+  だけ被せる。
+
+- **`grift export --scope tenant` が path 数を 0 と書く欠陥**。上の (1) と
+  同じ門番のため、identity に載った人の commit が 0 件のとき、全 commit の
+  `prod_paths_touched` / `test_paths_touched` が 0 になっていた。0.7.2 は
+  実測値を書く。commit が 1 件でもある actor の出力は 0.7.1 と同一である。
+
+- **live golden corpus（`TEP_GOLDEN=1 pytest -m golden`）の fixture が
+  partial clone を作っていた欠陥**（製品コードの欠陥ではない）。
+  `tests/test_golden.py::_ensure_clone` が `--filter=blob:none` で取得して
+  いたため、`GIT_NO_LAZY_FETCH=1`（v0.6.0 のコアランタイム `7530e3b` で
+  導入）の下では `git log --name-only` が
+  `could not fetch <oid> from promisor remote` で落ち、G1-click の
+  `test_cochange` が `not_observed(commit_paths_unavailable)` になっていた。
+  golden の期待値は完全な履歴の値なので、期待値ではなく fixture を完全
+  clone に直す。promisor cache と、中断された fetch が残した
+  `tmp_pack_*` を持つ cache は作り直す。
+
+### Changed
+
+- **P0 反証スイートを `ci.yml` に入れた**。これまで publish.yml でしか
+  走っておらず、0.7.0 と 0.7.1 は上の回帰を積んだまま出荷され、最初に
+  気づいたのは tag を打った後の release run だった。新 job `p0-falsify` は
+  publish.yml と同じ immutable pin（公開 v0.5.9 = `6711a3c`）を同じ
+  env 名 `GRIFT_V059_ROOT` で checkout して走らせる。pin が 2 ファイルに
+  散ったので `tests/test_publish_baseline_pin.py` が両者の一致を機械照合
+  する。
+
+- **`DEFINITION_VERSION` を `tep-v0.7.2-2026-09-07` に上げた**。版数への
+  追随に加えて、commit ゼロの actor の `context_profile` の形が変わる
+  （0.7.1 ではそもそも report が出なかった）ため。
+
 ## [0.7.1] — 2026-09-06
 
 面は 1 つも増えない。公開 Forge 取得（provider-neutral Forge証跡、

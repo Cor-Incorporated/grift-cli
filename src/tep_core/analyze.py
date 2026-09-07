@@ -49,7 +49,6 @@ def prepare_inputs(
     lineage: Lineage,
     *,
     include_files: bool = False,
-    scope: str = DEFAULT_SCOPE,
 ) -> tuple[list, Any]:
     """Read commits and classify origin once. Shared by report and export
     so both consumers see identical per-commit classification (WP-P1e ruling)."""
@@ -58,10 +57,14 @@ def prepare_inputs(
     if include_files:
         _attach_files(repo, commits)
     origin = classify_commits(commits, _classification_identity(identity), lineage)
-    need_paths = (
-        include_files or scope in {"repo", "actor_cluster"} or origin.counts["tenant_unique"] > 0
-    )
-    if not include_files and need_paths:
+    # `context_profile` is a repo-scope layer (`analysis_scope: "repo"`) built
+    # from the whole history, so its path-derived fields must not depend on
+    # which actor was selected.  Gating path attachment on `tenant_unique > 0`
+    # made a zero-commit actor blank out `language_composition` and friends for
+    # the repository itself, and `grift actor` then refused the whole report
+    # (v0.7.0/v0.7.1 regression).  Paths are always needed here; the condition
+    # only ever skipped the work in the zero-commit case.
+    if not include_files:
         _attach_files(repo, commits)
     return commits, origin
 
@@ -125,9 +128,7 @@ def analyze_repository(
     reference_version: str | None = None,
 ) -> dict[str, Any]:
     repo = repo.resolve()
-    commits, origin = prepare_inputs(
-        repo, identity, lineage, include_files=include_files, scope=scope
-    )
+    commits, origin = prepare_inputs(repo, identity, lineage, include_files=include_files)
     # A shallow or promisor clone makes every depth-dependent repo metric a
     # statement about the truncation rather than the repository (G3 finding).
     history_complete = commit_history_complete(repo)

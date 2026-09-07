@@ -346,9 +346,7 @@ def _manifest_login_count(handles: dict) -> int | None:
 def _attribution_index(repo: Path, identity, args: Namespace, evidence: PublicEvidenceState):
     from tep_core.attribution import derive_repo_scope_digest, read_mailmap_at_revision
 
-    commits, origin = prepare_inputs(
-        repo, identity, _lineage(args), include_files=True, scope="repo"
-    )
+    commits, origin = prepare_inputs(repo, identity, _lineage(args), include_files=True)
     canonical_origin = (
         evidence.locator.sanitized_remote if evidence.locator is not None else remote_url(repo)
     )

@@ -717,7 +717,6 @@ def _reconstruct_inferred_actor_identity(
         identity,
         lineage,
         include_files=True,
-        scope="repo",
     )
     target = rev_parse(repo)
     mailmap = read_mailmap_at_revision(repo, target)

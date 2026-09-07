@@ -95,9 +95,7 @@ def build_export(
     scope: str = DEFAULT_SCOPE,
 ) -> dict[str, Any]:
     repo = repo.resolve()
-    commits, origin = prepare_inputs(
-        repo, identity, lineage, include_files=include_files, scope=scope
-    )
+    commits, origin = prepare_inputs(repo, identity, lineage, include_files=include_files)
     rows: list[dict[str, Any]] = []
     for commit in commits:
         klass = origin.classes_by_sha.get(commit.sha, "unresolved")
