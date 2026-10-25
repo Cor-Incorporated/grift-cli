@@ -93,8 +93,8 @@
       "status": "PASS"
     },
     {
-      "actual": "0.7.2",
-      "expected": "0.7.2",
+      "actual": "0.8.0",
+      "expected": "0.8.0",
       "id": "runner-tool-version",
       "status": "PASS"
     },
@@ -207,16 +207,16 @@
     "report.merge": 54,
     "report.unresolved": 0
   },
-  "duration_ms": 988,
+  "duration_ms": 1409,
   "exit_code": 0,
   "output_digests": {
     "artifacts/actor-index.json": {
       "algorithm": "sha256",
-      "value": "1abefc9835f557b08bd479858638173981143a8e98548dcd363875d8c6b51396"
+      "value": "6202c5503f5c4d04048c0645746627bae47f19a000877e9c1ef29d21d7f13e2f"
     },
     "artifacts/actor-index.md": {
       "algorithm": "sha256",
-      "value": "51b813d7a397fe2e6965cf8c3edd78c16aa19b8c63f6b4be50dda9a66edb6f6b"
+      "value": "3845f0b24b2eb9e07999c3d2011ca9714b8df437ee8ccc2b71ce09316479eeca"
     },
     "artifacts/actors/tep-proposer-claude.json": {
       "algorithm": "sha256",
@@ -236,15 +236,15 @@
     },
     "artifacts/collection-manifest.json": {
       "algorithm": "sha256",
-      "value": "17836392bc1deb6184581106aaa2f14eca0b8c5d4f28e964aa0ae4da652b331d"
+      "value": "304450fc43ac617d71d25e8802e87749b8372be7f781911e54c98eea2ef87053"
     },
     "artifacts/repo-report.json": {
       "algorithm": "sha256",
-      "value": "215e786cdd5ea90f33ec05befbcbb8179861f4c1a5bf4781edef831b47112dd3"
+      "value": "bbd706805e2e97dbc835b0d208112bb925712c29ececac951386e361a6a31ae0"
     },
     "artifacts/repo-report.md": {
       "algorithm": "sha256",
-      "value": "fdb9a82b70a83c54923ae76bcc15b46101d47fc2f8e35cc085b0c877fe309f19"
+      "value": "01ec1afabc343d2926919508de04962692934091c55c893dad2cc9468b3c4c8b"
     }
   },
   "partition_digest": {
@@ -260,16 +260,16 @@
     "source_binding": {
       "commit_oid": {
         "algorithm": "sha1",
-        "value": "eb47d1bdb0881369cd5239b98683d628e7414580"
+        "value": "d4b9bb88c658302ca66acc73070bbd1ee93ded6d"
       },
       "definition_version": "grift-tool-source-tree-v1",
       "file_count": 97,
       "source_tree_digest": {
         "algorithm": "sha256",
-        "value": "ee40e864617e2b03668aa374e648c4a90810bea805a48d7c36404eec98c5bfc7"
+        "value": "f336f17cf36f545092d2ebd70ab8b6b48a655a1bafdd7d61ddbe45a5342eb01c"
       }
     },
-    "tool_version": "0.7.2"
+    "tool_version": "0.8.0"
   },
   "scenario_id": "R04-grift-cli-baseline",
   "schema_version": "tep-scenario-result-v1",

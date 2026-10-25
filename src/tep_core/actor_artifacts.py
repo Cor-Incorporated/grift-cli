@@ -36,6 +36,13 @@ from tep_core.version import __version__
 MANIFEST_NAME = "collection-manifest.json"
 MANIFEST_SCHEMA_VERSION = "actor-artifact-manifest-v1"
 PARTITION_BASIS = "git_primary_author_cluster"
+# Declared in the index and enforced by `actor_summaries` plus the row-order
+# check in `verify_actor_artifact_directory`; tests/test_v080_actor_index_order.py
+# links the two.
+INDEX_ORDER_LIMITATION = (
+    "Rows are ordered by actor id, not by commit count; no row position means "
+    "more or less than another."
+)
 _ACTOR_ID_RE = re.compile(r"^(?:[a-z0-9][a-z0-9._-]{0,63}|actor_[0-9a-f]{12,32}|actor_unknown)$")
 _HEX64_RE = re.compile(r"^[0-9a-f]{64}$")
 _EMAIL_RE = re.compile(r"[A-Z0-9._%+\-]+@[A-Z0-9.\-]+\.[A-Z]{2,}", re.IGNORECASE)
@@ -255,10 +262,20 @@ def _window(report: Mapping[str, Any]) -> dict[str, Any]:
     return result
 
 
-def _actor_summaries(index: AttributionIndex) -> list[dict[str, Any]]:
+def actor_summaries(index: AttributionIndex) -> list[dict[str, Any]]:
+    """One row per actor, ordered by actor id.
+
+    The order is deliberately not the commit count. A table of people sorted by
+    how much they committed is a ranking by volume, whatever the caption says,
+    and volume is the one quantity an agent can inflate overnight (norms §2,
+    ADR-0001 R1). The counts stay in every row as facts with a denominator; only
+    the order stops carrying meaning. `verify` rebuilds this list from Git and
+    compares it row for row, so the writer and the verifier must share this
+    function rather than each sorting on their own.
+    """
     rows: list[dict[str, Any]] = []
     seen: set[str] = set()
-    for actor in sorted(index.actors, key=lambda item: (-len(item.commit_shas), item.actor_id)):
+    for actor in sorted(index.actors, key=lambda item: item.actor_id):
         if not _ACTOR_ID_RE.fullmatch(actor.actor_id):
             raise ActorArtifactError(
                 f"actor id is not safe for a public artifact: {actor.actor_id!r}"
@@ -305,7 +322,7 @@ def _selection(
             raise ActorArtifactError("top selection requires an integer >= 1")
         if requested:
             raise ActorArtifactError("top selection cannot include explicit actor IDs")
-        return available[:top]
+        return _most_commits(summaries, top)
     if top is not None or not requested:
         raise ActorArtifactError("explicit selection requires actor IDs and forbids top")
     if len(set(requested)) != len(requested):
@@ -315,6 +332,53 @@ def _selection(
         raise ActorArtifactError("unknown explicit actor IDs: " + ", ".join(unknown))
     requested_set = set(requested)
     return [actor_id for actor_id in available if actor_id in requested_set]
+
+
+def _most_commits(summaries: Sequence[Mapping[str, Any]], top: int) -> list[str]:
+    """The `top` actors by observed commit count, returned in index row order.
+
+    This is the only place volume selects anyone, and it is opt-in (`--top N`).
+    The result is re-sorted into actor-id order so the selected set is the same
+    as before 0.8.0 while the collection itself never lists people by volume.
+    """
+    ranked = sorted(summaries, key=lambda row: (-int(row["commit_count"]), str(row["actor_id"])))
+    chosen = {str(row["actor_id"]) for row in ranked[:top]}
+    return [str(row["actor_id"]) for row in summaries if str(row["actor_id"]) in chosen]
+
+
+def _require_actor_id_order(row_ids: Sequence[str]) -> None:
+    """Reject an index whose rows are not in actor-id order (ADR-0001 R1).
+
+    Only the first out-of-order pair is quoted: a repository with thousands of
+    actors would otherwise print every id into one error line.
+    """
+    for position, (left, right) in enumerate(zip(row_ids, row_ids[1:]), start=1):
+        if left > right:
+            raise ActorArtifactError(
+                "actor index rows must be ordered by actor id, not by any observed count; "
+                f"observed {left!r} before {right!r} at row {position}"
+            )
+
+
+def _require_selection_order(
+    selection: Mapping[str, Any], rows: Sequence[Mapping[str, Any]], row_ids: Sequence[str]
+) -> None:
+    """The selection must follow row order and, for `top`, be the most-commits set.
+
+    Checked before any digest comparison so a consistently rewritten selection
+    (digests refreshed to match) is still rejected for what it says.
+    """
+    selected_ids = [str(actor_id) for actor_id in selection["actor_ids"]]
+    chosen = set(selected_ids)
+    if selected_ids != [actor_id for actor_id in row_ids if actor_id in chosen]:
+        raise ActorArtifactError(
+            f"selected actor ids must follow index row order; observed {selected_ids}"
+        )
+    if selection.get("mode") == "top" and selected_ids != _most_commits(rows, len(selected_ids)):
+        raise ActorArtifactError(
+            "top selection must be the actors with the most commits, listed in row order; "
+            f"observed {selected_ids}"
+        )
 
 
 def _account_key(account: PublicAccount) -> str:
@@ -604,7 +668,7 @@ def build_actor_artifacts(
     target = _target_oid(report)
     window = _window(report)
     partition = _require_digest(index.partition_digest, label="partition_digest")
-    summaries = _actor_summaries(index)
+    summaries = actor_summaries(index)
     selected_ids = _selection(
         summaries,
         mode=selection_mode,
@@ -652,6 +716,7 @@ def build_actor_artifacts(
         "limitations": [
             "Actor IDs are repo-local Git primary-author clusters, not verified people.",
             "Top selection is observed commit-count extraction, never a quality rank.",
+            INDEX_ORDER_LIMITATION,
         ],
     }
     errors = validate_schema("actor-index-v1", actor_index)
@@ -812,6 +877,7 @@ def _render_index_markdown(
         "# Actor index",
         "",
         "> Commit-count extraction only; this is not a quality ranking.",
+        f"> {INDEX_ORDER_LIMITATION}",
         "",
         f"- Full actors: {actor_index['population']['actor_count']}",
         f"- Full attributed commits: {actor_index['population']['human_commit_count']}",
@@ -1187,6 +1253,9 @@ def verify_actor_artifact_directory(root: Path) -> VerifiedActorArtifacts:
             raise ActorArtifactError(f"{name} validation failed: " + "; ".join(errors))
         _assert_no_private_data(value)
 
+    row_ids = [str(row["actor_id"]) for row in index["actors"]]
+    _require_actor_id_order(row_ids)
+    _require_selection_order(index["selection"], index["actors"], row_ids)
     index_digest = _digest(index)
     population_digest = _population_digest_from_report(report)
     if manifest["actor_index_digest"] != index_digest:
@@ -1320,9 +1389,11 @@ def verify_actor_artifact_directory(root: Path) -> VerifiedActorArtifacts:
 
 
 __all__ = [
+    "INDEX_ORDER_LIMITATION",
     "ActorArtifactError",
     "ActorArtifactSet",
     "VerifiedActorArtifacts",
+    "actor_summaries",
     "build_actor_artifacts",
     "verify_actor_artifact_directory",
     "write_actor_artifacts",

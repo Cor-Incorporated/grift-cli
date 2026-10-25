@@ -93,8 +93,8 @@
       "status": "PASS"
     },
     {
-      "actual": "0.7.2",
-      "expected": "0.7.2",
+      "actual": "0.8.0",
+      "expected": "0.8.0",
       "id": "runner-tool-version",
       "status": "PASS"
     },
@@ -207,16 +207,16 @@
     "report.merge": 4,
     "report.unresolved": 0
   },
-  "duration_ms": 532,
+  "duration_ms": 833,
   "exit_code": 0,
   "output_digests": {
     "artifacts/actor-index.json": {
       "algorithm": "sha256",
-      "value": "4a4bfb0bcb1bfbe8507cd127d71fc4bc5c778832b4acc457cdb00991102300f9"
+      "value": "16eb09de16ecdc0331d701ac95747bd9e49f83165104e4f28d8100a680113a9f"
     },
     "artifacts/actor-index.md": {
       "algorithm": "sha256",
-      "value": "2a4d1f84be37112421e756206654b5666804ffa2683f07968d8653d3d15eba96"
+      "value": "605ff1e4676ca636ff92eeee6ba6ee71e8798290f56fc15f237a681598b73a87"
     },
     "artifacts/actors/antirez.json": {
       "algorithm": "sha256",
@@ -276,15 +276,15 @@
     },
     "artifacts/collection-manifest.json": {
       "algorithm": "sha256",
-      "value": "170dee210c8b105dd4f906332687b5bb295f807ace85f89bcffd9930d8a50b46"
+      "value": "0d39943f5d60c84b233626339ad2e5c7507e886ef118016850cb45884a5c927f"
     },
     "artifacts/repo-report.json": {
       "algorithm": "sha256",
-      "value": "f3e32dd0bcaef75a5b8930d6c7bb13108bad128072b46d818bbca18a5a083bad"
+      "value": "b9646ffe3f701173d5a242064256bfe07bcafb552237311d1d0d4e64289cb06a"
     },
     "artifacts/repo-report.md": {
       "algorithm": "sha256",
-      "value": "e3378bfc4f8ce4d43a399275884f1614acc34998386988796ffd6459a8e288a4"
+      "value": "ed3359069ee149a2a04178a27fa4e8420d682363d2f6bf4b5556704a3414506e"
     }
   },
   "partition_digest": {
@@ -300,16 +300,16 @@
     "source_binding": {
       "commit_oid": {
         "algorithm": "sha1",
-        "value": "eb47d1bdb0881369cd5239b98683d628e7414580"
+        "value": "d4b9bb88c658302ca66acc73070bbd1ee93ded6d"
       },
       "definition_version": "grift-tool-source-tree-v1",
       "file_count": 97,
       "source_tree_digest": {
         "algorithm": "sha256",
-        "value": "ee40e864617e2b03668aa374e648c4a90810bea805a48d7c36404eec98c5bfc7"
+        "value": "f336f17cf36f545092d2ebd70ab8b6b48a655a1bafdd7d61ddbe45a5342eb01c"
       }
     },
-    "tool_version": "0.7.2"
+    "tool_version": "0.8.0"
   },
   "scenario_id": "R08-kilo",
   "schema_version": "tep-scenario-result-v1",

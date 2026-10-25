@@ -8,8 +8,8 @@
 - Full actors: 118
 - Full attributed commits: 1899
 - Selected actors: 118
-- Actor index digest: `65bb51a8ac9aa3b8ad63fe9c26d78179772ddc72faa00aa21e7f0ee1923df1dd`
-- Selection digest: `d0d7cbb5b486c741e12a6cb0345cfb8bee79a358ebef6f9dcb11af14b7862947`
+- Actor index digest: `1bf52ca74ec26824ce4880dda1dfb9b982bf103f57e3c7099446542e6beb8318`
+- Selection digest: `7f88ff7fe08fd1a816c68cae862ac2ddd9974cac791647604e6d4baa4245ade2`
 - Index: [actor-index.md](actor-index.md)
 - Machine report: [repo-report.json](repo-report.json)
 - Root license files at fixed target: 1

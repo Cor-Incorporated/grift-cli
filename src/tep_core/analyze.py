@@ -34,6 +34,7 @@ from tep_core.rework import rework_metrics
 from tep_core.scope import DEFAULT_SCOPE, population_shas
 from tep_core.survival import survival_metrics
 from tep_core.tests_observed import observe_test_frameworks
+from tep_core.v2_constants import ACTIVE_DAYS_INFLATION_LIMITATION
 from tep_core.version import (
     ACTIVITY_DEFINITION_VERSION,
     DEFINITION_VERSION,
@@ -187,6 +188,9 @@ def analyze_repository(
             "bot": Observed(origin.bot_commits, "commits").to_dict(),
         },
         "activity": activity,
+        # The disclosure sits beside `activity`, not inside it: the P0 suite
+        # (P0-legacy-activity-parity) keeps that block identical to v0.5.9.
+        "limitations": [ACTIVE_DAYS_INFLATION_LIMITATION],
         "core_activity_period": compute_core_activity_period(activity_dates),
         "test_frameworks": tests,
         "test_cochange": cochange,

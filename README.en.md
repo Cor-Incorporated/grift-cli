@@ -2,7 +2,7 @@
 
 [日本語](README.md) | **English**
 
-Method = **TEP** / Tool = **grift** (two-layer naming, CodeScene-style: the methodology stays TEP; the command is `grift`).
+Method = **TEP (Technical Evidence Pipeline)** / Tool = **grift** (two-layer naming, CodeScene-style: the methodology stays TEP; the command is `grift`).
 Named after the Grift product line.
 
 Anyone can produce volume. This tool measures what remains, and which changes came with verification. It is not a skill score.
@@ -51,7 +51,9 @@ grift verify actor-explicit-collection --repo . \
   --identity .tep/identity.toml
 ```
 
-`--top` selects by commit count, not quality. When a collection is passed to
+`--top` selects by commit count, not quality. Index rows, selected cards and the
+report-v2 `actor_directory` are listed in actor-id order (canonical_id when an identity
+exists, otherwise `actor_<hash>`), never by commit count (0.8.0). When a collection is passed to
 alignment, `--actor-id` (alias `--actor`) is required if it contains multiple
 cards; there is no implicit first-card selection.
 
@@ -106,6 +108,24 @@ Legacy verbs stay **analyze = display (stdout)** · **report = record (`.grift/`
 - `--scope repo`: all non-bot human commits = **process observation and reference distributions**
 
 Reference distribution v2026.09 is compared **only at repo scope**. Do not plot tenant values on the repo distribution (mixing scopes makes the distribution a lie).
+
+## What v0.8.0 changes
+
+No new surface. This release brings the default output in line with the public promise
+"no scores, no ranking". For the details see [docs/migration-v080.md](docs/migration-v080.md).
+
+- **Outputs that list actors are in actor-id order.** `actor-index`, selected cards and the
+  report-v2 `actor_directory` are no longer sorted by commit count; `commit_count` values
+  stay. `--top N` still selects the same N actors. **Collections written by 0.7.x fail
+  `grift verify` under 0.8.0 (MISMATCH); regenerate them.**
+- **Single actor report-v2 and alignment `notices` always carry a fixed sentence** saying
+  this is one repository the provider chose to show (norms §6).
+- **How active-day counts can be inflated is disclosed next to the number**: one fixed
+  sentence in report-v1 top-level `limitations`, report-v2 `activity.limitations` and
+  `change_rhythm.limitations`, and the `align` axis for `active_days_180d`. No correction
+  is applied (norms §7).
+- `DEFINITION_VERSION` moved, so **reports saved by 0.7.x are CANNOT_VERIFY under 0.8.0**;
+  regenerate them with 0.8.0.
 
 ## What v0.7.2 fixes
 
@@ -399,7 +419,9 @@ meanings.
 ## How to read the metrics (for non-engineers)
 
 [docs/metrics-guide.md](docs/metrics-guide.md) explains every metric in plain
-language: what it measures, what high/low values suggest, and rough ranges
+language (the one glossary mapping the public site's Japanese terms to CLI
+terms and JSON keys is [its correspondence table](docs/metrics-guide.md#サイトの訳語と-cli-の語の対応表);
+no other document copies it): what it measures, what high/low values suggest, and rough ranges
 from a 117-repository public corpus. Common misreadings (e.g. corrective
 rework is not a bug count; dormant does not mean abandoned) are listed in a
 table. Read this first if you are new to the reports.
@@ -441,7 +463,7 @@ steps:
   - uses: actions/setup-python@v5
     with:
       python-version: "3.12"
-  - uses: Cor-Incorporated/grift-cli@v0.7.2
+  - uses: Cor-Incorporated/grift-cli@v0.8.0
     with:
       scope: repo
       comment: false

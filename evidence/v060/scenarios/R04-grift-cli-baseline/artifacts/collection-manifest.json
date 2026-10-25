@@ -1,7 +1,7 @@
 {
   "actor_index_digest": {
     "algorithm": "sha256",
-    "value": "6555e62b45a61f9c6eef35a30598cf712e5c944b3fe7cd6ab803e4cde9e731b0"
+    "value": "6702a15bc94749e073db9a7c33c104bf684a76600758360b751e119c99c95f00"
   },
   "full": {
     "actor_count": 2,
@@ -19,16 +19,16 @@
   },
   "members": [
     {
-      "bytes": 1361,
+      "bytes": 1468,
       "media_type": "application/json",
       "path": "actor-index.json",
-      "sha256": "1abefc9835f557b08bd479858638173981143a8e98548dcd363875d8c6b51396"
+      "sha256": "6202c5503f5c4d04048c0645746627bae47f19a000877e9c1ef29d21d7f13e2f"
     },
     {
-      "bytes": 757,
+      "bytes": 859,
       "media_type": "text/markdown",
       "path": "actor-index.md",
-      "sha256": "51b813d7a397fe2e6965cf8c3edd78c16aa19b8c63f6b4be50dda9a66edb6f6b"
+      "sha256": "3845f0b24b2eb9e07999c3d2011ca9714b8df437ee8ccc2b71ce09316479eeca"
     },
     {
       "bytes": 961,
@@ -58,13 +58,13 @@
       "bytes": 7365,
       "media_type": "application/json",
       "path": "repo-report.json",
-      "sha256": "215e786cdd5ea90f33ec05befbcbb8179861f4c1a5bf4781edef831b47112dd3"
+      "sha256": "bbd706805e2e97dbc835b0d208112bb925712c29ececac951386e361a6a31ae0"
     },
     {
       "bytes": 1069,
       "media_type": "text/markdown",
       "path": "repo-report.md",
-      "sha256": "fdb9a82b70a83c54923ae76bcc15b46101d47fc2f8e35cc085b0c877fe309f19"
+      "sha256": "01ec1afabc343d2926919508de04962692934091c55c893dad2cc9468b3c4c8b"
     }
   ],
   "partition_digest": {
@@ -79,23 +79,23 @@
   "selection": {
     "actor_count": 2,
     "actor_ids": [
-      "terada-kousuke",
-      "tep-proposer-claude"
+      "tep-proposer-claude",
+      "terada-kousuke"
     ],
     "digest": {
       "algorithm": "sha256",
-      "value": "98bd2e74984ade8722ad8c18dc9aa4b287860585eab45b321b79233c76e38add"
+      "value": "ae89755e92553c2f741c00550f30414e3fdcadff9130e67eaeb432f2e7c5ba3d"
     },
     "links": [
-      {
-        "actor_id": "terada-kousuke",
-        "json": "actors/terada-kousuke.json",
-        "markdown": "actors/terada-kousuke.md"
-      },
       {
         "actor_id": "tep-proposer-claude",
         "json": "actors/tep-proposer-claude.json",
         "markdown": "actors/tep-proposer-claude.md"
+      },
+      {
+        "actor_id": "terada-kousuke",
+        "json": "actors/terada-kousuke.json",
+        "markdown": "actors/terada-kousuke.md"
       }
     ],
     "mode": "all"

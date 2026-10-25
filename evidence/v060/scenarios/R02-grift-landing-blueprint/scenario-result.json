@@ -93,8 +93,8 @@
       "status": "PASS"
     },
     {
-      "actual": "0.7.2",
-      "expected": "0.7.2",
+      "actual": "0.8.0",
+      "expected": "0.8.0",
       "id": "runner-tool-version",
       "status": "PASS"
     },
@@ -207,16 +207,16 @@
     "report.merge": 20,
     "report.unresolved": 0
   },
-  "duration_ms": 851,
+  "duration_ms": 1037,
   "exit_code": 0,
   "output_digests": {
     "artifacts/actor-index.json": {
       "algorithm": "sha256",
-      "value": "bcd17e023423a4d987c31fc1e0cb9497e59c4e7bc746d2a6a1cea83b081d0ed9"
+      "value": "77bfba93ed78bec09e2d6fbae3dadb95c3f53f629a6421a24097170411018e25"
     },
     "artifacts/actor-index.md": {
       "algorithm": "sha256",
-      "value": "03fe2c610d862407bf1dbcafab7ef69d5061fbe8d6ad039aca9bd815fe54581f"
+      "value": "66091df65f454713e670f78865d3991901454b8a6af3724e5ad7b2135089806a"
     },
     "artifacts/actors/kojiisayama.json": {
       "algorithm": "sha256",
@@ -236,15 +236,15 @@
     },
     "artifacts/collection-manifest.json": {
       "algorithm": "sha256",
-      "value": "e6cc3da823e653f55a9aeae8f4eed2aec84a6b2df16582a4119174450c768eaa"
+      "value": "f5bb59b53fa9ba74d4623ec5be7d3a754c341c4300815f2ac8c08f9f3117d682"
     },
     "artifacts/repo-report.json": {
       "algorithm": "sha256",
-      "value": "252e643c44ad965538f3938f81d005fa8fc6bb6350ca742d7091c7aee19c00e7"
+      "value": "e7362ebf2e17f3d73915a6b06f0a0dbd5097fd7ffb16b733f0286c156143159d"
     },
     "artifacts/repo-report.md": {
       "algorithm": "sha256",
-      "value": "2a7b1328ae6310c2a3f2e4ae60be765409e5fdd105ea9b697e202f28c1580b86"
+      "value": "35a3f55996152aeb11d92b6b6040068c500133a7edbc092f7729d3e9e55a1301"
     }
   },
   "partition_digest": {
@@ -260,16 +260,16 @@
     "source_binding": {
       "commit_oid": {
         "algorithm": "sha1",
-        "value": "eb47d1bdb0881369cd5239b98683d628e7414580"
+        "value": "d4b9bb88c658302ca66acc73070bbd1ee93ded6d"
       },
       "definition_version": "grift-tool-source-tree-v1",
       "file_count": 97,
       "source_tree_digest": {
         "algorithm": "sha256",
-        "value": "ee40e864617e2b03668aa374e648c4a90810bea805a48d7c36404eec98c5bfc7"
+        "value": "f336f17cf36f545092d2ebd70ab8b6b48a655a1bafdd7d61ddbe45a5342eb01c"
       }
     },
-    "tool_version": "0.7.2"
+    "tool_version": "0.8.0"
   },
   "scenario_id": "R02-grift-landing-blueprint",
   "schema_version": "tep-scenario-result-v1",

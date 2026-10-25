@@ -10,6 +10,7 @@ from tep_core.dates import parse_day, parse_iso_utc
 from tep_core.gitutil import GitCommit
 from tep_core.observation import NotObserved, Observed
 from tep_core.v2_constants import (
+    ACTIVE_DAYS_INFLATION_LIMITATION,
     MIN_POPULATION_FOR_RATES,
     RHYTHM_LIMITATION,
     RHYTHM_TIMESTAMP_LIMITATIONS,
@@ -65,7 +66,12 @@ def in_rhythm_window(commit: GitCommit, observation_date: str) -> bool:
 
 
 def _limitations() -> list[str]:
-    return [RHYTHM_LIMITATION, RHYTHM_WINDOW_NOTE, RHYTHM_TIMESTAMP_LIMITATIONS]
+    return [
+        RHYTHM_LIMITATION,
+        RHYTHM_WINDOW_NOTE,
+        RHYTHM_TIMESTAMP_LIMITATIONS,
+        ACTIVE_DAYS_INFLATION_LIMITATION,
+    ]
 
 
 def change_rhythm(

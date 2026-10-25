@@ -22,8 +22,8 @@
   ],
   "assertions": [
     {
-      "actual": "0.7.2",
-      "expected": "0.7.2",
+      "actual": "0.8.0",
+      "expected": "0.8.0",
       "id": "runner-tool-version",
       "status": "PASS"
     },
@@ -166,19 +166,19 @@
       "status": "PASS"
     },
     {
-      "actual": "3d4db74772c487004f8f034d187268a2680bec2c4c56d86c19ea495d16ab9442",
-      "expected": "3d4db74772c487004f8f034d187268a2680bec2c4c56d86c19ea495d16ab9442",
+      "actual": "3e50039daa42801ca2b9363c5ffd672b1074a8e90ed89f72bf52484569c04e9f",
+      "expected": "3e50039daa42801ca2b9363c5ffd672b1074a8e90ed89f72bf52484569c04e9f",
       "id": "acquisition-receipt-digest",
       "status": "PASS"
     }
   ],
   "collection_mode": "fresh",
   "counts": {
-    "account.commit-linked": 94,
-    "account.public-handle-actors": 28,
-    "account.stable": 28,
-    "account.status-matched-actors": 28,
-    "account.status-unavailable-actors": 1340,
+    "account.commit-linked": 92,
+    "account.public-handle-actors": 27,
+    "account.stable": 27,
+    "account.status-matched-actors": 27,
+    "account.status-unavailable-actors": 1341,
     "actor.full": 1368,
     "git.bot": 470,
     "git.human": 9172,
@@ -194,21 +194,21 @@
     "oid.observed": 100,
     "provider.items": 100,
     "provider.pages": 1,
-    "provider.sha-to-account": 94,
+    "provider.sha-to-account": 92,
     "verify.cannot-verify": 2,
     "verify.collections": 3,
     "verify.verified": 1
   },
-  "duration_ms": 72320,
+  "duration_ms": 102268,
   "exit_code": 3,
   "output_digests": {
     "derived/actor-provider-independent": {
       "algorithm": "sha256",
-      "value": "6c259a00092f9fca825c7d8924953ba5217592bdb3bec318338a09dede53469a"
+      "value": "30e7306a40eaabbe1f219495384c3cd1e68796d39d1023fdb4a2e9ba87f38fda"
     },
     "derived/actor-provider-independent-numeric": {
       "algorithm": "sha256",
-      "value": "d8b8657c4b4c1cdf00290524755ad2e1867bade6a8cc647b7eaaf5538070ec4f"
+      "value": "28e6e5c81c1f87e4108a7c6d6d30b2e4fc5e0a2f15b0091206fc629aaafb5332"
     },
     "derived/license-evidence": {
       "algorithm": "sha256",
@@ -220,7 +220,7 @@
     },
     "derived/repo-provider-independent": {
       "algorithm": "sha256",
-      "value": "e96cd923c8fa1a840fb086375b26cccd6907fc9845de03c07f4f5d9ab2202fe9"
+      "value": "fa4b0ac00de85b344705b583c6dd377d6e5c6bea9a810b5bb356edb3896d987d"
     },
     "derived/repo-provider-independent-numeric": {
       "algorithm": "sha256",
@@ -232,75 +232,75 @@
     },
     "offline/actor-index.json": {
       "algorithm": "sha256",
-      "value": "1b5cf12955afc97a8aacfb8a23bfcc3668be48538c458eac7c3c5f490af0c514"
+      "value": "e3bae587ca87454ff0fb2c61d39f3bad9bb3bb3d00fabcba682aa53795dc80e3"
     },
     "offline/actor-index.md": {
       "algorithm": "sha256",
-      "value": "73b66f217ec8f99a5fb6002f688267c8448c71c5bee24e238d5fd5ab1c672ad0"
+      "value": "6ddda21df516e4ff716dc81144d1f0da3c10bbd679c968d632f02b30ffb1923b"
     },
     "offline/collection-manifest.json": {
       "algorithm": "sha256",
-      "value": "c90000b19e0a710c6b448c627d4dca8e56fc615a654ef538307a323eecb5786c"
+      "value": "f906207d044274af3d2c3067fddedb8665daa37e8db5bbdbe86d0d07a0bb5d80"
     },
     "offline/repo-report.json": {
       "algorithm": "sha256",
-      "value": "842cb23a53cca7de043124bf039d2da1ad44a6ef94af23890067c7fd2276c098"
+      "value": "d8aed33a30f2578ec6d3fb5bc7b25351c012f426c17f158c3a11b17c8f9569fc"
     },
     "offline/repo-report.md": {
       "algorithm": "sha256",
-      "value": "8a27ba9f2900e5271640964b60c651ebe047dda052ed0369d88fc6d36485b1b1"
+      "value": "31a90d0210102c8b6d25b2a4614b7e2f317f5b5ef262d647d56acddfe4dd6f68"
     },
     "partial/actor-index.json": {
       "algorithm": "sha256",
-      "value": "1b5cf12955afc97a8aacfb8a23bfcc3668be48538c458eac7c3c5f490af0c514"
+      "value": "e3bae587ca87454ff0fb2c61d39f3bad9bb3bb3d00fabcba682aa53795dc80e3"
     },
     "partial/actor-index.md": {
       "algorithm": "sha256",
-      "value": "3bdebe942e0c0151eb5f096c869000ec2bb491f71f52e50f3f3966a656f0a3d1"
+      "value": "e45072e61fba2071b79a29bb52d01bf1b23f13b11f21dd6f646e72816acda54b"
     },
     "partial/collection-manifest.json": {
       "algorithm": "sha256",
-      "value": "f5894037dcf8d35edeb20b9202a9d0527c898f5bd5f3000a68588019d385f9d8"
+      "value": "c3a31b4c9bfb9c248bd73eede6fcd85744938ddb5c1a5f85df03744506c3e677"
     },
     "partial/repo-report.json": {
       "algorithm": "sha256",
-      "value": "63d2661beeeb103714bed65fd17c311e9074bde13ff3c1e3b1e7b7f231c754d6"
+      "value": "91cc48cfb7856dfa2d0415be4b495f72649d36cc1775d8ebae37cab5446574ab"
     },
     "partial/repo-report.md": {
       "algorithm": "sha256",
-      "value": "02dc490cb4556fe5b2381f33b3ad93cc879846b8160e44eb4b6481e011c39bc7"
+      "value": "c40651f171cec310e277534dd9d5b80929604cb7fe8e3e4ef63021fb76e9d4f7"
     },
     "public-evidence/manifest.json": {
       "algorithm": "sha256",
-      "value": "28581142198cc346bdaf1ab42517fa87f3993b68456cb6024871ca974aded88c"
+      "value": "74328e62b59fd40a35c146049148bb28d6cb724462def6ae2c2d1aec56bb16b8"
     },
     "public-evidence/page-01.body": {
       "algorithm": "sha256",
-      "value": "e18a950f4e2f4d2df05cf62f35343cc280908fd54c5f9ceb505da6ca253c8a20"
+      "value": "54482ec20ec9dc6825ec885773353c29e3ab1871681761020bebec915670de8f"
     },
     "public-evidence/payload": {
       "algorithm": "sha256",
-      "value": "e7f5354311ff02cae3547a4e2184d29196bd8bd7fc41f3fb9ade348dd696fddf"
+      "value": "4e180d3194290070695e3e7252b1302dd4cd51e38d32623b956fe89ba3c0b151"
     },
     "replay/actor-index.json": {
       "algorithm": "sha256",
-      "value": "1b5cf12955afc97a8aacfb8a23bfcc3668be48538c458eac7c3c5f490af0c514"
+      "value": "e3bae587ca87454ff0fb2c61d39f3bad9bb3bb3d00fabcba682aa53795dc80e3"
     },
     "replay/actor-index.md": {
       "algorithm": "sha256",
-      "value": "3bdebe942e0c0151eb5f096c869000ec2bb491f71f52e50f3f3966a656f0a3d1"
+      "value": "e45072e61fba2071b79a29bb52d01bf1b23f13b11f21dd6f646e72816acda54b"
     },
     "replay/collection-manifest.json": {
       "algorithm": "sha256",
-      "value": "a966b62657c0c5c4a417f01c6d4919c2cb67892c4091a21cf363257aa13d73dc"
+      "value": "5c50cffcc4af0b5c9754fe7fa169b8e2908cd6ac319fb32e093edfbd0b074157"
     },
     "replay/repo-report.json": {
       "algorithm": "sha256",
-      "value": "a80087ce4183052926f3a5cf859327dde7d1eb4dc1d8a8daaf8196b10a7cddb7"
+      "value": "61c3db8c4353a990641e9064ad4d128423c0e45b0e8f8b0be01f9eea41f3627e"
     },
     "replay/repo-report.md": {
       "algorithm": "sha256",
-      "value": "02dc490cb4556fe5b2381f33b3ad93cc879846b8160e44eb4b6481e011c39bc7"
+      "value": "c40651f171cec310e277534dd9d5b80929604cb7fe8e3e4ef63021fb76e9d4f7"
     }
   },
   "partition_digest": {
@@ -317,16 +317,16 @@
     "source_binding": {
       "commit_oid": {
         "algorithm": "sha1",
-        "value": "294ce2a5a5ca9ad9a508dcfd3ab611c9b2f3fde6"
+        "value": "d4b9bb88c658302ca66acc73070bbd1ee93ded6d"
       },
       "definition_version": "grift-tool-source-tree-v1",
       "file_count": 97,
       "source_tree_digest": {
         "algorithm": "sha256",
-        "value": "ee40e864617e2b03668aa374e648c4a90810bea805a48d7c36404eec98c5bfc7"
+        "value": "f336f17cf36f545092d2ebd70ab8b6b48a655a1bafdd7d61ddbe45a5342eb01c"
       }
     },
-    "tool_version": "0.7.2"
+    "tool_version": "0.8.0"
   },
   "scenario_id": "P02-vite-forced-partial",
   "schema_version": "tep-public-scenario-result-v2",

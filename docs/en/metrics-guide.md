@@ -1,10 +1,13 @@
 # How to read grift reports — a plain-language metric guide (v3, 2026-08-31)
 
-Japanese original: [metrics-guide.md](../metrics-guide.md).
+Japanese original: [metrics-guide.md](../metrics-guide.md). The one table
+mapping the public site's Japanese terms (griftai.org / cor-jp.com) to CLI
+terms and report-v1 JSON keys lives there only:
+[サイトの訳語と CLI の語の対応表](../metrics-guide.md#サイトの訳語と-cli-の語の対応表).
 
 **Audience**: non-engineers. **Principle restated**: every number is a record
 of observed fact, not a grade. Standalone pass/fail decisions and
-person-to-person comparisons are non-compliant with the TEP norms
+person-to-person comparisons are non-compliant with the TEP (Technical Evidence Pipeline) norms
 ([en/norms.md](norms.md)). What is not written (= not observed) did not
 "not happen." Reference values come from a 117-repository public corpus
 (v2026.11, repo scope) and field measurements (requests / flask / GitHub CLI

@@ -1,7 +1,7 @@
 # grift レポートの読み方 — 指標ごとの平易な解説（v3・2026-08-31）
 
 **対象**: grift 0.5.4 以降。report-v1 の既存定義は0.5.x互換、v0.6のexperience / roleは別のversion付き定義です。非エンジニアの方向け。v0.6 の subject コマンド（repo / actor / project / align）の数値も同じ原則です。
-**原則の再掲**: すべての数値は**観測された事実の記録**であって、優劣の評価ではありません。単独の数値での合否判断・人と人の比較は TEP 非準拠です（[docs/norms.md](norms.md)）。書かれていないこと（= not observed）は「無かったこと」を意味しません。
+**原則の再掲**: すべての数値は**観測された事実の記録**であって、優劣の評価ではありません。単独の数値での合否判断・人と人の比較は TEP（Technical Evidence Pipeline）非準拠です（[docs/norms.md](norms.md)）。書かれていないこと（= not observed）は「無かったこと」を意味しません。
 **参考値の出典**: 特に断らない限り、公開リポジトリ 117 件のコーパス（v2026.11・repo スコープ）と v0.5.2 実地調査（requests / flask / GitHub CLI / chalk ほか）に基づきます。参考値は「だいたいの目安」であり、分布は成長とともに新版として出ます。
 
 ---
@@ -13,6 +13,22 @@
 - 実例: click の test co-change 0.3178 は境界 0.2894 < 0.3178 ≤ 0.4871 に落ちるため **第9十分位**（上位 20% の帯に相当）
 - 本書の帯表記には必ず日本語訳を併記します（例: 「第7十分位（上位 30〜40% の帯）」）
 - 「上位N割」という目安訳は補助として併用します
+
+---
+
+## サイトの訳語と CLI の語の対応表
+
+公開サイト（griftai.org・cor-jp.com）は非エンジニア向けの訳語で観測を呼び、CLI の出力と本書は英語の語と JSON キーで呼びます。対応は 1 対 1 で、**この表だけ**に置きます（他の文書は表を複製せず、ここへリンクします）。JSON キーは report-v1（`grift analyze` / `grift report`）の経路で、`.value` は `kind: "observed"` のときだけ存在します。
+
+| サイトの訳語 | CLI の語 | JSON キー（report-v1） | 本書の節 |
+|---|---|---|---|
+| 検査値 | observed | `kind: "observed"` を持つ観測ブロックの `value`（単位は `unit`） | [数値が出ない（not observed）とき](#数値が出ないnot-observedとき) |
+| テスト併修率 | test co-change（テスト同期変更率） | `test_cochange.all_time.value` | [証拠系: test co-change](#証拠系-test-co-changeテスト同期変更率) |
+| 手戻り率 | corrective rework | `rework.corrective_rework_rate.value` | [観測系: corrective rework と path retouch](#観測系-corrective-rework-と-path-retouch) |
+| 磨き直し | path retouch | `rework.path_retouch_rate.value` | [観測系: corrective rework と path retouch](#観測系-corrective-rework-と-path-retouch) |
+| 定着率 | survival | `survival.survival_index` | [survival（行の生存率）](#survival行の生存率--任意指定) |
+
+訳語は値の意味を変えません。「手戻り率」「磨き直し」は観測層（証拠主張ではない）、「定着率」は `--survival` 指定時のみ出ます。各行の JSON キーと CLI の語が実在することは `tests/test_v060_docs_parity.py` が実レポートに対して検査します。
 
 ---
 
@@ -153,6 +169,7 @@ fit/hire/rankへ変換せず、人間が確認する質問を作るために使�
 - **中程度（0.11〜0.16 前後 = 第5十分位の帯＝中央の帯）**: 多くの公開リポジトリがここにいます
 - **低い / 0**: テスト基盤が無い・あっても本番変更と同期していない。**ただし「テストを書いていない」=「悪い」ではありません** — ドキュメント中心のリポジトリ、設計のみの期間、ツール類など、テストが前提でない仕事は正当に低くなります
 - **not observed**: テスト基盤そのものが検出できない（framework も tests ディレクトリも無い）場合。観測不能であって 0 ではありません
+- **母数 20 未満**: Markdown は率を叙述せず件数だけを示しますが、report-v1 の JSON には `all_time.value` が `narrate_rate: false` を伴って残ります（report-v1 は凍結のため消しません）。report-v2 系（`grift repo` / `grift actor`）は `not_observed(insufficient_population)` で率そのものを出しません
 
 ### 分布の目安（v2026.11・n=68・repo スコープ）
 
@@ -228,6 +245,8 @@ A クラス（検証文化）の中央値は 0.05 と低めですが、因果の
 | dormant | 2日以下 | 180日窓ではほぼ静止している |
 
 注意: **密度は「開発 vs 保守」の区別を測れません**（高密度の保守運用も active になります）。一斉ハウスキーピングで「新しそうに見える」のを防ぐため、新しさでなく密度を採っています。
+
+**膨らませ方の開示（0.8〜）**: 活動日数は author 日付の一意な日数なので、毎日 1 件の小さな commit を置けば増え、同じ変更を 1 日にまとめると減ります。変更の量や中身は見ていません。この 1 文は report-v1 のトップレベル `limitations`、report-v2 `activity.limitations` と `change_rhythm.limitations`、`align` の `change_rhythm.active_days_180d` 軸の `limitations` と各 Markdown に固定で載ります。数値の補正・重み付けはしません（[norms](norms.md) §7）。
 
 ### その他の文脈観測（抜粋）
 

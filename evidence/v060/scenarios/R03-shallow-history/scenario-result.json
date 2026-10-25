@@ -93,8 +93,8 @@
       "status": "PASS"
     },
     {
-      "actual": "0.7.2",
-      "expected": "0.7.2",
+      "actual": "0.8.0",
+      "expected": "0.8.0",
       "id": "runner-tool-version",
       "status": "PASS"
     },
@@ -288,16 +288,16 @@
     "report.unresolved": 0,
     "verify.collection_cli_pass": 1
   },
-  "duration_ms": 1356,
+  "duration_ms": 2188,
   "exit_code": 0,
   "output_digests": {
     "artifacts/actor-index.json": {
       "algorithm": "sha256",
-      "value": "9a3b64711004266c30585d75d6ca4f88031f8dd1ee7884273a45731fe29c1ce1"
+      "value": "fabcb3b5ae837794dfa7f69b99f9f0df08606050ac5cbf5aa6c4c10667ebd684"
     },
     "artifacts/actor-index.md": {
       "algorithm": "sha256",
-      "value": "77e001644e99448d50fafe25a78fe88ef4b44e2960de2606cae0bf581c60aefa"
+      "value": "077d4f2a944d57e289b3cc73275c0c7c96b4918cf8d7a3eee20378610bbd4c74"
     },
     "artifacts/actors/terada-kousuke.json": {
       "algorithm": "sha256",
@@ -309,15 +309,15 @@
     },
     "artifacts/collection-manifest.json": {
       "algorithm": "sha256",
-      "value": "fedb05be14313b028ac14b3ff4cd7ac4d959c7fd326bb76120f489f7c90af50c"
+      "value": "18468ec47ef9263a5f4111683013c0c7683773e12b3a2895b48ae5abe87eb402"
     },
     "artifacts/repo-report.json": {
       "algorithm": "sha256",
-      "value": "17d475b776d7abd24f50ed0602bc6a8b24442bbe81644590b45c8c334c0c393a"
+      "value": "a0fed5821ca8bbfbda66d2093ec40d6f994c58d7dd06261cdac4405bdb90b9a1"
     },
     "artifacts/repo-report.md": {
       "algorithm": "sha256",
-      "value": "5031595d59e8dd244e00a88e2ec4e909d28a68d5f5be8dbad0a627c3a4f60ad5"
+      "value": "ff80e1801d3f00760abc2272fc23fda12f6cc2c24229be3f5e836703e83b7b0d"
     }
   },
   "partition_digest": {
@@ -333,16 +333,16 @@
     "source_binding": {
       "commit_oid": {
         "algorithm": "sha1",
-        "value": "eb47d1bdb0881369cd5239b98683d628e7414580"
+        "value": "d4b9bb88c658302ca66acc73070bbd1ee93ded6d"
       },
       "definition_version": "grift-tool-source-tree-v1",
       "file_count": 97,
       "source_tree_digest": {
         "algorithm": "sha256",
-        "value": "ee40e864617e2b03668aa374e648c4a90810bea805a48d7c36404eec98c5bfc7"
+        "value": "f336f17cf36f545092d2ebd70ab8b6b48a655a1bafdd7d61ddbe45a5342eb01c"
       }
     },
-    "tool_version": "0.7.2"
+    "tool_version": "0.8.0"
   },
   "scenario_id": "R03-shallow-history",
   "schema_version": "tep-scenario-result-v1",

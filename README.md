@@ -2,7 +2,7 @@
 
 **日本語** | [English](README.en.md)
 
-Method = **TEP** / Tool = **grift**（CodeScene 型の二層。方法論名は TEP、コマンドは `grift`）。
+Method = **TEP（Technical Evidence Pipeline）** / Tool = **grift**（CodeScene 型の二層。方法論名は TEP、コマンドは `grift`）。
 Named after the Grift product line.
 
 量は誰でも作れる。残るものと、検証が伴った変更を測る。技量スコアではない。
@@ -51,7 +51,9 @@ grift verify actor-explicit-collection --repo . \
   --identity .tep/identity.toml
 ```
 
-`--top` はcommit数による抽出であり、品質ランキングではありません。collectionを
+`--top` はcommit数による抽出であり、品質ランキングではありません。`actor-index` の行、selected card の
+列挙、report-v2 の `actor_directory` は actor id 順（identity があれば canonical_id、無ければ
+`actor_<hash>`）で、commit 数の多い順には並べません（0.8.0）。collectionを
 alignmentへ渡す場合、複数cardでは`--actor-id`（別名`--actor`）が必須です。
 
 ```bash
@@ -103,6 +105,15 @@ legacy 動詞の意味は「**analyze = 表示（stdout）**・**report = 記録
 - 明示パス付きの `grift analyze REPO` では `--scope tenant`（既定）: `.tep/identity.toml` に載った人の仕事 = **証拠用**／`--scope repo`: bot 以外の全人間コミット = **プロセス観測・参照分布用**
 
 参照分布 v2026.09 は **repo スコープ同士**でのみ照合する。tenant の値を repo 分布に載せない（混ぜたら分布が嘘になる）。
+
+## v0.8.0 で変わったもの
+
+面は増えません。公開面が約束する「点数や順位はつけない」を既定出力に揃える release です。詳細は [docs/migration-v080.md](docs/migration-v080.md) を参照してください。
+
+- **actor を列挙する出力の行順が actor id 順になりました。** `actor-index` / selected card / report-v2 の `actor_directory` は commit 数の多い順には並びません。`commit_count` の値は残ります。`--top N` が選ぶ N 名は変わりません。**0.7.x で作った collection は 0.8.0 の `grift verify` で MISMATCH になります。** 作り直してください。
+- **actor report-v2 と alignment の `notices` に、提供者が選んだ 1 repo であることを示す固定文が常に載ります**（norms §6）。
+- **活動日数の膨らませ方を数値の隣に開示します。** report-v1 のトップレベル `limitations`、report-v2 の `activity.limitations` / `change_rhythm.limitations`、`align` の `active_days_180d` 軸に 1 文を固定で載せます。補正はしません（norms §7）。
+- `DEFINITION_VERSION` を上げたため、**0.7.x で保存した report は 0.8.0 の `grift verify` で CANNOT_VERIFY になります。** 0.8.0 で再生成してください。
 
 ## v0.7.2 で直したもの
 
@@ -327,7 +338,7 @@ Shared block（レポート冒頭 3-5 行のコピペ要約）には **gloss（�
 
 ## 指標の読み方（非エンジニア向け）
 
-すべての指標について「何を測っているか・高い/低いで何がわかるか・公開リポジトリ117件の分布上の目安」を [docs/metrics-guide.md](docs/metrics-guide.md) に平易にまとめています。初めてレポートを見る方はまずこちらを。誤読しやすい点（例: corrective rework はバグ件数ではない、dormant は放置ではない）も表にしてあります。
+すべての指標について「何を測っているか・高い/低いで何がわかるか・公開リポジトリ117件の分布上の目安」を [docs/metrics-guide.md](docs/metrics-guide.md) に平易にまとめています。初めてレポートを見る方はまずこちらを。誤読しやすい点（例: corrective rework はバグ件数ではない、dormant は放置ではない）も表にしてあります。公開サイト（griftai.org・cor-jp.com）の訳語と CLI の語・JSON キーの対応は、同文書の [対応表](docs/metrics-guide.md#サイトの訳語と-cli-の語の対応表) だけに置いています（複製しません）。
 
 ## 指標と限界
 
@@ -366,7 +377,7 @@ steps:
   - uses: actions/setup-python@v5
     with:
       python-version: "3.12"
-  - uses: Cor-Incorporated/grift-cli@v0.7.2
+  - uses: Cor-Incorporated/grift-cli@v0.8.0
     with:
       scope: repo
       comment: false

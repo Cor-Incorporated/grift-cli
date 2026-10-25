@@ -1,13 +1,14 @@
 # Actor index
 
 > Commit-count extraction only; this is not a quality ranking.
+> Rows are ordered by actor id, not by commit count; no row position means more or less than another.
 
 - Full actors: 7
 - Full attributed commits: 20
 - Population digest: `398bd9ef4d4d84768b08d6aff026766c7b1ae7920d9988e37219e72e00cc661a`
 - Selection mode: `all`
 - Selected actors: 7
-- Actor index digest: `a1681ba8ec85f3c97f0eb380b21524610c5b7c5288c87bcffa045857ef5a0cec`
+- Actor index digest: `877c59c439902e33711e8dc9feaa6d47cd9126a6e55031610fbd824ed96a19e5`
 - Selection digest: `53504707c0b35de0aa6905e7f42f39d0297ab4b501a6f971a22b60474fe00997`
 
 | Actor | Commits | Non-merge | Merge | Selected card |
