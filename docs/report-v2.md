@@ -89,7 +89,8 @@ DIR/
 └── collection-manifest.json
 ```
 
-- `repo-report.*` は常にfull population、`actor-index.*` はfull一覧とselected一覧、
+- `repo-report.*` は常にfull population、`actor-index.*` はfull一覧とselected一覧
+  （行は actor id 順。commit 数の多い順ではなく、`verify` は行順と selection の順も検査する）、
   `actors/*` はselected cardだけです
 - full/selected件数、partition/population/index/selection digest、cardの `n` と
   denominatorをJSON/Markdown/manifest間で一致させます

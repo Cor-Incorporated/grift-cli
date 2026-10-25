@@ -60,10 +60,12 @@ from tep_core.tests_observed import observe_test_frameworks
 from tep_core.tracker_lifecycle import summarize_lifecycle
 from tep_core.tracker import summarize_tracker_export
 from tep_core.v2_constants import (
+    ACTIVE_DAYS_INFLATION_LIMITATION,
     ACTIVITY_DENOMINATOR_NOTE,
     EVIDENCE_DISCLAIMER,
     FORGE_NOT_OBSERVED_NOTE,
     RHYTHM_LIMITATION,
+    SELECTIVITY_NOTICE,
     TRACKER_NOT_OBSERVED_NOTE,
 )
 from tep_core.role_profile import ROLE_PROFILE_DEFINITION_VERSION
@@ -734,6 +736,7 @@ def analyze_subject(
                 selected_attribution_state,
             ),
             EVIDENCE_DISCLAIMER,
+            SELECTIVITY_NOTICE,
             *([cluster_note] if scope == "actor_cluster" else []),
         ]
     else:
@@ -878,6 +881,7 @@ def _repo_activity(
         ),
         "active_days_13w": depth_dependent(computed.get("active_days_13w")),
         "denominator_note": ACTIVITY_DENOMINATOR_NOTE,
+        "limitations": [ACTIVE_DAYS_INFLATION_LIMITATION],
     }
 
 
@@ -897,6 +901,7 @@ def _actor_cluster_activity(legacy: dict[str, Any]) -> dict[str, Any]:
             "actor_cluster_commits counts selected primary-author non-merge commits; "
             "it is not a consenting tenant population"
         ),
+        "limitations": [ACTIVE_DAYS_INFLATION_LIMITATION],
     }
 
 
@@ -907,6 +912,7 @@ def _tenant_actor_activity(legacy: dict[str, Any]) -> dict[str, Any]:
         **legacy,
         "scope": "tenant",
         "population": "explicit_identity_nonmerge",
+        "limitations": [ACTIVE_DAYS_INFLATION_LIMITATION],
         "denominator_note": (
             "tenant_commits counts explicit identity-matched non-merge commits; "
             "the scope label is not proof of consent or personhood"

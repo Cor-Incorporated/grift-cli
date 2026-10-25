@@ -4,6 +4,103 @@
 
 タグ・PyPI・リポ public 化は本ファイルの記載対象外（人間ゲート）。
 
+## [Unreleased]
+
+### Changed
+
+- **README を日英とも書き直し、PyPI の説明を英語にした**。冒頭で「何を出すか・何を
+  出さないか・1 コマンドで試す」が分かる構成にし、版ごとの修正履歴は本ファイルと
+  migration へのリンクだけにした。コマンドの詳しい使い方は `docs/usage.md` /
+  `docs/en/usage.md`、指標の限界・参照用の位置・群のあいだの判別結果は
+  `docs/validation.md` / `docs/en/validation.md` へ内容を移した。`pyproject.toml` の
+  `readme` を `README.en.md`（リンクはすべて絶対 URL）に、`description` を評価に
+  読めない 1 行に変え、`project_urls` に Homepage（griftai.org）・Documentation・
+  Japanese README・Changelog・Source・Issues を揃えた。README を読む検査は移した先の
+  文書を読むように直し、PyPI に出る README の相対リンク・`project_urls` の参照先・
+  リンクの見出しを `tests/test_readme_entry.py` で検査する。CLI の出力は変わらない。
+
+## [0.8.0] — 2026-10-25
+
+面は増えない。公開面が約束する「点数や順位はつけない」「選んで出したことも受け取る側に
+分かる」「量は誰でも作れる」を既定出力に揃える release。CLI フラグ・schema key・enum 値は
+変わらない。公開 Forge 取得（provider-neutral Forge証跡、GitHub/GitLab/self-managed、
+PARTIAL/resume）、attest / portfolio、contribution-v2 の契約、`暗黙 PyPI update check` を
+持たない設計はいずれも 0.7.2 から変わらない。判断の根拠は
+`docs/adr/ADR-0001-v08-no-volume-ordering.md`、公開面との突合は
+`docs/GAP-site-vs-cli-v08-20261025.md`、移行は `docs/migration-v080.md`。
+
+### Added
+
+- **活動日数の膨らませ方を数値の隣に開示する**（ADR-0001 R4、GAP-site-vs-cli
+  行 4）。`tep_core.v2_constants.ACTIVE_DAYS_INFLATION_LIMITATION` の 1 文
+  （毎日 1 件の小さな commit で増え、1 日にまとめると減る。量や中身は見ない）
+  を report-v1 のトップレベル `limitations`（新 optional key。`activity` の
+  中に置かないのは P0 反証 `P0-legacy-activity-parity` が同ブロックを v0.5.9
+  と同一に保つため）、report-v2 `activity.limitations`、report-v2
+  `change_rhythm.limitations`、`align` の `change_rhythm.active_days_180d`
+  軸の `limitations` と、それぞれの Markdown に固定で載せる。開示であって
+  補正ではなく、値・比較結果・schema の必須項目は変えない（norms §7）。
+  `verify` は `limitations` も再計算して比べる。同じ定義版数の build 間では
+  report-v1 のトップレベル `limitations` と report-v2 の `activity.limitations` /
+  `change_rhythm.limitations` が差として出る（PR #77 本文の実測）。release で
+  `DEFINITION_VERSION` を上げた後は、0.7.x で保存した report は field 比較の前に
+  定義版数の不一致で CANNOT_VERIFY になる（`verify.py` の定義版数検査）。
+  `DEFINITION_VERSION` と `__version__` は release PR で上げる。
+- 単体の actor report-v2 と alignment-v1 の `notices` に、提供者が選んだ 1 repo で
+  あることを示す固定文 `SELECTIVITY_NOTICE`（norms §6）を常に載せる。Markdown の
+  「言えること / 言えないこと」にも同じ文を出す。schema は `notices: array<string>`
+  のため追加互換だが、`verify` は `notices` も再計算して比べるので 0.7.x で保存した
+  actor report と alignment-v1 は 0.8.0 の verify で MISMATCH になる（release PR の
+  `DEFINITION_VERSION` と migration で扱う）。文は英語で固定（両側が読む 1 文を
+  collection の英語 limitation 文に揃えた決定。GAP 行 7 の日本語案は採らない）。
+  collection の `repo-report.json`（kind=repo）と actor-card-v1 は対象外。
+
+### Changed
+
+- **`DEFINITION_VERSION` を `tep-v0.8.0-2026-10-25` に上げた**。版数への追随に加えて、
+  actor-index / `actor_directory` の形（行順）と、actor report-v2 / alignment の
+  `notices`、report-v1 / report-v2 の `limitations` の内容が変わるため。0.7.x で
+  保存した report は 0.8.0 の `verify` で定義版数の不一致により CANNOT_VERIFY、
+  collection は index の行順検査で MISMATCH になる（`docs/migration-v080.md`）。
+- **証跡を 0.8.0 の source で再束縛した**: `evidence/v060/scenarios`（6 シナリオ。
+  R01 / R02 の source は 2026-09-27 の bundle から復元）、`evidence/v060/scenarios-public`
+  （PR tier 実走）、`evidence/v070/benchmark.json`（`--write`）、`benchmarks/v060/golden`
+  （承認移行 `gold-actor-partition-0005`、承認者 human:teradakousuke）。
+- **actor を列挙する既定出力の行順を actor id 順にした**（0.8.0 #1、ADR-0001 R1）。
+  0.7.2 までは、`actor-index.json` / `actor-index.md` の行と selected card の
+  列挙（`actor_artifacts.py` の `-len(commit_shas)` ソート）と、`grift repo` の
+  report-v2 `actor_directory.actors`（`attribution.py` の同じソートをそのまま
+  出力し、Markdown は先頭 50 行で切っていた = 事実上の上位 50 名表）の 2 箇所が
+  観測 commit 数の多い順だった。注記「not a quality ranking」は宣言のまま、
+  表の並びという実体は量で決まっていた。公開面の「点数や順位はつけない」と
+  食い違うので並び順だけを直し、`commit_count` の値は分母付きの事実として
+  残す。actor id は identity があれば canonical_id、無ければ `actor_<hash>`。`--top N` が選ぶ N 名は変わらない（量で選ぶ経路は 0.9 で
+  廃止か改名をユーザーが判断する。`docs/PLAN-v080-20261025.md` §2.3）。
+  `grift verify DIR` は、行が actor id 順でない index、行順に従わない
+  selection、最多 commit の集合でない `top` selection を digest 比較の前に
+  拒否し、CLI の collection verify は writer と同じ `actor_summaries` で行を
+  再構成する（0.7.x は verify 側に同じソートの複製があった）。**0.7.x で生成
+  した collection は 0.8.0 の `verify` で MISMATCH になる**（複数 actor なら
+  `actor index rows must be ordered by actor id …`、行が偶然 id 順でも
+  `actor-index.md` の注記差で `actor index Markdown does not match verified
+  JSON`）。release 時に `DEFINITION_VERSION` を上げ、migration に実測を載せる。
+
+### Fixed
+
+- **shallow clone 上で offline suite が `not our ref` / `not a tree object`
+  で落ちる**。`tests/test_v070_benchmark.py` と
+  `tests/test_v060_scenario_matrix.py` の registry 検証は、この repo 自身の
+  履歴（`PINNED_OID`、runner binding の `commit_oid`）を `file://` で fetch
+  して測る。`actions/checkout@v4` 既定の `--depth 1` で公開 repo を取得した
+  消費側（grift-sales-poc run 40165305773、2026-10-25）にはその commit が
+  無く、ローカル upload-pack の拒否が GitHub 側のエラーのように見えていた
+  （GitHub 自体は同じ SHA を `git fetch` に返す）。shallow clone でその
+  commit が無い場合だけ理由付き skip にし、full clone で pin が無い場合は
+  従来どおり fail させる。検出関数は合成 repo の反証テスト付き。
+  `scripts/v060_scenario_matrix.py` は registry の source binding 対象の
+  ため触っていない（`fatal: not a tree object` の文言改善は再束縛を伴う
+  次の release 作業へ）。
+
 ## [0.7.2] — 2026-09-07
 
 面は 1 つも増えない。commit がまだ 1 件も無い actor に対して report が

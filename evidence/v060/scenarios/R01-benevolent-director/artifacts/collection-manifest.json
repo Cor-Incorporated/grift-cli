@@ -1,7 +1,7 @@
 {
   "actor_index_digest": {
     "algorithm": "sha256",
-    "value": "79153851b35cc7a45e98c2fe91121453bae1d7609f45fcc8a2409b4c9420c4e7"
+    "value": "4f3d985c90f795bc47d8c8eeb1bc58f65d9690296029ea5ff2f174edad82d887"
   },
   "full": {
     "actor_count": 3,
@@ -19,16 +19,16 @@
   },
   "members": [
     {
-      "bytes": 1485,
+      "bytes": 1592,
       "media_type": "application/json",
       "path": "actor-index.json",
-      "sha256": "04b0f4fe2e8f745890f1dd548421c4005d4fab20ba85fb2a1804ff07a56fc8ce"
+      "sha256": "97b64bef9e517ea3641fbbbb26cc186763d3cf65ba11a1bfc6fd80436accb258"
     },
     {
-      "bytes": 804,
+      "bytes": 906,
       "media_type": "text/markdown",
       "path": "actor-index.md",
-      "sha256": "8f25039bdc271600281bd153c64e101a7ceb918d7bed03dcaeab0372b37c2509"
+      "sha256": "3750b9f45ba18e8e0b9de95a2a7314a9605af8eb15520afb13745afe74355c13"
     },
     {
       "bytes": 949,
@@ -70,13 +70,13 @@
       "bytes": 7062,
       "media_type": "application/json",
       "path": "repo-report.json",
-      "sha256": "74fc367049201ddbcc73d7643a0d92cc5c522fa0796a4cc72705dedeb8a030bf"
+      "sha256": "e90391c5ef4cab138991f9aca010b1f7adc96ce2f5e974d19fbe118cd05099df"
     },
     {
       "bytes": 893,
       "media_type": "text/markdown",
       "path": "repo-report.md",
-      "sha256": "e6494ccdae2fe2aa18c0c389dd500d71559d2c1685899aac31fc9db8f2fc8693"
+      "sha256": "60b1e830d89ea2b32008228b796f5292df5ec9aa8b183dc4a1857ec9366c94fc"
     }
   ],
   "partition_digest": {
@@ -91,19 +91,19 @@
   "selection": {
     "actor_count": 3,
     "actor_ids": [
-      "terisuke",
+      "cloudia",
       "kisayama",
-      "cloudia"
+      "terisuke"
     ],
     "digest": {
       "algorithm": "sha256",
-      "value": "795a6459c2e9043376f873751b73915f02bebe608c4e1fcfda7c8c764f1aaef5"
+      "value": "e399fa03cfe47d34ee3a90373eee5b93ef49c10fabf970148a3a4a6a65a80e95"
     },
     "links": [
       {
-        "actor_id": "terisuke",
-        "json": "actors/terisuke.json",
-        "markdown": "actors/terisuke.md"
+        "actor_id": "cloudia",
+        "json": "actors/cloudia.json",
+        "markdown": "actors/cloudia.md"
       },
       {
         "actor_id": "kisayama",
@@ -111,9 +111,9 @@
         "markdown": "actors/kisayama.md"
       },
       {
-        "actor_id": "cloudia",
-        "json": "actors/cloudia.json",
-        "markdown": "actors/cloudia.md"
+        "actor_id": "terisuke",
+        "json": "actors/terisuke.json",
+        "markdown": "actors/terisuke.md"
       }
     ],
     "mode": "all"

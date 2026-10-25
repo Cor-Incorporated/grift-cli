@@ -1,7 +1,7 @@
 {
   "actor_index_digest": {
     "algorithm": "sha256",
-    "value": "a1681ba8ec85f3c97f0eb380b21524610c5b7c5288c87bcffa045857ef5a0cec"
+    "value": "877c59c439902e33711e8dc9feaa6d47cd9126a6e55031610fbd824ed96a19e5"
   },
   "attribution": {
     "actor_partition": {
@@ -123,7 +123,7 @@
   ],
   "metrics": {
     "human_nonmerge_commit_share": {
-      "definition_version": "tep-v0.7.2-2026-09-07",
+      "definition_version": "tep-v0.8.0-2026-10-25",
       "denominator": 20,
       "kind": "observed",
       "limitations": [
@@ -161,9 +161,9 @@
   },
   "provenance": {
     "analysis_scope": "repo",
-    "analyzed_at": "2026-09-07T15:56:25Z",
+    "analyzed_at": "2026-10-25T14:49:10Z",
     "analyzed_commit_sha": "323d93b29bd89a2cb446de90c4ed4fea1764176e",
-    "definition_version": "tep-v0.7.2-2026-09-07",
+    "definition_version": "tep-v0.8.0-2026-10-25",
     "input_digests": {
       "benchmark_manifest": null,
       "forge": null,
@@ -188,7 +188,7 @@
       "value": "323d93b29bd89a2cb446de90c4ed4fea1764176e"
     },
     "tool_name": "grift",
-    "tool_version": "0.7.2"
+    "tool_version": "0.8.0"
   },
   "report_kind": "evidence",
   "schema_version": "report-v2",

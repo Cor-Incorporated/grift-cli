@@ -14,6 +14,7 @@ from tep_core.actor_basis import (
 from tep_core.role_lens import emphasized_keys, emphasized_sections, lens_intro
 from tep_core.tendency import rhythm_tendency, surface_tendency
 from tep_core.v2_constants import (
+    ACTIVE_DAYS_INFLATION_LIMITATION,
     ALIGNMENT_NOTICE,
     COMPARISON_JA,
     EVIDENCE_DISCLAIMER,
@@ -22,6 +23,7 @@ from tep_core.v2_constants import (
     RHYTHM_LIMITATION,
     RHYTHM_TIMESTAMP_LIMITATIONS,
     RHYTHM_WINDOW_NOTE,
+    SELECTIVITY_NOTICE,
     SURFACE_LIMITATION,
     SURFACES,
     TENDENCY_CHANGE_NOTE,
@@ -235,21 +237,26 @@ def render_evidence_markdown(report: dict[str, Any]) -> str:
         lines += _tendency_lines(label, node)
     lines += [""] + _gap_lines(report)
     lines += ["", "## 言えること / 言えないこと"]
+    # Fixed notices come from the constants, not from report["notices"], so a
+    # 0.7.x JSON renders the 0.8.0 wording; the JSON itself is what verify diffs.
+    actor_notes = (
+        [
+            *actor_basis_notices(subject.get("selection"), subject.get("attribution_state")),
+            SELECTIVITY_NOTICE,
+        ]
+        if kind == "actor"
+        else []
+    )
     extra = [
         EVIDENCE_DISCLAIMER,
         SURFACE_LIMITATION,
         RHYTHM_LIMITATION,
         RHYTHM_WINDOW_NOTE,
         RHYTHM_TIMESTAMP_LIMITATIONS,
+        ACTIVE_DAYS_INFLATION_LIMITATION,
         TENDENCY_CHANGE_NOTE,
+        *actor_notes,
     ]
-    if kind == "actor":
-        extra.extend(
-            actor_basis_notices(
-                subject.get("selection"),
-                subject.get("attribution_state"),
-            )
-        )
     persisted_limitations = list(report.get("limitations") or [])
     if kind == "actor":
         persisted_limitations = without_actor_basis_notices(persisted_limitations)
@@ -549,6 +556,7 @@ def _actor_directory_lines(report: dict[str, Any]) -> list[str]:
         "一覧取得は actor 紐付けではない。SHA→login join が無いと public_handle は 0）",
         f"- unmatched/ambiguous: {join.get('unmatched', '—')}/{join.get('ambiguous', '—')}",
         "- commit_count は merge 込み。職種・能力・速度・採用判断ではない。",
+        "- 行は actor_id 順（commit 数順ではない）。行の位置は何も意味しない。表は先頭 50 行まで、全件は JSON の actor_directory.actors。",
         "- 個別 actor の観測詳細は `actors/<actor_id の : を _ に替えた名前>.json`（--actors --out DIR 実行時に書かれる）。",
         "| actor_id | display | status | commits (merge込み) | nonmerge | card |",
         "|---|---|---|---:|---:|---|",
@@ -561,7 +569,7 @@ def _actor_directory_lines(report: dict[str, Any]) -> list[str]:
             f"{actor.get('commit_count_nonmerge', '—')} | actors/{safe}.json |"
         )
     if len(actors) > 50:
-        lines.append(f"| … | {len(actors) - 50} more |  |  |  |  |")
+        lines.append(f"| … | 残り {len(actors) - 50} 行は actor_id 順で JSON に続く |  |  |  |  |")
     return lines
 
 
@@ -840,7 +848,9 @@ def render_alignment_markdown(report: dict[str, Any]) -> str:
         "",
         "## 言えること / 言えないこと",
         f"- {ALIGNMENT_NOTICE}",
+        f"- {SELECTIVITY_NOTICE}",
         f"- {EVIDENCE_DISCLAIMER}",
+        f"- {ACTIVE_DAYS_INFLATION_LIMITATION}",
         f"- {actor_notice}",
         f"- {TENDENCY_CHANGE_NOTE}",
         "- この並びだけで採用の合否を決めてはいけません。",

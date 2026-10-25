@@ -4,7 +4,12 @@ from __future__ import annotations
 
 from typing import Any
 
-from tep_core.v2_constants import COMPARISONS
+from tep_core.v2_constants import (
+    ACTIVE_DAYS_INFLATION_LIMITATION,
+    ALIGNMENT_NOTICE,
+    COMPARISONS,
+    SELECTIVITY_NOTICE,
+)
 from tep_core.version import ALIGNMENT_SCHEMA_VERSION
 
 _RHYTHM_AXES = (
@@ -80,7 +85,6 @@ def _rhythm_obs(profile: dict[str, Any], key: str) -> dict[str, Any]:
         return {"kind": "not_observed", "reason": profile.get("reason", "not_observed")}
     node = profile.get(key) or {"kind": "not_observed", "reason": "not_observed"}
     return node
-
 
 
 def _obs_share(profile: dict[str, Any], group: str, name: str) -> dict[str, Any]:
@@ -169,6 +173,8 @@ def build_alignment(
                 limitations=[
                     "Range comparison is not an ability judgement.",
                     "Gap days are Git author-timestamp intervals, not labor time.",
+                    # Only the volume axis carries the volume disclosure (ADR-0001 R4).
+                    *([ACTIVE_DAYS_INFLATION_LIMITATION] if obs_key == "active_days_180d" else []),
                 ],
             )
         )
@@ -663,9 +669,7 @@ def alignment_payload(
             ],
         },
         "limitations": limitations,
-        "notices": [
-            "案件側の宣言と観測証拠の重なりを軸ごとに表示しています。全体の点数や順位は計算していません。",
-        ],
+        "notices": [ALIGNMENT_NOTICE, SELECTIVITY_NOTICE],
         "actor_observed": {
             "surface_profile": actor_report.get("surface_profile"),
             "change_rhythm": actor_report.get("change_rhythm"),

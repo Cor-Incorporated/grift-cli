@@ -1,21 +1,22 @@
 {
   "actors": [
     {
-      "actor_id": "terada-kousuke",
-      "commit_count": 49,
-      "merge_commit_count": 20,
-      "nonmerge_commit_count": 29
-    },
-    {
       "actor_id": "kojiisayama",
       "commit_count": 5,
       "merge_commit_count": 0,
       "nonmerge_commit_count": 5
+    },
+    {
+      "actor_id": "terada-kousuke",
+      "commit_count": 49,
+      "merge_commit_count": 20,
+      "nonmerge_commit_count": 29
     }
   ],
   "limitations": [
     "Actor IDs are repo-local Git primary-author clusters, not verified people.",
-    "Top selection is observed commit-count extraction, never a quality rank."
+    "Top selection is observed commit-count extraction, never a quality rank.",
+    "Rows are ordered by actor id, not by commit count; no row position means more or less than another."
   ],
   "partition_digest": {
     "algorithm": "sha256",
@@ -40,8 +41,8 @@
   "schema_version": "actor-index-v1",
   "selection": {
     "actor_ids": [
-      "terada-kousuke",
-      "kojiisayama"
+      "kojiisayama",
+      "terada-kousuke"
     ],
     "mode": "all",
     "selected_count": 2

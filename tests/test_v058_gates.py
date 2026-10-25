@@ -68,6 +68,8 @@ def _write_report(tmp_path: Path) -> Path:
     [
         "README.md",
         "README.en.md",
+        "docs/usage.md",
+        "docs/en/usage.md",
         "docs/metrics-guide.md",
         "docs/en/metrics-guide.md",
         "src/tep_core/contribute.py",
@@ -94,14 +96,57 @@ def test_a_no_universal_no_send_claims(rel: str) -> None:
         )
 
 
+# The no-auto-send promise covers this CLI only. An application built on grift
+# sets its own data handling in its own terms, so a future promise that is not
+# limited to the CLI must not appear in the public docs.
+NO_SEND_PROMISE = {
+    "ja": (
+        "この CLI には、当社へデータを自動で送る機能はありません",
+        "今後もこの CLI には入れません",
+        "そのサービスの利用規約とプライバシーポリシーで定めます",
+    ),
+    "en": (
+        "This CLI has no feature that sends data to us automatically",
+        "we will not add one to this CLI",
+        "that service's terms of service and privacy policy will set out how it handles data",
+    ),
+}
+NO_SEND_DOCS = {
+    "ja": ("README.md", "docs/usage.md"),
+    "en": ("README.en.md", "docs/en/usage.md"),
+}
+
+
+def _unscoped_future_promises(text: str, lang: str) -> list[str]:
+    import re
+
+    if lang == "ja":
+        sentences = re.split(r"(?<=。)", text)
+        future = [s for s in sentences if "今後も" in s and ("送" in s or "入れ" in s)]
+        return [s.strip() for s in future if "この CLI" not in s]
+    sentences = re.split(r"(?<=[.!?])\s+", text)
+    markers = ("will not add", "will be added", "never will", "will never add")
+    future = [s for s in sentences if any(m in s for m in markers)]
+    return [s.strip() for s in future if "this CLI" not in s]
+
+
+@pytest.mark.parametrize("lang", ["ja", "en"])
+def test_a_no_send_promise_is_scoped_to_the_cli(lang: str) -> None:
+    root = Path(__file__).resolve().parents[1]
+    for rel in NO_SEND_DOCS[lang]:
+        text = (root / rel).read_text(encoding="utf-8")
+        missing = [fragment for fragment in NO_SEND_PROMISE[lang] if fragment not in text]
+        assert not missing, f"{rel}: missing the CLI-scoped no-send wording {missing}"
+        unscoped = _unscoped_future_promises(text, lang)
+        assert not unscoped, f"{rel}: future promise not limited to this CLI: {unscoped}"
+
+
 def test_a_scoped_claims_present() -> None:
     root = Path(__file__).resolve().parents[1]
     ja = (root / "README.md").read_text(encoding="utf-8")
     en = (root / "README.en.md").read_text(encoding="utf-8")
     assert "明示したときだけ" in ja and "--fetch-public" in ja
-    assert "自動送信は恒久にありません" in ja or "こちらへの自動送信は恒久にない" in ja
     assert "explicit network" in en.lower()
-    assert "never auto-sends" in en
     assert "the final button is yours" in en  # --open scoped description
     # disclosure: public-door warning for --open (B) is bilingual
     assert "公開ドアです" in CONFIRMATION_TEXT and "PUBLIC door" in CONFIRMATION_TEXT

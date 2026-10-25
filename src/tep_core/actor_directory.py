@@ -41,6 +41,13 @@ def _public_accounts(actor: Any) -> list[dict[str, Any]]:
 
 
 def actor_directory_payload(index: AttributionIndex, *, human_commit_count: int) -> dict[str, Any]:
+    """The repo report's actor directory, rows ordered by actor id.
+
+    `AttributionIndex.actors` arrives sorted by commit count. Emitting it in
+    that order made the directory (and the Markdown table cut at 50 rows) a
+    top-N list by volume, which is the ranking the norms forbid (ADR-0001 R1).
+    The counts stay; only their order stops meaning anything.
+    """
     attr = attribution_payload(index, human_commit_count)
     actors = [
         {
@@ -54,7 +61,7 @@ def actor_directory_payload(index: AttributionIndex, *, human_commit_count: int)
             "public_account_status": actor.public_account_status,
             "public_accounts": _public_accounts(actor),
         }
-        for actor in index.actors
+        for actor in sorted(index.actors, key=lambda item: item.actor_id)
     ]
     return {
         "observed_count": len(index.actors),

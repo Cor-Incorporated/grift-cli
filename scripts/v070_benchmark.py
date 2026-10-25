@@ -43,14 +43,8 @@ BENCHMARK_SCHEMA_VERSION = "tep-benchmark-v070"
 
 # A commit every clone of this repository has. Pinning it is what makes the
 # fixtures reproducible while the branch keeps moving.
-# Public snapshot: the pinned revision must exist in THIS repository's history so
-# a third party can reproduce the artifact. grift-cli-dev pins its own commit
-# (fa9bc317..., 164 commits deep, depth 20); the public history is a short
-# snapshot chain, so the pin is the v0.5.9b merge and the truncated fixture is
-# cut at depth 10. Follow-up: measure a synthetic fixture instead of the
-# repository's own history so both trees share one constant.
-PINNED_OID = "6711a3cdcb71f2a2a84276ac5e7a5abd4a7bf79f"
-SHALLOW_DEPTH = 10
+PINNED_OID = "fa9bc317cc0ac1953ed09cbab11d3de2232c2fb0"
+SHALLOW_DEPTH = 20
 
 # Three people for the team claim. Distinct names and addresses, on a reserved
 # `.test` TLD so nothing here can ever resolve to a real mailbox.
@@ -156,6 +150,55 @@ def _grift(*args: str, cwd: Path | None = None) -> subprocess.CompletedProcess[s
     )
 
 
+def _has_commit(repo: Path, oid: str) -> bool:
+    result = subprocess.run(
+        ["git", "-c", "safe.directory=*", "-C", str(repo), "cat-file", "-e", f"{oid}^{{commit}}"],
+        env=_env(),
+        capture_output=True,
+        text=True,
+    )
+    return result.returncode == 0
+
+
+def is_shallow_clone(repo: Path = PROJECT_ROOT) -> bool:
+    return _git(repo, "rev-parse", "--is-shallow-repository").strip() == "true"
+
+
+def shallow_clone_without_pin(repo: Path = PROJECT_ROOT, oid: str = PINNED_OID) -> str | None:
+    """Why a truncated clone of this repository cannot be measured, or None.
+
+    Every fixture is fetched from ``file://PROJECT_ROOT``, so the pin has to be
+    in *this* clone's object store. ``git clone --depth`` of the public
+    repository (what ``actions/checkout`` does by default) stops short of it,
+    and git then reports the refusal of the *local* upload-pack as
+    ``not our ref`` -- a message that reads as if GitHub had rejected the SHA
+    although no remote was contacted (grift-sales-poc run 40165305773,
+    2026-10-25; GitHub itself serves that SHA to ``git fetch``).
+
+    A full clone that lacks the pin is a different defect -- the pin names a
+    commit outside this history -- and is deliberately not covered here, so it
+    keeps failing loudly instead of turning into a skip.
+    """
+    if _has_commit(repo, oid) or not is_shallow_clone(repo):
+        return None
+    return (
+        f"{repo} is a shallow clone and {oid[:12]} is not in its object store; the "
+        "benchmark measures this repository's own history and needs a full clone "
+        "(git fetch --unshallow)"
+    )
+
+
+def _require_pinned_history() -> None:
+    reason = shallow_clone_without_pin()
+    if reason is not None:
+        raise RuntimeError(reason)
+    if not _has_commit(PROJECT_ROOT, PINNED_OID):
+        raise RuntimeError(
+            f"{PINNED_OID[:12]} is not in {PROJECT_ROOT} although the clone is not shallow; "
+            "PINNED_OID names a commit outside this repository's history"
+        )
+
+
 def _scrub(node: Any) -> None:
     if isinstance(node, dict):
         for key in VOLATILE_KEYS:
@@ -226,6 +269,7 @@ def _team_fixture(destination: Path) -> Path:
 
 def _shallow_fixture(destination: Path) -> Path:
     """A truncated clone of this repository at the pinned commit."""
+    _require_pinned_history()
     destination.mkdir(parents=True, exist_ok=True)
     _git(destination, "init", "-q")
     _git(
@@ -258,6 +302,7 @@ def _pinned_fixture(workdir: Path) -> Path:
     destination = workdir / "pinned"
     if destination.exists():
         return destination
+    _require_pinned_history()
     destination.mkdir(parents=True)
     _git(destination, "init", "-q")
     _git(destination, "fetch", "-q", "--no-tags", f"file://{PROJECT_ROOT}", PINNED_OID)

@@ -1,21 +1,22 @@
 {
   "actors": [
     {
-      "actor_id": "terada-kousuke",
-      "commit_count": 145,
-      "merge_commit_count": 54,
-      "nonmerge_commit_count": 91
-    },
-    {
       "actor_id": "tep-proposer-claude",
       "commit_count": 19,
       "merge_commit_count": 0,
       "nonmerge_commit_count": 19
+    },
+    {
+      "actor_id": "terada-kousuke",
+      "commit_count": 145,
+      "merge_commit_count": 54,
+      "nonmerge_commit_count": 91
     }
   ],
   "limitations": [
     "Actor IDs are repo-local Git primary-author clusters, not verified people.",
-    "Top selection is observed commit-count extraction, never a quality rank."
+    "Top selection is observed commit-count extraction, never a quality rank.",
+    "Rows are ordered by actor id, not by commit count; no row position means more or less than another."
   ],
   "partition_digest": {
     "algorithm": "sha256",
@@ -40,8 +41,8 @@
   "schema_version": "actor-index-v1",
   "selection": {
     "actor_ids": [
-      "terada-kousuke",
-      "tep-proposer-claude"
+      "tep-proposer-claude",
+      "terada-kousuke"
     ],
     "mode": "all",
     "selected_count": 2

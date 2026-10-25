@@ -55,6 +55,7 @@ Grift 本体統合（WP-G1）はこの文書を契約として `grift analyze --
 | `rework` | object | observed または not_observed |
 | `survival` | object | observed または not_observed（既定は `survival_scan_disabled`） |
 | `interpretation` | object | `test_cochange` / `corrective_rework` 各エントリ |
+| `limitations` | array<string> | 0.8 で追加（追加互換）。活動日数の**膨らませ方**の開示文（`tep_core.v2_constants.ACTIVE_DAYS_INFLATION_LIMITATION`）を固定で 1 つ含む。`activity` の中ではなくトップレベルに置くのは、P0 反証（`P0-legacy-activity-parity`）が `activity` ブロックを v0.5.9 と同一に保つため。開示であって補正ではない（norms §7）。`verify` は本キーも再計算して比べる。0.8.0 release 後は 0.7.x で保存した report は定義版数の不一致で CANNOT_VERIFY になり（field 比較の前）、同じ定義版数の build 間では本キーが MISMATCH の差として出る |
 
 ### provenance
 

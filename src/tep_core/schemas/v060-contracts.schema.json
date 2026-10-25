@@ -776,7 +776,8 @@
         "commits_per_active_day": {"$ref": "#/$defs/report_observation"},
         "commits_per_active_day_median": {"$ref": "#/$defs/report_observation"},
         "active_days_13w": {"$ref": "#/$defs/report_observation"},
-        "denominator_note": {"type": "string", "minLength": 1}
+        "denominator_note": {"type": "string", "minLength": 1},
+        "limitations": {"$ref": "#/$defs/limitations"}
       },
       "allOf": [
         {

@@ -88,6 +88,15 @@ ACTOR_VIEW_NOTICE = (
 ALIGNMENT_NOTICE = (
     "案件側の宣言と観測証拠の重なりを軸ごとに表示しています。全体の点数や順位は計算していません。"
 )
+# norms §6 (disclose selectivity). A single-repo actor report or alignment is
+# one repository the provider chose to show; it says nothing about others.
+# Always present in report-v2 (actor) and alignment-v1 `notices`. English by
+# decision (0.8.0 plan #2): it is one fixed sentence read by both sides, and it
+# matches the English limitation lines of the collection artifacts.
+SELECTIVITY_NOTICE = (
+    "This report covers one repository that the provider chose to share. "
+    "It does not show whether other repositories exist or what they would show."
+)
 RHYTHM_WINDOW_DAYS = 180
 RHYTHM_LIMITATION = (
     "これは変更提出の時系列であり、実際の労働時間、勤怠、能力、納期遵守を測るものではありません。"
@@ -158,6 +167,17 @@ PROJECT_OBSERVED_MISSING_NOTE = (
 # Paired with SCALE_DENOMINATOR_NOTE in context_profile: the same report ships
 # both populations, and each block states which one it counts.
 ACTIVITY_DENOMINATOR_NOTE = "repo_human_nonmerge_commits excludes bot and merge commits"
+# ADR-0001 R4: a volume observation says how it can be inflated, next to the
+# number. This is a disclosure, not a correction -- the value is left exactly as
+# observed (norms §7). Attached wherever active days are reported: report-v1
+# top-level `limitations` (not inside `activity`, which P0 keeps identical to
+# v0.5.9), report-v2 `activity.limitations` (repo and both actor scopes),
+# report-v2 `change_rhythm.limitations`, and the `align` axis that compares
+# `active_days_180d` with `active_days_180d_min`.
+ACTIVE_DAYS_INFLATION_LIMITATION = (
+    "活動日数（active days）は author 日付の一意な日数です。毎日 1 件の小さな commit を置けば増え、"
+    "同じ変更を 1 日にまとめると減ります。変更の量や中身は見ておらず、補正もしません。"
+)
 FORBIDDEN_UNITS = frozenset({"score", "rank", "fit", "hire", "percentile", "recommendation"})
 ARTIFACT_NAMES = {
     "repo": ("report.md", "report.json"),

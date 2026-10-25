@@ -1,7 +1,7 @@
 {
   "actor_index_digest": {
     "algorithm": "sha256",
-    "value": "6555e62b45a61f9c6eef35a30598cf712e5c944b3fe7cd6ab803e4cde9e731b0"
+    "value": "6702a15bc94749e073db9a7c33c104bf684a76600758360b751e119c99c95f00"
   },
   "attribution": {
     "actor_partition": {
@@ -9,7 +9,7 @@
       "object_format": "sha1",
       "partition_digest": "939e1c331659877d1f11aa15f0fe7d2a8449177fda74f8f3cfad636993b0503a",
       "provider_enrichment_changes_partition": false,
-      "repo_scope_digest": "f899e04f41b85d70c459a2362a98c0161b2f50ecee29b16232b4a0100dcf6691",
+      "repo_scope_digest": "7bcddacfef54dc7d54359bd4852cd815c154959b40b0415982a2b3e9bf240ad5",
       "sha_to_actor_digest": "eaf31795ab7a1a4bff75fe77a2146c8746ffca79142222df53261d78ff70603a"
     },
     "attributed_commit_count": 164,
@@ -123,7 +123,7 @@
   ],
   "metrics": {
     "human_nonmerge_commit_share": {
-      "definition_version": "tep-v0.7.2-2026-09-07",
+      "definition_version": "tep-v0.8.0-2026-10-25",
       "denominator": 164,
       "kind": "observed",
       "limitations": [
@@ -161,9 +161,9 @@
   },
   "provenance": {
     "analysis_scope": "repo",
-    "analyzed_at": "2026-09-07T15:56:20Z",
+    "analyzed_at": "2026-10-25T14:49:03Z",
     "analyzed_commit_sha": "fa9bc317cc0ac1953ed09cbab11d3de2232c2fb0",
-    "definition_version": "tep-v0.7.2-2026-09-07",
+    "definition_version": "tep-v0.8.0-2026-10-25",
     "input_digests": {
       "benchmark_manifest": null,
       "forge": null,
@@ -188,7 +188,7 @@
       "value": "fa9bc317cc0ac1953ed09cbab11d3de2232c2fb0"
     },
     "tool_name": "grift",
-    "tool_version": "0.7.2"
+    "tool_version": "0.8.0"
   },
   "report_kind": "evidence",
   "schema_version": "report-v2",

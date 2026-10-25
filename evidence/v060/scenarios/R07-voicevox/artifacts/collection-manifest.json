@@ -1,7 +1,7 @@
 {
   "actor_index_digest": {
     "algorithm": "sha256",
-    "value": "65bb51a8ac9aa3b8ad63fe9c26d78179772ddc72faa00aa21e7f0ee1923df1dd"
+    "value": "1bf52ca74ec26824ce4880dda1dfb9b982bf103f57e3c7099446542e6beb8318"
   },
   "full": {
     "actor_count": 118,
@@ -19,16 +19,16 @@
   },
   "members": [
     {
-      "bytes": 20551,
+      "bytes": 20658,
       "media_type": "application/json",
       "path": "actor-index.json",
-      "sha256": "653d33f5960a7b51b0c6acdeda29d0fbaddc33b14a92c3f5553f86a02a3a78f2"
+      "sha256": "2eb0afde436af9b6c303dca58d413ccc9ff05ebd1dfd2d313ae8a0e3c79a4e69"
     },
     {
-      "bytes": 13973,
+      "bytes": 14075,
       "media_type": "text/markdown",
       "path": "actor-index.md",
-      "sha256": "fc3bad20dc69b906b147f60b7c56d065b0129a08ac4fcc0e35872f76717ade19"
+      "sha256": "db4b2561c3b6a7fe3b1941b3eb6154055663f743d3b66da1b6ec1a1b4322ba1c"
     },
     {
       "bytes": 980,
@@ -1450,13 +1450,13 @@
       "bytes": 7378,
       "media_type": "application/json",
       "path": "repo-report.json",
-      "sha256": "8bf747b56fc7b5d4bf3753af18644e8b5e08a3102907b6e5a08184537fb78bf8"
+      "sha256": "75f2b1848c330e0e2aaec6ea9061732a10386c12a0bdee1d4f0db8cf04a8fcb5"
     },
     {
       "bytes": 1073,
       "media_type": "text/markdown",
       "path": "repo-report.md",
-      "sha256": "4feddd9cd52b3d9d60ecdf5ff52511639ed8c6a91bd59e3bcaf33039b2823814"
+      "sha256": "c0d370e9ba8a54e4921e67bc7452c78c9ca5b76fbfac735e74c84d8b3488b292"
     }
   ],
   "partition_digest": {
@@ -1471,329 +1471,139 @@
   "selection": {
     "actor_count": 118,
     "actor_ids": [
-      "actor_0f8674812e150c768f0a33220bdc0a22",
-      "actor_5c603e5f841fc6be84ded251be17f9ca",
-      "actor_a2b4ba1f54b9cc3edece0874d267e233",
-      "sabonerune",
-      "actor_650f92231d0de4803109a2ec99b09d35",
-      "yuto-ashida",
-      "segu",
-      "tiramisu_otato",
-      "actor_dde4e6ec8096f199a20e4e1fd4b12ef2",
-      "madosuki",
-      "romot",
-      "actor_c4533a36ec5b9efbab1987c0820d3c6d",
-      "aoirint",
-      "patchethium",
-      "motoki-saito",
-      "riku-kanayama",
-      "kchop",
-      "yusuke-yamada",
-      "kai",
-      "gray-suitcase",
-      "oech3",
-      "haruki-tazoe",
-      "raa0121",
-      "yosshi999",
-      "masanobu-yoshioka",
-      "nanae1914",
-      "sousuke0422",
-      "takana-v",
-      "copilot",
-      "yuta-hayashibe",
-      "actor_f30c88a0d1d8e2763dafd1b0c6ee6fdf",
-      "akikukeo",
-      "cm-ayf",
-      "haruna",
-      "mes51",
-      "nao",
-      "actor_27f8450ce23d4be99326fd5911a725d3",
-      "actor_3332ce147a38dea476662a6ecfbd7c15",
-      "han-yeong-woo",
       "actor_02d931d2be690de3178041c7a6d1d432",
+      "actor_0f8674812e150c768f0a33220bdc0a22",
       "actor_10d02ed0a40d0f047ec3816c6c041da2",
-      "actor_1e882f81815bb5bf16a60b24ec84d32b",
-      "actor_57cf3a611c9ff059f4baa48e7113692e",
-      "hyoda-kazuaki",
-      "kantas-spike",
-      "terapotan",
-      "tsym",
-      "actor_63b28497c0e0bf22940d40424b5780f5",
-      "actor_fe2f98946676130af9c023b220e115a8",
-      "akihiko-koizuka",
-      "kebin",
-      "keisuke-ishii",
-      "masarakki",
-      "nebocco",
-      "nogino",
-      "qwerty2501",
-      "tksn07",
-      "tunamaguro",
-      "x-20a",
-      "yuqquu",
-      "actor_5a85c8845c9faeacc40b8988a2aaa93d",
-      "actor_c46e6b7540e168fadc97939e5b439220",
-      "arigayas",
-      "gurrium",
-      "henteko",
-      "kota-kato",
-      "noronoro56",
-      "sheltie",
-      "tasteless0wash",
-      "wertyus11",
-      "white-green",
-      "yuki",
-      "yukio-nozawa",
       "actor_19dc2bc80cbffefe2c511a0085d990e0",
+      "actor_1e882f81815bb5bf16a60b24ec84d32b",
+      "actor_27f8450ce23d4be99326fd5911a725d3",
       "actor_2e8bf4f4f70d3bf5e1e122b5be15c703",
+      "actor_3332ce147a38dea476662a6ecfbd7c15",
       "actor_501962469534947816d4ee4d724e3223",
+      "actor_57cf3a611c9ff059f4baa48e7113692e",
+      "actor_5a85c8845c9faeacc40b8988a2aaa93d",
+      "actor_5c603e5f841fc6be84ded251be17f9ca",
       "actor_60cefbf628e87f782984182dc0df836f",
+      "actor_63b28497c0e0bf22940d40424b5780f5",
+      "actor_650f92231d0de4803109a2ec99b09d35",
       "actor_6dceed931a85614a8a240d3794a8af89",
       "actor_7de98ef902b711cf71da9e0a99497066",
+      "actor_a2b4ba1f54b9cc3edece0874d267e233",
       "actor_a362c99a437ee94d879a036aee6e8322",
       "actor_a8922a83e22c029c7814c2163b81ef73",
       "actor_b0f7244f99157f8cd1b40892482020a2",
+      "actor_c4533a36ec5b9efbab1987c0820d3c6d",
+      "actor_c46e6b7540e168fadc97939e5b439220",
+      "actor_dde4e6ec8096f199a20e4e1fd4b12ef2",
+      "actor_f30c88a0d1d8e2763dafd1b0c6ee6fdf",
+      "actor_fe2f98946676130af9c023b220e115a8",
+      "akihiko-koizuka",
+      "akikukeo",
+      "aoirint",
+      "arigayas",
       "aruneko",
       "bobonba",
+      "cm-ayf",
+      "copilot",
       "finict",
       "gigi434",
+      "gray-suitcase",
+      "gurrium",
+      "han-yeong-woo",
+      "haruki-tazoe",
+      "haruna",
+      "henteko",
       "hiroaki-kajiyama",
+      "hyoda-kazuaki",
       "ishida-naoto",
       "jun-1il",
+      "kai",
+      "kantas-spike",
+      "kchop",
+      "kebin",
+      "keisuke-ishii",
       "koharuyuzuki",
+      "kota-kato",
       "kurehajime",
       "liszt01",
+      "madosuki",
+      "masanobu-yoshioka",
+      "masarakki",
       "matt-van-horn",
+      "mes51",
       "mikage-asuka",
+      "motoki-saito",
       "my",
+      "nanae1914",
+      "nao",
+      "nebocco",
+      "nogino",
+      "noronoro56",
       "o108minmin",
+      "oech3",
       "oyaki",
       "palm209",
+      "patchethium",
+      "qwerty2501",
       "r17n",
+      "raa0121",
       "rikitonoto",
+      "riku-kanayama",
       "risu",
+      "romot",
       "ryo-yamashita",
+      "sabonerune",
       "scarletdango1204",
+      "segu",
+      "sheltie",
       "shimagayasatoka",
       "shirowanisan",
       "so-c",
       "sota-ichikawa",
+      "sousuke0422",
+      "takana-v",
+      "tasteless0wash",
       "tatsuya_yd",
+      "terapotan",
+      "tiramisu_otato",
+      "tksn07",
       "tomofumi-kondo",
       "tsunekazu-omija",
+      "tsym",
+      "tunamaguro",
       "umi",
       "vuchvu",
+      "wertyus11",
+      "white-green",
+      "x-20a",
       "yohaku7",
       "yoshiki-higuchi",
+      "yosshi999",
       "ytjvdcm",
+      "yuki",
       "yuki-igarashi",
       "yuki1229ushioda",
-      "yuriko0505"
+      "yukio-nozawa",
+      "yuqquu",
+      "yuriko0505",
+      "yusuke-yamada",
+      "yuta-hayashibe",
+      "yuto-ashida"
     ],
     "digest": {
       "algorithm": "sha256",
-      "value": "d0d7cbb5b486c741e12a6cb0345cfb8bee79a358ebef6f9dcb11af14b7862947"
+      "value": "7f88ff7fe08fd1a816c68cae862ac2ddd9974cac791647604e6d4baa4245ade2"
     },
     "links": [
-      {
-        "actor_id": "actor_0f8674812e150c768f0a33220bdc0a22",
-        "json": "actors/actor_0f8674812e150c768f0a33220bdc0a22.json",
-        "markdown": "actors/actor_0f8674812e150c768f0a33220bdc0a22.md"
-      },
-      {
-        "actor_id": "actor_5c603e5f841fc6be84ded251be17f9ca",
-        "json": "actors/actor_5c603e5f841fc6be84ded251be17f9ca.json",
-        "markdown": "actors/actor_5c603e5f841fc6be84ded251be17f9ca.md"
-      },
-      {
-        "actor_id": "actor_a2b4ba1f54b9cc3edece0874d267e233",
-        "json": "actors/actor_a2b4ba1f54b9cc3edece0874d267e233.json",
-        "markdown": "actors/actor_a2b4ba1f54b9cc3edece0874d267e233.md"
-      },
-      {
-        "actor_id": "sabonerune",
-        "json": "actors/sabonerune.json",
-        "markdown": "actors/sabonerune.md"
-      },
-      {
-        "actor_id": "actor_650f92231d0de4803109a2ec99b09d35",
-        "json": "actors/actor_650f92231d0de4803109a2ec99b09d35.json",
-        "markdown": "actors/actor_650f92231d0de4803109a2ec99b09d35.md"
-      },
-      {
-        "actor_id": "yuto-ashida",
-        "json": "actors/yuto-ashida.json",
-        "markdown": "actors/yuto-ashida.md"
-      },
-      {
-        "actor_id": "segu",
-        "json": "actors/segu.json",
-        "markdown": "actors/segu.md"
-      },
-      {
-        "actor_id": "tiramisu_otato",
-        "json": "actors/tiramisu_otato.json",
-        "markdown": "actors/tiramisu_otato.md"
-      },
-      {
-        "actor_id": "actor_dde4e6ec8096f199a20e4e1fd4b12ef2",
-        "json": "actors/actor_dde4e6ec8096f199a20e4e1fd4b12ef2.json",
-        "markdown": "actors/actor_dde4e6ec8096f199a20e4e1fd4b12ef2.md"
-      },
-      {
-        "actor_id": "madosuki",
-        "json": "actors/madosuki.json",
-        "markdown": "actors/madosuki.md"
-      },
-      {
-        "actor_id": "romot",
-        "json": "actors/romot.json",
-        "markdown": "actors/romot.md"
-      },
-      {
-        "actor_id": "actor_c4533a36ec5b9efbab1987c0820d3c6d",
-        "json": "actors/actor_c4533a36ec5b9efbab1987c0820d3c6d.json",
-        "markdown": "actors/actor_c4533a36ec5b9efbab1987c0820d3c6d.md"
-      },
-      {
-        "actor_id": "aoirint",
-        "json": "actors/aoirint.json",
-        "markdown": "actors/aoirint.md"
-      },
-      {
-        "actor_id": "patchethium",
-        "json": "actors/patchethium.json",
-        "markdown": "actors/patchethium.md"
-      },
-      {
-        "actor_id": "motoki-saito",
-        "json": "actors/motoki-saito.json",
-        "markdown": "actors/motoki-saito.md"
-      },
-      {
-        "actor_id": "riku-kanayama",
-        "json": "actors/riku-kanayama.json",
-        "markdown": "actors/riku-kanayama.md"
-      },
-      {
-        "actor_id": "kchop",
-        "json": "actors/kchop.json",
-        "markdown": "actors/kchop.md"
-      },
-      {
-        "actor_id": "yusuke-yamada",
-        "json": "actors/yusuke-yamada.json",
-        "markdown": "actors/yusuke-yamada.md"
-      },
-      {
-        "actor_id": "kai",
-        "json": "actors/kai.json",
-        "markdown": "actors/kai.md"
-      },
-      {
-        "actor_id": "gray-suitcase",
-        "json": "actors/gray-suitcase.json",
-        "markdown": "actors/gray-suitcase.md"
-      },
-      {
-        "actor_id": "oech3",
-        "json": "actors/oech3.json",
-        "markdown": "actors/oech3.md"
-      },
-      {
-        "actor_id": "haruki-tazoe",
-        "json": "actors/haruki-tazoe.json",
-        "markdown": "actors/haruki-tazoe.md"
-      },
-      {
-        "actor_id": "raa0121",
-        "json": "actors/raa0121.json",
-        "markdown": "actors/raa0121.md"
-      },
-      {
-        "actor_id": "yosshi999",
-        "json": "actors/yosshi999.json",
-        "markdown": "actors/yosshi999.md"
-      },
-      {
-        "actor_id": "masanobu-yoshioka",
-        "json": "actors/masanobu-yoshioka.json",
-        "markdown": "actors/masanobu-yoshioka.md"
-      },
-      {
-        "actor_id": "nanae1914",
-        "json": "actors/nanae1914.json",
-        "markdown": "actors/nanae1914.md"
-      },
-      {
-        "actor_id": "sousuke0422",
-        "json": "actors/sousuke0422.json",
-        "markdown": "actors/sousuke0422.md"
-      },
-      {
-        "actor_id": "takana-v",
-        "json": "actors/takana-v.json",
-        "markdown": "actors/takana-v.md"
-      },
-      {
-        "actor_id": "copilot",
-        "json": "actors/copilot.json",
-        "markdown": "actors/copilot.md"
-      },
-      {
-        "actor_id": "yuta-hayashibe",
-        "json": "actors/yuta-hayashibe.json",
-        "markdown": "actors/yuta-hayashibe.md"
-      },
-      {
-        "actor_id": "actor_f30c88a0d1d8e2763dafd1b0c6ee6fdf",
-        "json": "actors/actor_f30c88a0d1d8e2763dafd1b0c6ee6fdf.json",
-        "markdown": "actors/actor_f30c88a0d1d8e2763dafd1b0c6ee6fdf.md"
-      },
-      {
-        "actor_id": "akikukeo",
-        "json": "actors/akikukeo.json",
-        "markdown": "actors/akikukeo.md"
-      },
-      {
-        "actor_id": "cm-ayf",
-        "json": "actors/cm-ayf.json",
-        "markdown": "actors/cm-ayf.md"
-      },
-      {
-        "actor_id": "haruna",
-        "json": "actors/haruna.json",
-        "markdown": "actors/haruna.md"
-      },
-      {
-        "actor_id": "mes51",
-        "json": "actors/mes51.json",
-        "markdown": "actors/mes51.md"
-      },
-      {
-        "actor_id": "nao",
-        "json": "actors/nao.json",
-        "markdown": "actors/nao.md"
-      },
-      {
-        "actor_id": "actor_27f8450ce23d4be99326fd5911a725d3",
-        "json": "actors/actor_27f8450ce23d4be99326fd5911a725d3.json",
-        "markdown": "actors/actor_27f8450ce23d4be99326fd5911a725d3.md"
-      },
-      {
-        "actor_id": "actor_3332ce147a38dea476662a6ecfbd7c15",
-        "json": "actors/actor_3332ce147a38dea476662a6ecfbd7c15.json",
-        "markdown": "actors/actor_3332ce147a38dea476662a6ecfbd7c15.md"
-      },
-      {
-        "actor_id": "han-yeong-woo",
-        "json": "actors/han-yeong-woo.json",
-        "markdown": "actors/han-yeong-woo.md"
-      },
       {
         "actor_id": "actor_02d931d2be690de3178041c7a6d1d432",
         "json": "actors/actor_02d931d2be690de3178041c7a6d1d432.json",
         "markdown": "actors/actor_02d931d2be690de3178041c7a6d1d432.md"
+      },
+      {
+        "actor_id": "actor_0f8674812e150c768f0a33220bdc0a22",
+        "json": "actors/actor_0f8674812e150c768f0a33220bdc0a22.json",
+        "markdown": "actors/actor_0f8674812e150c768f0a33220bdc0a22.md"
       },
       {
         "actor_id": "actor_10d02ed0a40d0f047ec3816c6c041da2",
@@ -1801,169 +1611,19 @@
         "markdown": "actors/actor_10d02ed0a40d0f047ec3816c6c041da2.md"
       },
       {
+        "actor_id": "actor_19dc2bc80cbffefe2c511a0085d990e0",
+        "json": "actors/actor_19dc2bc80cbffefe2c511a0085d990e0.json",
+        "markdown": "actors/actor_19dc2bc80cbffefe2c511a0085d990e0.md"
+      },
+      {
         "actor_id": "actor_1e882f81815bb5bf16a60b24ec84d32b",
         "json": "actors/actor_1e882f81815bb5bf16a60b24ec84d32b.json",
         "markdown": "actors/actor_1e882f81815bb5bf16a60b24ec84d32b.md"
       },
       {
-        "actor_id": "actor_57cf3a611c9ff059f4baa48e7113692e",
-        "json": "actors/actor_57cf3a611c9ff059f4baa48e7113692e.json",
-        "markdown": "actors/actor_57cf3a611c9ff059f4baa48e7113692e.md"
-      },
-      {
-        "actor_id": "hyoda-kazuaki",
-        "json": "actors/hyoda-kazuaki.json",
-        "markdown": "actors/hyoda-kazuaki.md"
-      },
-      {
-        "actor_id": "kantas-spike",
-        "json": "actors/kantas-spike.json",
-        "markdown": "actors/kantas-spike.md"
-      },
-      {
-        "actor_id": "terapotan",
-        "json": "actors/terapotan.json",
-        "markdown": "actors/terapotan.md"
-      },
-      {
-        "actor_id": "tsym",
-        "json": "actors/tsym.json",
-        "markdown": "actors/tsym.md"
-      },
-      {
-        "actor_id": "actor_63b28497c0e0bf22940d40424b5780f5",
-        "json": "actors/actor_63b28497c0e0bf22940d40424b5780f5.json",
-        "markdown": "actors/actor_63b28497c0e0bf22940d40424b5780f5.md"
-      },
-      {
-        "actor_id": "actor_fe2f98946676130af9c023b220e115a8",
-        "json": "actors/actor_fe2f98946676130af9c023b220e115a8.json",
-        "markdown": "actors/actor_fe2f98946676130af9c023b220e115a8.md"
-      },
-      {
-        "actor_id": "akihiko-koizuka",
-        "json": "actors/akihiko-koizuka.json",
-        "markdown": "actors/akihiko-koizuka.md"
-      },
-      {
-        "actor_id": "kebin",
-        "json": "actors/kebin.json",
-        "markdown": "actors/kebin.md"
-      },
-      {
-        "actor_id": "keisuke-ishii",
-        "json": "actors/keisuke-ishii.json",
-        "markdown": "actors/keisuke-ishii.md"
-      },
-      {
-        "actor_id": "masarakki",
-        "json": "actors/masarakki.json",
-        "markdown": "actors/masarakki.md"
-      },
-      {
-        "actor_id": "nebocco",
-        "json": "actors/nebocco.json",
-        "markdown": "actors/nebocco.md"
-      },
-      {
-        "actor_id": "nogino",
-        "json": "actors/nogino.json",
-        "markdown": "actors/nogino.md"
-      },
-      {
-        "actor_id": "qwerty2501",
-        "json": "actors/qwerty2501.json",
-        "markdown": "actors/qwerty2501.md"
-      },
-      {
-        "actor_id": "tksn07",
-        "json": "actors/tksn07.json",
-        "markdown": "actors/tksn07.md"
-      },
-      {
-        "actor_id": "tunamaguro",
-        "json": "actors/tunamaguro.json",
-        "markdown": "actors/tunamaguro.md"
-      },
-      {
-        "actor_id": "x-20a",
-        "json": "actors/x-20a.json",
-        "markdown": "actors/x-20a.md"
-      },
-      {
-        "actor_id": "yuqquu",
-        "json": "actors/yuqquu.json",
-        "markdown": "actors/yuqquu.md"
-      },
-      {
-        "actor_id": "actor_5a85c8845c9faeacc40b8988a2aaa93d",
-        "json": "actors/actor_5a85c8845c9faeacc40b8988a2aaa93d.json",
-        "markdown": "actors/actor_5a85c8845c9faeacc40b8988a2aaa93d.md"
-      },
-      {
-        "actor_id": "actor_c46e6b7540e168fadc97939e5b439220",
-        "json": "actors/actor_c46e6b7540e168fadc97939e5b439220.json",
-        "markdown": "actors/actor_c46e6b7540e168fadc97939e5b439220.md"
-      },
-      {
-        "actor_id": "arigayas",
-        "json": "actors/arigayas.json",
-        "markdown": "actors/arigayas.md"
-      },
-      {
-        "actor_id": "gurrium",
-        "json": "actors/gurrium.json",
-        "markdown": "actors/gurrium.md"
-      },
-      {
-        "actor_id": "henteko",
-        "json": "actors/henteko.json",
-        "markdown": "actors/henteko.md"
-      },
-      {
-        "actor_id": "kota-kato",
-        "json": "actors/kota-kato.json",
-        "markdown": "actors/kota-kato.md"
-      },
-      {
-        "actor_id": "noronoro56",
-        "json": "actors/noronoro56.json",
-        "markdown": "actors/noronoro56.md"
-      },
-      {
-        "actor_id": "sheltie",
-        "json": "actors/sheltie.json",
-        "markdown": "actors/sheltie.md"
-      },
-      {
-        "actor_id": "tasteless0wash",
-        "json": "actors/tasteless0wash.json",
-        "markdown": "actors/tasteless0wash.md"
-      },
-      {
-        "actor_id": "wertyus11",
-        "json": "actors/wertyus11.json",
-        "markdown": "actors/wertyus11.md"
-      },
-      {
-        "actor_id": "white-green",
-        "json": "actors/white-green.json",
-        "markdown": "actors/white-green.md"
-      },
-      {
-        "actor_id": "yuki",
-        "json": "actors/yuki.json",
-        "markdown": "actors/yuki.md"
-      },
-      {
-        "actor_id": "yukio-nozawa",
-        "json": "actors/yukio-nozawa.json",
-        "markdown": "actors/yukio-nozawa.md"
-      },
-      {
-        "actor_id": "actor_19dc2bc80cbffefe2c511a0085d990e0",
-        "json": "actors/actor_19dc2bc80cbffefe2c511a0085d990e0.json",
-        "markdown": "actors/actor_19dc2bc80cbffefe2c511a0085d990e0.md"
+        "actor_id": "actor_27f8450ce23d4be99326fd5911a725d3",
+        "json": "actors/actor_27f8450ce23d4be99326fd5911a725d3.json",
+        "markdown": "actors/actor_27f8450ce23d4be99326fd5911a725d3.md"
       },
       {
         "actor_id": "actor_2e8bf4f4f70d3bf5e1e122b5be15c703",
@@ -1971,14 +1631,44 @@
         "markdown": "actors/actor_2e8bf4f4f70d3bf5e1e122b5be15c703.md"
       },
       {
+        "actor_id": "actor_3332ce147a38dea476662a6ecfbd7c15",
+        "json": "actors/actor_3332ce147a38dea476662a6ecfbd7c15.json",
+        "markdown": "actors/actor_3332ce147a38dea476662a6ecfbd7c15.md"
+      },
+      {
         "actor_id": "actor_501962469534947816d4ee4d724e3223",
         "json": "actors/actor_501962469534947816d4ee4d724e3223.json",
         "markdown": "actors/actor_501962469534947816d4ee4d724e3223.md"
       },
       {
+        "actor_id": "actor_57cf3a611c9ff059f4baa48e7113692e",
+        "json": "actors/actor_57cf3a611c9ff059f4baa48e7113692e.json",
+        "markdown": "actors/actor_57cf3a611c9ff059f4baa48e7113692e.md"
+      },
+      {
+        "actor_id": "actor_5a85c8845c9faeacc40b8988a2aaa93d",
+        "json": "actors/actor_5a85c8845c9faeacc40b8988a2aaa93d.json",
+        "markdown": "actors/actor_5a85c8845c9faeacc40b8988a2aaa93d.md"
+      },
+      {
+        "actor_id": "actor_5c603e5f841fc6be84ded251be17f9ca",
+        "json": "actors/actor_5c603e5f841fc6be84ded251be17f9ca.json",
+        "markdown": "actors/actor_5c603e5f841fc6be84ded251be17f9ca.md"
+      },
+      {
         "actor_id": "actor_60cefbf628e87f782984182dc0df836f",
         "json": "actors/actor_60cefbf628e87f782984182dc0df836f.json",
         "markdown": "actors/actor_60cefbf628e87f782984182dc0df836f.md"
+      },
+      {
+        "actor_id": "actor_63b28497c0e0bf22940d40424b5780f5",
+        "json": "actors/actor_63b28497c0e0bf22940d40424b5780f5.json",
+        "markdown": "actors/actor_63b28497c0e0bf22940d40424b5780f5.md"
+      },
+      {
+        "actor_id": "actor_650f92231d0de4803109a2ec99b09d35",
+        "json": "actors/actor_650f92231d0de4803109a2ec99b09d35.json",
+        "markdown": "actors/actor_650f92231d0de4803109a2ec99b09d35.md"
       },
       {
         "actor_id": "actor_6dceed931a85614a8a240d3794a8af89",
@@ -1989,6 +1679,11 @@
         "actor_id": "actor_7de98ef902b711cf71da9e0a99497066",
         "json": "actors/actor_7de98ef902b711cf71da9e0a99497066.json",
         "markdown": "actors/actor_7de98ef902b711cf71da9e0a99497066.md"
+      },
+      {
+        "actor_id": "actor_a2b4ba1f54b9cc3edece0874d267e233",
+        "json": "actors/actor_a2b4ba1f54b9cc3edece0874d267e233.json",
+        "markdown": "actors/actor_a2b4ba1f54b9cc3edece0874d267e233.md"
       },
       {
         "actor_id": "actor_a362c99a437ee94d879a036aee6e8322",
@@ -2006,6 +1701,51 @@
         "markdown": "actors/actor_b0f7244f99157f8cd1b40892482020a2.md"
       },
       {
+        "actor_id": "actor_c4533a36ec5b9efbab1987c0820d3c6d",
+        "json": "actors/actor_c4533a36ec5b9efbab1987c0820d3c6d.json",
+        "markdown": "actors/actor_c4533a36ec5b9efbab1987c0820d3c6d.md"
+      },
+      {
+        "actor_id": "actor_c46e6b7540e168fadc97939e5b439220",
+        "json": "actors/actor_c46e6b7540e168fadc97939e5b439220.json",
+        "markdown": "actors/actor_c46e6b7540e168fadc97939e5b439220.md"
+      },
+      {
+        "actor_id": "actor_dde4e6ec8096f199a20e4e1fd4b12ef2",
+        "json": "actors/actor_dde4e6ec8096f199a20e4e1fd4b12ef2.json",
+        "markdown": "actors/actor_dde4e6ec8096f199a20e4e1fd4b12ef2.md"
+      },
+      {
+        "actor_id": "actor_f30c88a0d1d8e2763dafd1b0c6ee6fdf",
+        "json": "actors/actor_f30c88a0d1d8e2763dafd1b0c6ee6fdf.json",
+        "markdown": "actors/actor_f30c88a0d1d8e2763dafd1b0c6ee6fdf.md"
+      },
+      {
+        "actor_id": "actor_fe2f98946676130af9c023b220e115a8",
+        "json": "actors/actor_fe2f98946676130af9c023b220e115a8.json",
+        "markdown": "actors/actor_fe2f98946676130af9c023b220e115a8.md"
+      },
+      {
+        "actor_id": "akihiko-koizuka",
+        "json": "actors/akihiko-koizuka.json",
+        "markdown": "actors/akihiko-koizuka.md"
+      },
+      {
+        "actor_id": "akikukeo",
+        "json": "actors/akikukeo.json",
+        "markdown": "actors/akikukeo.md"
+      },
+      {
+        "actor_id": "aoirint",
+        "json": "actors/aoirint.json",
+        "markdown": "actors/aoirint.md"
+      },
+      {
+        "actor_id": "arigayas",
+        "json": "actors/arigayas.json",
+        "markdown": "actors/arigayas.md"
+      },
+      {
         "actor_id": "aruneko",
         "json": "actors/aruneko.json",
         "markdown": "actors/aruneko.md"
@@ -2014,6 +1754,16 @@
         "actor_id": "bobonba",
         "json": "actors/bobonba.json",
         "markdown": "actors/bobonba.md"
+      },
+      {
+        "actor_id": "cm-ayf",
+        "json": "actors/cm-ayf.json",
+        "markdown": "actors/cm-ayf.md"
+      },
+      {
+        "actor_id": "copilot",
+        "json": "actors/copilot.json",
+        "markdown": "actors/copilot.md"
       },
       {
         "actor_id": "finict",
@@ -2026,9 +1776,44 @@
         "markdown": "actors/gigi434.md"
       },
       {
+        "actor_id": "gray-suitcase",
+        "json": "actors/gray-suitcase.json",
+        "markdown": "actors/gray-suitcase.md"
+      },
+      {
+        "actor_id": "gurrium",
+        "json": "actors/gurrium.json",
+        "markdown": "actors/gurrium.md"
+      },
+      {
+        "actor_id": "han-yeong-woo",
+        "json": "actors/han-yeong-woo.json",
+        "markdown": "actors/han-yeong-woo.md"
+      },
+      {
+        "actor_id": "haruki-tazoe",
+        "json": "actors/haruki-tazoe.json",
+        "markdown": "actors/haruki-tazoe.md"
+      },
+      {
+        "actor_id": "haruna",
+        "json": "actors/haruna.json",
+        "markdown": "actors/haruna.md"
+      },
+      {
+        "actor_id": "henteko",
+        "json": "actors/henteko.json",
+        "markdown": "actors/henteko.md"
+      },
+      {
         "actor_id": "hiroaki-kajiyama",
         "json": "actors/hiroaki-kajiyama.json",
         "markdown": "actors/hiroaki-kajiyama.md"
+      },
+      {
+        "actor_id": "hyoda-kazuaki",
+        "json": "actors/hyoda-kazuaki.json",
+        "markdown": "actors/hyoda-kazuaki.md"
       },
       {
         "actor_id": "ishida-naoto",
@@ -2041,9 +1826,39 @@
         "markdown": "actors/jun-1il.md"
       },
       {
+        "actor_id": "kai",
+        "json": "actors/kai.json",
+        "markdown": "actors/kai.md"
+      },
+      {
+        "actor_id": "kantas-spike",
+        "json": "actors/kantas-spike.json",
+        "markdown": "actors/kantas-spike.md"
+      },
+      {
+        "actor_id": "kchop",
+        "json": "actors/kchop.json",
+        "markdown": "actors/kchop.md"
+      },
+      {
+        "actor_id": "kebin",
+        "json": "actors/kebin.json",
+        "markdown": "actors/kebin.md"
+      },
+      {
+        "actor_id": "keisuke-ishii",
+        "json": "actors/keisuke-ishii.json",
+        "markdown": "actors/keisuke-ishii.md"
+      },
+      {
         "actor_id": "koharuyuzuki",
         "json": "actors/koharuyuzuki.json",
         "markdown": "actors/koharuyuzuki.md"
+      },
+      {
+        "actor_id": "kota-kato",
+        "json": "actors/kota-kato.json",
+        "markdown": "actors/kota-kato.md"
       },
       {
         "actor_id": "kurehajime",
@@ -2056,9 +1871,29 @@
         "markdown": "actors/liszt01.md"
       },
       {
+        "actor_id": "madosuki",
+        "json": "actors/madosuki.json",
+        "markdown": "actors/madosuki.md"
+      },
+      {
+        "actor_id": "masanobu-yoshioka",
+        "json": "actors/masanobu-yoshioka.json",
+        "markdown": "actors/masanobu-yoshioka.md"
+      },
+      {
+        "actor_id": "masarakki",
+        "json": "actors/masarakki.json",
+        "markdown": "actors/masarakki.md"
+      },
+      {
         "actor_id": "matt-van-horn",
         "json": "actors/matt-van-horn.json",
         "markdown": "actors/matt-van-horn.md"
+      },
+      {
+        "actor_id": "mes51",
+        "json": "actors/mes51.json",
+        "markdown": "actors/mes51.md"
       },
       {
         "actor_id": "mikage-asuka",
@@ -2066,14 +1901,49 @@
         "markdown": "actors/mikage-asuka.md"
       },
       {
+        "actor_id": "motoki-saito",
+        "json": "actors/motoki-saito.json",
+        "markdown": "actors/motoki-saito.md"
+      },
+      {
         "actor_id": "my",
         "json": "actors/my.json",
         "markdown": "actors/my.md"
       },
       {
+        "actor_id": "nanae1914",
+        "json": "actors/nanae1914.json",
+        "markdown": "actors/nanae1914.md"
+      },
+      {
+        "actor_id": "nao",
+        "json": "actors/nao.json",
+        "markdown": "actors/nao.md"
+      },
+      {
+        "actor_id": "nebocco",
+        "json": "actors/nebocco.json",
+        "markdown": "actors/nebocco.md"
+      },
+      {
+        "actor_id": "nogino",
+        "json": "actors/nogino.json",
+        "markdown": "actors/nogino.md"
+      },
+      {
+        "actor_id": "noronoro56",
+        "json": "actors/noronoro56.json",
+        "markdown": "actors/noronoro56.md"
+      },
+      {
         "actor_id": "o108minmin",
         "json": "actors/o108minmin.json",
         "markdown": "actors/o108minmin.md"
+      },
+      {
+        "actor_id": "oech3",
+        "json": "actors/oech3.json",
+        "markdown": "actors/oech3.md"
       },
       {
         "actor_id": "oyaki",
@@ -2086,9 +1956,24 @@
         "markdown": "actors/palm209.md"
       },
       {
+        "actor_id": "patchethium",
+        "json": "actors/patchethium.json",
+        "markdown": "actors/patchethium.md"
+      },
+      {
+        "actor_id": "qwerty2501",
+        "json": "actors/qwerty2501.json",
+        "markdown": "actors/qwerty2501.md"
+      },
+      {
         "actor_id": "r17n",
         "json": "actors/r17n.json",
         "markdown": "actors/r17n.md"
+      },
+      {
+        "actor_id": "raa0121",
+        "json": "actors/raa0121.json",
+        "markdown": "actors/raa0121.md"
       },
       {
         "actor_id": "rikitonoto",
@@ -2096,9 +1981,19 @@
         "markdown": "actors/rikitonoto.md"
       },
       {
+        "actor_id": "riku-kanayama",
+        "json": "actors/riku-kanayama.json",
+        "markdown": "actors/riku-kanayama.md"
+      },
+      {
         "actor_id": "risu",
         "json": "actors/risu.json",
         "markdown": "actors/risu.md"
+      },
+      {
+        "actor_id": "romot",
+        "json": "actors/romot.json",
+        "markdown": "actors/romot.md"
       },
       {
         "actor_id": "ryo-yamashita",
@@ -2106,9 +2001,24 @@
         "markdown": "actors/ryo-yamashita.md"
       },
       {
+        "actor_id": "sabonerune",
+        "json": "actors/sabonerune.json",
+        "markdown": "actors/sabonerune.md"
+      },
+      {
         "actor_id": "scarletdango1204",
         "json": "actors/scarletdango1204.json",
         "markdown": "actors/scarletdango1204.md"
+      },
+      {
+        "actor_id": "segu",
+        "json": "actors/segu.json",
+        "markdown": "actors/segu.md"
+      },
+      {
+        "actor_id": "sheltie",
+        "json": "actors/sheltie.json",
+        "markdown": "actors/sheltie.md"
       },
       {
         "actor_id": "shimagayasatoka",
@@ -2131,9 +2041,39 @@
         "markdown": "actors/sota-ichikawa.md"
       },
       {
+        "actor_id": "sousuke0422",
+        "json": "actors/sousuke0422.json",
+        "markdown": "actors/sousuke0422.md"
+      },
+      {
+        "actor_id": "takana-v",
+        "json": "actors/takana-v.json",
+        "markdown": "actors/takana-v.md"
+      },
+      {
+        "actor_id": "tasteless0wash",
+        "json": "actors/tasteless0wash.json",
+        "markdown": "actors/tasteless0wash.md"
+      },
+      {
         "actor_id": "tatsuya_yd",
         "json": "actors/tatsuya_yd.json",
         "markdown": "actors/tatsuya_yd.md"
+      },
+      {
+        "actor_id": "terapotan",
+        "json": "actors/terapotan.json",
+        "markdown": "actors/terapotan.md"
+      },
+      {
+        "actor_id": "tiramisu_otato",
+        "json": "actors/tiramisu_otato.json",
+        "markdown": "actors/tiramisu_otato.md"
+      },
+      {
+        "actor_id": "tksn07",
+        "json": "actors/tksn07.json",
+        "markdown": "actors/tksn07.md"
       },
       {
         "actor_id": "tomofumi-kondo",
@@ -2146,6 +2086,16 @@
         "markdown": "actors/tsunekazu-omija.md"
       },
       {
+        "actor_id": "tsym",
+        "json": "actors/tsym.json",
+        "markdown": "actors/tsym.md"
+      },
+      {
+        "actor_id": "tunamaguro",
+        "json": "actors/tunamaguro.json",
+        "markdown": "actors/tunamaguro.md"
+      },
+      {
         "actor_id": "umi",
         "json": "actors/umi.json",
         "markdown": "actors/umi.md"
@@ -2154,6 +2104,21 @@
         "actor_id": "vuchvu",
         "json": "actors/vuchvu.json",
         "markdown": "actors/vuchvu.md"
+      },
+      {
+        "actor_id": "wertyus11",
+        "json": "actors/wertyus11.json",
+        "markdown": "actors/wertyus11.md"
+      },
+      {
+        "actor_id": "white-green",
+        "json": "actors/white-green.json",
+        "markdown": "actors/white-green.md"
+      },
+      {
+        "actor_id": "x-20a",
+        "json": "actors/x-20a.json",
+        "markdown": "actors/x-20a.md"
       },
       {
         "actor_id": "yohaku7",
@@ -2166,9 +2131,19 @@
         "markdown": "actors/yoshiki-higuchi.md"
       },
       {
+        "actor_id": "yosshi999",
+        "json": "actors/yosshi999.json",
+        "markdown": "actors/yosshi999.md"
+      },
+      {
         "actor_id": "ytjvdcm",
         "json": "actors/ytjvdcm.json",
         "markdown": "actors/ytjvdcm.md"
+      },
+      {
+        "actor_id": "yuki",
+        "json": "actors/yuki.json",
+        "markdown": "actors/yuki.md"
       },
       {
         "actor_id": "yuki-igarashi",
@@ -2181,9 +2156,34 @@
         "markdown": "actors/yuki1229ushioda.md"
       },
       {
+        "actor_id": "yukio-nozawa",
+        "json": "actors/yukio-nozawa.json",
+        "markdown": "actors/yukio-nozawa.md"
+      },
+      {
+        "actor_id": "yuqquu",
+        "json": "actors/yuqquu.json",
+        "markdown": "actors/yuqquu.md"
+      },
+      {
         "actor_id": "yuriko0505",
         "json": "actors/yuriko0505.json",
         "markdown": "actors/yuriko0505.md"
+      },
+      {
+        "actor_id": "yusuke-yamada",
+        "json": "actors/yusuke-yamada.json",
+        "markdown": "actors/yusuke-yamada.md"
+      },
+      {
+        "actor_id": "yuta-hayashibe",
+        "json": "actors/yuta-hayashibe.json",
+        "markdown": "actors/yuta-hayashibe.md"
+      },
+      {
+        "actor_id": "yuto-ashida",
+        "json": "actors/yuto-ashida.json",
+        "markdown": "actors/yuto-ashida.md"
       }
     ],
     "mode": "all"

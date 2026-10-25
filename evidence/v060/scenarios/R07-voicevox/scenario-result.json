@@ -93,8 +93,8 @@
       "status": "PASS"
     },
     {
-      "actual": "0.7.2",
-      "expected": "0.7.2",
+      "actual": "0.8.0",
+      "expected": "0.8.0",
       "id": "runner-tool-version",
       "status": "PASS"
     },
@@ -207,16 +207,16 @@
     "report.merge": 89,
     "report.unresolved": 0
   },
-  "duration_ms": 4542,
+  "duration_ms": 6721,
   "exit_code": 0,
   "output_digests": {
     "artifacts/actor-index.json": {
       "algorithm": "sha256",
-      "value": "653d33f5960a7b51b0c6acdeda29d0fbaddc33b14a92c3f5553f86a02a3a78f2"
+      "value": "2eb0afde436af9b6c303dca58d413ccc9ff05ebd1dfd2d313ae8a0e3c79a4e69"
     },
     "artifacts/actor-index.md": {
       "algorithm": "sha256",
-      "value": "fc3bad20dc69b906b147f60b7c56d065b0129a08ac4fcc0e35872f76717ade19"
+      "value": "db4b2561c3b6a7fe3b1941b3eb6154055663f743d3b66da1b6ec1a1b4322ba1c"
     },
     "artifacts/actors/actor_02d931d2be690de3178041c7a6d1d432.json": {
       "algorithm": "sha256",
@@ -1164,15 +1164,15 @@
     },
     "artifacts/collection-manifest.json": {
       "algorithm": "sha256",
-      "value": "d0a324244d5ca99b18ac316ee7d0f0880f00581eb2c0eadff261ded01cba25e5"
+      "value": "df5cc6f672e914456619a720b2fe2d5d570e0d4a98510842200bf05dd9c40bb3"
     },
     "artifacts/repo-report.json": {
       "algorithm": "sha256",
-      "value": "8bf747b56fc7b5d4bf3753af18644e8b5e08a3102907b6e5a08184537fb78bf8"
+      "value": "75f2b1848c330e0e2aaec6ea9061732a10386c12a0bdee1d4f0db8cf04a8fcb5"
     },
     "artifacts/repo-report.md": {
       "algorithm": "sha256",
-      "value": "4feddd9cd52b3d9d60ecdf5ff52511639ed8c6a91bd59e3bcaf33039b2823814"
+      "value": "c0d370e9ba8a54e4921e67bc7452c78c9ca5b76fbfac735e74c84d8b3488b292"
     }
   },
   "partition_digest": {
@@ -1188,16 +1188,16 @@
     "source_binding": {
       "commit_oid": {
         "algorithm": "sha1",
-        "value": "eb47d1bdb0881369cd5239b98683d628e7414580"
+        "value": "65ead9f9d941a265398a6f34ddf0c6339eb11536"
       },
       "definition_version": "grift-tool-source-tree-v1",
       "file_count": 97,
       "source_tree_digest": {
         "algorithm": "sha256",
-        "value": "ee40e864617e2b03668aa374e648c4a90810bea805a48d7c36404eec98c5bfc7"
+        "value": "d470cb59615228ccf45f534ef90c56a82cc18f7a05d421be68da6e13743392cd"
       }
     },
-    "tool_version": "0.7.2"
+    "tool_version": "0.8.0"
   },
   "scenario_id": "R07-voicevox",
   "schema_version": "tep-scenario-result-v1",
