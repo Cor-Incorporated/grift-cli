@@ -454,3 +454,22 @@ jobs:
             package-dist/
             package-evidence/
           if-no-files-found: error
+
+  docker:
+    # The Dockerfile builds the wheel from this checkout; smoke the image's
+    # entrypoint and an offline repo observation on a read-only mount.
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Build image
+        run: docker build -t grift-cli:ci .
+      - name: Smoke (version + offline repo observation)
+        run: |
+          set -euo pipefail
+          expected="grift $(sed -n 's/^__version__ = "\(.*\)"$/\1/p' src/tep_core/version.py)"
+          test "$(docker run --rm grift-cli:ci --version)" = "$expected"
+          docker run --rm -v "$PWD:/repo:ro" grift-cli:ci repo /repo > /dev/null

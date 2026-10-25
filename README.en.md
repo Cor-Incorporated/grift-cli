@@ -123,6 +123,20 @@ The action runs `grift analyze`, writes a summary to `$GITHUB_STEP_SUMMARY`, and
 - It needs the caller repository's full history and Python 3.11 or newer. A missing checkout or a shallow clone stops the run before measurement (fail-closed, exit 2). Invalid inputs also fail closed.
 - Run it with `contents: read` and `comment: false`, so code from a pull request never receives a write token. The `comment: true` path is implemented, but this project's own CI runs read-only, so that path is unproven. Do not grant write permission to pull-request code until a trusted follow-up workflow exists.
 
+## Use with Docker
+
+Build an image from this checkout and run grift without installing Python on the host. Mount the target repository at `/repo`.
+
+```bash
+docker build -t grift-cli .
+docker run --rm -v "$PWD:/repo" grift-cli repo
+docker run --rm --user "$(id -u):$(id -g)" -v "$PWD:/repo" grift-cli repo . --format both --out .grift
+```
+
+- Full history is required; do not mount a shallow clone
+- When writing with `--out`, pass your host UID with `--user "$(id -u):$(id -g)"` (the image defaults to a non-root user with uid 1000)
+- The image bundles only `git` and `openssh-client`; `gh` and `cosign` are not included (run `contribute --open` and cosign signing on the host)
+
 ## Documentation
 
 - [Usage guide](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/usage.md)

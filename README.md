@@ -121,6 +121,20 @@ steps:
 - 呼び出し元のリポジトリの全履歴と、Python 3.11 以上が要ります。checkout していない、または shallow clone のときは、計測の前に止まります（fail-closed、exit 2）。入力が決まりに合わないときも fail-closed で止まります。
 - `contents: read` と `comment: false` で動かし、PR のコードに write 権限の token を渡さないでください。`comment: true` の経路は実装していますが、このプロジェクトの CI は読み取り専用で動かしているため、その経路はまだ確かめていません。信頼できる後段の workflow を設計するまでは、PR のコードに write 権限を付けません。
 
+## Docker で使う
+
+ホストに Python を入れずに、このチェックアウトからイメージを作って実行できます。対象リポジトリは `/repo` に mount します。
+
+```bash
+docker build -t grift-cli .
+docker run --rm -v "$PWD:/repo" grift-cli repo
+docker run --rm --user "$(id -u):$(id -g)" -v "$PWD:/repo" grift-cli repo . --format both --out .grift
+```
+
+- 履歴全体が必要です。shallow clone は mount しないでください
+- `--out` で書き出すときは `--user "$(id -u):$(id -g)"` でホストの UID を渡します（イメージ既定は uid 1000 の非 root ユーザー）
+- イメージには `git` と `openssh-client` だけを同梱し、`gh` と `cosign` は含めません（`contribute --open` と cosign 署名はホスト側で実行してください）
+
 ## ドキュメント
 
 - [コマンドの詳しい使い方](docs/usage.md)
