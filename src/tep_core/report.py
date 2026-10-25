@@ -165,6 +165,7 @@ def render_markdown(report: dict[str, Any]) -> str:
             f"{_fmt_obs(activity['commits_per_active_day_median'])} — 中央値（日ごとの偏りに強い）/ median (robust to daily spikes)"
         ),
         f"- active days (13 weeks): {_fmt_obs(activity['active_days_13w'])} — 直近13週の活動日数 / active days in the last 13 weeks",
+        *(f"- limitation: {note}" for note in report.get("limitations") or []),
         "",
         "## Core activity period",
     ]

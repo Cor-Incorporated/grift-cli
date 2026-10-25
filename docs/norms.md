@@ -1,4 +1,4 @@
-# TEP 利用規範（norms）— 「TEP 準拠」を名乗る条件 / TEP Usage Norms
+# TEP（Technical Evidence Pipeline）利用規範（norms）— 「TEP 準拠」を名乗る条件 / TEP Usage Norms
 
 **正式版（v1・2026-08-22実装・P1g）。「TEP 準拠（TEP-compliant）」を名乗る利用の条件を定める。**
 **Norms v1 (2026-08-22, shipped as part of WP-P1g). Defines the conditions for calling a use "TEP-compliant."**
@@ -56,6 +56,7 @@ repo-local の Git primary-author 分類であり、実在人物との同一性�
 
 複数 repo の提示は「提供者が選択したものである」ことを明示して読む・示す。
 理由: 選択的開示は禁止しないが、隠さない。閉じた経歴書と違い、選択が見えることが前進である。
+単体の actor report-v2 と alignment-v1 の `notices` には固定文「This report covers one repository that the provider chose to share. It does not show whether other repositories exist or what they would show.」を常に載せる（v0.8.0）。
 
 ### 7. 重み付け・換算の禁止
 
@@ -67,7 +68,8 @@ repo-local の Git primary-author 分類であり、実在人物との同一性�
 `grift actor --all` はrepo-local clusterの全件collection、`--top N` は観測commit数
 による取得件数の限定、`grift actor ACTOR_ID` は1つのcanonical_idのcardを出す。
 この3経路は排他である。collection/indexは固定OID時点の帰属インベントリであり、
-品質・能力・人物の順位や継続評価表ではない。`--top N` の順序を品質rankへ変換する
+品質・能力・人物の順位や継続評価表ではない。index と `actor_directory` の行は actor id 順であり、
+観測 commit 数の多い順には並べない（行の位置は何も意味しない）。`--top N` の順序を品質rankへ変換する
 利用は非準拠である。公開collectionからidentity、本人性、experience/roleの同意を
 推論しない。`email_patterns` を一人へ割り当てる推測もしない。未観測は実績なしを
 意味しない。表示basisは次の5状態を混同しない。
@@ -111,7 +113,7 @@ repo-local の Git primary-author 分類であり、実在人物との同一性�
 
 ## Norms (en)
 
-**TEP is a methodology that produces verifiable evidence; it is not a decision engine.** These norms define what may be called "TEP-compliant" use. Compliance with this document is a condition of using the TEP name (DORA-guideline-style normative enforcement). Non-compliant use must not be called TEP.
+**TEP (Technical Evidence Pipeline) is a methodology that produces verifiable evidence; it is not a decision engine.** These norms define what may be called "TEP-compliant" use. Compliance with this document is a condition of using the TEP name (DORA-guideline-style normative enforcement). Non-compliant use must not be called TEP.
 
 ### 1. Do not read absence as negative
 
@@ -156,6 +158,7 @@ Reason: A persistent per-person comparison table is exactly the use this methodo
 
 Presenting multiple repositories must be read, and shown, as "selected by the provider."
 Reason: Selective disclosure is not forbidden; hiding the selection is. Unlike a closed résumé, visible selection is progress.
+A single-repo actor report-v2 and an alignment-v1 always carry the fixed notice "This report covers one repository that the provider chose to share. It does not show whether other repositories exist or what they would show." in `notices` (v0.8.0).
 
 ### 7. No weighting or conversion
 
@@ -168,7 +171,8 @@ Reason: Adjustment always embeds hypotheses and distorts verifiable primary reco
 limits retrieval by observed commit count, and `grift actor ACTOR_ID` emits one
 canonical-id card. These modes are mutually exclusive. A collection/index is
 an attribution inventory at a fixed OID, not a quality, ability, person-ranking,
-or continuous-evaluation table. Treating `--top N` order as a quality rank is
+or continuous-evaluation table. Index and `actor_directory` rows are listed in actor-id
+order, never by commit count; a row's position means nothing. Treating `--top N` order as a quality rank is
 non-compliant. A public collection never supplies consent for identity or
 experience/role. The five presentation bases are public inferred, self-claimed, admin-authorized,
 explicit nonconsent, and fail-closed unknown. Only self-claimed receives

@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 脆弱性の報告 / Report a vulnerability
+    url: https://github.com/Cor-Incorporated/grift-cli/blob/main/SECURITY.md
+    about: 公開 Issue には書かず、SECURITY.md の窓口へ。Do not open a public issue; use the channel in SECURITY.md.
+  - name: 非公開の連絡（削除依頼など）/ Private contact (removal requests etc.)
+    url: https://cor-jp.com/contact/
+    about: golden identity の削除依頼など、公開したくない内容はこちら。For anything you do not want public, such as removal requests for golden identities.
+  - name: 利用規範（TEP 準拠の条件）/ Usage norms
+    url: https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/norms.md
+    about: 「この使い方は TEP 準拠か」はまず 7 条を読んでから。Read the seven articles before asking whether a use is TEP-compliant.

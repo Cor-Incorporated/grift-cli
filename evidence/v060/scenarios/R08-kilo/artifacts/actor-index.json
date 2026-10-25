@@ -45,7 +45,8 @@
   ],
   "limitations": [
     "Actor IDs are repo-local Git primary-author clusters, not verified people.",
-    "Top selection is observed commit-count extraction, never a quality rank."
+    "Top selection is observed commit-count extraction, never a quality rank.",
+    "Rows are ordered by actor id, not by commit count; no row position means more or less than another."
   ],
   "partition_digest": {
     "algorithm": "sha256",

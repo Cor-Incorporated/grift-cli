@@ -1,0 +1,52 @@
+name: 質問 / Question
+description: 出力の読み方、使い方、文書の分かりにくさ。How to read an output, how to use a command, unclear documentation.
+title: "question: "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        先に見ると早いもの: [README](https://github.com/Cor-Incorporated/grift-cli/blob/main/README.md) の「試す」、[docs/metrics-guide.md](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/metrics-guide.md)（数値の読み方）、[docs/norms.md](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/norms.md)（利用規範）。
+        「文書を読んでも分からなかった」という報告は、それ自体が文書のバグなので歓迎です。
+
+        Worth a look first: the "Try it" section of the [README](https://github.com/Cor-Incorporated/grift-cli/blob/main/README.en.md), [docs/en/metrics-guide.md](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/metrics-guide.md) (how to read the numbers), [docs/en/norms.md](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/norms.md) (usage norms).
+        "I read the docs and still did not get it" is a documentation bug and welcome here.
+  - type: textarea
+    id: question
+    attributes:
+      label: 質問 / Question
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: 見た出力（観測値）/ The output you saw (observed)
+      description: 実行したコマンドと、問題の部分。The command and the part of the output in question.
+      render: text
+  - type: textarea
+    id: expected
+    attributes:
+      label: そう思った理由（期待値）/ What you expected and why
+      description: どの文書や経験からそう期待したか。Which document or experience led you to expect something else.
+  - type: dropdown
+    id: repo-shape
+    attributes:
+      label: 見ていた repo の形 / Shape of the repository you were looking at
+      options:
+        - 公開 repo（URL と SHA を下に）/ Public repository (URL + SHA below)
+        - 自分の非公開 repo（形だけ下に）/ My private repository (shape below)
+        - まだ実行していない / Have not run it yet
+  - type: textarea
+    id: repo-detail
+    attributes:
+      label: repo の詳細 / Repository details
+      description: URL + SHA、または commit 数・著者数・merge / shallow / bot の有無。URL + SHA, or commits, authors, merges / shallow / bots.
+  - type: checkboxes
+    id: read
+    attributes:
+      label: 読んだもの / What you already read
+      options:
+        - label: README の「試す」/ The "Try it" section of the README
+        - label: docs/metrics-guide.md（数値の読み方）/ docs/en/metrics-guide.md
+        - label: docs/norms.md（利用規範）/ docs/en/norms.md
+        - label: CONTRIBUTING.md

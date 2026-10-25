@@ -3,8 +3,10 @@
 Addendum16 §3: the old A-vs-C `separated` verdict must no longer be used as
 the basis of any explanation. Allowed mentions: the reversal disclosure
 itself and the v2026.09 history file. This test parses the discriminant JSON
-(verbatim source of truth) and requires every README/persona-answers verdict
-line to match it, and forbids old-verdict phrasings outside reversal context.
+(verbatim source of truth) and requires every validation-doc/persona-answers
+verdict line to match it, and forbids old-verdict phrasings outside reversal
+context. The verdict summary moved from the READMEs to docs/validation.md and
+docs/en/validation.md; the READMEs only link there, but stay in the stale scan.
 """
 
 from __future__ import annotations
@@ -34,22 +36,22 @@ def _verdicts() -> dict[str, str]:
     return out
 
 
-def test_readme_ja_carries_v2026_11_verbatim() -> None:
-    text = (ROOT / "README.md").read_text(encoding="utf-8")
+def test_validation_doc_ja_carries_v2026_11_verbatim() -> None:
+    text = (ROOT / "docs" / "validation.md").read_text(encoding="utf-8")
     assert "DISCRIMINANT-v2026.11.md" in text
     for name, verdict in _verdicts().items():
         if not name.startswith("test_cochange"):
             continue
         pattern = rf"{re.escape(name)}`? → `{verdict}`".replace("test_cochange`", "test_cochange")
-        # names look like "test_cochange A vs C" — README writes them in backticks
+        # names look like "test_cochange A vs C" — the doc writes them in backticks
         pattern = rf"`{re.escape(name)}` → `{verdict}`"
-        assert re.search(pattern, text), f"README.md missing verbatim {pattern}"
+        assert re.search(pattern, text), f"docs/validation.md missing verbatim {pattern}"
     assert "Cliff δ 0.9198" in text  # A vs D headline effect
     assert "Cliff δ 0.291" in text  # A vs C reversal effect
 
 
-def test_readme_en_carries_v2026_11_verbatim() -> None:
-    text = (ROOT / "README.en.md").read_text(encoding="utf-8")
+def test_validation_doc_en_carries_v2026_11_verbatim() -> None:
+    text = (ROOT / "docs" / "en" / "validation.md").read_text(encoding="utf-8")
     assert "DISCRIMINANT-v2026.11.md" in text
     assert "Cliff δ 0.9198" in text
     assert "Cliff δ 0.291" in text
@@ -59,7 +61,13 @@ def test_readme_en_carries_v2026_11_verbatim() -> None:
 def test_no_stale_separated_basis_outside_reversal_disclosure() -> None:
     """Old A vs C `separated` (0.7143) must only appear inside a reversal
     sentence (a line that also mentions v2026.09 / was / では / fail_tier2)."""
-    for rel in ("README.md", "README.en.md", "docs/persona-answers.md"):
+    for rel in (
+        "README.md",
+        "README.en.md",
+        "docs/validation.md",
+        "docs/en/validation.md",
+        "docs/persona-answers.md",
+    ):
         text = (ROOT / rel).read_text(encoding="utf-8")
         for line in text.splitlines():
             if "0.7143" not in line:

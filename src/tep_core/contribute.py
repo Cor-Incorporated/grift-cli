@@ -67,6 +67,10 @@ _WITHHELD_TOP_LEVEL = frozenset(
         "repository",
         "context_profile",  # slimmed separately through _CONTEXT_ALLOWED
         "activity",
+        # The fixed sentence that says how `activity` can be inflated (0.8,
+        # ADR-0001 R4). It annotates a block this payload withholds, so it is
+        # withheld with it; a recipient reads it in docs/report-schema.md.
+        "limitations",
         # Tenant-scope only. `contribute` refuses tenant reports outright, so
         # these are unreachable today; they are named here so that lifting that
         # restriction cannot publish them silently.

@@ -1,0 +1,52 @@
+name: 機能の提案 / Feature request
+description: 新しい観測・フラグ・出力形式の提案。A new observation, flag or output format.
+title: "feat: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        grift は合成スコア・順位・推奨・合否を出しません（[CONTRIBUTING.md](https://github.com/Cor-Incorporated/grift-cli/blob/main/CONTRIBUTING.md) §7、[docs/norms.md](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/norms.md)）。
+        それに当たる提案は、どれだけ便利でも受けられないので、先に下のチェックを見てください。
+
+        grift never produces a composite score, rank, recommendation or pass/fail ([CONTRIBUTING.en.md](https://github.com/Cor-Incorporated/grift-cli/blob/main/CONTRIBUTING.en.md) §7, [docs/en/norms.md](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/norms.md)).
+        A proposal that amounts to one cannot be accepted however useful it is, so please look at the checklist below first.
+  - type: textarea
+    id: observed
+    attributes:
+      label: 今の出力で困っていること（観測値）/ What today's output does (observed)
+      description: 実際に実行したコマンドと、今返ってくるもの。The command you ran and what comes back today.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 望む出力（期待値）/ What you want it to do (expected)
+      description: 可能なら report の JSON キー名や Markdown の文面の案まで。単位・分母・観測窓も。If you can, propose the JSON key, the Markdown wording, and its unit, denominator and window.
+    validations:
+      required: true
+  - type: textarea
+    id: repo-shape
+    attributes:
+      label: 違いが出る repo の形 / Shape of a repository where the difference shows
+      description: |
+        公開 repo の URL + SHA、または合成 repo を作るスクリプト。提案した観測が「観測できる repo」と「not_observed になる repo」の両方があると議論が速いです。
+        Public URL + SHA, or a script that builds a synthetic repo. One repo where the observation is possible and one where it must be `not_observed` speeds things up.
+      render: bash
+  - type: checkboxes
+    id: design
+    attributes:
+      label: 設計上の確認 / Design checks
+      options:
+        - label: 人を 1 つの数値・等級・順位に縮約しない / Does not reduce a person to one number, grade or rank
+          required: true
+        - label: 「膨らませ方」（形式的な操作で値が上がる経路）を一緒に書いた / I described how the value could be inflated by formal operations
+          required: true
+        - label: 母数 20 未満・履歴不完全のときに `not_observed` になる条件を書いた / I described when it becomes `not_observed` (population below 20, incomplete history)
+        - label: 新しい network 経路を必要としない。必要なら opt-in フラグ付き / Needs no new network path, or only behind an opt-in flag
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 代替案 / Alternatives
+      description: 既存のフラグや文書で代わりになるものを試したか。What existing flags or documents you tried instead.

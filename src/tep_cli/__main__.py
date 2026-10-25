@@ -141,6 +141,7 @@ def _run_actor_artifact_verify(
 
     from tep_core.actor_artifacts import (
         ActorArtifactError,
+        actor_summaries,
         verify_actor_artifact_directory,
     )
     from tep_core.analyze import _tenant_experience, prepare_inputs
@@ -191,18 +192,10 @@ def _run_actor_artifact_verify(
                 repo_scope_digest=scope_digest,
                 canonical_origin=canonical_origin,
             )
-            expected_actors = [
-                {
-                    "actor_id": actor.actor_id,
-                    "commit_count": len(actor.commit_shas),
-                    "nonmerge_commit_count": actor.nonmerge_count,
-                    "merge_commit_count": actor.merge_count,
-                }
-                for actor in sorted(
-                    recomputed.actors,
-                    key=lambda item: (-len(item.commit_shas), item.actor_id),
-                )
-            ]
+            # Same function as the writer: the row order is part of what is
+            # verified, and a second sort here is the two-copies defect this
+            # repository keeps finding (the 0.7.x copy sorted by commit count).
+            expected_actors = actor_summaries(recomputed)
             differences: list[str] = []
             if recomputed.partition_digest != manifest["partition_digest"]["value"]:
                 differences.append("partition digest")

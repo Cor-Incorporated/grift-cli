@@ -1,7 +1,7 @@
 {
   "actor_index_digest": {
     "algorithm": "sha256",
-    "value": "e647bf12ae83a47d3b4617e32a26dce7aa4bb4ae701949bb2b82818c7d1d88f5"
+    "value": "bcaa85f5e802f6120110108dbbd46c3e68b94c12bf641f6090d16078e64dd6e5"
   },
   "full": {
     "actor_count": 1,
@@ -19,16 +19,16 @@
   },
   "members": [
     {
-      "bytes": 1185,
+      "bytes": 1292,
       "media_type": "application/json",
       "path": "actor-index.json",
-      "sha256": "9a3b64711004266c30585d75d6ca4f88031f8dd1ee7884273a45731fe29c1ce1"
+      "sha256": "fabcb3b5ae837794dfa7f69b99f9f0df08606050ac5cbf5aa6c4c10667ebd684"
     },
     {
-      "bytes": 629,
+      "bytes": 731,
       "media_type": "text/markdown",
       "path": "actor-index.md",
-      "sha256": "77e001644e99448d50fafe25a78fe88ef4b44e2960de2606cae0bf581c60aefa"
+      "sha256": "077d4f2a944d57e289b3cc73275c0c7c96b4918cf8d7a3eee20378610bbd4c74"
     },
     {
       "bytes": 955,
@@ -46,13 +46,13 @@
       "bytes": 7617,
       "media_type": "application/json",
       "path": "repo-report.json",
-      "sha256": "17d475b776d7abd24f50ed0602bc6a8b24442bbe81644590b45c8c334c0c393a"
+      "sha256": "7286dc5b37d85b64545871ef0228356544e15dc403003a3dc0530f249ec61cc6"
     },
     {
       "bytes": 1068,
       "media_type": "text/markdown",
       "path": "repo-report.md",
-      "sha256": "5031595d59e8dd244e00a88e2ec4e909d28a68d5f5be8dbad0a627c3a4f60ad5"
+      "sha256": "ff80e1801d3f00760abc2272fc23fda12f6cc2c24229be3f5e836703e83b7b0d"
     }
   ],
   "partition_digest": {

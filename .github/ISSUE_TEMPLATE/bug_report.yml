@@ -1,0 +1,79 @@
+name: バグ報告 / Bug report
+description: 期待と違う出力・終了コード・クラッシュ。An output, exit code or crash that differs from what you expected.
+title: "fix: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        観測値と期待値を分けて書いてください。再現に使う repo は「形」が分かれば十分です（公開 URL + SHA、または合成 repo を作るスクリプト）。
+        秘密情報・生メールアドレス・非公開 repo の履歴は貼らないでください。脆弱性は Issue ではなく [SECURITY.md](https://github.com/Cor-Incorporated/grift-cli/blob/main/SECURITY.md) の窓口へ。
+
+        Please separate what you observed from what you expected. For the repository, its *shape* is enough (public URL + SHA, or a script that builds a synthetic repo).
+        Do not paste secrets, raw email addresses or private history. Vulnerabilities go to [SECURITY.md](https://github.com/Cor-Incorporated/grift-cli/blob/main/SECURITY.md), not to an issue.
+  - type: textarea
+    id: command
+    attributes:
+      label: 実行したコマンド / Command you ran
+      description: フラグも含めてそのまま。As typed, including flags.
+      render: bash
+      placeholder: |
+        grift repo . --format json
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: 観測値 / What you observed
+      description: 出力（必要な部分だけ）と終了コード。stderr があればそれも。Output (the relevant part), exit code, and stderr if any.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期待値 / What you expected
+      description: どの文書・help・過去の版からそう期待したかも書いてください。Say which document, help text or earlier version led you to expect it.
+    validations:
+      required: true
+  - type: dropdown
+    id: repo-shape
+    attributes:
+      label: 再現 repo の形 / Shape of the reproducing repository
+      options:
+        - 公開 repo（URL と SHA を下に書く）/ Public repository (URL + SHA below)
+        - 合成 repo（作るスクリプトを下に書く）/ Synthetic repository (script below)
+        - 非公開で共有できない（形だけ下に書く）/ Private, cannot share (describe the shape below)
+        - この grift-cli リポジトリ自身 / This grift-cli repository itself
+    validations:
+      required: true
+  - type: textarea
+    id: repo-detail
+    attributes:
+      label: 再現 repo の詳細 / Repository details
+      description: |
+        URL + SHA、または `git init` から始まる最小スクリプト。共有できないときは commit 数・著者数・merge の有無・shallow / promisor か・bot commit の有無・identity の有無を書いてください。
+        URL + SHA, or a minimal script starting at `git init`. If you cannot share it: number of commits and authors, merges or not, shallow / promisor or not, bot commits or not, identity file or not.
+      render: bash
+  - type: input
+    id: version
+    attributes:
+      label: バージョン / Version
+      description: "`grift --version` の出力。The output of `grift --version`."
+      placeholder: grift 0.7.2
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: 環境 / Environment
+      description: OS、Python の版、入れ方（pipx / pip / GitHub Action）。OS, Python version, how installed (pipx / pip / GitHub Action).
+      placeholder: macOS 15 / Python 3.12.9 / pipx
+  - type: checkboxes
+    id: hygiene
+    attributes:
+      label: 確認 / Checks
+      options:
+        - label: 秘密情報・生メールアドレス・非公開履歴を貼っていない / No secrets, raw email addresses or private history are pasted above
+          required: true
+        - label: 同じ内容の Issue が無いか検索した / I searched for an existing issue

@@ -1,4 +1,4 @@
-# TEP Usage Norms — Conditions for calling a use "TEP-compliant"
+# TEP (Technical Evidence Pipeline) Usage Norms — Conditions for calling a use "TEP-compliant"
 
 **Norms v1 (2026-08-23, shipped as part of WP-P1g).** Japanese original:
 [norms.md](../norms.md).
@@ -59,6 +59,7 @@ methodology rejects.
 Presenting multiple repositories must be read, and shown, as "selected by
 the provider."
 Reason: Selective disclosure is not forbidden; hiding the selection is.
+A single-repo actor report-v2 and an alignment-v1 always carry the fixed notice "This report covers one repository that the provider chose to share. It does not show whether other repositories exist or what they would show." in `notices` (v0.8.0).
 Unlike a closed résumé, visible selection is progress.
 
 ### Actor collection / selection (v0.6)
@@ -67,7 +68,8 @@ Unlike a closed résumé, visible selection is progress.
 limits retrieval by observed commit count, and `grift actor ACTOR_ID` emits one
 canonical-id card. These modes are mutually exclusive. A collection/index is
 an attribution inventory at a fixed OID, not a quality, ability, person-ranking,
-or continuous-evaluation table. Treating `--top N` order as a quality rank is
+or continuous-evaluation table. Index and `actor_directory` rows are listed in actor-id
+order, never by commit count; a row's position means nothing. Treating `--top N` order as a quality rank is
 non-compliant. A public collection never supplies consent for identity or
 experience/role. The five presentation bases are public inferred, self-claimed, admin-authorized,
 explicit nonconsent, and fail-closed unknown. Only self-claimed receives

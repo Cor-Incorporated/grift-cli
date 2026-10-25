@@ -1,8 +1,10 @@
 [project]
 name = "grift-cli"
 dynamic = ["version"]
-description = "Deterministic TEP evidence metrics from a single git repository. No LLM."
-readme = "README.md"
+description = "Reads git history and reports who changed what and when, with the counting rule beside every number."
+# PyPI renders this file, so every link in it must be an absolute URL
+# (tests/test_readme_entry.py). The Japanese README is linked from its first line.
+readme = "README.en.md"
 license = { text = "MIT" }
 requires-python = ">=3.11"
 authors = [{ name = "TEP contributors" }]
@@ -26,7 +28,12 @@ dev = ["pytest>=8.0", "build>=1.2", "jsonschema>=4,<5"]
 grift = "tep_cli.__main__:main"
 
 [project.urls]
-Homepage = "https://github.com/Cor-Incorporated/grift-cli"
+Homepage = "https://griftai.org"
+Documentation = "https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/usage.md"
+"Japanese README" = "https://github.com/Cor-Incorporated/grift-cli/blob/main/README.md"
+Changelog = "https://github.com/Cor-Incorporated/grift-cli/blob/main/CHANGELOG.md"
+Source = "https://github.com/Cor-Incorporated/grift-cli"
+Issues = "https://github.com/Cor-Incorporated/grift-cli/issues"
 
 [build-system]
 requires = ["hatchling"]

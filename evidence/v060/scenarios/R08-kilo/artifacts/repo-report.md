@@ -8,7 +8,7 @@
 - Full actors: 7
 - Full attributed commits: 20
 - Selected actors: 7
-- Actor index digest: `a1681ba8ec85f3c97f0eb380b21524610c5b7c5288c87bcffa045857ef5a0cec`
+- Actor index digest: `877c59c439902e33711e8dc9feaa6d47cd9126a6e55031610fbd824ed96a19e5`
 - Selection digest: `53504707c0b35de0aa6905e7f42f39d0297ab4b501a6f971a22b60474fe00997`
 - Index: [actor-index.md](actor-index.md)
 - Machine report: [repo-report.json](repo-report.json)

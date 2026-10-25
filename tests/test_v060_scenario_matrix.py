@@ -400,14 +400,18 @@ def test_default_selects_every_registered_offline_scenario_in_stable_order(
 ) -> None:
     registered = [spec.scenario_id for spec in matrix.REGISTERED_OFFLINE_SCENARIOS]
     defaults = [spec.scenario_id for spec in matrix._selection([], include_cloudflare=False)]
-    assert defaults == registered == [
-        "R01-benevolent-director",
-        "R02-grift-landing-blueprint",
-        "R03-shallow-history",
-        "R04-grift-cli-baseline",
-        "R07-voicevox",
-        "R08-kilo",
-    ]
+    assert (
+        defaults
+        == registered
+        == [
+            "R01-benevolent-director",
+            "R02-grift-landing-blueprint",
+            "R03-shallow-history",
+            "R04-grift-cli-baseline",
+            "R07-voicevox",
+            "R08-kilo",
+        ]
+    )
     assert len(defaults) == len(set(defaults))
     defaults_with_replay = [
         spec.scenario_id for spec in matrix._selection([], include_cloudflare=True)
@@ -445,8 +449,58 @@ def test_default_selects_every_registered_offline_scenario_in_stable_order(
         )
 
 
+def _recorded_runner_commits(root: Path) -> list[str]:
+    commits: list[str] = []
+    for path in sorted(root.glob("*/scenario-result.json")):
+        result = json.loads(path.read_text(encoding="utf-8"))
+        commit = result.get("runner", {}).get("source_binding", {}).get("commit_oid") or {}
+        if isinstance(commit.get("value"), str):
+            commits.append(commit["value"])
+    return commits
+
+
+def _shallow_clone_missing(project_root: Path, commits: list[str]) -> str | None:
+    """A reason to skip when this checkout cannot see the commits the evidence binds to.
+
+    The checked-in results name the commit that carried the runner source when
+    they were produced. Verifying that binding reads the commit's tree, which a
+    `--depth` clone of this repository (actions/checkout's default in a
+    consumer such as grift-sales-poc, run 40165305773) does not have, and git
+    reported only `fatal: not a tree object`. A full clone that lacks the commit
+    is evidence bound to a commit outside this history, so it is not skipped.
+    """
+    if _git(project_root, "rev-parse", "--is-shallow-repository") != "true":
+        return None
+    for commit in commits:
+        probe = subprocess.run(
+            ["git", "-C", str(project_root), "cat-file", "-e", f"{commit}^{{commit}}"],
+            capture_output=True,
+        )
+        if probe.returncode:
+            return (
+                f"{project_root} is a shallow clone and runner commit {commit[:12]} bound "
+                "by the checked-in registry is not in its object store; needs a full clone"
+            )
+    return None
+
+
+def test_shallow_clone_detection_names_the_missing_runner_commit(tmp_path: Path) -> None:
+    source, first, second = _two_commit_repo(tmp_path)
+    shallow = tmp_path / "shallow"
+    shallow.mkdir()
+    _git(shallow, "init", "-q")
+    _git(shallow, "fetch", "-q", "--depth", "1", f"file://{source}", "HEAD")
+    reason = _shallow_clone_missing(shallow, [second, first])
+    assert reason is not None and first[:12] in reason
+    assert _shallow_clone_missing(shallow, [second]) is None
+    assert _shallow_clone_missing(source, ["0" * 40]) is None
+
+
 def test_checked_in_registry_closes_all_six_offline_results() -> None:
     root = Path(__file__).resolve().parents[1] / "evidence" / "v060" / "scenarios"
+    reason = _shallow_clone_missing(root.parents[2], _recorded_runner_commits(root))
+    if reason is not None:
+        pytest.skip(reason)
     summary = matrix.verify_evidence_registry(root)
     assert matrix.main(["--verify-registry", "--output-root", str(root)]) == 0
     manifest = json.loads((root / "manifest.json").read_text(encoding="utf-8"))

@@ -40,10 +40,59 @@ def artifact() -> dict:
     return json.loads(ARTIFACT.read_text(encoding="utf-8"))
 
 
+def _skip_on_shallow_clone() -> None:
+    """The claims are about this repository's own history at `PINNED_OID`.
+
+    A `--depth` clone (actions/checkout's default when another repository pins
+    this one) has no such history, and measuring it would prove nothing. That
+    is a property of the checkout, not of the code, so it is a skip with the
+    reason stated -- never a pass, and not the misleading `not our ref` error
+    the local upload-pack used to raise. A full clone without the pin still
+    fails: `bench.shallow_clone_without_pin` returns None for it on purpose.
+    """
+    reason = bench.shallow_clone_without_pin()
+    if reason is not None:
+        pytest.skip(reason)
+
+
 @pytest.fixture(scope="module")
 def measured() -> dict:
     """One fresh measurement, shared by the tests that compare against it."""
+    _skip_on_shallow_clone()
     return bench.measure()
+
+
+def test_shallow_clone_detection_names_the_missing_pin(tmp_path: Path) -> None:
+    """The skip must fire for a truncated clone only, and say which commit is missing."""
+    origin = tmp_path / "origin"
+    origin.mkdir()
+    bench._git(origin, "init", "-q", "-b", "main")
+    (origin / "a.txt").write_text("one\n", encoding="utf-8")
+    bench._git(origin, "add", "a.txt")
+    bench._git(origin, "commit", "-q", "-m", "one", author=("A", "a@example.test"))
+    first = bench._git(origin, "rev-parse", "HEAD").strip()
+    (origin / "a.txt").write_text("two\n", encoding="utf-8")
+    bench._git(origin, "add", "a.txt")
+    bench._git(origin, "commit", "-q", "-m", "two", author=("A", "a@example.test"))
+
+    shallow = tmp_path / "shallow"
+    shallow.mkdir()
+    bench._git(shallow, "init", "-q")
+    bench._git(shallow, "fetch", "-q", "--depth", "1", f"file://{origin}", "main")
+    assert bench.is_shallow_clone(shallow)
+    assert not bench.is_shallow_clone(origin)
+
+    reason = bench.shallow_clone_without_pin(shallow, first)
+    assert reason is not None and first[:12] in reason and "shallow" in reason
+    # The commit the shallow clone does have is not a reason to skip.
+    assert (
+        bench.shallow_clone_without_pin(
+            shallow, bench._git(shallow, "rev-parse", "FETCH_HEAD").strip()
+        )
+        is None
+    )
+    # A full clone missing a commit is a wrong pin, not a shallow checkout: no skip.
+    assert bench.shallow_clone_without_pin(origin, "0" * 40) is None
 
 
 # --------------------------------------------------------------------------
@@ -153,6 +202,7 @@ def test_the_digest_ignores_the_environment_it_was_measured_in() -> None:
     upstream, the normalisation would keep running while removing nothing, and
     a test built on a synthetic report would never see it.
     """
+    _skip_on_shallow_clone()
     result = bench._grift(
         "repo", str(bench.PROJECT_ROOT), "--rev", bench.PINNED_OID, "--format", "json"
     )

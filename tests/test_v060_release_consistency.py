@@ -25,6 +25,11 @@ def _migration_relative(version: str) -> str:
     catch.
     """
     return f"docs/migration-v{version.replace('.', '')}.md"
+# The command reference, network scope and contribution details moved from the
+# READMEs to these guides; the READMEs keep a summary and link here.
+USAGE_JA = ROOT / "docs" / "usage.md"
+USAGE_EN = ROOT / "docs" / "en" / "usage.md"
+USAGE_DOCS = (USAGE_JA, USAGE_EN)
 CURRENT_CLAIM_CODE = (
     ROOT / "src" / "tep_cli" / "options.py",
     ROOT / "src" / "tep_cli" / "__main__.py",
@@ -36,6 +41,9 @@ def _current_public_docs() -> tuple[Path, ...]:
     return (
         ROOT / "README.md",
         ROOT / "README.en.md",
+        *USAGE_DOCS,
+        ROOT / "docs" / "validation.md",
+        ROOT / "docs" / "en" / "validation.md",
         ROOT / _migration_relative(_source_version()),
     )
 
@@ -174,7 +182,7 @@ def test_current_changelog_and_migration_lead_with_the_source_version() -> None:
     ("relative", "fragments"),
     [
         (
-            "README.md",
+            "docs/usage.md",
             (
                 "## 公開 Forge 取得",
                 "--fetch-public",
@@ -207,7 +215,7 @@ def test_current_changelog_and_migration_lead_with_the_source_version() -> None:
             ),
         ),
         (
-            "README.en.md",
+            "docs/en/usage.md",
             (
                 "## Public forge fetch",
                 "--fetch-public",
@@ -288,9 +296,9 @@ def test_public_docs_explain_the_v060_surfaces(
     _require_fragments(ROOT / relative, fragments)
 
 
-def test_readmes_scope_network_and_public_pr_disclosure_precisely() -> None:
-    ja = _read(ROOT / "README.md")
-    en = _read(ROOT / "README.en.md")
+def test_usage_docs_scope_network_and_public_pr_disclosure_precisely() -> None:
+    ja = _read(USAGE_JA)
+    en = _read(USAGE_EN)
 
     for fragment in (
         "`analyze` / `report` はofflineです",
@@ -300,7 +308,7 @@ def test_readmes_scope_network_and_public_pr_disclosure_precisely() -> None:
         "代理PR経路は提出者identityを非公開にしてもpayload自体は公開されます",
         "完全撤回できません",
     ):
-        assert fragment in ja, f"README.md is missing scoped disclosure {fragment!r}"
+        assert fragment in ja, f"docs/usage.md is missing scoped disclosure {fragment!r}"
     for fragment in (
         "`analyze` and `report` are offline",
         "`repo` and `actor` are offline by default",
@@ -309,7 +317,7 @@ def test_readmes_scope_network_and_public_pr_disclosure_precisely() -> None:
         "A proxy PR may hide submitter identity, but its payload still becomes public",
         "cannot be fully withdrawn",
     ):
-        assert fragment in en, f"README.en.md is missing scoped disclosure {fragment!r}"
+        assert fragment in en, f"docs/en/usage.md is missing scoped disclosure {fragment!r}"
 
     contribution_code = _read(ROOT / "src" / "tep_core" / "contribute.py")
     assert "payload自体は公開されます" in contribution_code
@@ -317,21 +325,26 @@ def test_readmes_scope_network_and_public_pr_disclosure_precisely() -> None:
     assert "cannot be fully withdrawn" in contribution_code
 
 
-def test_readmes_distinguish_bare_and_explicit_path_scope_defaults() -> None:
-    ja = _read(ROOT / "README.md")
-    en = _read(ROOT / "README.en.md")
+def test_usage_docs_distinguish_bare_and_explicit_path_scope_defaults() -> None:
+    ja = _read(USAGE_JA)
+    en = _read(USAGE_EN)
     assert "`grift analyze`" in ja and "report-v1・repo スコープ" in ja
     assert "`grift analyze`" in en and "report-v1; repo scope" in en
 
+    # The READMEs no longer explain scopes, but must not reintroduce the
+    # unqualified tenant default either.
     scoped_default_lines = [
-        (ROOT / "README.md", line)
-        for line in ja.splitlines()
+        (path, line)
+        for path in (ROOT / "README.md", USAGE_JA)
+        for line in _read(path).splitlines()
         if "`--scope tenant`" in line and "（既定）" in line
     ] + [
-        (ROOT / "README.en.md", line)
-        for line in en.splitlines()
+        (path, line)
+        for path in (ROOT / "README.en.md", USAGE_EN)
+        for line in _read(path).splitlines()
         if "`--scope tenant`" in line and "(default)" in line
     ]
+    assert scoped_default_lines, "the usage guides must still explain the explicit-path default"
     for path, line in scoped_default_lines:
         assert "明示" in line or "explicit" in line.lower(), (
             f"{path.name} calls tenant the unqualified default although bare analyze/report "
