@@ -166,8 +166,8 @@
       "status": "PASS"
     },
     {
-      "actual": "12c96be206c05021c9dae5eabbf56cc6052cf88d28045b255dd853a913a98864",
-      "expected": "12c96be206c05021c9dae5eabbf56cc6052cf88d28045b255dd853a913a98864",
+      "actual": "ec2939ac1c9b5aa7e7f7fa46b6076fb5fceade2a9445958319511f11ffecd9c1",
+      "expected": "ec2939ac1c9b5aa7e7f7fa46b6076fb5fceade2a9445958319511f11ffecd9c1",
       "id": "acquisition-receipt-digest",
       "status": "PASS"
     }
@@ -198,7 +198,7 @@
     "verify.collections": 3,
     "verify.verified": 3
   },
-  "duration_ms": 9713,
+  "duration_ms": 9476,
   "exit_code": 0,
   "output_digests": {
     "derived/actor-provider-independent": {
@@ -239,11 +239,11 @@
     },
     "live/collection-manifest.json": {
       "algorithm": "sha256",
-      "value": "c19a61f80483218286ea3b0d35f07d147ac936cce9171633b4ad12f1a88a00d8"
+      "value": "b9eb1bb93fc54204d0b2e11c48009b2bfec6e16240eb0dfd0bb9cf9b52d6d568"
     },
     "live/repo-report.json": {
       "algorithm": "sha256",
-      "value": "b6319fa48727fdf0ceabec88eec0ee790c8f83667b92f8f2b19fed1308635d83"
+      "value": "6827f88a89ccf1806b9cccee194d19617484e522fd90637b20dbad3c1944fecd"
     },
     "live/repo-report.md": {
       "algorithm": "sha256",
@@ -259,11 +259,11 @@
     },
     "offline/collection-manifest.json": {
       "algorithm": "sha256",
-      "value": "3f08c9f7d9ae88637bb3fde8abf975814ab79353a7d88b8b8183b1aa4a5cfcab"
+      "value": "c70ac1c1c5507555a6f2609c2a30d2658bf7351bda861adacea24aae2a79e949"
     },
     "offline/repo-report.json": {
       "algorithm": "sha256",
-      "value": "45fbe6662c5182838e5fc0696455f79e2e3ce67e8d6a0413f6ea4794dd994b68"
+      "value": "97280c11901d7a212df415e1225ba2f7c04d9a3b7ab68b04d26a33c706197ccf"
     },
     "offline/repo-report.md": {
       "algorithm": "sha256",
@@ -271,7 +271,7 @@
     },
     "public-evidence/manifest.json": {
       "algorithm": "sha256",
-      "value": "32434e112a423fbffdffe1b0219bb5f61e10643ea1a9f495e387ed802606a7bb"
+      "value": "d7204b099ba691d89d63df11631c33b429a279b4322810d20f4e1bfcfb4e7551"
     },
     "public-evidence/page-01.body": {
       "algorithm": "sha256",
@@ -295,7 +295,7 @@
     },
     "public-evidence/payload": {
       "algorithm": "sha256",
-      "value": "fa9a666042b5e43024d8628e4d6cf4aaee69350630fccc9b11b58a1fc4701230"
+      "value": "d1b3828e723c748e8027a293f49b7581ba12cbe5c553c8e8bbababe0d8ade62c"
     },
     "replay/actor-index.json": {
       "algorithm": "sha256",
@@ -307,11 +307,11 @@
     },
     "replay/collection-manifest.json": {
       "algorithm": "sha256",
-      "value": "12be67460d2afefe8b9da3ed4116fe24ac92aa8b242715274a5b52b3828a20d0"
+      "value": "6adb2a74f7362c0802c406783c92dc37389e182f86a7d920df3b750d565f8f96"
     },
     "replay/repo-report.json": {
       "algorithm": "sha256",
-      "value": "6b9fa2d2ee69f94deaab48a6fdd0a6179641aaedd3fcde1b9155f626cbb886af"
+      "value": "a488e723b69d6777df25ce49235b4625a0636c51d6a643de147f7541a7b6ddbf"
     },
     "replay/repo-report.md": {
       "algorithm": "sha256",
@@ -331,7 +331,7 @@
     "source_binding": {
       "commit_oid": {
         "algorithm": "sha1",
-        "value": "d4b9bb88c658302ca66acc73070bbd1ee93ded6d"
+        "value": "a8434a714ffe0e652f304bbf77dd77c9cae3bb85"
       },
       "definition_version": "grift-tool-source-tree-v1",
       "file_count": 97,
