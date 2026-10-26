@@ -34,9 +34,9 @@ grift が動くのに要るのは、Python 3.11 以上と git だけです。結
 
 `grift repo` の画面には、リポジトリ全体について次のような値が出ます。どの値にも「何件のうち何件か」が付きます。
 
-- 作業領域: テスト、ドキュメント、CI、画面（フロントエンド）など 11 の区分ごとに、その区分のファイルを触った commit（変更 1 件ごとの記録）が何件あったか。
-- 変更の間隔: 直近 180 日に変更を出した日数と、変更と変更のあいだが何日空いたか。労働時間や速さではありません。
-- 検証の形: テストのファイルを含む commit の割合と、テストの種類（unit、integration など）。
+- 変えた部分の区分（作業領域）: テスト、ドキュメント、CI、画面（フロントエンド）など 11 の区分ごとに、その区分のファイルを触った commit（変更 1 件ごとの記録）が何件あったか。
+- 変更のペース（変更リズム）: 直近 180 日に変更を出した日数と、変更と変更のあいだが何日空いたか。労働時間や速さではありません。
+- テストの付け方（検証の形）: テストのファイルを含む commit の割合と、テストの種類（unit、integration など）。
 - 関わった人の一覧: 人ごとの commit の件数。並びは ID の順で、件数の多い順ではありません。
 
 JSON（`--format json`）と `grift analyze` の出力には、次の値も入ります。
@@ -46,9 +46,11 @@ JSON（`--format json`）と `grift analyze` の出力には、次の値も入�
 
 `grift align` の出力では、案件側が書いた要求と記録から数えた値を項目ごとに並べ、重なり、範囲外、0 件、未観測、要求なしの 5 通りで書きます。
 
+`grift actor`（本人が名乗った ID と同意の記録があるとき）と `grift project` の Markdown の先頭には、記録から見える進め方を平易な文で書きます。`grift actor` と `grift align` には、面談で確かめたいことを問いとして並べます。文と問いは[決定表](docs/trait-profile.md)で数字から選び、点数やタイプ名にはしません。管理者が登録した ID や、公開リポジトリから推定したまとまりの actor レポートには文を出さず、出していない理由を書きます。照らし合わせの問いも、本人が名乗った ID と同意の記録があるときだけ出します。
+
 測れなかった値は 0 にせず、「観測できなかった」と理由を書きます（出力では `not_observed`）。記録が無いことは、経験が無いことを意味しません。母数（数えた件数の合計）が 20 に満たないときは、レポートの文面に率を書かず、件数だけを書きます。
 
-数値ごとの説明は [docs/metrics-guide.md](docs/metrics-guide.md) にあります。griftai.org と cor-jp.com で使う言葉（検査値、テスト併修率、手戻り率、磨き直し、定着率）と CLI の言葉の[対応表](docs/metrics-guide.md#サイトの訳語と-cli-の語の対応表)も、ここにまとめています。
+数値ごとの説明は [docs/metrics-guide.md](docs/metrics-guide.md) にあります。griftai.org と cor-jp.com で使う言葉（検査値、テスト併修率、手戻り率、磨き直し、コードの新しさ）と CLI の言葉の[対応表](docs/metrics-guide.md#サイトの訳語と-cli-の語の対応表)も、ここにまとめています。
 
 ## なぜ作ったか
 
@@ -87,7 +89,7 @@ grift align \
   --format both --out alignment-out
 ```
 
-複数人の記録の書き出し、identity の書き方、公開 Forge からの取得、署名、終了コード、0.7.x からの更新の注意は [docs/usage.md](docs/usage.md) にまとめています。
+複数人の記録の書き出し、identity の書き方、公開 Forge からの取得、署名、終了コード、以前の版からの更新の注意は [docs/usage.md](docs/usage.md) にまとめています。
 
 ## データの扱い
 
@@ -108,7 +110,7 @@ steps:
   - uses: actions/setup-python@v5
     with:
       python-version: "3.12"
-  - uses: Cor-Incorporated/grift-cli@v0.8.0
+  - uses: Cor-Incorporated/grift-cli@v0.9.0
     with:
       scope: repo
       comment: false
@@ -126,7 +128,7 @@ steps:
 - [利用規範（norms）](docs/norms.md)
 - [指標の検証と限界](docs/validation.md)。数値を出すときの設計の選択とその限界、公開 117 リポジトリで指標を確かめた結果（差が出た比較と出なかった比較の両方）を載せています
 - 出力の形式: [report-v2](docs/report-v2.md)、[report-v1](docs/report-schema.md)、[alignment](docs/alignment-schema.md)、[project](docs/project-schema.md)、[identity](docs/identity-schema.md)、[export](docs/export-schema.md)、[ローカル export の入力](docs/input-export-schema.md)
-- [変更履歴（CHANGELOG）](CHANGELOG.md)と、0.8.0 への[移行の注意](docs/migration-v080.md)
+- [変更履歴（CHANGELOG）](CHANGELOG.md)と、0.9.0 への[移行の注意](docs/migration-v090.md)
 
 製品サイトは [griftai.org](https://griftai.org) です。
 

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections import Counter
-from datetime import datetime, timezone
+from datetime import date, datetime, time, timezone
 from pathlib import Path
 from typing import Any
 
@@ -11,6 +11,7 @@ from tep_core.activity import activity_metrics
 from tep_core.cochange import test_cochange
 from tep_core.context_profile import build_context_profile
 from tep_core.core_period import compute_core_activity_period
+from tep_core.dates import parse_day
 from tep_core.gitutil import (
     GitError,
     coauthor_shas,
@@ -31,6 +32,7 @@ from tep_core.origin import classify_commits
 from tep_core.reference import interpret_metric
 from tep_core.revision import commit_history_complete
 from tep_core.rework import rework_metrics
+from tep_core.rhythm import commit_timestamp
 from tep_core.scope import DEFAULT_SCOPE, population_shas
 from tep_core.survival import survival_metrics
 from tep_core.tests_observed import observe_test_frameworks
@@ -127,6 +129,7 @@ def analyze_repository(
     survival: bool = False,
     scope: str = DEFAULT_SCOPE,
     reference_version: str | None = None,
+    observation_date: str | None = None,
 ) -> dict[str, Any]:
     repo = repo.resolve()
     commits, origin = prepare_inputs(repo, identity, lineage, include_files=include_files)
@@ -137,14 +140,13 @@ def analyze_repository(
     tests_observed = tests.get("kind") == "observed"
     head_sha = rev_parse(repo)
     head_date = commits[0].date if commits else None
-    if scope == "actor_cluster":
-        actor_shas = population_shas(commits, origin, scope)
-        activity_dates = [commit.date for commit in commits if commit.sha in actor_shas]
-        activity_day_counts = Counter(activity_dates)
-    else:
-        activity_dates = origin.tenant_dates
-        activity_day_counts = origin.tenant_day_counts
-    activity = activity_metrics(activity_dates, activity_day_counts, head_date=head_date)
+    # report-v2 passes an explicit --as-of: activity and the role profile stop at
+    # that UTC day, like its surface, verification and rhythm blocks.
+    cutoff = parse_day(observation_date) if observation_date else None
+    activity_dates, activity_day_counts = _activity_inputs(commits, origin, scope, cutoff)
+    activity = activity_metrics(
+        activity_dates, activity_day_counts, head_date=observation_date or head_date
+    )
     cochange = test_cochange(
         commits,
         origin,
@@ -215,7 +217,9 @@ def analyze_repository(
         },
     }
     if scope == "tenant":
-        experience, role_profile, context = _tenant_experience(repo, commits, origin, identity)
+        experience, role_profile, context = _tenant_experience(
+            repo, commits, origin, identity, observation_date=observation_date
+        )
         report["experience"] = experience
         report["role_profile"] = role_profile
         report["library_context"] = context
@@ -250,11 +254,44 @@ def _collection_failure_reason(message: str) -> str | None:
     return None
 
 
+def _activity_inputs(
+    commits: list, origin: Any, scope: str, cutoff: date | None
+) -> tuple[list[str], Counter[str]]:
+    """Commit days for activity_metrics; with a cutoff, only commits up to that UTC day."""
+
+    def in_range(commit: Any) -> bool:
+        return cutoff is None or commit_timestamp(commit).date() <= cutoff
+
+    if scope == "actor_cluster":
+        actor_shas = population_shas(commits, origin, scope)
+        dates = [c.date for c in commits if c.sha in actor_shas and in_range(c)]
+        return dates, Counter(dates)
+    if cutoff is None:
+        return origin.tenant_dates, origin.tenant_day_counts
+    tenant = [c for c in commits if origin.classes_by_sha.get(c.sha) == "tenant_unique"]
+    dates = [c.date for c in tenant if in_range(c)]
+    return dates, Counter(dates)
+
+
+def _up_to(collection: Any, observation_date: str | None) -> tuple[tuple, tuple, datetime | None]:
+    """The collected commits and release tags up to the end of that UTC day."""
+    from tep_core.experience import as_utc
+
+    if not observation_date:
+        return collection.commits, collection.release_tags, None
+    end = datetime.combine(parse_day(observation_date), time(23, 59, 59), tzinfo=timezone.utc)
+    commits = tuple(c for c in collection.commits if as_utc(c.authored_at) <= end)
+    tags = tuple(t for t in collection.release_tags if as_utc(t.tagged_at) <= end)
+    return commits, tags, end
+
+
 def _tenant_experience(
     repo: Path,
     commits: list,
     origin: Any,
     identity: IdentityConfig,
+    *,
+    observation_date: str | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
     """Collect one explicitly declared tenant actor, or state why it is absent.
 
@@ -386,26 +423,25 @@ def _tenant_experience(
         dependencies = None
 
     experience = build_experience(
-            collection.commits,
-            actor_id=actor_id,
-            consent=consent,
-            ai_coauthor_emails=ai_identities.emails,
-            ai_coauthor_email_sha256=ai_identities.email_sha256,
-            release_tags=collection.release_tags,
-            dependency_introductions=(
-                dependencies.introduced if dependencies is not None else None
-            ),
-            dependency_manifest_commits=(
-                dependencies.manifest_commits if dependencies is not None else None
-            ),
-            dependency_unparseable=(
-                dependencies.unparseable if dependencies is not None else None
-            ),
+        collection.commits,
+        actor_id=actor_id,
+        consent=consent,
+        ai_coauthor_emails=ai_identities.emails,
+        ai_coauthor_email_sha256=ai_identities.email_sha256,
+        release_tags=collection.release_tags,
+        dependency_introductions=(dependencies.introduced if dependencies is not None else None),
+        dependency_manifest_commits=(
+            dependencies.manifest_commits if dependencies is not None else None
+        ),
+        dependency_unparseable=(dependencies.unparseable if dependencies is not None else None),
     )
     # W4: how common each of those libraries is, as a separate axis. Read back
     # out of the observation that named them, so the two blocks cannot drift
     # into describing different sets. Nothing here is combined with the actor's
     # measurements -- it describes libraries (norms §7).
+    # The role profile stops at the observation date like the rest of report-v2.
+    # experience keeps the whole history: its dependency scan is not dated yet.
+    role_commits, role_tags, role_end = _up_to(collection, observation_date)
     introduction = (experience.get("metrics") or {}).get("dependency_introduction") or {}
     names = introduction.get("values") if introduction.get("kind") == "observed" else None
     context = library_context(
@@ -415,10 +451,11 @@ def _tenant_experience(
     return (
         experience,
         build_role_profile(
-            collection.commits,
+            role_commits,
             actor_id=actor_id,
             consent=consent,
-            release_tags=collection.release_tags,
+            release_tags=role_tags,
+            observation_end=role_end,
         ),
         context,
     )

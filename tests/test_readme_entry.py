@@ -26,6 +26,8 @@ DOCS_LINKED_FROM_READMES = (
     ROOT / "docs" / "en" / "usage.md",
     ROOT / "docs" / "validation.md",
     ROOT / "docs" / "en" / "validation.md",
+    ROOT / "docs" / "metrics-guide.md",
+    ROOT / "docs" / "en" / "metrics-guide.md",
 )
 REQUIRED_PROJECT_URLS = (
     "Homepage",

@@ -112,7 +112,7 @@ def test_actor_basis_docs_and_help_are_fail_closed_and_bilingual() -> None:
 # --- 0.8.0 #3: TEP expansion and the site-term glossary -----------------------
 #
 # The public site (griftai.org / cor-jp.com) names observations in Japanese
-# (検査値 / テスト併修率 / 手戻り率 / 磨き直し / 定着率); the CLI names them in
+# (検査値 / テスト併修率 / 手戻り率 / 磨き直し / コードの新しさ); the CLI names them in
 # English with report-v1 JSON keys. The one correspondence table lives in
 # docs/metrics-guide.md. These tests bind the declared side (the table) to the
 # enforced side (a report-v1 produced from a real git repository) so that
@@ -121,7 +121,7 @@ def test_actor_basis_docs_and_help_are_fail_closed_and_bilingual() -> None:
 GLOSSARY_HEADING = "## サイトの訳語と CLI の語の対応表"
 GLOSSARY_ANCHOR = "metrics-guide.md#サイトの訳語と-cli-の語の対応表"
 TEP_EXPANSIONS = ("TEP（Technical Evidence Pipeline）", "TEP (Technical Evidence Pipeline)")
-SITE_TERMS = frozenset({"検査値", "テスト併修率", "手戻り率", "磨き直し", "定着率"})
+SITE_TERMS = frozenset({"検査値", "テスト併修率", "手戻り率", "磨き直し", "コードの新しさ"})
 DOCS_LINKING_TO_GLOSSARY = ("README.md", "README.en.md", "docs/en/metrics-guide.md")
 DOCS_THAT_MUST_NOT_COPY_GLOSSARY = (
     "README.md",

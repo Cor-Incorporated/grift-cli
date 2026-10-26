@@ -83,7 +83,10 @@ def resolve_observation(commits: list[GitCommit], as_of: str | None) -> tuple[st
     if as_of:
         return as_of, "explicit_as_of"
     if commits:
-        return commits[0].date, "legacy_head_date"
+        # The range below is cut by each commit's UTC date (commit_timestamp), so
+        # the HEAD date is read on the same clock. `date` is the author's local
+        # day, and an evening HEAD west of UTC dropped out of its own report.
+        return commit_timestamp(commits[0]).date().isoformat(), "legacy_head_date"
     now = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     return now, "legacy_head_date"
 
@@ -381,6 +384,9 @@ def analyze_subject(
         survival=survival,
         scope=scope,
         reference_version=reference_version if subject_kind == "repo" else None,
+        # Only an explicit --as-of cuts activity and the role profile; without it
+        # the observation date is HEAD's, and every reachable commit is counted.
+        observation_date=as_of,
     )
     analyzed_oid = str((v1.get("provenance") or {}).get("analyzed_commit_sha") or "")
     if analyzed_oid != target_oid["value"]:

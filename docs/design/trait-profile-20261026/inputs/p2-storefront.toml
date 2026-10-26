@@ -1,0 +1,18 @@
+schema_version = "tep-project-v1"
+project_id = "storefront-redesign"
+title = "EC サイトの画面刷新（架空の案件）"
+
+[requirements.change_rhythm]
+p90_gap_days_max = 14
+
+[requirements.surfaces]
+required = ["frontend", "docs"]
+
+[requirements.surfaces.min_share]
+frontend = 0.30
+
+[requirements.verification]
+required = ["e2e"]
+
+[requirements.inputs]
+required = ["git"]

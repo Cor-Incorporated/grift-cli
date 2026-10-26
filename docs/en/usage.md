@@ -342,6 +342,16 @@ disclose a payload that the intake would then bounce.
 grift contribute --purpose outcome-linkage --door local
 ```
 
+## Upgrading from 0.8.0
+
+The full notes are in [migration-v090.md](migration-v090.md) (the [Japanese original](../migration-v090.md) also keeps the notes for older versions) and the [changelog](../../CHANGELOG.md) (in Japanese). What needs regenerating:
+
+- Reports saved by 0.8.0 (`analyze`, `actor`, `repo`) and alignments (`align`) are CANNOT_VERIFY under 0.9.0's `grift verify`, because `DEFINITION_VERSION` moved; project reports are MISMATCH. Regenerate them with 0.9.0
+- From 0.9.0, the alignment direction (`relationship`) compares each side's own share instead of one person's count against the whole team's count. The values mean something different from 0.8.0's, so do not put them side by side
+- Collections written by 0.8.0 with `--as-of` are MISMATCH under 0.9.0's `grift verify`, because `role_profile` is now cut at the observation date. Regenerate them
+- In a repository where an identity actor has no commits and someone else has the same author name, 0.8.0 reports and collections counted the other person's commits as the actor's. Regenerate them with 0.9.0
+- Without `--as-of`, a report whose HEAD has a different author-local date and UTC date (an evening west of UTC, or 0:00–9:00 in Japan) had its observation date off by one day. Regenerate it with 0.9.0
+
 ## Upgrading from 0.7.x
 
 The full notes are in [migration-v080.md](../migration-v080.md) and the [changelog](../../CHANGELOG.md) (both in Japanese). What needs regenerating:

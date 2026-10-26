@@ -321,7 +321,7 @@ def _verify_saved_alignment(
     project_report_path: Path | None,
     reference_manifest: Path | None,
 ) -> VerifyResult:
-    from tep_core.alignment import alignment_payload
+    from tep_core.alignment import alignment_payload, alignment_subject
     from tep_core.digest import file_digest
 
     if actor_report_path is None or project_report_path is None:
@@ -393,11 +393,17 @@ def _verify_saved_alignment(
     blocked = _check_manifest(report.get("provenance") or {}, reference_manifest)
     if blocked is not None:
         return blocked
+    # The subject is rebuilt from the inputs, not copied: a saved consent record
+    # that the actor report does not carry is a difference (T7).
     recomputed = alignment_payload(
         actor_report=actor_report,
         declared=project_report.get("declared") or {},
         provenance=report.get("provenance") or {},
-        subject=report.get("subject") or {},
+        subject=alignment_subject(
+            actor_report,
+            project_id=(project_report.get("subject") or {}).get("project_id"),
+            mode=(report.get("subject") or {}).get("mode"),
+        ),
         limitations=list(report.get("limitations") or []),
         project_report=project_report,
         actor_report_digest=actor_digest,
@@ -826,7 +832,7 @@ def _verify_alignment(
     project_report_path: Path | None = None,
     reference_manifest: Path | None = None,
 ) -> VerifyResult:
-    from tep_core.alignment import alignment_payload
+    from tep_core.alignment import alignment_payload, alignment_subject
     from tep_core.analyze_v2 import analyze_subject
     from tep_core.digest import file_digest
     from tep_core.identity import identity_digest, select_actor
@@ -906,7 +912,11 @@ def _verify_alignment(
                     "project": file_digest(project_path),
                 },
             },
-            subject=subject,
+            subject=alignment_subject(
+                actor_report,
+                project_id=subject.get("project_id"),
+                mode=subject.get("mode"),
+            ),
             limitations=list(report.get("limitations") or []),
         )
     except Exception as exc:  # noqa: BLE001

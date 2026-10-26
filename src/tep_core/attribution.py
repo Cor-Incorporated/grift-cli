@@ -553,6 +553,9 @@ def resolve_git_actor_partition(
         for bucket in buckets.values()
         if bucket["resolution_basis"] == "explicit_identity"
     }
+    # A declared identity without commits still owns its id: a name slug must not
+    # take it, or the consented role profile counts the namesake's commits.
+    explicit_ids |= {actor.canonical_id for actor in (identity.actors if identity else ())}
     for partition_key, bucket in buckets.items():
         name_counts = bucket["display_names"]
         names = sorted(

@@ -1,0 +1,8 @@
+schema_version = "identity-v2"
+
+[[actors]]
+canonical_id = "candidate-a"
+emails = ["cand-a@example.com"]
+attribution_state = "claimed"
+consent = "recorded-explicit-consent"
+authority = "subject-authorization"

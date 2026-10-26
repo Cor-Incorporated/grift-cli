@@ -1,0 +1,16 @@
+schema_version = "tep-project-v1"
+project_id = "payments-api-maintenance"
+title = "決済 API の保守と機能追加（架空の案件）"
+
+[requirements.change_rhythm]
+active_days_180d_min = 20
+median_gap_days_max = 7
+
+[requirements.surfaces]
+required = ["backend", "data", "test"]
+
+[requirements.verification]
+required = ["unit", "integration"]
+
+[requirements.inputs]
+required = ["git", "forge"]

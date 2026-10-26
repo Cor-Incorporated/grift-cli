@@ -21,7 +21,7 @@ from tep_core.actor_artifacts import (
 from tep_core.actor_directory import actor_report_from_card
 from tep_core.analyze import prepare_inputs
 from tep_core.analyze_v2 import analyze_subject
-from tep_core.alignment import alignment_payload
+from tep_core.alignment import alignment_payload, alignment_subject
 from tep_core.attribution import build_attribution_index, find_actor, synthetic_identity
 from tep_core.digest import file_digest
 from tep_core.gitutil import coauthor_shas, raw_remote_url, remote_url, rev_parse
@@ -932,28 +932,6 @@ def _actor_basis_notice(subject: dict) -> str:
     return actor_basis_notice(basis)
 
 
-def _alignment_subject(
-    actor_subject: dict,
-    *,
-    project_id: object,
-    mode: str | None = None,
-) -> dict[str, object]:
-    """Keep optional actor basis fields absent instead of serializing null."""
-
-    subject: dict[str, object] = {
-        "kind": "alignment",
-        "actor_canonical_id": actor_subject.get("canonical_id"),
-        "project_id": project_id,
-    }
-    if actor_subject.get("selection") is not None:
-        subject["actor_selection"] = actor_subject["selection"]
-    if actor_subject.get("attribution_state") is not None:
-        subject["actor_attribution_state"] = actor_subject["attribution_state"]
-    if mode is not None:
-        subject["mode"] = mode
-    return subject
-
-
 def _align_from_reports(
     args: Namespace,
     *,
@@ -1036,8 +1014,8 @@ def _align_from_reports(
                     "tracker": (actor_prov.get("input_digests") or {}).get("tracker"),
                 },
             },
-            subject=_alignment_subject(
-                actor_report.get("subject") or {},
+            subject=alignment_subject(
+                actor_report,
                 project_id=(project_report.get("subject") or {}).get("project_id"),
                 mode="saved_reports",
             ),
@@ -1269,8 +1247,8 @@ def run_align(args: Namespace) -> int:
                     "actor_report": None,
                 },
             },
-            subject=_alignment_subject(
-                actor_report.get("subject") or {},
+            subject=alignment_subject(
+                actor_report,
                 project_id=loaded.get("project_id") or None,
             ),
             limitations=_alignment_limitations(actor_report) + [PROJECT_OBSERVED_MISSING_NOTE],

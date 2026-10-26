@@ -4,7 +4,55 @@
 
 タグ・PyPI・リポ public 化は本ファイルの記載対象外（人間ゲート）。
 
-## [Unreleased]
+## [0.9.0] — 2026-10-26
+
+記録から見える仕事の進め方を、平易な文と、面談で確かめたいことの問いにして、Markdown の先頭に
+書く release。点数・順位・タイプ名は出さない（判断の根拠は `docs/adr/ADR-0002-trait-profile.md`、
+移行は `docs/migration-v090.md`、英語は `docs/en/migration-v090.md`）。CLI フラグと enum 値は変わらない（schema key は照らし合わせの
+subject に任意の 1 つが増える）。公開 Forge 取得
+（provider-neutral Forge証跡、GitHub/GitLab/self-managed、PARTIAL/resume）、attest / portfolio、
+contribution-v2 の契約、`暗黙 PyPI update check` を持たない設計はいずれも 0.8.0 から変わらない。
+
+JSON の値が変わるのは次の 4 つの場面で、どれも人や案件について事実と違う数や読みが出うるところを
+直したもの。
+
+- 照らし合わせ（`align`、`align --team`）の JSON。向き（`relationship`）を、1 人の件数とチーム全体の
+  件数の比ではなく、それぞれの中の割合どうしで決める。軸の窓・傾向の選び方・検証の宣言の単位も、
+  実際に数えたものに合わせる
+- `--as-of` を指定したとき、その日のあとの commit・merge・タグを `activity` と `role_profile` に
+  数えない
+- `--as-of` を指定しないとき、最後の変更の日を UTC の日付で取る（UTC より西で夕方に出した変更が
+  数えから外れていた）
+- identity に書いた人に commit が無いとき、同じ作者名の別人の commit を、その人の数に入れない
+
+ほかに、照らし合わせの JSON（alignment-v1）の subject に、同意の記録を写す任意の key
+`actor_consent` が増える（足すだけ。面談の問いはこの値と claimed があるときだけ出す）。
+
+0.8.0 で保存した report（`analyze`・`actor`・`repo`）と照らし合わせは、0.9.0 の `verify` では
+定義版数が違うため CANNOT_VERIFY に、project report は定義版数の欄が食い違うため MISMATCH になる。
+書き出した一式（`--out` の collection）は定義版数を見ないので、`--as-of` を付けて作ったものと、
+上の 4 つめの場面に当たるものだけが MISMATCH になる。どれも 0.9.0 で作り直せば検算できる
+（実測は `docs/migration-v090.md`）。
+
+### Added
+
+- **actor・project・alignment の Markdown の先頭に、記録から見える進め方の文と、面談で確かめたい
+  ことの問いを出す**（ADR-0002 段階 1）。actor は「変えた部分の区分（作業領域）」「変更のペース
+  （変更リズム）」「テストの付け方（検証の形）」「関わり方」を、件数と期間を添えた文で書き、続けて
+  「この記録では見えないこと」「面談で確かめたいこと」「数字の読み方と限界」「根拠」の表を置く。project は
+  案件側の要望と、案件のリポジトリから見える進め方を書き、人ごとの数字は出さない。alignment は
+  「要望と記録が重なっている点」「面談で確かめたい点」「案件側が書いていないこと（参考）」に
+  並べる。0.8.0 の詳しい数字の節はその後ろに残る
+- 文と問いは、公開した決定表（`docs/trait-profile.md`、`docs/en/trait-profile.md`）で JSON の数字から
+  選ぶ。量で文を変えず、タイプ名を作らず、重なった項目の数を数えない。文は Markdown にだけ出し、
+  JSON には入れない。決定表と定数は `tests/test_v090_trait_tables.py` で結んである
+- 本人向けの文は、本人が名乗った ID（`attribution_state=claimed`）と同意の記録
+  （`consent=recorded-explicit-consent`）があるときだけ出す。管理者が登録した ID、公開リポジトリ
+  から推定したまとまり、同意の記録が無い ID、浅い clone の記録には、出していない理由を 1 文で
+  書く。collection（`--all` / `--top`）には文を出さない。照らし合わせの問いも、本人が名乗った ID と
+  同意の記録があるときだけ出す（下の Changed の `actor_consent`）
+- 数が確かめられないときは書かない。`role_profile` の母数がほかの観点と違うとき、浅い clone の
+  とき、`--as-of` を指定していてタグを付けた日が分からないときなどは、理由を書いて外す
 
 ### Changed
 
@@ -18,6 +66,99 @@
   Japanese README・Changelog・Source・Issues を揃えた。README を読む検査は移した先の
   文書を読むように直し、PyPI に出る README の相対リンク・`project_urls` の参照先・
   リンクの見出しを `tests/test_readme_entry.py` で検査する。CLI の出力は変わらない。
+
+- **Markdown から「傾向の強さ」（`strength`）の行と、alignment の `relationship` の行を外した**
+  （ADR-0002）。2 つのレポートを並べると、強い人・弱い人、合う人・合わない人に読めるため。
+  見出し「傾向の強さと確からしさ」は「傾向の確からしさ」に、傾向の注意書きは「この傾向の表示は
+  変わる可能性があります」になる。JSON は変わらない
+- **Markdown の観点の呼び名を griftai.org にそろえた**。4 つの観点を、サイトと同じ「平易な言い方
+  （サイトの用語）」で呼ぶ: 変えた部分の区分（作業領域）、変更のペース（変更リズム）、テストの付け方
+  （検証の形）、関わり方（griftai.org は平易な言い方とサイトの用語に同じ語を使うので、見出しは
+  「関わり方」だけ）。先頭の節の見出しと文、根拠の表の観点、詳しい数字の節の見出し、傾向の名前、
+  案件の要望の項目名が変わる。JSON のキーと、JSON に入る固定文（`limitations` など）は変えない
+  （その文には元の言い方が残る）。呼び名は `docs/metrics-guide.md` の表だけに置き、見出しとの一致を
+  `tests/test_v090_site_names.py` で検査する
+- **survival のサイトの訳語を「定着率」から「コードの新しさ」（Code recency）に改めた**。値は
+  残った行の割合ではなく、いまのコードにある行が書かれてからどれだけ経っているかを 180 日を目安に
+  重みを付けて平均した値で、1 に近いほど最近書かれた行が多い（「定着」とは逆の向きに読めた）。
+  metrics-guide の対応表、README、`tests/test_v060_docs_parity.py` の `SITE_TERMS` を直した。
+  griftai.org と cor-jp.com は別に直す
+- **alignment-v1 の subject に `actor_consent`（任意）を足した**（T7、ユーザーの判断 2026-10-26）。
+  `grift align` は actor report の同意の記録を、actor の本人向けの文と同じ関数
+  （`actor_basis.consent_recorded`）で確かめ、あるときだけ `recorded-explicit-consent` を写す
+  （公開 inferred には付けない）。照らし合わせの面談の問いは、claimed かつこの値があるときだけ
+  出し、管理者が登録した ID と同意の記録が無い ID には理由を書く。`grift verify` は保存した値を
+  信じず、actor report から作り直して比べる。JSON は key が 1 つ増える（足すだけ）
+- **定義版数を `tep-v0.9.0-2026-10-26` に上げた**（REL-090）。上の JSON の値の変化と Markdown の
+  変化に合わせたもの。証跡 4 件（scenarios / scenarios-public / benchmark.json / golden）を 0.9.0 の
+  source で作り直す
+
+### Deprecated
+
+- alignment-v1 の `axes[].actor_tendency.strength` / `axes[].project_tendency.strength`。
+  0.9.0 では JSON に残すが Markdown には出さない。次の schema 版で消す
+
+### Fixed
+
+- **`--as-of` なしのとき、UTC より西で夕方に作った HEAD が自分のレポートから外れていた**。
+  観測日を HEAD の作者の現地の日付（`%ad --date=short`）で取り、範囲は各 commit の UTC の日付で
+  切っていた。観測日も UTC の日付で取る。HEAD の現地の日付と UTC の日付が違うときだけ、
+  `observation_date`・`git_window`・`change_rhythm` が変わる（JSON が変わる）。西の夕方は 1 日あとに
+  なり、HEAD の UTC の日の commit がすべて数えに入る。東の朝（日本の 0 時〜9 時など）は 1 日まえに
+  なる
+- **identity に宣言した人に commit が無いと、同じ作者名の別人の commit がその人の role_profile に入っていた**。
+  名前で作る cluster id は、commit のある identity の id とはぶつからないようにしていたが、commit の無い
+  identity の id は空いたままで、別のメールの「Alice」が `alice` を名乗れた。宣言した identity の id は
+  commit の有無にかかわらず予約する。そのとき別人の cluster id は名前ではなく hash になる。JSON は、
+  その人の role_profile と experience の数、repo report-v2 の `actor_directory` の id、
+  `partition_digest`、collection の card の id とファイル名が変わる
+- **`--as-of` を指定しても、activity と role_profile が観測日のあとの commit・merge・タグまで数えていた**。
+  surface・検証・間隔の節は観測日で切っていたので、同じレポートの中で数が食い違っていた。activity は
+  観測日（UTC）までの自分の commit で数え、role_profile は観測日の終わりまでの commit とタグで数えて、
+  窓の終わりを観測日にする。activity には `core_activity_period` も入り、`--identity` を付けた
+  repo report-v2 の activity も変わる（JSON が変わる）。`--as-of` で書き出した collection の検算
+  （`grift verify DIR`）も、同じ日付で数え直す。`--as-of` を指定しないときは今までどおり。
+  experience は依存の読み取りに日付が無いので、まだ切っていない
+
+次は、設計書 `docs/design/trait-profile-20261026.md` §1.4 に記録した 0.8.0 の食い違いの直し。
+alignment-v1 の JSON（`relationship`、軸の窓、検証の宣言の単位、傾向）と、`align --team` の
+JSON（検証の宣言の単位）、actor・project・alignment の Markdown が変わる。
+
+`relationship` は値の意味が変わる（破壊的変更）。0.8.0 は件数どうしの比で、0.9.0 は範囲の中の
+割合どうしで向きを決める。
+
+- **`relationship` が 1 人の件数とチーム全体の件数の比で向きを決めていた**。`surfaces.*` と
+  `verification.*` は、それぞれの範囲の中の割合（`surface_commit_share`、`test_type_share`）
+  どうしで比べ、`"compared": "commit_share"` と、比べた割合（`actor_share` / `project_share`）を
+  付ける。割合の母数が 20 に届かない側があれば `not_comparable`（`observed_unavailable`）。
+  `change_rhythm.*` は 1 人とリポジトリ全体で母集団が違うので、常に `not_comparable`
+  （`scope_not_equivalent`）にした
+- **surface と検証の軸に 180 日窓が付いていた**。どちらも観測日までの履歴を数えているので、
+  `actor_window` / `project_window` を `{"end": 観測日, "basis": "history_to_observation_date"}`
+  にし、Markdown では「〜までの履歴」と書く。surface の傾向の window も同じにした。浅い clone なら
+  取得できた範囲で、project-v1 にはそれが記録されないので、「全履歴」とは書かない
+- **間隔の傾向が値に関係なく「定期的な変更提出」と出ていた**。`rhythm_tendency` の `value` を
+  常に `rhythm_observed` にした（形は `basis` の数字が示す）。`strength` は固定の `moderate` の
+  まま残る。strength は同じ 0.9.0 の別の変更で Markdown から外し、JSON では非推奨にする
+- **surface の傾向の分母が一覧と違っていた**。file-change ではなく commit の割合
+  （`surface_commit_share`）で選び、割合が未観測なら `not_proven` にする（0.8.0 は未観測の割合を
+  0.0 と読み、同点で `test` が選ばれていた）。commit の割合では、本体とテストを一緒に変えた
+  commit が両方に入るので、割合がいちばん大きい場所が 2 つ以上あるときも `not_proven`
+  （`tied_top_share`）にし、同じ割合の場所を `tied` に並べる
+- **検証の種類の宣言が `surface` と書かれていた**。`verification.*` の `declared.unit` を
+  `verification-type` にした。同じ関数を使う `align --team` の `requirements[].declared.unit` も
+  同じ値になる
+- **Markdown に案件の題名が出ず、単位の名前が値に付いていた**（`payments-api id`、
+  `backend, data surface-names`）。project と alignment の Markdown に題名を出し、種類を表すだけの
+  単位名は Markdown では書かない（JSON は変えない）。題名が無い案件は「案件側が書いていません」と書く
+- **日本語の Markdown で、選択性の注記だけが英語だった**。actor report と alignment の
+  Markdown には同じ意味の日本語の文（`SELECTIVITY_NOTICE_JA`）を出す。JSON の `notices` は英語の
+  固定文のまま。norms §6（日英）に日本語の文を足した
+- **metrics-guide の survival の説明が実装と逆の読みだった**（「180 日後も残っている行の割合」）。
+  `survival.py` のとおり、HEAD にある行の新しさの平均（τ=180 日、最大 40 ファイル）と書き直し、
+  文書と定数を `tests/test_v090_v080_discrepancies.py` で結んだ。対応表から survival の節への
+  リンクが切れていたのも直し、metrics-guide（日英）をリンクの検査（`tests/test_readme_entry.py`）に
+  入れた
 
 ## [0.8.0] — 2026-10-25
 

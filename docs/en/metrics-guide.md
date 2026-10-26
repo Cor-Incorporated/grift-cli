@@ -5,6 +5,25 @@ mapping the public site's Japanese terms (griftai.org / cor-jp.com) to CLI
 terms and report-v1 JSON keys lives there only:
 [サイトの訳語と CLI の語の対応表](../metrics-guide.md#サイトの訳語と-cli-の語の対応表).
 
+**Sentences and questions (v0.9.0)**: the sentences and interview questions that open the `grift actor`,
+`grift project` and `grift align` Markdown are picked from the numbers in this guide by the
+[decision tables](trait-profile.md).
+
+**Viewpoint names in the Markdown**: the `grift actor`, `grift repo`, `grift project` and `grift align`
+Markdown names the four viewpoints the way griftai.org does, as the plain Japanese words followed by
+the site term. JSON keys and the fixed texts inside the JSON (such as `limitations`) do not change,
+so those texts keep their older wording. The names are declared in the
+[Japanese guide](../metrics-guide.md#markdown-の観点の呼び名).
+
+| Heading in the Markdown | Plain words | Site term | JSON key (report-v2) |
+|---|---|---|---|
+| 変えた部分の区分（作業領域） | Parts changed | Work surface | `surface_profile` |
+| 変更のペース（変更リズム） | Pace of change | Change rhythm | `change_rhythm` |
+| テストの付け方（検証の形） | How tests are added | Verification profile | `verification_profile` |
+| 関わり方 | How they take part | (griftai.org uses the plain words) | `role_profile` |
+
+griftai.org uses 関わり方 both as the plain words and as the site term, so that heading is 関わり方 alone (the cor-jp.com case page says 役割の4次元, four role dimensions). Headings carry no numbers.
+
 **Audience**: non-engineers. **Principle restated**: every number is a record
 of observed fact, not a grade. Standalone pass/fail decisions and
 person-to-person comparisons are non-compliant with the TEP (Technical Evidence Pipeline) norms
@@ -55,7 +74,7 @@ number may be used.**
 | Observation | One-line definition |
 |---|---|
 | test co-change | Share of production changes whose same commit also changed tests |
-| survival | Share of lines still present after 180 days (`--survival` only) |
+| survival | How recently the lines at HEAD were written (`--survival` only) |
 
 ### Observational layer — "tendency records (not evidence claims)"
 
@@ -188,8 +207,11 @@ prove few bugs.
 
 ## Survival (optional)
 
-`--survival` only (τ=180d). 1.0-near values = lines mostly still present.
+`--survival` only (τ=180d). Up to 40 source files are sampled at an even step and the lines at HEAD are read with `git blame`. Each line contributes exp(-(HEAD time − the line's author time) / 180 days), and the index is the mean. It is a repository value, not a per-person value.
+A value near 1 means most current lines were written recently; a value near 0 means most current lines are old.
+It is not the share of lines that survived for 180 days: removed lines are not counted.
 Reference distribution planned for v2027 — no high/low judgment provided yet.
+On griftai.org and cor-jp.com this value is called コードの新しさ (Code recency).
 
 ---
 

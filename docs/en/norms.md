@@ -60,6 +60,7 @@ Presenting multiple repositories must be read, and shown, as "selected by
 the provider."
 Reason: Selective disclosure is not forbidden; hiding the selection is.
 A single-repo actor report-v2 and an alignment-v1 always carry the fixed notice "This report covers one repository that the provider chose to share. It does not show whether other repositories exist or what they would show." in `notices` (v0.8.0).
+The Japanese Markdown shows the same notice in Japanese, 「このレポートは、提供した人が選んで共有した 1 つのリポジトリだけを対象にしています。ほかのリポジトリがあるかどうかも、そこで何が見えるかも示しません。」 (v0.9.0); JSON `notices` keep the English sentence.
 Unlike a closed résumé, visible selection is progress.
 
 ### Actor collection / selection (v0.6)
@@ -82,6 +83,20 @@ of achievement.
 ### Alignment has no verdict (v0.6)
 
 `grift align` places declared requirements next to observed evidence axis by axis. Computing an overall score, rank, pass/fail, or recommendation is non-compliant (same intent as articles 2 and 7).
+
+### Trait sentences and interview questions (v0.9)
+
+The `grift actor` and `grift project` Markdown opens with plain sentences on how the work shows in the record, and the `grift actor` and `grift align` Markdown lists questions to confirm in an interview. The [decision tables](trait-profile.md) pick them mechanically from the JSON numbers, under these rules ([ADR-0002](../adr/ADR-0002-trait-profile.md) T1-T7):
+
+1. A sentence is chosen by the shares and shape of the person's own work, never by volume (T1)
+2. The only comparison is with the person's other work; no word that compares with other people or a reference distribution (T2)
+3. Every sentence keeps its numerator, denominator and period; a share over fewer than 20 is not turned into a sentence (T3)
+4. No type names: JSON carries no sentence, sentence id or type key (T4)
+5. An alignment is never totalled; the number of overlapping items is not printed (T5)
+6. Sentences and questions come from the published tables; no LLM (T6)
+7. Person-facing sentences appear only with `attribution_state=claimed` and `consent=recorded-explicit-consent`. Actor reports for verified identities and public inferred actors get none, and the output says why; collections get no sentence section; alignment questions follow the same rule, a claimed identity with the consent record that `grift align` copies into `subject.actor_consent` (T7)
+
+Folding the sentences into one name to rank or select people is non-compliant, as under articles 2 and 7. Enforcement: `src/tep_core/trait_tables.py` (the tables), `tests/test_v090_trait_tables.py` (docs-to-constants link and vocabulary gates), `tests/test_v090_trait_profile.py` (consent condition, no sentence in JSON, no change with volume).
 
 ### 7. No weighting or conversion
 

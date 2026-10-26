@@ -54,31 +54,59 @@ def _share_strength(share: float) -> str:
     return "weak"
 
 
-def surface_tendency(profile: dict[str, Any], *, window: str, source: list[str]) -> dict[str, Any]:
-    if profile.get("kind") == "not_observed":
-        return _not_proven(profile.get("reason") or "surface_not_observed")
-    shares = (profile.get("surface_file_share") or {}).get("values") or {}
-    counts = (profile.get("surface_file_counts") or {}).get("values") or {}
-    sample = (profile.get("surface_file_counts") or {}).get("sample_size") or 0
-    if not isinstance(sample, int) or sample < MIN_POPULATION_FOR_RATES:
-        return _not_proven("insufficient_population", n=sample)
+def _top_surface(
+    shares: dict[str, Any], counts: dict[str, Any], sample: int
+) -> tuple[str, float, int] | dict[str, Any]:
+    """The one surface with the largest share, or a not_proven node."""
     ranked = sorted(
         ((name, float(shares.get(name) or 0.0), int(counts.get(name) or 0)) for name in SURFACES),
         key=lambda item: item[1],
         reverse=True,
     )
     name, share, count = ranked[0]
+    if share <= 0.0:
+        return _not_proven("no_surface_share", n=sample)
+    tied = [item[0] for item in ranked if item[1] == share]
+    if len(tied) > 1:
+        return _not_proven("tied_top_share", n=sample, tied=tied)
+    return name, share, count
+
+
+def surface_tendency(profile: dict[str, Any], *, window: str, source: list[str]) -> dict[str, Any]:
+    """The surface with the largest share of the scope's own commits.
+
+    Commit shares, the same population the surface list counts. 0.8.0 ranked file
+    changes instead, and read an unobserved share as 0.0 so that `test` won the
+    tie (trait-profile design §1.4 rows 4 and 9). A commit that changes code and
+    its test counts for both surfaces, so equal top shares are real; they name no
+    surface instead of the first one in SURFACES.
+    """
+    if profile.get("kind") == "not_observed":
+        return _not_proven(profile.get("reason") or "surface_not_observed")
+    share_node = profile.get("surface_commit_share") or {}
+    if share_node.get("kind") != "observed":
+        return _not_proven(share_node.get("reason") or "share_not_observed")
+    shares = share_node.get("values") or {}
+    counts = (profile.get("surface_commit_counts") or {}).get("values") or {}
+    sample = share_node.get("sample_size") or 0
+    if not isinstance(sample, int) or sample < MIN_POPULATION_FOR_RATES:
+        return _not_proven("insufficient_population", n=sample)
+    top = _top_surface(shares, counts, sample)
+    if isinstance(top, dict):
+        return top
+    name, share, count = top
     return {
         "kind": "directional",
         "value": f"{name}_surface_prominent",
         "strength": _share_strength(share),
         "confidence": "directional",
         "basis": {
-            "metric": f"surface_profile.surface_file_share.{name}",
+            "metric": f"surface_profile.surface_commit_share.{name}",
             "observed": share,
             "reference": None,
             "n": sample,
-            "denominator": "distinct paths or file-changes in scoped commits",
+            "denominator": share_node.get("denominator_definition")
+            or "non-merge human commits that touched at least one path",
             "source": source,
             "window": window,
             "count": count,
@@ -103,10 +131,12 @@ def rhythm_tendency(profile: dict[str, Any], *, window: str, source: list[str]) 
     median_gap = _numeric(
         profile.get("median_gap_days") or profile.get("inter_event_gap_median_hours")
     )
-    label = "regular_submission_direction" if median_gap is not None else "rhythm_observed"
+    # One neutral label. 0.8.0 called every observed median a regular cadence,
+    # bursts and long pauses included (trait-profile design §1.4 row 3); the
+    # numbers in `basis` describe the shape, the label does not classify it.
     return {
         "kind": "directional",
-        "value": label,
+        "value": "rhythm_observed",
         "strength": "moderate",
         "confidence": "directional",
         "basis": {

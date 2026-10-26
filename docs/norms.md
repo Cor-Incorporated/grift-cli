@@ -57,6 +57,7 @@ repo-local の Git primary-author 分類であり、実在人物との同一性�
 複数 repo の提示は「提供者が選択したものである」ことを明示して読む・示す。
 理由: 選択的開示は禁止しないが、隠さない。閉じた経歴書と違い、選択が見えることが前進である。
 単体の actor report-v2 と alignment-v1 の `notices` には固定文「This report covers one repository that the provider chose to share. It does not show whether other repositories exist or what they would show.」を常に載せる（v0.8.0）。
+日本語の Markdown には、同じ意味の文「このレポートは、提供した人が選んで共有した 1 つのリポジトリだけを対象にしています。ほかのリポジトリがあるかどうかも、そこで何が見えるかも示しません。」を載せる（v0.9.0）。JSON の `notices` は英語の固定文のまま。
 
 ### 7. 重み付け・換算の禁止
 
@@ -89,6 +90,20 @@ repo-local の Git primary-author 分類であり、実在人物との同一性�
 ### alignment no-verdict（v0.6）
 
 `grift align` は宣言と観測を軸ごとに並べるだけである。全体点・順位・合否・推奨を出す利用は非準拠である（2条・7条と同旨）。
+
+### 特性の文と面談の問い（v0.9）
+
+`grift actor` と `grift project` の Markdown の先頭に、記録から見える進め方を平易な文で書き、`grift actor` と `grift align` には面談で確かめたいことを問いとして並べる。文と問いは[決定表](trait-profile.md)で JSON の数字から機械的に選び、次を守る（[ADR-0002](adr/ADR-0002-trait-profile.md) T1〜T7）。
+
+1. 文は量ではなく、本人の仕事の割合と形で選ぶ（T1）
+2. 比べる相手は本人のほかの仕事だけ。ほかの人や参照分布と比べた語を使わない（T2）
+3. 文ごとに分子・分母・期間を置く。母数 20 未満の割合は文にしない（T3）
+4. タイプ名を作らない。文・文の id・型のキーを JSON に置かない（T4）
+5. 照らし合わせを合計しない。重なった項目の数を出さない（T5）
+6. 文と問いは公開した決定表で選ぶ。LLM を使わない（T6）
+7. 本人向けの文は `attribution_state=claimed` と `consent=recorded-explicit-consent` があるときだけ出す。verified・公開 inferred の actor レポートには出さず、出していない理由を書く。collection には文の節を作らない。照らし合わせの問いも、claimed で同意の記録があるときだけ出す（T7。`grift align` が同意の記録を `subject.actor_consent` に写す）
+
+文を 1 つの名前に畳んで人を並べる・選ぶ利用は、2 条・7 条と同じく非準拠である。強制側: `src/tep_core/trait_tables.py`（決定表）、`tests/test_v090_trait_tables.py`（docs と定数の結び、語彙の検査）、`tests/test_v090_trait_profile.py`（同意の条件、JSON に文が無いこと、量で文が変わらないこと）。
 
 ---
 
@@ -159,6 +174,7 @@ Reason: A persistent per-person comparison table is exactly the use this methodo
 Presenting multiple repositories must be read, and shown, as "selected by the provider."
 Reason: Selective disclosure is not forbidden; hiding the selection is. Unlike a closed résumé, visible selection is progress.
 A single-repo actor report-v2 and an alignment-v1 always carry the fixed notice "This report covers one repository that the provider chose to share. It does not show whether other repositories exist or what they would show." in `notices` (v0.8.0).
+The Japanese Markdown shows the same notice in Japanese, 「このレポートは、提供した人が選んで共有した 1 つのリポジトリだけを対象にしています。ほかのリポジトリがあるかどうかも、そこで何が見えるかも示しません。」 (v0.9.0); JSON `notices` keep the English sentence.
 
 ### 7. No weighting or conversion
 
@@ -185,6 +201,20 @@ of achievement.
 `grift align` places declared requirements next to observed evidence axis by
 axis. Computing an overall score, rank, pass/fail, or recommendation is
 non-compliant (same intent as articles 2 and 7).
+
+### Trait sentences and interview questions (v0.9)
+
+The `grift actor` and `grift project` Markdown opens with plain sentences on how the work shows in the record, and the `grift actor` and `grift align` Markdown lists questions to confirm in an interview. The [decision tables](en/trait-profile.md) pick them mechanically from the JSON numbers, under these rules ([ADR-0002](adr/ADR-0002-trait-profile.md) T1-T7):
+
+1. A sentence is chosen by the shares and shape of the person's own work, never by volume (T1)
+2. The only comparison is with the person's other work; no word that compares with other people or a reference distribution (T2)
+3. Every sentence keeps its numerator, denominator and period; a share over fewer than 20 is not turned into a sentence (T3)
+4. No type names: JSON carries no sentence, sentence id or type key (T4)
+5. An alignment is never totalled; the number of overlapping items is not printed (T5)
+6. Sentences and questions come from the published tables; no LLM (T6)
+7. Person-facing sentences appear only with `attribution_state=claimed` and `consent=recorded-explicit-consent`. Actor reports for verified identities and public inferred actors get none, and the output says why; collections get no sentence section; alignment questions follow the same rule, a claimed identity with the consent record that `grift align` copies into `subject.actor_consent` (T7)
+
+Folding the sentences into one name to rank or select people is non-compliant, as under articles 2 and 7. Enforcement: `src/tep_core/trait_tables.py` (the tables), `tests/test_v090_trait_tables.py` (docs-to-constants link and vocabulary gates), `tests/test_v090_trait_profile.py` (consent condition, no sentence in JSON, no change with volume).
 
 ---
 
