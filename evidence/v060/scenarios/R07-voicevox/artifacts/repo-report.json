@@ -161,7 +161,7 @@
   },
   "provenance": {
     "analysis_scope": "repo",
-    "analyzed_at": "2026-10-26T13:42:07Z",
+    "analyzed_at": "2026-10-26T14:47:10Z",
     "analyzed_commit_sha": "c72a94cbcf501be054a239446c7eb8cf53be34b4",
     "definition_version": "tep-v0.9.0-2026-10-26",
     "input_digests": {
