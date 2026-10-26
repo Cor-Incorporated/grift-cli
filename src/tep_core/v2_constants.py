@@ -97,6 +97,24 @@ SELECTIVITY_NOTICE = (
     "This report covers one repository that the provider chose to share. "
     "It does not show whether other repositories exist or what they would show."
 )
+# The Japanese Markdown says the same thing in Japanese (v0.9.0, trait-profile
+# design §1.4 row 8): in 0.8.0 the only English line of a Japanese report was the
+# one a non-engineer most needs to read. JSON `notices` keep SELECTIVITY_NOTICE.
+SELECTIVITY_NOTICE_JA = (
+    "このレポートは、提供した人が選んで共有した 1 つのリポジトリだけを対象にしています。"
+    "ほかのリポジトリがあるかどうかも、そこで何が見えるかも示しません。"
+)
+# One person's commits and a whole repository's commits are different
+# populations: counts grow with the number of people and gaps shrink as people
+# join. A relationship therefore compares within-scope shares only, and calls the
+# rhythm axes not comparable (v0.9.0, trait-profile design §1.4 row 1).
+RELATIONSHIP_SCOPE_NOT_EQUIVALENT = "scope_not_equivalent"
+RELATIONSHIP_COMPARED_UNIT = "commit_share"
+# surface_profile and verification_profile count every scoped commit up to the
+# observation date; only change_rhythm uses the 180-day window (§1.4 row 2).
+HISTORY_WINDOW_BASIS = "history_to_observation_date"
+# alignment JSON writes a history window as `history/<observation date>`.
+HISTORY_WINDOW_PREFIX = "history/"
 RHYTHM_WINDOW_DAYS = 180
 RHYTHM_LIMITATION = (
     "これは変更提出の時系列であり、実際の労働時間、勤怠、能力、納期遵守を測るものではありません。"
@@ -160,6 +178,11 @@ MIN_N_DIRECTIONAL = 20
 
 TENDENCY_CHANGE_NOTE = (
     "追加の履歴、別window、別inputが加わると、この傾向の強さや表示は変わる可能性があります。"
+)
+# The Markdown no longer prints `strength` (v0.9.0, ADR-0002), so its copy of
+# the note does not name it. JSON keeps TENDENCY_CHANGE_NOTE with the key.
+TENDENCY_CHANGE_NOTE_MD = (
+    "追加の履歴、別window、別inputが加わると、この傾向の表示は変わる可能性があります。"
 )
 PROJECT_OBSERVED_MISSING_NOTE = (
     "project observedは未提供のため、actorとprojectの実測比較は行っていません。"

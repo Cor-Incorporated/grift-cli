@@ -11,7 +11,7 @@ from tep_core.archive_events import ArchiveBundle, ArchiveEvent
 from tep_core.event_rhythm import event_rhythm
 from tep_core.schema_v2 import validate_alignment
 from tep_core.tendency import relationship
-from tep_core.v2_constants import MIN_EVENTS_FOR_SHAPE, MIN_WINDOW_DAYS_FOR_SHAPE
+from tep_core.v2_constants import MIN_EVENTS_FOR_SHAPE, MIN_WINDOW_DAYS_FOR_SHAPE, SURFACES
 
 from git_fixture import commit, git, init_repo
 from tep_core.gitutil import rev_parse
@@ -174,17 +174,38 @@ def _axis(payload: dict, name: str) -> dict:
     raise AssertionError(name)
 
 
-def _set_count(path: Path, value: int) -> None:
+def _share(value: float) -> dict:
+    """A backend commit share over a population that clears the rate gate.
+
+    The block keeps the report-v2 shape (every surface key, population and
+    denominator), so `align` validates it like a saved report.
+    """
+
+    return {
+        "kind": "observed",
+        "unit": "ratio",
+        "sample_size": 25,
+        "population": 25,
+        "denominator_definition": "non-merge human commits that touched at least one path",
+        "values": {name: value if name == "backend" else 0.0 for name in SURFACES},
+    }
+
+
+def _set_share(path: Path, value: float, *, project: bool) -> None:
+    """Relationship compares shares since v0.9.0, so the tests move the share."""
+
     payload = json.loads(path.read_text(encoding="utf-8"))
-    counts = payload["observed"]["surface_profile"]["surface_commit_counts"]["values"]
-    counts["backend"] = value
+    profile = payload["observed"]["surface_profile"] if project else payload["surface_profile"]
+    profile["surface_commit_share"] = _share(value)
     path.write_text(json.dumps(payload), encoding="utf-8")
 
 
 def test_project_observed_changes_relationship(tmp_path: Path, capsys) -> None:
     actor, project = _write_reports(tmp_path, capsys)
+    _set_share(actor, 0.5, project=False)
+    _set_share(project, 0.5, project=True)
     first = _align(capsys, actor, project)
-    _set_count(project, 99)
+    _set_share(project, 0.1, project=True)
     second = _align(capsys, actor, project)
     left = _axis(first, "surfaces.backend")["relationship"]
     right = _axis(second, "surfaces.backend")["relationship"]
@@ -194,10 +215,10 @@ def test_project_observed_changes_relationship(tmp_path: Path, capsys) -> None:
 
 def test_actor_observed_changes_relationship(tmp_path: Path, capsys) -> None:
     actor, project = _write_reports(tmp_path, capsys)
+    _set_share(actor, 0.5, project=False)
+    _set_share(project, 0.5, project=True)
     first = _align(capsys, actor, project)
-    payload = json.loads(actor.read_text(encoding="utf-8"))
-    payload["surface_profile"]["surface_commit_counts"]["values"]["backend"] = 99
-    actor.write_text(json.dumps(payload), encoding="utf-8")
+    _set_share(actor, 0.1, project=False)
     second = _align(capsys, actor, project)
     left = _axis(first, "surfaces.backend")["relationship"]
     right = _axis(second, "surfaces.backend")["relationship"]
@@ -295,7 +316,7 @@ def test_overlap_markdown_has_no_hire_words(tmp_path: Path, capsys) -> None:
     for banned in ("採用すべき", "相性スコア", "frontendエンジニアである"):
         assert banned not in lowered
     assert "傾向" in text
-    assert "similar_direction は採用" in text or "採用・適合ではない" in text
+    assert "この並びだけで採用の合否を決めてはいけません。" in text
 
 
 def test_saved_alignment_verify(tmp_path: Path, capsys) -> None:

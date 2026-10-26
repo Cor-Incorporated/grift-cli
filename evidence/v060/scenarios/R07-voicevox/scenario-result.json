@@ -93,8 +93,8 @@
       "status": "PASS"
     },
     {
-      "actual": "0.8.0",
-      "expected": "0.8.0",
+      "actual": "0.9.0",
+      "expected": "0.9.0",
       "id": "runner-tool-version",
       "status": "PASS"
     },
@@ -207,7 +207,7 @@
     "report.merge": 89,
     "report.unresolved": 0
   },
-  "duration_ms": 7397,
+  "duration_ms": 6226,
   "exit_code": 0,
   "output_digests": {
     "artifacts/actor-index.json": {
@@ -1164,11 +1164,11 @@
     },
     "artifacts/collection-manifest.json": {
       "algorithm": "sha256",
-      "value": "01ec37c1d864c0b5d9fe6f127880c38c3ebd203ddbd83879de71555cd8eae358"
+      "value": "3c59e0c89b5616d2f4eea3c70ded7485153bb50a0156b1dc45a914a14bade675"
     },
     "artifacts/repo-report.json": {
       "algorithm": "sha256",
-      "value": "569b7fcafba18dc7bcc5ddcf6111298738d0e88b5458cabc106a14741d94736b"
+      "value": "500d5176d5850a0b35cddc9624bd2045ee49b00bb34cad37c1bca2da75b54967"
     },
     "artifacts/repo-report.md": {
       "algorithm": "sha256",
@@ -1188,16 +1188,16 @@
     "source_binding": {
       "commit_oid": {
         "algorithm": "sha1",
-        "value": "2ecf72cc8a8ac8065dbc5d2c0652f097f3e80e67"
+        "value": "c5737925d0fbbc90a723fd12c06a4f7e3b5134ae"
       },
       "definition_version": "grift-tool-source-tree-v1",
-      "file_count": 97,
+      "file_count": 104,
       "source_tree_digest": {
         "algorithm": "sha256",
-        "value": "d470cb59615228ccf45f534ef90c56a82cc18f7a05d421be68da6e13743392cd"
+        "value": "c095c87df885dbcee88593601cf6614c2209a89325565413fe3ee0ea9c0c0164"
       }
     },
-    "tool_version": "0.8.0"
+    "tool_version": "0.9.0"
   },
   "scenario_id": "R07-voicevox",
   "schema_version": "tep-scenario-result-v1",

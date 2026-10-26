@@ -1,5 +1,7 @@
 """v0.8.0 #2: a single-repo actor report and an alignment always say the repo
 was chosen by the provider (norms §6), in JSON ``notices`` and in Markdown.
+Since v0.9.0 the Japanese Markdown carries the Japanese rendering of the same
+notice (trait-profile design §1.4 row 8); JSON keeps the English sentence.
 
 Boundaries covered (see PR body): declaration ↔ artifact (norms §6 text ↔
 ``notices`` output), the verifier itself (a report without the notice is
@@ -16,7 +18,7 @@ import pytest
 from git_fixture import commit, init_repo
 
 from tep_cli.__main__ import main
-from tep_core.v2_constants import SELECTIVITY_NOTICE
+from tep_core.v2_constants import SELECTIVITY_NOTICE, SELECTIVITY_NOTICE_JA
 
 ROOT = Path(__file__).resolve().parents[1]
 PROJECT_TOML = """schema_version = "tep-project-v1"
@@ -105,12 +107,19 @@ def test_notice_text_is_english_limitation_style_and_passes_vocab_check() -> Non
     assert _forbidden_vocab().violations(SELECTIVITY_NOTICE) == []
 
 
+def test_japanese_notice_passes_vocab_check_and_reads_as_one_japanese_sentence_pair() -> None:
+    assert not SELECTIVITY_NOTICE_JA.isascii()
+    assert SELECTIVITY_NOTICE_JA.endswith("。")
+    assert _forbidden_vocab().violations(SELECTIVITY_NOTICE_JA) == []
+
+
 def test_norms_section_6_declares_the_exact_notice_text() -> None:
-    """Declaration ↔ artifact: the sentence norms §6 promises is the one emitted."""
+    """Declaration ↔ artifact: the sentences norms §6 promises are the ones emitted."""
 
     for path in ("docs/norms.md", "docs/en/norms.md"):
         text = (ROOT / path).read_text(encoding="utf-8")
         assert SELECTIVITY_NOTICE in text, f"{path} does not quote SELECTIVITY_NOTICE"
+        assert SELECTIVITY_NOTICE_JA in text, f"{path} does not quote SELECTIVITY_NOTICE_JA"
 
 
 def test_actor_report_json_and_markdown_carry_selectivity_notice(tmp_path, capsys) -> None:
@@ -125,7 +134,8 @@ def test_actor_report_json_and_markdown_carry_selectivity_notice(tmp_path, capsy
             ["actor", "alice", str(repo), *selection_args, "--format", "md"], capsys
         )
         assert code == 0
-        assert markdown.count(SELECTIVITY_NOTICE) == 1
+        assert markdown.count(SELECTIVITY_NOTICE_JA) == 1
+        assert SELECTIVITY_NOTICE not in markdown
 
 
 def test_alignment_json_and_markdown_carry_selectivity_notice(tmp_path, capsys) -> None:
@@ -140,7 +150,8 @@ def test_alignment_json_and_markdown_carry_selectivity_notice(tmp_path, capsys) 
     assert payload["notices"].count(SELECTIVITY_NOTICE) == 1, payload["notices"]
     code, markdown = _run(_align_args(repo, identity, project, "md"), capsys)
     assert code == 0
-    assert markdown.count(SELECTIVITY_NOTICE) == 1
+    assert markdown.count(SELECTIVITY_NOTICE_JA) == 1
+    assert SELECTIVITY_NOTICE not in markdown
 
 
 def test_collection_artifacts_stay_out_of_scope(tmp_path, capsys) -> None:

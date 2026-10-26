@@ -22,8 +22,8 @@
   ],
   "assertions": [
     {
-      "actual": "0.8.0",
-      "expected": "0.8.0",
+      "actual": "0.9.0",
+      "expected": "0.9.0",
       "id": "runner-tool-version",
       "status": "PASS"
     },
@@ -166,8 +166,8 @@
       "status": "PASS"
     },
     {
-      "actual": "361fde86fa3757588e8fceb43fbdd5860b21c9eb473802bb766f931801efc375",
-      "expected": "361fde86fa3757588e8fceb43fbdd5860b21c9eb473802bb766f931801efc375",
+      "actual": "538851ab2ca74a654e71a02b3c34a1c1290328f7838a6d1117c7db874951e453",
+      "expected": "538851ab2ca74a654e71a02b3c34a1c1290328f7838a6d1117c7db874951e453",
       "id": "acquisition-receipt-digest",
       "status": "PASS"
     }
@@ -200,7 +200,7 @@
     "verify.collections": 3,
     "verify.verified": 3
   },
-  "duration_ms": 18418,
+  "duration_ms": 17298,
   "exit_code": 0,
   "output_digests": {
     "derived/actor-provider-independent": {
@@ -221,7 +221,7 @@
     },
     "derived/repo-provider-independent": {
       "algorithm": "sha256",
-      "value": "b956025645fca4031307adc1e48d8000f9e241b3e9a3822b8a18f9ae6c71aa2e"
+      "value": "599f52f7fb76182c9fc7420f6ac51fffba6e3ca8c287425576946f742ee514c9"
     },
     "derived/repo-provider-independent-numeric": {
       "algorithm": "sha256",
@@ -241,11 +241,11 @@
     },
     "live/collection-manifest.json": {
       "algorithm": "sha256",
-      "value": "0dd97c1188ad960d0492dcb7a31082f36aaedbad236725e22407dfc5fc91f573"
+      "value": "629fb32a47e8f0fc9f750d3f332c863d610d2fc32d2ab2f5083c6b09e50ee2c5"
     },
     "live/repo-report.json": {
       "algorithm": "sha256",
-      "value": "b4565b41cb19e599041095d72074f02ff7b03210a55453581c5c2c9429643abf"
+      "value": "5d60421b56265c1d2899939e80e1d08c0c9c42beb21dbaf10d515a25d550e1d8"
     },
     "live/repo-report.md": {
       "algorithm": "sha256",
@@ -261,11 +261,11 @@
     },
     "offline/collection-manifest.json": {
       "algorithm": "sha256",
-      "value": "ee13543867a6dd18551e70d07e309aaf89a34eac0f14240edca410ba8b9f26b7"
+      "value": "a0ad0be54e6926f9b75a032d9faa9dbed11125afa32a4fb60469c49c2805cfe0"
     },
     "offline/repo-report.json": {
       "algorithm": "sha256",
-      "value": "c8f07fbf8f690f45fc3c0032fc40515bff95d555bc5f212a84d738ce1b71bcda"
+      "value": "18340d8ae2ec5892d0a202946b551d867e455d7dc17f837b2fc75e1de1c1bf0e"
     },
     "offline/repo-report.md": {
       "algorithm": "sha256",
@@ -273,7 +273,7 @@
     },
     "public-evidence/manifest.json": {
       "algorithm": "sha256",
-      "value": "f699b5e969bb52aa2b18278e292f0c4bdc4da29526477449f0db12748fa388d9"
+      "value": "2ce3346a74a5105ab63a174f2648a977df6d9168f624b77d7f7648584c3b26df"
     },
     "public-evidence/page-01.body": {
       "algorithm": "sha256",
@@ -305,7 +305,7 @@
     },
     "public-evidence/payload": {
       "algorithm": "sha256",
-      "value": "c5507c56c433c8877ec8303e2766e990fc06c554f30f308b4d3e6acec86bee47"
+      "value": "fa8e5457b90b07a59204067c0971d4a6edfc50073dc51eb0d3ce1a9a14ccfd65"
     },
     "replay/actor-index.json": {
       "algorithm": "sha256",
@@ -317,11 +317,11 @@
     },
     "replay/collection-manifest.json": {
       "algorithm": "sha256",
-      "value": "54d360ddd89952375e37b7568ad8fccd7be46b74bc9f2037942a477466f11723"
+      "value": "08e939fb2c9e39af00161c12af1a31ea50efd2fde366fe4eeaafce7c8edb56f2"
     },
     "replay/repo-report.json": {
       "algorithm": "sha256",
-      "value": "c8950b602288e44037d1ea09cf6263a3bb41cc10b447c01225f0d88252f4d520"
+      "value": "6b431a771c68a3c7579f494ab74ab9a2d3bfdb157cb644c95571936548c81433"
     },
     "replay/repo-report.md": {
       "algorithm": "sha256",
@@ -341,16 +341,16 @@
     "source_binding": {
       "commit_oid": {
         "algorithm": "sha1",
-        "value": "21c3a587c78e2a5d7c0138a3861105da9315e25f"
+        "value": "c5737925d0fbbc90a723fd12c06a4f7e3b5134ae"
       },
       "definition_version": "grift-tool-source-tree-v1",
-      "file_count": 97,
+      "file_count": 104,
       "source_tree_digest": {
         "algorithm": "sha256",
-        "value": "d470cb59615228ccf45f534ef90c56a82cc18f7a05d421be68da6e13743392cd"
+        "value": "c095c87df885dbcee88593601cf6614c2209a89325565413fe3ee0ea9c0c0164"
       }
     },
-    "tool_version": "0.8.0"
+    "tool_version": "0.9.0"
   },
   "scenario_id": "P01-cloudflare-full",
   "schema_version": "tep-public-scenario-result-v2",

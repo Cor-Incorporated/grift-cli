@@ -1,0 +1,17 @@
+# tep-actor-brief-v1 の書き方の案（段階 2）。grift 0.8.0 はこのファイルを読めません。
+# エンジニアが案件に求めること（希望）を書く。できることの申告ではない。
+schema_version = "tep-actor-brief-v1"
+actor_id = "candidate-b"
+
+[wishes.surfaces]
+prefer = ["frontend", "docs"]
+avoid = ["platform"]
+
+[wishes.verification]
+prefer = ["e2e"]
+
+[sharing]
+inputs = ["git"]
+
+[note]
+text = "画面の改修を 2〜3 週間の区切りでまとめて進めることが多いです。間が空く時期は、デザインの確認を待っていました。"

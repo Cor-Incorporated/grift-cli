@@ -8,7 +8,7 @@ from typing import Any
 from tep_core.actor_basis import actor_analysis_scope
 from tep_core.alignment import forbidden_key_hits
 from tep_core.attribution import ACTOR_ID_RE
-from tep_core.identity import ATTRIBUTION_STATES, CANONICAL_ID_RE
+from tep_core.identity import ATTRIBUTION_STATES, CANONICAL_ID_RE, RECORDED_EXPLICIT_CONSENT
 from tep_core.schema import validate_schema
 from tep_core.v2_constants import (
     ACTOR_CARD_SCHEMA_VERSION,
@@ -654,6 +654,7 @@ def validate_alignment(report: Any) -> list[str]:
             "actor_canonical_id",
             "actor_selection",
             "actor_attribution_state",
+            "actor_consent",
             "project_id",
             "mode",
         }
@@ -685,6 +686,11 @@ def validate_alignment(report: Any) -> list[str]:
                 "$.subject.actor_attribution_state",
                 "inferred_actor must not carry an attribution state",
             )
+        if "actor_consent" in subject:
+            if subject.get("actor_consent") != RECORDED_EXPLICIT_CONSENT:
+                ctx.err("$.subject.actor_consent", f"must be {RECORDED_EXPLICIT_CONSENT}")
+            if selection == "inferred_actor":
+                ctx.err("$.subject.actor_consent", "inferred_actor must not carry a consent record")
         project_id = subject.get("project_id")
         if project_id is not None and not (_is_str(project_id) and project_id.strip()):
             ctx.err("$.subject.project_id", "must be a non-empty string or null")

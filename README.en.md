@@ -36,9 +36,9 @@ The report text is currently in Japanese; the JSON output uses English keys.
 
 `grift repo` prints values like these for the whole repository. Each value comes with its count: how many out of how many.
 
-- Areas: for each of 11 areas (tests, docs, CI, frontend, and so on), how many commits (recorded changes) touched files in that area.
-- Intervals: on how many days in the last 180 changes were made, and how many days passed between one change and the next. These are not working hours or speed.
-- Verification: the share of commits that include test files, and which kinds of tests they touch (unit, integration, and so on).
+- Parts changed (work surface): for each of 11 areas (tests, docs, CI, frontend, and so on), how many commits (recorded changes) touched files in that area.
+- Pace of change (change rhythm): on how many days in the last 180 changes were made, and how many days passed between one change and the next. These are not working hours or speed.
+- How tests are added (verification profile): the share of commits that include test files, and which kinds of tests they touch (unit, integration, and so on).
 - People involved: how many commits each person made, listed in ID order rather than by count.
 
 The JSON output (`--format json`) and the output of `grift analyze` also include:
@@ -47,6 +47,8 @@ The JSON output (`--format json`) and the output of `grift analyze` also include
 - Test co-change (`test_cochange` in JSON): of the commits that changed production code, the share that also changed tests in the same commit. For example (a made-up case), if 40 commits changed production code and 12 of them also changed tests, the report says 12 of 40.
 
 `grift align` places a project's declared requirements next to the values counted from history, item by item. Each item is one of five outcomes: overlap, outside the declared range, zero, not observed, or not declared.
+
+The `grift actor` Markdown (for an identity the person claimed, with a recorded consent) and the `grift project` Markdown open with plain Japanese sentences on how the work shows in the record. The `grift actor` and `grift align` Markdown also list questions to confirm in an interview. The [decision tables](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/trait-profile.md) pick them from the numbers; they never become a score or a type name. An actor report for an identity registered by an administrator, or for an actor inferred from a public repository, gets no sentences, and the output says why. Alignment questions follow the same rule: an identity the person claimed, with a recorded consent.
 
 A value that could not be measured is never written as 0. It is written as "not observed" with a reason (`not_observed` in the output). A missing record does not mean missing experience. When the population (the total number of items counted) is below 20, the report text shows counts instead of rates.
 
@@ -89,7 +91,7 @@ grift align \
   --format both --out alignment-out
 ```
 
-Collections of several people, the identity file, public forge fetch, signing, exit codes, and upgrading from 0.7.x are covered in the [usage guide](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/usage.md).
+Collections of several people, the identity file, public forge fetch, signing, exit codes, and upgrading from earlier versions are covered in the [usage guide](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/usage.md).
 
 ## Data and network
 
@@ -110,7 +112,7 @@ steps:
   - uses: actions/setup-python@v5
     with:
       python-version: "3.12"
-  - uses: Cor-Incorporated/grift-cli@v0.8.0
+  - uses: Cor-Incorporated/grift-cli@v0.9.0
     with:
       scope: repo
       comment: false
@@ -128,7 +130,7 @@ The action runs `grift analyze`, writes a summary to `$GITHUB_STEP_SUMMARY`, and
 - [Usage norms](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/norms.md)
 - [Metric validation and limits](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/validation.md): the design choices behind the numbers and their limits, and results from 117 public repositories, including the comparisons that did not separate
 - Output formats: [report-v1](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/report-schema.md), [export](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/export-schema.md), [identity](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/identity-schema.md); in Japanese: [report-v2](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/report-v2.md), [alignment](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/alignment-schema.md), [project](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/project-schema.md)
-- [Changelog](https://github.com/Cor-Incorporated/grift-cli/blob/main/CHANGELOG.md) and [0.8.0 migration notes](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/migration-v080.md) (both in Japanese)
+- [Changelog](https://github.com/Cor-Incorporated/grift-cli/blob/main/CHANGELOG.md) (in Japanese) and [0.9.0 migration notes](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/migration-v090.md)
 
 Product site: [griftai.org](https://griftai.org) (Japanese).
 

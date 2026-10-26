@@ -93,8 +93,8 @@
       "status": "PASS"
     },
     {
-      "actual": "0.8.0",
-      "expected": "0.8.0",
+      "actual": "0.9.0",
+      "expected": "0.9.0",
       "id": "runner-tool-version",
       "status": "PASS"
     },
@@ -135,14 +135,14 @@
       "status": "PASS"
     },
     {
-      "actual": "2026-03-03",
-      "expected": "2026-03-03",
+      "actual": "2026-03-02",
+      "expected": "2026-03-02",
       "id": "window-start",
       "status": "PASS"
     },
     {
-      "actual": "2026-08-30",
-      "expected": "2026-08-30",
+      "actual": "2026-08-29",
+      "expected": "2026-08-29",
       "id": "window-end",
       "status": "PASS"
     },
@@ -207,20 +207,20 @@
     "report.merge": 1387,
     "report.unresolved": 0
   },
-  "duration_ms": 19284,
+  "duration_ms": 9031,
   "exit_code": 0,
   "output_digests": {
     "artifacts/actor-index.json": {
       "algorithm": "sha256",
-      "value": "97b64bef9e517ea3641fbbbb26cc186763d3cf65ba11a1bfc6fd80436accb258"
+      "value": "25dfe9241811a2054ee8d9257acf32598e1fb5db2be5758982187eaa7f57f943"
     },
     "artifacts/actor-index.md": {
       "algorithm": "sha256",
-      "value": "3750b9f45ba18e8e0b9de95a2a7314a9605af8eb15520afb13745afe74355c13"
+      "value": "07273b851fe2d7b715ee72544ee9afd497f3833289b4f29487c7b49638e9878d"
     },
     "artifacts/actors/cloudia.json": {
       "algorithm": "sha256",
-      "value": "5ab9860cc1b231f72ea81526e6bdcc0d4748291242e928c9bc34dbd685f20c73"
+      "value": "10d953a6173ab8d272e63bc55d06263b398789bbd09270ae849a6da5cb8be36d"
     },
     "artifacts/actors/cloudia.md": {
       "algorithm": "sha256",
@@ -228,7 +228,7 @@
     },
     "artifacts/actors/kisayama.json": {
       "algorithm": "sha256",
-      "value": "b1cac7563e903fd4eefb770aa95a6a244c9f41e44984622a6ff78f7f1b2d7b03"
+      "value": "d06c41bee126905dec890a5368bd943eb615657c2dd4ff38c1b0546962fb0ea5"
     },
     "artifacts/actors/kisayama.md": {
       "algorithm": "sha256",
@@ -236,7 +236,7 @@
     },
     "artifacts/actors/terisuke.json": {
       "algorithm": "sha256",
-      "value": "27683497d96cde23c0ee8c5ae8ebd5e73d49ad1c80a37157fa431c4060b6b74c"
+      "value": "f49b39f0a8f77dfd9b333c21a034d7e113744c73eb0e12795ba9c2ed0e9dfd60"
     },
     "artifacts/actors/terisuke.md": {
       "algorithm": "sha256",
@@ -244,15 +244,15 @@
     },
     "artifacts/collection-manifest.json": {
       "algorithm": "sha256",
-      "value": "d72432253abd08cafbf44183220acfc3933dd8ef4679c568e66bbe423fb52a1d"
+      "value": "2bcb5cdfe1ec381094b9ebefd11d7268175f70c8e49749ed661316a9e40d9107"
     },
     "artifacts/repo-report.json": {
       "algorithm": "sha256",
-      "value": "b43040eee6afb20b76da041c675b83b0e60b92bea5df5b9784d8988b3de95968"
+      "value": "7b974c28029f54cf112252a122226f2e4892405d9657a2bbc1faf0fe424ef049"
     },
     "artifacts/repo-report.md": {
       "algorithm": "sha256",
-      "value": "60b1e830d89ea2b32008228b796f5292df5ec9aa8b183dc4a1857ec9366c94fc"
+      "value": "13173b4c0ee5e971f1fdb69fbd97999174374add5034901f680df29625bd9948"
     }
   },
   "partition_digest": {
@@ -268,16 +268,16 @@
     "source_binding": {
       "commit_oid": {
         "algorithm": "sha1",
-        "value": "2ecf72cc8a8ac8065dbc5d2c0652f097f3e80e67"
+        "value": "c5737925d0fbbc90a723fd12c06a4f7e3b5134ae"
       },
       "definition_version": "grift-tool-source-tree-v1",
-      "file_count": 97,
+      "file_count": 104,
       "source_tree_digest": {
         "algorithm": "sha256",
-        "value": "d470cb59615228ccf45f534ef90c56a82cc18f7a05d421be68da6e13743392cd"
+        "value": "c095c87df885dbcee88593601cf6614c2209a89325565413fe3ee0ea9c0c0164"
       }
     },
-    "tool_version": "0.8.0"
+    "tool_version": "0.9.0"
   },
   "scenario_id": "R01-benevolent-director",
   "schema_version": "tep-scenario-result-v1",

@@ -26,7 +26,7 @@ import time
 from contextlib import contextmanager
 from contextvars import ContextVar
 from dataclasses import dataclass
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path, PurePosixPath
 from typing import Any, Iterator, Mapping, Sequence
 
@@ -823,12 +823,15 @@ def _git_count(repo: Path, target_oid: str, *filters: str) -> int:
 
 
 def _expected_window(repo: Path, target_oid: str) -> dict[str, Any]:
-    raw = _git(repo, "show", "-s", "--format=%as", target_oid).stdout.strip()
+    # The UTC day of the target's author time, as grift takes the observation
+    # date without --as-of since 0.9.0. `%as` (the author's local day) moved
+    # R01 a day later: authored 00:51 JST is 15:51 UTC the day before.
+    raw = _git(repo, "show", "-s", "--format=%at", target_oid).stdout.strip()
     try:
-        end = date.fromisoformat(raw)
+        end = datetime.fromtimestamp(int(raw), tz=timezone.utc).date()
     except ValueError as exc:
-        raise ScenarioContractError("fixed target author date is not ISO YYYY-MM-DD") from exc
-    return {"start": (end - timedelta(days=180)).isoformat(), "end": raw, "days": 180}
+        raise ScenarioContractError("fixed target author time is not a Unix timestamp") from exc
+    return {"start": (end - timedelta(days=180)).isoformat(), "end": end.isoformat(), "days": 180}
 
 
 def _provider_coverage(

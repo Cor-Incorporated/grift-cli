@@ -2,6 +2,7 @@
 
 **対象**: grift 0.5.4 以降。report-v1 の既存定義は0.5.x互換、v0.6のexperience / roleは別のversion付き定義です。非エンジニアの方向け。v0.6 の subject コマンド（repo / actor / project / align）の数値も同じ原則です。
 **原則の再掲**: すべての数値は**観測された事実の記録**であって、優劣の評価ではありません。単独の数値での合否判断・人と人の比較は TEP（Technical Evidence Pipeline）非準拠です（[docs/norms.md](norms.md)）。書かれていないこと（= not observed）は「無かったこと」を意味しません。
+**v0.9.0 の文と問い**: `grift actor`・`grift project`・`grift align` の Markdown の先頭に出る「この記録から見える進め方」の文と「面談で確かめたいこと」の問いは、[決定表](trait-profile.md)で本書の数値から選んでいます。
 **参考値の出典**: 特に断らない限り、公開リポジトリ 117 件のコーパス（v2026.11・repo スコープ）と v0.5.2 実地調査（requests / flask / GitHub CLI / chalk ほか）に基づきます。参考値は「だいたいの目安」であり、分布は成長とともに新版として出ます。
 
 ---
@@ -26,9 +27,24 @@
 | テスト併修率 | test co-change（テスト同期変更率） | `test_cochange.all_time.value` | [証拠系: test co-change](#証拠系-test-co-changeテスト同期変更率) |
 | 手戻り率 | corrective rework | `rework.corrective_rework_rate.value` | [観測系: corrective rework と path retouch](#観測系-corrective-rework-と-path-retouch) |
 | 磨き直し | path retouch | `rework.path_retouch_rate.value` | [観測系: corrective rework と path retouch](#観測系-corrective-rework-と-path-retouch) |
-| 定着率 | survival | `survival.survival_index` | [survival（行の生存率）](#survival行の生存率--任意指定) |
+| コードの新しさ | survival | `survival.survival_index` | [survival（いまある行の新しさ）](#survivalいまある行の新しさ-任意指定) |
 
-訳語は値の意味を変えません。「手戻り率」「磨き直し」は観測層（証拠主張ではない）、「定着率」は `--survival` 指定時のみ出ます。各行の JSON キーと CLI の語が実在することは `tests/test_v060_docs_parity.py` が実レポートに対して検査します。
+訳語は値の意味を変えません。「手戻り率」「磨き直し」は観測層（証拠主張ではない）、「コードの新しさ」は `--survival` 指定時のみ出ます。「コードの新しさ」は、いまのコードにある行が書かれてからどれだけ経っているかを、180 日を目安に重みを付けて平均した値で、1 に近いほど最近書かれた行が多いことを示します（リポジトリ全体の値で、一人ひとりの値ではありません）。各行の JSON キーと CLI の語が実在することは `tests/test_v060_docs_parity.py` が実レポートに対して検査します。
+
+---
+
+## Markdown の観点の呼び名
+
+`grift actor`・`grift repo`・`grift project`・`grift align` の Markdown は、4 つの観点を griftai.org と同じ「平易な言い方（サイトの用語）」の形で呼びます（例: 見出し「変えた部分の区分（作業領域）」）。JSON のキーと、JSON に入る固定文（`limitations` など）は変えていません（その文には「作業領域の観測」「変更提出の時系列」のような元の言い方が残ります）。呼び名は**この表だけ**に置き、Markdown の見出しとの一致は `tests/test_v090_site_names.py` が検査します。
+
+| 平易な言い方 | サイトの用語 | JSON キー（report-v2） |
+|---|---|---|
+| 変えた部分の区分 | 作業領域 | `surface_profile` |
+| 変更のペース | 変更リズム | `change_rhythm` |
+| テストの付け方 | 検証の形 | `verification_profile` |
+| 関わり方 | 関わり方 | `role_profile` |
+
+griftai.org は「関わり方」を平易な言い方とサイトの用語の両方に使うので、この観点の見出しは「関わり方」だけです（cor-jp.com の事例ページは「役割の4次元」と書いています）。見出しには数字を入れません。
 
 ---
 
@@ -57,7 +73,7 @@ grift のレポートは3層の観測で構成されます。**層 = その数�
 | 観測 | 一言定義 |
 |---|---|
 | test co-change | 本番変更と同一コミットでテストも変更した割合 |
-| survival | 180日後も残っている行の割合（`--survival` 指定時のみ） |
+| survival | いまある行が、HEAD から見てどれだけ最近書かれたか（`--survival` 指定時のみ） |
 
 ### 観測層 —「傾向の記録（証拠主張ではない）」
 
@@ -209,10 +225,12 @@ A クラス（検証文化）の中央値は 0.05 と低めですが、因果の
 
 ---
 
-## survival（行の生存率）— 任意指定
+## survival（いまある行の新しさ）— 任意指定
 
-`--survival` を付けたときだけ計算（τ=180日）。**「今も残っている行の割合」**を指数で出します（1.0 に近い = 6ヶ月経ってもほぼ残っている）。
-- 実測例: 小規模運用中 repo で 0.94 — ほぼ全行が残存
+`--survival` を付けたときだけ計算します（τ=180日）。ソースのファイルから等間隔に最大 40 ファイルを抜き取り、HEAD にある行を `git blame` で調べます。行ごとに exp(-（HEAD の時刻 − その行を書いた時刻）÷ 180 日) を求め、その平均を出します。リポジトリ全体の値で、人ごとの値ではありません。
+- 1 に近いほど、いまある行に最近書かれた行が多いことを示します。0 に近いほど、古くから残っている行が多いことを示します
+- 180 日後に残っていた行の割合ではありません。消えた行は数えていません
+- 実測例: 小規模運用中 repo で 0.94。いまある行の多くが、HEAD から見て最近書かれています
 - 参照分布は **v2027 予定**（現時点で高低の判断基準は提供しません）
 
 ---

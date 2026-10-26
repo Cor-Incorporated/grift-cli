@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterable
+from collections.abc import Iterable, Mapping
 from enum import Enum
+from typing import Any
 
+from tep_core.identity import RECORDED_EXPLICIT_CONSENT
 from tep_core.v2_constants import (
     ACTOR_ADMIN_NOTICE,
     ACTOR_CLAIMED_NOTICE,
@@ -25,6 +27,10 @@ class ActorBasis(str, Enum):
 
 
 _NONCONSENT_STATES = frozenset({"inferred", "unresolved", "external", "bot"})
+# analyze._tenant_experience checks the consent record first and only then can
+# fail with these reasons, so a role_profile that carries one of them belongs to
+# a consented actor whose role numbers could not be collected.
+CONSENT_CHECKED_REASONS = frozenset({"history_incomplete", "experience_collection_timeout"})
 _ACTOR_BASIS_NOTICES = frozenset(
     {
         ACTOR_ADMIN_NOTICE,
@@ -52,6 +58,22 @@ def classify_actor_basis(selection: object, attribution_state: object) -> ActorB
     if attribution_state in _NONCONSENT_STATES:
         return ActorBasis.EXPLICIT_NONCONSENT
     return ActorBasis.UNKNOWN
+
+
+def consent_recorded(actor_report: Mapping[str, Any]) -> bool:
+    """Whether an actor report carries the consent record (T7). Absence is never consent.
+
+    The trait section of the actor report, `grift align` (subject.actor_consent)
+    and `grift verify` all read it here, so the three cannot disagree.
+    """
+
+    role = actor_report.get("role_profile")
+    if not isinstance(role, Mapping):
+        return False
+    basis = str(role.get("consent_basis") or "")
+    return basis.endswith(f":{RECORDED_EXPLICIT_CONSENT}") or (
+        role.get("kind") == "not_observed" and role.get("reason") in CONSENT_CHECKED_REASONS
+    )
 
 
 def actor_analysis_scope(selection: object, attribution_state: object) -> str:

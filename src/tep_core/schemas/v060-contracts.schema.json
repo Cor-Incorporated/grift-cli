@@ -2104,6 +2104,7 @@
             "actor_attribution_state": {
               "enum": ["verified", "claimed", "inferred", "unresolved", "external", "bot"]
             },
+            "actor_consent": {"const": "recorded-explicit-consent"},
             "project_id": {
               "oneOf": [
                 {"type": "null"},
@@ -2119,6 +2120,13 @@
                 "properties": {"actor_selection": {"const": "inferred_actor"}}
               },
               "then": {"not": {"required": ["actor_attribution_state"]}}
+            },
+            {
+              "if": {
+                "required": ["actor_selection"],
+                "properties": {"actor_selection": {"const": "inferred_actor"}}
+              },
+              "then": {"not": {"required": ["actor_consent"]}}
             }
           ]
         },

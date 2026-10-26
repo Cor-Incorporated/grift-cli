@@ -1,7 +1,7 @@
 {
   "actor_index_digest": {
     "algorithm": "sha256",
-    "value": "4f3d985c90f795bc47d8c8eeb1bc58f65d9690296029ea5ff2f174edad82d887"
+    "value": "f30b538dc5ba76fd4ecfb3a1df77ca09e042cf1556028af89a7062b10e937d32"
   },
   "full": {
     "actor_count": 3,
@@ -22,19 +22,19 @@
       "bytes": 1592,
       "media_type": "application/json",
       "path": "actor-index.json",
-      "sha256": "97b64bef9e517ea3641fbbbb26cc186763d3cf65ba11a1bfc6fd80436accb258"
+      "sha256": "25dfe9241811a2054ee8d9257acf32598e1fb5db2be5758982187eaa7f57f943"
     },
     {
       "bytes": 906,
       "media_type": "text/markdown",
       "path": "actor-index.md",
-      "sha256": "3750b9f45ba18e8e0b9de95a2a7314a9605af8eb15520afb13745afe74355c13"
+      "sha256": "07273b851fe2d7b715ee72544ee9afd497f3833289b4f29487c7b49638e9878d"
     },
     {
       "bytes": 949,
       "media_type": "application/json",
       "path": "actors/cloudia.json",
-      "sha256": "5ab9860cc1b231f72ea81526e6bdcc0d4748291242e928c9bc34dbd685f20c73"
+      "sha256": "10d953a6173ab8d272e63bc55d06263b398789bbd09270ae849a6da5cb8be36d"
     },
     {
       "bytes": 388,
@@ -46,7 +46,7 @@
       "bytes": 952,
       "media_type": "application/json",
       "path": "actors/kisayama.json",
-      "sha256": "b1cac7563e903fd4eefb770aa95a6a244c9f41e44984622a6ff78f7f1b2d7b03"
+      "sha256": "d06c41bee126905dec890a5368bd943eb615657c2dd4ff38c1b0546962fb0ea5"
     },
     {
       "bytes": 391,
@@ -58,7 +58,7 @@
       "bytes": 953,
       "media_type": "application/json",
       "path": "actors/terisuke.json",
-      "sha256": "27683497d96cde23c0ee8c5ae8ebd5e73d49ad1c80a37157fa431c4060b6b74c"
+      "sha256": "f49b39f0a8f77dfd9b333c21a034d7e113744c73eb0e12795ba9c2ed0e9dfd60"
     },
     {
       "bytes": 392,
@@ -70,13 +70,13 @@
       "bytes": 7062,
       "media_type": "application/json",
       "path": "repo-report.json",
-      "sha256": "b43040eee6afb20b76da041c675b83b0e60b92bea5df5b9784d8988b3de95968"
+      "sha256": "7b974c28029f54cf112252a122226f2e4892405d9657a2bbc1faf0fe424ef049"
     },
     {
       "bytes": 893,
       "media_type": "text/markdown",
       "path": "repo-report.md",
-      "sha256": "60b1e830d89ea2b32008228b796f5292df5ec9aa8b183dc4a1857ec9366c94fc"
+      "sha256": "13173b4c0ee5e971f1fdb69fbd97999174374add5034901f680df29625bd9948"
     }
   ],
   "partition_digest": {
@@ -97,7 +97,7 @@
     ],
     "digest": {
       "algorithm": "sha256",
-      "value": "e399fa03cfe47d34ee3a90373eee5b93ef49c10fabf970148a3a4a6a65a80e95"
+      "value": "44615423f4ac5a86920058b0fd6f07055e465b3f01b08f3dd0677204a8403317"
     },
     "links": [
       {

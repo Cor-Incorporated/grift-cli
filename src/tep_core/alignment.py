@@ -4,10 +4,16 @@ from __future__ import annotations
 
 from typing import Any
 
+from tep_core.actor_basis import consent_recorded
+from tep_core.identity import RECORDED_EXPLICIT_CONSENT
 from tep_core.v2_constants import (
     ACTIVE_DAYS_INFLATION_LIMITATION,
     ALIGNMENT_NOTICE,
     COMPARISONS,
+    HISTORY_WINDOW_BASIS,
+    HISTORY_WINDOW_PREFIX,
+    RELATIONSHIP_COMPARED_UNIT,
+    RELATIONSHIP_SCOPE_NOT_EQUIVALENT,
     SELECTIVITY_NOTICE,
 )
 from tep_core.version import ALIGNMENT_SCHEMA_VERSION
@@ -98,6 +104,12 @@ def _obs_share(profile: dict[str, Any], group: str, name: str) -> dict[str, Any]
     return {"kind": "observed", "value": float(raw), "unit": "commit_share"}
 
 
+_DECLARED_UNIT = {
+    "surface_commit_counts": "surface",
+    "test_type_distribution": "verification-type",
+}
+
+
 def _declared_floor(declared_block: dict[str, Any], name: str) -> float | None:
     """The minimum share the brief asked for, when it asked for one.
 
@@ -124,11 +136,14 @@ def _compare_named_axis(
 
     Stating what the work needs is not weighting: the observation is still
     reported as measured, and the verdict vocabulary is unchanged (norms §7).
+    The declared node names what was declared, a surface or a verification type;
+    0.8.0 called every declared name a surface (trait-profile design §1.4 row 7).
     """
+    unit_label = _DECLARED_UNIT.get(count_group, "surface")
     floor = _declared_floor(declared_block, name)
     if floor is None:
         observed = _obs_count(profile, count_group, name)
-        declared_node = {"kind": "declared", "value": name, "unit": "surface"}
+        declared_node = {"kind": "declared", "value": name, "unit": unit_label}
         return declared_node, observed, _presence_compare(declared_block, observed)
     counted = _obs_count(profile, count_group, name)
     if counted.get("kind") == "observed" and counted.get("value") == 0:
@@ -410,6 +425,21 @@ def _basis(node: dict[str, Any], *, source: list[str], window: Any) -> dict[str,
     }
 
 
+_HISTORY_AXES = ("surfaces.", "verification.")
+_SHARE_SOURCES = {
+    "surfaces.": ("surface_profile", "surface_commit_share"),
+    "verification.": ("verification_profile", "test_type_share"),
+}
+
+
+def _history_window(report: dict[str, Any] | None) -> dict[str, Any] | None:
+    """What surface and verification counts cover: every scoped commit to the date."""
+    end = ((report or {}).get("provenance") or {}).get("observation_date")
+    if not end:
+        return None
+    return {"end": end, "unit": "date-range", "basis": HISTORY_WINDOW_BASIS}
+
+
 def enrich_axes(
     axes: list[dict[str, Any]],
     project_observed: dict[str, Any] | None,
@@ -419,24 +449,22 @@ def enrich_axes(
 ) -> None:
     from tep_core.tendency import relationship, rhythm_tendency, surface_tendency
 
-    actor_window = (actor_report.get("provenance") or {}).get("git_window")
-    project_window = ((project_report or {}).get("provenance") or {}).get("git_window")
-    windows_comparable = (
-        _windows_equivalent(actor_window, project_window) if project_report else False
+    rhythm = (
+        (actor_report.get("provenance") or {}).get("git_window"),
+        ((project_report or {}).get("provenance") or {}).get("git_window"),
     )
-    actor_src = ["git:path", "git:author_timestamp"]
-    project_src = ["git:path", "git:author_timestamp"]
+    history = (_history_window(actor_report), _history_window(project_report))
+    sources = (["git:path", "git:author_timestamp"], ["git:path", "git:author_timestamp"])
     helpers = (relationship, surface_tendency, rhythm_tendency)
     for axis in axes:
+        windows = history if str(axis.get("axis") or "").startswith(_HISTORY_AXES) else rhythm
         _enrich_one_axis(
             axis,
             project_observed,
             actor_report=actor_report,
-            actor_window=actor_window,
-            project_window=project_window,
-            windows_comparable=windows_comparable,
-            actor_src=actor_src,
-            project_src=project_src,
+            windows=windows,
+            windows_comparable=_windows_equivalent(*windows) if project_report else False,
+            sources=sources,
             helpers=helpers,
         )
 
@@ -452,14 +480,13 @@ def _enrich_one_axis(
     project_observed: dict[str, Any] | None,
     *,
     actor_report: dict[str, Any],
-    actor_window: Any,
-    project_window: Any,
+    windows: tuple[Any, Any],
     windows_comparable: bool,
-    actor_src: list[str],
-    project_src: list[str],
+    sources: tuple[list[str], list[str]],
     helpers: tuple[Any, Any, Any],
 ) -> None:
     relationship_fn, surface_tendency, rhythm_tendency = helpers
+    (actor_window, project_window), (actor_src, project_src) = windows, sources
     actor_node = axis.get("observed") or {}
     project_node = _project_axis_value(str(axis.get("axis")), project_observed)
     declared_node = axis.get("declared") or {}
@@ -492,11 +519,11 @@ def _enrich_one_axis(
         surface_tendency=surface_tendency,
         rhythm_tendency=rhythm_tendency,
     )
+    nodes = (actor_node, project_node, declared_node)
     _assign_axis_relationship(
         axis,
-        actor_node=actor_node,
-        project_node=project_node,
-        declared_node=declared_node,
+        nodes=nodes,
+        actor_report=actor_report,
         project_observed=project_observed,
         windows_comparable=windows_comparable,
         relationship_fn=relationship_fn,
@@ -579,9 +606,8 @@ def _assign_axis_tendency(
 def _assign_axis_relationship(
     axis: dict[str, Any],
     *,
-    actor_node: dict[str, Any],
-    project_node: dict[str, Any],
-    declared_node: dict[str, Any],
+    nodes: tuple[dict[str, Any], dict[str, Any], dict[str, Any]],
+    actor_report: dict[str, Any],
     project_observed: dict[str, Any] | None,
     windows_comparable: bool,
     relationship_fn: Any,
@@ -596,26 +622,134 @@ def _assign_axis_relationship(
         axis["coverage"] = {"status": "partial", "missing": ["project_observed"]}
         return
     axis["source"] = "actor.report + project.observed + project.declared"
-    axis["relationship"] = relationship_fn(
-        actor_node=actor_node,
-        project_node=project_node,
-        declared_node=declared_node,
-        windows_comparable=windows_comparable,
-        actor_n=axis.get("actor_n"),
-        project_n=axis.get("project_n"),
-    )
-    if axis["relationship"].get("kind") == "not_comparable":
-        axis["incomparable_reason"] = axis["relationship"].get("reason")
-        axis["coverage"] = {"status": "partial", "missing": ["comparable_windows_or_units"]}
+    name = str(axis.get("axis") or "")
+    if name.startswith("change_rhythm."):
+        relation = _scope_not_equivalent()
+    else:
+        relation = _axis_relationship(
+            axis, nodes, actor_report, project_observed, windows_comparable, relationship_fn
+        )
+    axis["relationship"] = relation
+    if relation.get("kind") == "not_comparable":
+        scope = relation.get("reason") == RELATIONSHIP_SCOPE_NOT_EQUIVALENT
+        missing = "comparable_scope" if scope else "comparable_windows_or_units"
+        axis["incomparable_reason"] = relation.get("reason")
+        axis["coverage"] = {"status": "partial", "missing": [missing]}
         return
     axis["incomparable_reason"] = None
     axis["coverage"] = {"status": "present", "missing": []}
 
 
+def _scope_not_equivalent() -> dict[str, Any]:
+    """One person's gaps and day counts against a whole repository's are not one scale."""
+    return {
+        "kind": "not_comparable",
+        "confidence": "not_proven",
+        "reason": RELATIONSHIP_SCOPE_NOT_EQUIVALENT,
+        "limitations": [
+            "An actor's commits and a repository's commits are different populations; "
+            "gap and day counts change with the number of people, so they are not compared."
+        ],
+    }
+
+
+def _share_with_n(profile: dict[str, Any], group: str, name: str) -> tuple[dict[str, Any], Any]:
+    """The share node the relationship compares, with its own reason and n."""
+    block = profile.get(group) or {}
+    if profile.get("kind") != "not_observed" and block.get("kind") not in (None, "observed"):
+        node = {"kind": "not_observed", "reason": block.get("reason") or "share_not_observed"}
+    else:
+        node = _obs_share(profile, group, name)
+    sample = block.get("sample_size")
+    if isinstance(sample, bool) or not isinstance(sample, int):
+        sample = None
+    if node.get("kind") == "observed" and sample is not None:
+        node = {**node, "sample_size": sample}
+    return node, sample
+
+
+def _axis_relationship(
+    axis: dict[str, Any],
+    nodes: tuple[dict[str, Any], dict[str, Any], dict[str, Any]],
+    actor_report: dict[str, Any],
+    project_observed: dict[str, Any],
+    windows_comparable: bool,
+    relationship_fn: Any,
+) -> dict[str, Any]:
+    """Surfaces and test types compare within-scope shares, never raw counts.
+
+    Dividing one person's commit count by a team's made the direction a measure
+    of team size (trait-profile design §1.4 row 1).
+    """
+    actor_node, project_node, declared_node = nodes
+    name = str(axis.get("axis") or "")
+    prefix = next((key for key in _SHARE_SOURCES if name.startswith(key)), None)
+    if prefix is None:
+        return relationship_fn(
+            actor_node=actor_node,
+            project_node=project_node,
+            declared_node=declared_node,
+            windows_comparable=windows_comparable,
+            actor_n=axis.get("actor_n"),
+            project_n=axis.get("project_n"),
+        )
+    profile_key, group = _SHARE_SOURCES[prefix]
+    item = name.split(".", 1)[1]
+    actor_share, actor_n = _share_with_n(actor_report.get(profile_key) or {}, group, item)
+    project_share, project_n = _share_with_n(project_observed.get(profile_key) or {}, group, item)
+    relation = relationship_fn(
+        actor_node=actor_share,
+        project_node=project_share,
+        declared_node=declared_node,
+        windows_comparable=windows_comparable,
+        actor_n=actor_n,
+        project_n=project_n,
+    )
+    return {
+        **relation,
+        "compared": RELATIONSHIP_COMPARED_UNIT,
+        "actor_share": actor_share,
+        "project_share": project_share,
+    }
+
+
 def _window_str(window: Any) -> str:
+    if isinstance(window, dict) and window.get("basis") == HISTORY_WINDOW_BASIS:
+        return f"{HISTORY_WINDOW_PREFIX}{window.get('end')}"
     if isinstance(window, dict) and window.get("start"):
         return f"{window.get('start')}/{window.get('end')}"
     return "unspecified"
+
+
+def alignment_subject(
+    actor_report: dict[str, Any],
+    *,
+    project_id: object,
+    mode: str | None = None,
+) -> dict[str, object]:
+    """The alignment subject. Optional actor fields stay absent instead of null.
+
+    `actor_consent` copies the consent record with the same check as the actor
+    report's trait section (T7), so the alignment asks interview questions under
+    the same rule, and `grift verify` rebuilds it from the actor report instead
+    of trusting the saved value.
+    """
+
+    actor_subject = actor_report.get("subject") or {}
+    subject: dict[str, object] = {
+        "kind": "alignment",
+        "actor_canonical_id": actor_subject.get("canonical_id"),
+        "project_id": project_id,
+    }
+    if actor_subject.get("selection") is not None:
+        subject["actor_selection"] = actor_subject["selection"]
+    if actor_subject.get("attribution_state") is not None:
+        subject["actor_attribution_state"] = actor_subject["attribution_state"]
+    if actor_subject.get("selection") != "inferred_actor" and consent_recorded(actor_report):
+        subject["actor_consent"] = RECORDED_EXPLICIT_CONSENT
+    if mode is not None:
+        subject["mode"] = mode
+    return subject
 
 
 def alignment_payload(

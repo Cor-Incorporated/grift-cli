@@ -292,6 +292,16 @@ grift contribute --privacy aggregate --door public-pr --out .grift/contribution.
 grift contribute --purpose outcome-linkage --door local
 ```
 
+## 0.8.0 からの更新
+
+詳しくは [migration-v090.md](migration-v090.md) と [CHANGELOG](../CHANGELOG.md) にあります。作り直しが要るものは次のとおりです。
+
+- 0.8.0 で保存した report（`analyze`・`actor`・`repo`）と照らし合わせ（`align`）は、0.9.0 の `grift verify` で CANNOT_VERIFY になります（`DEFINITION_VERSION` を上げたため）。project report は MISMATCH になります。0.9.0 で作り直してください
+- 照らし合わせの向き（`relationship`）は、0.9.0 から、それぞれの中の割合どうしで決めます。0.8.0 の値とは意味が違うので、並べて比べないでください
+- 0.8.0 で `--as-of` を付けて書き出した collection は、0.9.0 の `grift verify` で MISMATCH になります（`role_profile` を観測日で切るようになったため）。作り直してください
+- identity に書いた人に commit が無く、同じ作者名の別人がいる repo では、0.8.0 の report と collection が別人の commit を本人の数に入れていました。0.9.0 で作り直してください
+- `--as-of` を付けずに読んだ report で、HEAD の作者の現地の日付と UTC の日付が違う（UTC より西の夕方、日本の 0 時〜9 時など）ときは、観測日が 1 日ずれていました。0.9.0 で作り直してください
+
 ## 0.7.x からの更新
 
 詳しくは [migration-v080.md](migration-v080.md) と [CHANGELOG](../CHANGELOG.md) にあります。作り直しが要るものは次のとおりです。

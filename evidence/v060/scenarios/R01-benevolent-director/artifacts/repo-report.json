@@ -1,7 +1,7 @@
 {
   "actor_index_digest": {
     "algorithm": "sha256",
-    "value": "4f3d985c90f795bc47d8c8eeb1bc58f65d9690296029ea5ff2f174edad82d887"
+    "value": "f30b538dc5ba76fd4ecfb3a1df77ca09e042cf1556028af89a7062b10e937d32"
   },
   "attribution": {
     "actor_partition": {
@@ -63,8 +63,8 @@
     },
     "git_window": {
       "days": 180,
-      "end": "2026-08-30",
-      "start": "2026-03-03",
+      "end": "2026-08-29",
+      "start": "2026-03-02",
       "unit": "days"
     },
     "public_forge": {
@@ -113,7 +113,7 @@
   ],
   "metrics": {
     "human_nonmerge_commit_share": {
-      "definition_version": "tep-v0.8.0-2026-10-25",
+      "definition_version": "tep-v0.9.0-2026-10-26",
       "denominator": 3994,
       "kind": "observed",
       "limitations": [
@@ -124,8 +124,8 @@
       "value": 0.6527,
       "window": {
         "basis": "legacy_head_date",
-        "end": "2026-08-30",
-        "start": "2026-03-03",
+        "end": "2026-08-29",
+        "start": "2026-03-02",
         "unit": "date-range"
       }
     }
@@ -151,9 +151,9 @@
   },
   "provenance": {
     "analysis_scope": "repo",
-    "analyzed_at": "2026-10-25T15:56:48Z",
+    "analyzed_at": "2026-10-26T13:41:57Z",
     "analyzed_commit_sha": "a650ffa6b5921b93fcc32398ab01e0043ce962ec",
-    "definition_version": "tep-v0.8.0-2026-10-25",
+    "definition_version": "tep-v0.9.0-2026-10-26",
     "input_digests": {
       "benchmark_manifest": null,
       "forge": null,
@@ -178,7 +178,7 @@
       "value": "a650ffa6b5921b93fcc32398ab01e0043ce962ec"
     },
     "tool_name": "grift",
-    "tool_version": "0.8.0"
+    "tool_version": "0.9.0"
   },
   "report_kind": "evidence",
   "schema_version": "report-v2",
@@ -194,8 +194,8 @@
   },
   "window": {
     "basis": "legacy_head_date",
-    "end": "2026-08-30",
-    "start": "2026-03-03",
+    "end": "2026-08-29",
+    "start": "2026-03-02",
     "unit": "date-range"
   }
 }

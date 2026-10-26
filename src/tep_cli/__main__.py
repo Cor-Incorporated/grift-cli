@@ -228,12 +228,16 @@ def _run_actor_artifact_verify(
                         selected_identity = select_actor(identity, actor.actor_id)
                         # The third element is the library-prevalence axis, which
                         # the actor card does not carry; cards recompute only
-                        # what they record.
+                        # what they record. A card written with --as-of cut its
+                        # role profile at that date, so the recomputation does too.
+                        window = card.get("window") or {}
+                        cut = window.get("basis") == "explicit_as_of" and window.get("end")
                         expected_experience, expected_role, _ = _tenant_experience(
                             fixed.worktree,
                             commits,
                             origin,
                             selected_identity,
+                            observation_date=str(window["end"])[:10] if cut else None,
                         )
                     else:
                         # Definition versions come from the modules that own

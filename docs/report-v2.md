@@ -197,7 +197,10 @@ taggerのname/emailやtag本文はstatementへ出力しません。署名、repo
 ## Markdown
 
 Markdownは「対象 → 入力/provenance → coverageと未観測 → 数値と母数 → 読み方 →
-言えること/言えないこと → 再現情報」の順です。path heuristic、活動時刻、
+言えること/言えないこと → 再現情報」の順です。v0.9.0 から、actor の Markdown はその前に
+「この記録から見える進め方」の節を置きます。文と面談の問いは[決定表](trait-profile.md)で
+JSON の数字から選び、`attribution_state=claimed` と `consent=recorded-explicit-consent` が
+あるときだけ出します。ほかの actor basis には、出していない理由を 1 文で書きます。path heuristic、活動時刻、
 declared AI trailer、attestationはいずれも職種・能力・品質の判定ではありません。
 
 `analyzed_at`はprovenanceだけに使い、数値計算へ混ぜません。

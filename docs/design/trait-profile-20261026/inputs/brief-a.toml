@@ -1,0 +1,21 @@
+# tep-actor-brief-v1 の書き方の案（段階 2）。grift 0.8.0 はこのファイルを読めません。
+# エンジニアが案件に求めること（希望）を書く。できることの申告ではない。
+schema_version = "tep-actor-brief-v1"
+actor_id = "candidate-a"
+
+[wishes.surfaces]
+# やりたい場所と、避けたい場所。値は tep-project-v1 の surface と同じ 11 種類。
+prefer = ["backend", "data"]
+avoid = []
+
+[wishes.verification]
+# 案件のリポジトリにあってほしい確かめ方。
+prefer = ["unit", "integration"]
+
+[sharing]
+# 本人が共有できる記録。案件側の requirements.inputs と宣言どうしで並べる。
+inputs = ["git", "forge"]
+
+[note]
+# 本人のひとこと。200 字まで。grift は確かめず、申告としてそのまま載せる。
+text = "決済まわりの保守を 3 年続けています。画面の仕事は前の職場で 1 年ほどしました（非公開のリポジトリです）。"
