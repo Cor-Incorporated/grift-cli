@@ -314,7 +314,7 @@ grift contribute --purpose outcome-linkage --door local
 詳しくは [migration-v091.md](migration-v091.md) と [CHANGELOG](../CHANGELOG.md) にあります。作り直しが要るものは次のとおりです。
 
 - 0.9.0 で保存した report（`analyze`・`actor`・`repo`）と照らし合わせ（`align`）は、0.9.1 の `grift verify` で CANNOT_VERIFY になります（`DEFINITION_VERSION` を上げたため）。リポジトリを観測した project report は MISMATCH になります。0.9.1 で作り直してください
-- 0.9.0 で `--as-of` を付けて書き出した collection は、0.9.1 の `grift verify` で MISMATCH になります（experience・test_cochange・rework も観測日で切るようになったため）。作り直してください
+- 0.9.0 で `grift actor ID --as-of … --out DIR` を使い、identity に同意の記録がある人の card を書き出した collection は、0.9.1 の `grift verify` で MISMATCH になります（card の experience を観測日で切るようになったため）。作り直してください。`--all`・`--top`・`repo --actors` の collection は `--as-of` 付きでも VERIFIED のままです（作者名が `actor_` と 16 進数の形の人がいる repo の collection は、どの書き方でも MISMATCH になるので作り直してください）
 - identity の `canonical_id` に `actor_` と 16 進数 12〜32 桁の形を書いていると、0.9.1 は exit 2 で止まります。読める id に書き直してください。リポジトリに commit した identity を固定 revision で読むときは、直したものを `--identity FILE` で渡してください
 - v2 レポートの `context_profile` は UTC の日付で日を数えます。日本の 0 時〜9 時の commit がある repo では、0.9.0 と値が違うことがあります
 

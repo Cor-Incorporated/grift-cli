@@ -7,40 +7,45 @@
 ## [0.9.1] — 2026-10-28
 
 人や案件について事実と違う数や読みが出うるところを直す patch release。コマンドは増えず、CLI フラグと
-enum 値は変わらない（schema key は project-v1 と collection の provenance に任意の 1 つずつ増える）。
-公開 Forge 取得（provider-neutral Forge証跡、GitHub/GitLab/self-managed、PARTIAL/resume）、
-attest / portfolio、contribution-v2 の契約、`暗黙 PyPI update check` を持たない設計はいずれも 0.9.0 から
-変わらない。移行は `docs/migration-v091.md`、英語は `docs/en/migration-v091.md`。
+enum 値は変わらない。任意の key が増えるのは、project-v1 の `provenance.revision_completeness`（そこから作った
+照らし合わせの `project_provenance` にも写る）と、identity を使って書いた collection の `repo-report.json` の
+`provenance.identity_digest`（report-v2 に元からある任意の key）。公開 Forge 取得（provider-neutral Forge証跡、
+GitHub/GitLab/self-managed、PARTIAL/resume）、attest / portfolio、contribution-v2 の契約、`暗黙 PyPI update check` を
+持たない設計はいずれも 0.9.0 から変わらない。移行は `docs/migration-v091.md`、英語は `docs/en/migration-v091.md`。
 
-JSON の値が変わるのは次の場面で、どれも 0.9.0 の在庫（`docs/PLAN-v080-20261025.md` §6）にあったもの。
+JSON の値が変わるのは次の場面で、どれも 0.9.0 のリリースの後に洗い出した在庫にあったもの。
 
-- `--as-of` を指定したとき、experience・test_cochange・rework も観測日（UTC）で切る。activity の日も
-  同じ UTC の日で数える
-- `--as-of` を指定しないとき、HEAD から辿れるのに HEAD より後の作者日付を持つ commit（rebase・
-  cherry-pick のあと）が、数えから外れていた。観測日をそれらのうち最も遅い作者日付（UTC）にする
+- `--as-of` を指定したとき、experience・test_cochange・rework も観測日（UTC）で切る。actor の activity の日も
+  同じ UTC の日で数える（`grift repo` の activity は、まだ作者の現地の日付で数える）
 - v2 レポートの `context_profile` の日付を UTC で数える。**ふつうのリポジトリでも変わりうる**: 作者の
   現地の日付と UTC の日付が違う commit（日本なら 0:00〜8:59）があると、`active_days_180d` などが
   同じレポートの `change_rhythm` と同じ数え方になる
+- forge / tracker の export の窓を UTC の日付で読む（UTC より東の offset で書かれ、`[:10]` がたまたま Git の窓と
+  合っていた export は `windows_not_equivalent` になる）
 - 浅い clone の report-v2 の `limitations` の 1 文を、実際に `not_observed` にした値と、取得できた
   commit だけで数えた節を名前で並べる文にする
-- 作者名が grift の付ける hash id（`actor_` と 16 進数）と同じ形の人は、自分の hash id で数える
-  （0.9.0 までは別の人の hash id と重なると exit 2 で止まった）
+- 作者名が grift の付ける hash id（`actor_` と 16 進数）の形の人は、名前の slug ではなく自分の hash id で数える
+
+`--as-of` なしで、HEAD より後の作者日付を持つ祖先（rebase・cherry-pick のあと）がレポートから外れる件は、
+直し方を試したが外し、次の版に回した。観測日は 0.9.0 と同じく HEAD の作者日付の UTC の日付。
 
 0.9.0 で保存した report（`analyze`・`actor`・`repo`）と照らし合わせは、0.9.1 の `verify` では定義版数が違うため
 CANNOT_VERIFY に、リポジトリを観測した project report は定義版数の欄が食い違うため MISMATCH になる（要求だけの
-project report は VERIFIED）。書き出した一式（`--out` の collection）は定義版数を見ないので、`--as-of` を付けて作った
-ものと、作者名が hash id の形の人がいる repo のものだけが MISMATCH になる。どれも 0.9.1 で作り直せば検算できる
-（実測は `docs/migration-v091.md`）。
+project report は VERIFIED）。書き出した一式（`--out` の collection）は定義版数を見ない。`grift actor ID --as-of …
+--out DIR` で、identity に同意の記録がある人の card を書いたものは MISMATCH（card の experience を観測日で切るように
+なったため）、作者名が hash id の形の人がいる repo のものも MISMATCH、identity が読めなければ CANNOT_VERIFY に
+なる。それ以外（`--all`・`--top`・`repo --actors` は `--as-of` 付きでも）は VERIFIED。どれも 0.9.1 で作り直せば
+検算できる（実測は `docs/migration-v091.md`）。
 
 ### Added
 
 - **`grift project` の JSON（project-v1）に `provenance.revision_completeness` を足した**（任意。
   `{shallow, promisor, complete}`、report-v2 と同じ形）。案件のリポジトリを渡したときだけ書く。浅い
   clone でないと分かれば、project の Markdown の範囲を「全履歴」と書く（0.9.0 は見分けられないので
-  書かなかった）。`grift verify` はこの key も作り直して比べる（#103）
-- **identity を使って書いた collection の `repo-report.json` に `provenance.identity_digest` を足した**
-  （任意。report-v2 の同じ key と同じ値）。`grift verify` に別の identity を渡すと、分け方が同じでも
-  identity の違いとして MISMATCH を名指しする（#105）
+  書かなかった）。`grift verify` はこの key も作り直して比べる
+- **identity を使って書いた collection の `repo-report.json` に `provenance.identity_digest` を書く**
+  （report-v2 の同じ key と同じ値）。`grift verify` に別の identity を渡すと、分け方が同じでも identity の違いとして
+  MISMATCH を名指しする
 
 ### Changed
 
@@ -51,52 +56,51 @@ project report は VERIFIED）。書き出した一式（`--out` の collection�
 - **identity の `canonical_id` に、grift が付ける hash id の形（`actor_` と 16 進数 12〜32 桁）を書けなく
   した**（exit 2。観測した値をメッセージに出す）。宣言した id が別の人の hash id と同じだと、その人の
   commit が宣言した人の数に入ることがあった。この形の id を使っている identity は、読める id に
-  書き直す必要がある（#105）
+  書き直す必要がある
+- identity を読めない collection の `grift verify` は、MISMATCH（exit 1）ではなく CANNOT_VERIFY（exit 2）になる
 - 照らし合わせの Markdown の「数字の読み方と限界」に、`grift report <alignment.json>` での描き直しは
-  同意の記録を確かめないこと、確かめるのは `grift verify` であることを 1 行で書く（#102）
+  同意の記録を確かめないこと、保存した report から作った照らし合わせでは actor report も `grift verify` で
+  確かめることを 1 行で書く
 
 ### Fixed
 
 - **`--as-of` を指定しても、experience・test_cochange・rework が観測日のあとの commit まで数えていた**。
   test_cochange の 13 週の窓も HEAD の日から数えていた。どれも観測日（UTC）の終わりまでの commit と
   タグで数え、13 週の窓は観測日から数える。足した依存も観測日までの commit の分だけを数える。
-  `--as-of` のときの activity の日は、範囲を切るのと同じ UTC の日で数える。`--as-of` を指定しない
-  ときは変わらない（#106）
-- **`--as-of` なしで、HEAD より後の作者日付を持つ祖先が黙って外れていた**。観測日を、HEAD から
-  辿れる commit のうち最も遅い作者日付（UTC）にした。ふつうは HEAD の日のまま（#104）
+  `--as-of` のときの actor の activity の日は、範囲を切るのと同じ UTC の日で数える。`--as-of` を指定しない
+  ときは、これらの値は変わらない
 - **v2 レポートの `context_profile` が作者の現地の日付で数えていた**。範囲は UTC の日付で切るので、
   同じレポートの中で `context_profile.active_days_180d` と `change_rhythm.active_days_180d` が
-  食い違うことがあった。UTC の日付で数える。report-v1（`grift analyze`）は変えていない（#104）
+  食い違うことがあった。UTC の日付で数える。report-v1（`grift analyze`）は変えていない
 - forge / tracker の export の窓の日付を、時刻の offset のまま `[:10]` で読んでいた。UTC の日付で
-  読む（UTC より西で書いた窓に `--event-window` を合わせられなかった）（#104）
-- 件名に 0x1f などの区切りに似た文字を含む commit を、`git log` の読み取りで落としていた（#104）
+  読む（UTC より西で書いた窓に `--event-window` を合わせられなかった）
+- 件名に 0x1f などの区切りに似た文字を含む commit を、`git log` の読み取りで落としていた
 - git の設定 `log.showSignature=true` の環境で、署名の確認の行が commit のファイルの一覧に混ざっていた。
-  grift が呼ぶ git に `log.showSignature=false` を付ける（#104）
+  grift が呼ぶ git に `log.showSignature=false` を付ける
 - **浅い clone の report-v2 が「actor の合計は not_observed」と書きながら、surface・change_rhythm は
   取得できた範囲から observed で出していた**。`limitations` の文を、not_observed にした値と、取得
-  できた commit だけで数えた節を名前で並べる文にした（#103）
-- **作者名が別の cluster の hash id と同じ形だと、解析が exit 2 で止まっていた**。その人は自分の
-  hash id で数える（#105）
+  できた commit だけで数えた節を名前で並べる文にした
+- **作者名の slug が別の cluster の hash id と同じだと、解析が exit 2 で止まっていた**。hash id の形の名前の人は
+  自分の hash id で数える
 - **`grift verify <alignment.json> --repo --identity --project` が、照らし合わせの `project_id`・`mode`・
   provenance の多く・`limitations` を保存した JSON から写していた**（書き換えても VERIFIED になった）。
   `grift align --repo` と同じ関数で作り直して比べる。`--survival` / `--vendor-scan` / `--reference` で作った
   照らし合わせが必ず MISMATCH になっていたのも直した。`--actor-report`/`--project-report` と `--project` の
   両方を渡したときだけ、JSON の `subject.mode` でどちらの経路で確かめるかを選ぶ。照らし合わせの JSON は
-  変わらない（#102）
+  変わらない。保存した report から作った照らし合わせの検算と、`--event-window` で作った照らし合わせの repo の
+  経路の検算は、まだ直していない
 - `--as-of` を指定した actor の Markdown が、観測日までに付けたリリースの印（注釈付きタグ）の回数を
-  書かなかった。role_profile の窓が観測日の終わりで切られているとき（#91 以降の `--as-of`）は、
-  回数と面談の問いを出す（#100）
+  書かなかった。role_profile の窓が観測日の終わりで切られているとき（0.9.0 以降の `--as-of`）は、
+  回数と面談の問いを出す
 - Markdown の「傾向」の行で、変更のペースの名前が 2 回続いていた（「変更のペース（変更リズム）:
-  変更の間隔が観測される」にした）（#101）
+  変更の間隔が観測される」にした）
 - release tier の workflow（`v060-provider-live.yml`）が途中で失敗したとき、仮の FAIL 要約を
-  `actions/checkout` が消していて、何も上げられなかった。仮の要約を checkout の後に書く（#99）
+  `actions/checkout` が消していて、何も上げられなかった。仮の要約を checkout の後に書く
 - テスト: `--as-of` の切り方（actor_cluster・13 週の基準・観測日その日・UTC）、東の朝の commit が
-  窓に入るか、呼び名の表と見出し・傾向の名前・宣言の名前、JSON と Markdown の傾向の注記、
-  照らし合わせの検算と契約の schema、project の節に役割の節が出ないこと、を固定するテストを
-  足した（#100〜#106）
+  窓に入るか、呼び名の表と見出し・傾向の名前・宣言の名前・観点の名前を含む文、JSON と Markdown の傾向の注記、
+  照らし合わせの検算と契約の schema、project の節に役割の節が出ないこと、を固定するテストを足した
 - docs: 照らし合わせの節の順に「案件側の宣言」を、`relationship.kind` の一覧に `not_proven` を
   足した（`docs/alignment-schema.md`）。`docs/export-schema.md`（日英）の日付の説明を直した
-  （#102・#104）
 
 ## [0.9.0] — 2026-10-26
 
@@ -299,7 +303,7 @@ PARTIAL/resume）、attest / portfolio、contribution-v2 の契約、`暗黙 PyP
   表の並びという実体は量で決まっていた。公開面の「点数や順位はつけない」と
   食い違うので並び順だけを直し、`commit_count` の値は分母付きの事実として
   残す。actor id は identity があれば canonical_id、無ければ `actor_<hash>`。`--top N` が選ぶ N 名は変わらない（量で選ぶ経路は 0.9 で
-  廃止か改名をユーザーが判断する。`docs/PLAN-v080-20261025.md` §2.3）。
+  廃止か改名をユーザーが判断する）。
   `grift verify DIR` は、行が actor id 順でない index、行順に従わない
   selection、最多 commit の集合でない `top` selection を digest 比較の前に
   拒否し、CLI の collection verify は writer と同じ `actor_summaries` で行を

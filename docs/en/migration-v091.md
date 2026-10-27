@@ -11,8 +11,9 @@ command from v0.6.0 to v0.9.0 is still there.
 
 **No new commands. 0.9.1 fixes places, listed after the 0.9.0 release, where numbers or wording
 about a person or a project could be wrong.** CLI flags and enum values do not change. Two optional
-keys are added: one to project-v1 and one to the collection's provenance. JSON values change in the
-cases below.
+keys are added: `provenance.revision_completeness` in project-v1 (also copied into an alignment's
+`project_provenance` built from it), and `provenance.identity_digest` in a collection's `repo-report.json`
+when it is written with an identity (a key report-v2 already had). JSON values change in the cases below.
 
 ### With `--as-of`, experience, test_cochange and rework are cut at the observation date too (PR #106, **affects saved reports and collections**)
 
@@ -20,14 +21,16 @@ cases below.
 counted the 13-week window of test_cochange back from HEAD's date. 0.9.1 counts all of them up to the
 end of the observation date (UTC), commits and tags alike, and counts the 13-week window back from
 the observation date. Introduced dependencies (`dependency_introduction`, `library_context`) count
-only the commits up to that date. With `--as-of`, activity days are counted on the same UTC days the
-range is cut on.
+only the commits up to that date. With `--as-of`, an actor's activity days are counted on the same UTC days
+the range is cut on. `grift repo` activity still counts the author's local days, even with `--as-of`, and its
+13-week window counts back from the local day of the last commit in range (listed for 0.9.2).
 
-- Keys that change: `test_cochange.*` (including `last_13w`), `rework.*`, `experience.*`
-  (`window.end` becomes `<date>T23:59:59Z`), `library_context`, `activity.active_days`,
-  `commits_per_active_day`, `active_days_13w`, `core_activity_period`, and the collection cards'
-  `experience`
-- Without `--as-of`, nothing changes
+- Keys that change: in actor and repo reports, `test_cochange.*` (including `last_13w`), `rework.*` and
+  `core_activity_period`; in actor reports, `experience.*` (`window.end` becomes `<date>T23:59:59Z`),
+  `library_context`, `activity.active_days`, `commits_per_active_day`, `commits_per_active_day_median` and
+  `active_days_13w`; the collection cards' `experience`; and the `interpretation` of `test_cochange` /
+  `corrective_rework` in repo reports with `--reference-version`
+- Without `--as-of`, these keys do not change
 - Without `--as-of`, actor activity still counts days by the author's local date (for report-v1
   compatibility), while `context_profile` (below) and `change_rhythm` count UTC days. The two can
   differ in one report (listed for 0.9.2)
@@ -44,8 +47,8 @@ repository's pinned revision `fa9bc31`). 0.9.1 counts UTC days.
   `repo_age_days`, `days_since_last_human_commit`, `active_days_180d`, `lifecycle_stage`,
   `actor_turnover` and `release_cadence`
 - report-v1 (`grift analyze`) does not change
-- With `--fork` and without `--vendor-scan`, v2 `context_profile` uses the same file-blind
-  classification as v1
+- With `--fork` and without `--vendor-scan`, the classification is the same as in 0.9.0 (file-blind,
+  like v1)
 
 ### Forge and tracker export windows are read as UTC days (PR #104)
 
@@ -58,7 +61,7 @@ Git window by coincidence now becomes `windows_not_equivalent`.
 
 `git log` parsing dropped or misaligned commits whose subject contained 0x1f, U+2028 and the like.
 Fields are now NUL-separated and read by position. Ordinary histories give the same result (checked
-on 26,032 commits in 5 repositories). With the git setting `log.showSignature=true`, signature check
+on 11,839 commits in 4 repositories: grift-cli, voicevox, click and express). With the git setting `log.showSignature=true`, signature check
 lines no longer end up in commit file lists (grift passes `log.showSignature=false` to git).
 
 ### Shallow clones are described accurately in the JSON (PR #103, **affects saved shallow-clone reports**)
@@ -66,7 +69,9 @@ lines no longer end up in commit file lists (grift passes `log.showSignature=fal
 - `grift project REPO` writes `provenance.revision_completeness` (`{shallow, promisor, complete}`,
   the same shape as report-v2) into project-v1 (optional; only when a repository is given). When the
   repository is shown not to be shallow, the project Markdown says "the whole history" for the range.
-  Project reports from 0.9.0 without the key still load and still verify
+  Project reports from 0.9.0 without the key still load, and the missing key alone does not cause a
+  MISMATCH (a 0.9.0 project report that observed a repository is still MISMATCH on the definition
+  version field; see the table below)
 - For a shallow clone, the report-v2 `limitations` sentence now names the values reported as
   `not_observed` and the blocks counted from the fetched commits only. (0.9.0 said "actor totals are
   reported as not_observed" while surface and change_rhythm came out observed.) Full-clone reports do
@@ -86,12 +91,13 @@ lines no longer end up in commit file lists (grift passes `log.showSignature=fal
   repositories, collection actor ids, `partition_digest` and card file names change
 - A collection written with an identity records `provenance.identity_digest` in `repo-report.json`.
   `grift verify` with a different identity reports a MISMATCH that names `identity`, even when the
-  partition is the same. Collections from 0.9.0 do not have the key; pass the same identity as when
-  they were written (verify prints a note when it differs)
+  partition is the same. Collections from 0.9.0 do not have the key, so a different identity cannot be told
+  apart; pass the same identity as when they were written (when something else differs, verify adds a
+  note that the identity may be the cause)
 - When the identity cannot be loaded, collection verify now says CANNOT_VERIFY (exit 2) instead of
   MISMATCH
 
-### Alignment verification rebuilds instead of copying the saved JSON (PR #102)
+### Verifying an alignment built from a repository rebuilds instead of copying the saved JSON (PR #102)
 
 `grift verify <alignment.json> --repo REPO --identity IDENTITY --project PROJECT` rebuilds the
 subject, provenance and limitations the same way `grift align --repo` does, and compares them.
@@ -118,6 +124,10 @@ so under its notes on reading the numbers.
   still drops out of the report (M3). A fix was tried and taken out: with it, a single commit dated
   in the future (a bot's included) moved the whole report to that date. The observation date stays
   HEAD's author date as a UTC day, as in 0.9.0
+- Verifying an alignment built from saved reports still copies the provenance and limitations from the
+  saved JSON
+- An alignment made with `--event-window` is MISMATCH on the repository verify path
+- `grift repo` activity, and actor activity without `--as-of`, count the author's local days
 
 ### Do you need to re-collect?
 
@@ -127,11 +137,19 @@ so under its notes on reading the numbers.
 | actor / repo report-v2 (outside a collection) | CANNOT_VERIFY (definition version) | Yes |
 | project report (project-v1) | With an observed repository (`grift project REPO`): MISMATCH (`definition_version`). Requirements only: VERIFIED | The former |
 | alignment (alignment-v1, `align --team`) | CANNOT_VERIFY (definition version) | Yes |
-| actor collection | The definition version is not checked. Collections written with `--as-of` are MISMATCH (`experience recomputation`), as are those of repositories with an author named like a hash id. Others VERIFY | Those that MISMATCH |
+| actor collection (`repo --actors`, `actor --all/--top`, `actor ID --out DIR`) | The definition version is not checked. A card written by `grift actor ID --as-of … --out DIR` for a person with a consent record in the identity is MISMATCH (`experience recomputation`), as are collections of repositories with an author named like a hash id; CANNOT_VERIFY if the identity cannot be loaded. Others VERIFY (`--all`, `--top` and `repo --actors` even with `--as-of`) | Those that MISMATCH |
 | attest / portfolio | Re-sign when an input report's digest changes | Depends on input |
 
+When a 0.9.0 collection written with an identity is MISMATCH, verify adds a note that the collection
+records no `identity_digest` and the identity may be the cause. For `--as-of` collections the cause is the
+experience cut above, not the identity (the note says "may").
+
+Shallow-clone repo / actor reports from 0.9.0 do not match even with the same definition version, because
+the `limitations` sentence changed.
+
 Measured on 2026-10-27 with a synthetic repository; the commands and outputs are in the Japanese
-original. All 8 outputs regenerated with 0.9.1 verify under 0.9.1.
+original. The 8 outputs other than the requirements-only project report, regenerated with 0.9.1, all
+verify under 0.9.1.
 
 ## Definition version
 

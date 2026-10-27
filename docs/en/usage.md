@@ -366,7 +366,7 @@ grift contribute --purpose outcome-linkage --door local
 The full notes are in [migration-v091.md](migration-v091.md) (the [Japanese original](../migration-v091.md) also keeps the notes for older versions) and the [changelog](../../CHANGELOG.md) (in Japanese). What needs regenerating:
 
 - Reports saved by 0.9.0 (`analyze`, `actor`, `repo`) and alignments (`align`) are CANNOT_VERIFY under 0.9.1 `grift verify` (`DEFINITION_VERSION` changed). Project reports that observed a repository are MISMATCH. Regenerate them with 0.9.1
-- Collections written by 0.9.0 with `--as-of` are MISMATCH under 0.9.1 `grift verify` (experience, test_cochange and rework are now cut at the observation date too). Regenerate them
+- A collection written by 0.9.0 with `grift actor ID --as-of … --out DIR` for a person with a consent record in the identity is MISMATCH under 0.9.1 `grift verify` (the card's experience is now cut at the observation date). Regenerate it. Collections from `--all`, `--top` and `repo --actors` still VERIFY, even with `--as-of`, except in repositories with an author whose name has the hash-id shape (`actor_` plus hex digits): those collections are MISMATCH however they were written; regenerate them
 - An identity file whose `canonical_id` has the shape `actor_` plus 12–32 hex digits makes 0.9.1 exit 2. Rename the id. If the identity is committed to the repository and read at a fixed revision, pass a fixed copy with `--identity FILE`
 - v2 reports count `context_profile` days in UTC. In repositories with commits made between 0:00 and 9:00 in Japan, the values can differ from 0.9.0
 
