@@ -9,6 +9,7 @@ from tep_core.gitutil import GitCommit
 from tep_core.observation import NotObserved
 from tep_core.origin import OriginResult
 from tep_core.paths import split_paths
+from tep_core.rhythm import commit_timestamp
 from tep_core.scope import DEFAULT_SCOPE, population_shas
 
 COCHANGE_DEFINITION_VERSION = "test-cochange-v1-2026-08-22"
@@ -28,17 +29,24 @@ def test_cochange(
     pending_attribution: bool,
     head_date: str | None,
     scope: str = DEFAULT_SCOPE,
+    cutoff: date | None = None,
 ) -> dict[str, object]:
     """Co-change among production-changing commits in the analysis scope.
 
     tenant: identity-matched consenting tenant (evidence).
     actor_cluster: one repo-local primary-author cluster, without consent claim.
     repo: all non-bot, non-merge humans (process / reference distribution).
+
+    Without a ``cutoff``, the 13-week window counts back from ``head_date``
+    (HEAD's local day) and compares author local days, as before. With one (an
+    explicit --as-of), only commits up to that UTC day count, and the window
+    counts back from that day on the same UTC clock; ``head_date`` is then
+    ignored, so a caller cannot pair one clock's base with the other's days.
     """
     if not tests_observed:
         return NotObserved("no_test_framework_or_directory").to_dict()
 
-    shas = population_shas(commits, origin, scope)
+    shas = population_shas(commits, origin, scope, cutoff=cutoff)
     if scope == "tenant" and pending_attribution and not shas:
         return NotObserved("pending_attribution").to_dict()
     if not shas:
@@ -58,9 +66,13 @@ def test_cochange(
         "analysis_scope": scope,
         "all_time": _rate_block(pop_all, co_all, test_only, docs_only),
     }
-    if head_date:
-        cut = _parse_day(head_date) - timedelta(days=WINDOW_13W_DAYS)
-        pop_w, co_w, test_w, docs_w = _window(commits, shas, start=cut)
+    if cutoff is not None:
+        base: date | None = cutoff
+    else:
+        base = _parse_day(head_date) if head_date else None
+    if base is not None:
+        cut = base - timedelta(days=WINDOW_13W_DAYS)
+        pop_w, co_w, test_w, docs_w = _window(commits, shas, start=cut, utc=cutoff is not None)
         payload["last_13w"] = _rate_block(pop_w, co_w, test_w, docs_w)
     else:
         payload["last_13w"] = NotObserved("head_date_unavailable").to_dict()
@@ -71,12 +83,14 @@ def _window(
     commits: list[GitCommit],
     tenant_shas: set[str],
     start: date | None,
+    *,
+    utc: bool = False,
 ) -> tuple[int, int, int, int]:
     pop = co = test_only = docs_only = 0
     for commit in commits:
         if commit.sha not in tenant_shas:
             continue
-        if start is not None and _parse_day(commit.date) < start:
+        if start is not None and _day(commit, utc=utc) < start:
             continue
         prod, tests, docs = split_paths(commit.files)
         if prod:
@@ -88,6 +102,10 @@ def _window(
         elif docs:
             docs_only += 1
     return pop, co, test_only, docs_only
+
+
+def _day(commit: GitCommit, *, utc: bool) -> date:
+    return commit_timestamp(commit).date() if utc else _parse_day(commit.date)
 
 
 def _rate_block(pop: int, co: int, test_only: int, docs_only: int) -> dict[str, object]:

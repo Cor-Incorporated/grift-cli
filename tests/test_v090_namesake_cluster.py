@@ -65,10 +65,16 @@ def test_a_namesake_with_another_email_is_not_counted_as_the_declared_actor(
     identity.write_text(IDENTITY, encoding="utf-8")
     argv = ["actor", "alice", str(repo), "--identity", str(identity), "--as-of", "2026-08-31"]
     report = json.loads(_cli([*argv, "--format", "json"]))
-    work = ((report["role_profile"].get("dimensions") or {}).get("work_type") or {}).get("create")
+    role = report["role_profile"]
+    work = ((role.get("dimensions") or {}).get("work_type") or {}).get("create")
     facts = {
         "own_commits": report["activity"]["tenant_commits"]["value"],
+        "role_kind": role.get("kind"),
         "role_denominator": (work or {}).get("denominator"),
     }
+    # The consent row is what makes role_profile observed. Without it the
+    # profile is not_observed, has no denominator, and a denominator check
+    # alone would pass on the pre-fix code as well (v0.9.1 L9).
+    assert facts["role_kind"] == "observed", facts
     assert facts["own_commits"] == 0, facts
-    assert facts["role_denominator"] in (None, 0), facts
+    assert facts["role_denominator"] == facts["own_commits"], facts

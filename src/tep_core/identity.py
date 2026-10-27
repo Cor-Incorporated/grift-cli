@@ -60,6 +60,16 @@ CANONICAL_ID_PATTERN = r"^[a-z0-9][a-z0-9._-]{0,63}$"
 CANONICAL_ID_PATTERN_VERSION = 1
 CANONICAL_ID_RE = re.compile(CANONICAL_ID_PATTERN)
 
+# The shape grift gives to a cluster without a declared identity: the hash
+# branch of tep_core.attribution.ACTOR_ID_PATTERN. A declared id of this shape
+# can equal another cluster's hash id, and the consented profile then counts
+# that cluster's commits as the declared actor's (v0.9.1 M5). Reserving the
+# whole shape keeps a hash id and a declared id apart in every repository.
+# identity-schema.md (ja/en) keeps this regex verbatim, and
+# tests/test_v091_identity_ids.py binds it to the doc and to stable_actor_hash.
+RESERVED_ACTOR_HASH_PATTERN = r"^actor_[a-f0-9]{12,32}$"
+RESERVED_ACTOR_HASH_RE = re.compile(RESERVED_ACTOR_HASH_PATTERN)
+
 
 class IdentityValidationError(ValueError):
     """Producer-side rejection of an invalid identity file (F-P10-3).
@@ -189,6 +199,33 @@ def _string_list(value: object, *, path: str) -> tuple[str, ...]:
     return tuple(result)
 
 
+def _canonical_id(row: dict[str, object], index: int, seen_ids: set[str]) -> str:
+    canonical_id = str(row.get("canonical_id") or "")
+    if not canonical_id:
+        raise IdentityValidationError(
+            "canonical_id must not be empty (identity-v1: ^[a-z0-9][a-z0-9._-]{0,63}$)"
+        )
+    if not CANONICAL_ID_RE.fullmatch(canonical_id):
+        raise IdentityValidationError(
+            f"invalid canonical_id {canonical_id!r}: must match "
+            "^[a-z0-9][a-z0-9._-]{0,63}$ (no '@', whitespace, or control "
+            "characters; starts with lowercase alphanumeric; max 64 chars)"
+        )
+    if RESERVED_ACTOR_HASH_RE.fullmatch(canonical_id):
+        raise IdentityValidationError(
+            f"reserved canonical_id {canonical_id!r} in actors[{index}]: 'actor_' followed "
+            "by 12-32 hex digits is the hash id grift gives to a cluster without a "
+            "declared identity, so it can be another cluster's id and that cluster's "
+            "commits would be counted as this actor; choose a readable id such as 'alice'"
+        )
+    if canonical_id in seen_ids:
+        raise IdentityValidationError(
+            f"duplicate canonical_id {canonical_id!r}: each actor row must "
+            "have a unique canonical_id"
+        )
+    return canonical_id
+
+
 def load_identity(
     path: Path | None,
     *,
@@ -255,22 +292,7 @@ def load_identity(
             raise IdentityValidationError(
                 f"actors[{index}].consent requires attribution_state verified or claimed"
             )
-        canonical_id = str(row.get("canonical_id") or "")
-        if not canonical_id:
-            raise IdentityValidationError(
-                "canonical_id must not be empty (identity-v1: ^[a-z0-9][a-z0-9._-]{0,63}$)"
-            )
-        if not CANONICAL_ID_RE.fullmatch(canonical_id):
-            raise IdentityValidationError(
-                f"invalid canonical_id {canonical_id!r}: must match "
-                "^[a-z0-9][a-z0-9._-]{0,63}$ (no '@', whitespace, or control "
-                "characters; starts with lowercase alphanumeric; max 64 chars)"
-            )
-        if canonical_id in seen_ids:
-            raise IdentityValidationError(
-                f"duplicate canonical_id {canonical_id!r}: each actor row must "
-                "have a unique canonical_id"
-            )
+        canonical_id = _canonical_id(row, index, seen_ids)
         seen_ids.add(canonical_id)
         emails = _string_list(row.get("emails"), path=f"actors[{index}].emails")
         email_digests = (

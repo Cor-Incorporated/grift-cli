@@ -22,6 +22,11 @@ from tep_core.actor_directory import actor_report_from_card
 from tep_core.analyze import prepare_inputs
 from tep_core.analyze_v2 import analyze_subject
 from tep_core.alignment import alignment_payload, alignment_subject
+from tep_core.alignment_repo import (
+    SAVED_REPORTS_MODE,
+    alignment_limitations,
+    repo_alignment_payload,
+)
 from tep_core.attribution import build_attribution_index, find_actor, synthetic_identity
 from tep_core.digest import file_digest
 from tep_core.gitutil import coauthor_shas, raw_remote_url, remote_url, rev_parse
@@ -60,11 +65,7 @@ from tep_core.actor_basis import (
     classify_actor_basis,
 )
 from tep_core.v2_constants import (
-    ALIGNMENT_NOTICE,
     EVIDENCE_DISCLAIMER,
-    FORGE_NOT_OBSERVED_NOTE,
-    PROJECT_OBSERVED_MISSING_NOTE,
-    TRACKER_NOT_OBSERVED_NOTE,
 )
 from tep_core.version import DEFINITION_VERSION, __version__
 
@@ -894,6 +895,14 @@ def run_project(args: Namespace) -> int:
                 "declared requirements are owner input, not observations.",
             ],
         )
+        if observed is not None:
+            # Whether the observed repository is a shallow clone (0.9.1 J3), as
+            # report-v2 records it: the project Markdown calls the counted range
+            # 全履歴 only when this proves the clone is not shallow.
+            payload["provenance"] = {
+                **payload["provenance"],
+                "revision_completeness": dict(evidence_prov["revision_completeness"]),
+            }
         if evidence.get("reference"):
             payload["reference"] = evidence["reference"]
         errors = validate_project(payload)
@@ -912,16 +921,7 @@ def run_project(args: Namespace) -> int:
 
 
 def _alignment_limitations(actor_report: dict) -> list[str]:
-    notes = [ALIGNMENT_NOTICE, EVIDENCE_DISCLAIMER]
-    notes.append(_actor_basis_notice(actor_report.get("subject") or {}))
-    coverage = actor_report.get("input_coverage") or {}
-    forge = coverage.get("forge") or {}
-    tracker = coverage.get("tracker") or {}
-    if forge.get("kind") == "not_observed":
-        notes.append(FORGE_NOT_OBSERVED_NOTE)
-    if tracker.get("kind") == "not_observed":
-        notes.append(TRACKER_NOT_OBSERVED_NOTE)
-    return notes
+    return alignment_limitations(actor_report)
 
 
 def _actor_basis_notice(subject: dict) -> str:
@@ -1017,7 +1017,7 @@ def _align_from_reports(
             subject=alignment_subject(
                 actor_report,
                 project_id=(project_report.get("subject") or {}).get("project_id"),
-                mode="saved_reports",
+                mode=SAVED_REPORTS_MODE,
             ),
             limitations=_alignment_limitations(actor_report)
             + [
@@ -1222,39 +1222,13 @@ def run_align(args: Namespace) -> int:
             reference_manifest=getattr(args, "reference_manifest", None),
             event_window=_event_window(args),
         )
-        payload = alignment_payload(
-            actor_report=actor_report,
+        payload = repo_alignment_payload(
+            actor_report,
             declared=declared,
-            provenance={
-                "tool_name": "grift",
-                "tool_version": __version__,
-                "definition_version": DEFINITION_VERSION,
-                "analysis_scope": actor_analysis_scope(
-                    (actor_report.get("subject") or {}).get("selection"),
-                    (actor_report.get("subject") or {}).get("attribution_state"),
-                ),
-                "analyzed_commit_sha": actor_report["provenance"]["analyzed_commit_sha"],
-                "analyzed_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-                "observation_date": actor_report["provenance"]["observation_date"],
-                "window_basis": actor_report["provenance"]["window_basis"],
-                "identity_digest": actor_report["provenance"].get("identity_digest"),
-                "actor_commit_sha": actor_report["provenance"]["analyzed_commit_sha"],
-                "project_commit_sha": None,
-                "role_lens": (actor_report.get("role_lens") or {}).get("name"),
-                "input_digests": {
-                    **(actor_report["provenance"].get("input_digests") or {}),
-                    "project": file_digest(args.project),
-                    "actor_report": None,
-                },
-            },
-            subject=alignment_subject(
-                actor_report,
-                project_id=loaded.get("project_id") or None,
-            ),
-            limitations=_alignment_limitations(actor_report) + [PROJECT_OBSERVED_MISSING_NOTE],
+            project_id=loaded.get("project_id") or None,
+            project_digest=file_digest(args.project),
+            analyzed_at=datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         )
-        if actor_report.get("reference"):
-            payload["reference"] = actor_report["reference"]
         errors = validate_alignment(payload)
         if errors:
             return _fail("alignment-v1 validation failed:\n" + "\n".join(errors))

@@ -271,12 +271,25 @@ def _role_window_after_the_date(report: dict[str, Any]) -> bool | None:
     return end > date
 
 
+def _role_window_cut_at_the_date(report: dict[str, Any]) -> bool:
+    """role_profile's window ends exactly at the end of the observation date (UTC).
+
+    With an explicit --as-of, analyze cuts role_profile's commits (by `authored_at`)
+    and release tags (by `tagged_at`) at that instant and ends its window there
+    (0.9.0). Any other end, or no window at all, is not proof that the tags were cut.
+    """
+    end = ((report.get("role_profile") or {}).get("window") or {}).get("end")
+    date = (report.get("provenance") or {}).get("observation_date")
+    return bool(date) and end == f"{date}T23:59:59Z"
+
+
 def process_counts(report: dict[str, Any]) -> tuple[int | None, int | None]:
     """(merges, release tags) the section may state; None when not proven to be in range.
 
     A zero is always in range. A merge count is in range when role_profile saw no
-    commit after the observation date. Tag dates are not in the JSON, so a release
-    count is stated only without an explicit --as-of (R1).
+    commit after the observation date. Tag dates are not in the JSON, so under an
+    explicit --as-of a release count is stated only when role_profile's window ends
+    at the end of the observation date, where its tags were cut (R1).
     """
     if not role_in_scope(report):
         return None, None
@@ -285,7 +298,8 @@ def process_counts(report: dict[str, Any]) -> tuple[int | None, int | None]:
     merges, releases = _numerator(process, "integrator"), _numerator(process, "release")
     if merges and _role_window_after_the_date(report) is not False:
         merges = None
-    if releases and (report.get("provenance") or {}).get("window_basis") == "explicit_as_of":
+    explicit = (report.get("provenance") or {}).get("window_basis") == "explicit_as_of"
+    if releases and explicit and not _role_window_cut_at_the_date(report):
         releases = None
     return merges, releases
 
@@ -302,8 +316,10 @@ def role_in_scope(report: dict[str, Any]) -> bool:
 def own_total(report: dict[str, Any]) -> int | None:
     """The actor's own non-merge commits up to the observation date.
 
-    verification_profile and surface_profile honour --as-of; `activity` and
-    role_profile do not (0.8.0), so they are never the section's total. The
+    verification_profile and surface_profile are cut at the observation date with
+    or without --as-of. `activity` and role_profile are cut there only under an
+    explicit --as-of (0.9.0; 0.8.0 never cut them), so they are never the section's
+    total; role_profile is checked against it instead (role_in_scope). The
     surface `population` counts only commits that changed a path, so it is not
     the total either: an empty commit is still a change (R3).
     """

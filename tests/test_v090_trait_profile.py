@@ -25,6 +25,8 @@ from git_fixture import git, init_repo
 
 from tep_cli.__main__ import main
 from tep_core import trait_tables as tables
+from tep_core.report import render_markdown
+from tep_core.trait_profile import own_total, role_in_scope, work_sentences
 
 AS_OF = "2026-08-31"
 SPAN_START = date(2026, 6, 1)
@@ -411,6 +413,34 @@ def test_project_report_describes_the_repository_without_people(runs) -> None:
     assert "人ごとの数字は出しません。" in section
 
 
+def test_a_role_profile_put_into_the_project_payload_is_still_not_rendered(runs) -> None:
+    """0.9.1 L15: project-v1 has no role_profile, so the check above cannot fail by itself.
+
+    A consented actor's role_profile, sized to the project's own total so that it
+    would render for a person, is put into the payload; the project section still
+    has no 「関わり方」 block and no role rows in its evidence table.
+    """
+    project = json.loads(runs["project_json"])
+    role = json.loads(runs["claimed_json"])["role_profile"]
+    total = own_total(project["observed"])
+    for node in role["dimensions"]["work_type"].values():
+        node["denominator"] = total
+    project["observed"]["role_profile"] = role
+    project["role_profile"] = role
+    sentences = work_sentences(project["observed"])
+    assert sentences and role_in_scope(project["observed"]), (total, sentences)  # it would render
+    section = _section(render_markdown(project))
+    assert "## 案件のリポジトリから見える進め方" in section
+    for text in (
+        tables.HEADINGS["make"],
+        *sentences,
+        tables.EVIDENCE_ROWS["work_modify_create"],
+        tables.EVIDENCE_ROWS["work_merges"],
+        tables.EVIDENCE_ROWS["work_releases"],
+    ):
+        assert text not in section, text
+
+
 def test_alignment_lists_overlaps_and_questions_without_counting_them(runs) -> None:
     """T5: no 「N 項目中」 and no overlap count; zero means absent from this record."""
     section = _section(runs["alignment_md"])
@@ -496,7 +526,7 @@ def test_sentences_do_not_change_with_volume(tmp_path: Path) -> None:
 def test_a_late_joiner_with_later_work_is_described_up_to_the_observation_date(
     tmp_path: Path,
 ) -> None:
-    """H1: role_profile spans every author and ignores --as-of; the section must not."""
+    """H1: later work is not described; role_profile is cut at --as-of too (0.9.0)."""
     early = [("bob@example.com", "2025-01-01", "feat: start", "src/api/app.py")]
     own = _person_rows(40, 2)
     later = [
@@ -556,7 +586,7 @@ def _as(name: str, email: str, day: str) -> dict[str, str]:
 
 
 def test_a_merge_and_a_tag_after_the_observation_date_are_not_counted_in(tmp_path: Path) -> None:
-    """R1: role_profile counts merges and tags without the --as-of cut; the section must not."""
+    """R1: a merge and a tag after the date are not counted, nor stated (cut since 0.9.0)."""
     repo = _bulk_repo(tmp_path / "later-merge", _person_rows(25, 2))
     git(repo, "checkout", "-q", "-b", "feature")
     (repo / "src" / "bob.py").write_text("x = 1\n", encoding="utf-8")
@@ -585,6 +615,31 @@ def test_a_merge_and_a_tag_after_the_observation_date_are_not_counted_in(tmp_pat
     none = tables.SECTION_TEXTS["count_times"].format(c=0)
     assert f"| {tables.EVIDENCE_ROWS['work_releases']} | {none} |" in section
     assert tables.SECTION_TEXTS["unseen_no_release"] in section  # none up to the date
+
+
+def test_a_tag_before_the_observation_date_is_stated_under_as_of(tmp_path: Path) -> None:
+    """J2 (0.9.1): role_profile cuts tags at the end of the --as-of day, so its count is stated."""
+    repo = _bulk_repo(tmp_path / "earlier-tag", _person_rows(25, 2))
+    release = _as("Alice", "alice@example.com", "2026-08-20")
+    git(repo, "tag", "-a", "v1.0.0", "-m", "release v1.0.0", env=release)
+    identity = _write_identity(tmp_path, CLAIMED, True)
+    report = json.loads(_actor(repo, identity, "json"))
+    role = report["role_profile"]
+    observed = (
+        report["provenance"]["window_basis"],
+        role["window"]["end"],
+        role["dimensions"]["process_position"]["release"]["numerator"],
+    )
+    assert observed == ("explicit_as_of", f"{AS_OF}T23:59:59Z", 1), observed
+    section = _section(_actor(repo, identity, "md"))
+    for text in (
+        tables.SENTENCES["work_release_only"].format(r=1),
+        tables.QUESTIONS["ask_release"].format(r=1),
+    ):
+        assert text in section, text
+    once = tables.SECTION_TEXTS["count_times"].format(c=1)
+    assert f"| {tables.EVIDENCE_ROWS['work_releases']} | {once} |" in section
+    assert tables.SECTION_TEXTS["unseen_no_release"] not in section
 
 
 def test_empty_commits_count_in_the_range_without_a_test_framework(tmp_path: Path) -> None:

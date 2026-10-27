@@ -6,8 +6,11 @@ repo-local Git primary-author cluster without asserting consent or personhood.
 
 from __future__ import annotations
 
+from datetime import date
+
 from tep_core.gitutil import GitCommit
 from tep_core.origin import OriginResult
+from tep_core.rhythm import commit_timestamp
 
 SCOPES = ("tenant", "repo", "actor_cluster")
 DEFAULT_SCOPE = "tenant"
@@ -29,8 +32,22 @@ def population_shas(
     commits: list[GitCommit],
     origin: OriginResult,
     scope: str,
+    *,
+    cutoff: date | None = None,
 ) -> set[str]:
-    """SHAs eligible for co-change/rework. Merge and bot are always excluded."""
+    """SHAs eligible for co-change/rework. Merge and bot are always excluded.
+
+    With a cutoff (an explicit --as-of), only the commits in ``commits`` whose
+    author timestamp falls on or before that UTC day, the same cut as the
+    report-v2 range. Without one, the population is what it always was.
+    """
+    shas = _scope_shas(commits, origin, scope)
+    if cutoff is None:
+        return shas
+    return {c.sha for c in commits if c.sha in shas and commit_timestamp(c).date() <= cutoff}
+
+
+def _scope_shas(commits: list[GitCommit], origin: OriginResult, scope: str) -> set[str]:
     if scope not in SCOPES:
         raise ValueError(f"unknown scope: {scope}")
     if scope == "tenant":

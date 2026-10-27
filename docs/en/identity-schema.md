@@ -39,13 +39,39 @@ authority = "subject-authorization"
 Lowercase alphanumeric start; then lowercase alphanumerics and `.` `_` `-`;
 length 1–64. **`@`, whitespace, control characters, uppercase, and multi-byte
 characters are invalid** (this pattern — not a blocklist — is what makes the
-export's no-`@` contract data-independent). Duplicates are rejected. The
+export's no-`@` contract data-independent). Duplicates are rejected, and so is
+the hash-id shape (see "The hash-id shape is reserved" below; from 0.9.1). The
 regex must match the implementation (`tep_core.identity.CANONICAL_ID_PATTERN`)
 verbatim; `tests/test_identity_validation.py` enforces the doc↔code parity.
 
 | Version | Pattern | Introduced |
 |---|---|---|
 | 1 | `^[a-z0-9][a-z0-9._-]{0,63}$` | 2026-08-22 (F-P10-3) |
+
+### The hash-id shape is reserved (from 0.9.1)
+
+A `canonical_id` that fullmatches the following is also rejected (exit 2), even
+though it matches the pattern above:
+
+```
+^actor_[a-f0-9]{12,32}$
+```
+
+`actor_` followed by 12–32 hex digits is the hash id grift gives to a cluster
+that has no declared identity. When an identity could declare that shape, it
+could equal another cluster's hash id, and that cluster's commits were counted
+as the declared person's (the consented role_profile among them) — for
+example when an id from `--all` output was copied with an email that does not
+belong to that cluster. Write a readable id such as `alice`. This reservation is
+a separate rule from `CANONICAL_ID_PATTERN` above; that pattern itself is
+unchanged, so `CANONICAL_ID_PATTERN_VERSION` stays 1. The regex matches
+the implementation (`tep_core.identity.RESERVED_ACTOR_HASH_PATTERN`) verbatim;
+`tests/test_v091_identity_ids.py` ties the Japanese and English docs, the
+implementation and the hash-id generator (`stable_actor_hash`) together.
+
+An author whose name has this shape is counted under their own hash id, not
+their name. A name equal to another cluster's hash id no longer stops the
+analysis (0.9.0 and earlier stopped with exit 2).
 
 `tenant.email_patterns` are regexes; a match counts as tenant membership
 (state `inferred`). Empty/missing file: `pending_attribution = true`.

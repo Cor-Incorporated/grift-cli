@@ -825,12 +825,24 @@ def _git_count(repo: Path, target_oid: str, *filters: str) -> int:
 def _expected_window(repo: Path, target_oid: str) -> dict[str, Any]:
     # The UTC day of the target's author time, as grift takes the observation
     # date without --as-of since 0.9.0. `%as` (the author's local day) moved
-    # R01 a day later: authored 00:51 JST is 15:51 UTC the day before.
-    raw = _git(repo, "show", "-s", "--format=%at", target_oid).stdout.strip()
-    try:
-        end = datetime.fromtimestamp(int(raw), tz=timezone.utc).date()
-    except ValueError as exc:
-        raise ScenarioContractError("fixed target author time is not a Unix timestamp") from exc
+    # R01 a day later: authored 00:51 JST is 15:51 UTC the day before. An
+    # ancestor authored later does not move it (as in grift; 0.9.2).
+    # One author time per line. The error names the first line that is not one
+    # (cut to 40 characters) and how many were read, not a slice of a list.
+    output = _git(repo, "show", "-s", "--format=%at", target_oid).stdout
+    times = [line.strip() for line in output.splitlines() if line.strip()]
+    bad = next((item for item in times if not item.lstrip("-").isdigit()), None)
+    if bad is not None:
+        raise ScenarioContractError(
+            "fixed target author time is not a Unix timestamp "
+            f"(observed {bad[:40]!r}, {len(times)} author times)"
+        )
+    if len(times) != 1:
+        raise ScenarioContractError(
+            "fixed target author time is not one line "
+            f"(observed {chr(10).join(times)[:40]!r}, {len(times)} author times)"
+        )
+    end = datetime.fromtimestamp(int(times[0]), tz=timezone.utc).date()
     return {"start": (end - timedelta(days=180)).isoformat(), "end": end.isoformat(), "days": 180}
 
 

@@ -29,6 +29,17 @@ grift verify alignment-out/alignment.json \
   --reference-manifest benchmarks/v060/sources.json
 ```
 
+互換経路で作った alignment は、作ったときと同じ repo・identity・project TOML で verify します。どちらの経路で確かめるかは渡した入力で決まります。`--project` があって `--actor-report` と `--project-report` の 2 つがそろっていなければ repo の経路、2 つがそろっていて `--project` が無ければ保存した report の経路です。両方の入力がそろっているとき、またはどちらもそろっていないときは、JSON の `subject.mode` が `saved_reports` なら保存した report の経路、そうでなければ repo の経路で確かめます。保存した report から作った alignment を repo の経路で確かめると、MISMATCH の最初に `note: subject.mode is 'saved_reports'` と出ます。
+
+```bash
+grift verify alignment.json --repo . \
+  --identity .tep/identity.toml --project .tep/project.toml
+```
+
+どちらの経路も `subject`（同意の記録 `actor_consent` と `project_id` を含む）を保存した JSON から写さず、入力から作り直して比べます。repo の経路は provenance と limitations も作り直し、保存した JSON からは作り直しの入力（`--as-of`・`--role-lens`・`--vendor-scan`・`--survival`・`--reference` の指定）だけを読みます。`--event-window` を付けて作った alignment は、まだ repo の経路で VERIFIED になりません（0.9.2 で直します）。保存した 2 つの report の経路は、渡した actor の report を信じて作り直します。actor の report が書き換えられていないかは、`grift verify actor-report.json --repo REPO --identity IDENTITY` で別に確かめてください。
+
+`grift report alignment-out/alignment.json` は保存した JSON から Markdown を描き直すだけで、検算はしません。面談の問いを出すかどうかは、JSON に書かれた actor の選び方・ID の種類・同意の記録（`subject.actor_selection`・`subject.actor_attribution_state`・`subject.actor_consent`）をそのまま使います（actor の report を描き直すときの本人向けの文も同じです）。JSON が書き換えられていないかを確かめるのは `grift verify` です（保存した report から作った照らし合わせでは、上のとおり actor の report も確かめます）。Markdown の「数字の読み方と限界」にも同じことを書いています。
+
 ## 複数人の記録をまとめて書き出す
 
 ```bash
@@ -165,6 +176,12 @@ explicit cardはclosed schema内のoptional `experience` / `role_profile`に、�
 consent gateで生成した観測または`not_observed(consenting_actor_required)`を保持します。
 この機械field名や生成可否は同意の証明ではありません。verifyは
 manifestの自己整合だけでなく固定OIDとidentityから両fieldを再計算します。
+identityを使って書いたcollectionは、0.9.1から`repo-report.json`の`provenance.identity_digest`に
+そのdigestを記録します。verifyは生成時と違うidentityを、MISMATCHの先頭の
+`identity (recorded identity_digest …, observed …)`（記録したdigestといま使ったdigest）と、
+生成時と同じ`--identity FILE`を求める`note:`の行で示します。identityなしで書いたcollectionと
+0.9.0までのcollectionにはこのkeyが無く、食い違ったときは`note:`の行だけを添えます（原因が
+identityとは限りません）。読み込めないidentityを渡したときは`CANNOT_VERIFY`（exit 2）です。
 
 report-v1とexport-v1は既存キー・値の追加互換を維持します。report-v2と新規v0.6
 成果物はDraft 2020-12の閉じたschemaで未知キーを拒否します。詳細は
@@ -291,6 +308,15 @@ grift contribute --privacy aggregate --door public-pr --out .grift/contribution.
 ```bash
 grift contribute --purpose outcome-linkage --door local
 ```
+
+## 0.9.0 からの更新
+
+詳しくは [migration-v091.md](migration-v091.md) と [CHANGELOG](../CHANGELOG.md) にあります。作り直しが要るものは次のとおりです。
+
+- 0.9.0 で保存した report（`analyze`・`actor`・`repo`）と照らし合わせ（`align`）は、0.9.1 の `grift verify` で CANNOT_VERIFY になります（`DEFINITION_VERSION` を上げたため）。リポジトリを観測した project report は MISMATCH になります。0.9.1 で作り直してください
+- 0.9.0 で `--as-of` を付けて書き出した collection は、0.9.1 の `grift verify` で MISMATCH になります（experience・test_cochange・rework も観測日で切るようになったため）。作り直してください
+- identity の `canonical_id` に `actor_` と 16 進数 12〜32 桁の形を書いていると、0.9.1 は exit 2 で止まります。読める id に書き直してください。リポジトリに commit した identity を固定 revision で読むときは、直したものを `--identity FILE` で渡してください
+- v2 レポートの `context_profile` は UTC の日付で日を数えます。日本の 0 時〜9 時の commit がある repo では、0.9.0 と値が違うことがあります
 
 ## 0.8.0 からの更新
 

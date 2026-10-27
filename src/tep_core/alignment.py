@@ -433,7 +433,8 @@ _SHARE_SOURCES = {
 
 
 def _history_window(report: dict[str, Any] | None) -> dict[str, Any] | None:
-    """What surface and verification counts cover: every scoped commit to the date."""
+    """What surface and verification counts cover: the scoped commits up to the date
+    that the repository holds (only the fetched slice in a shallow clone)."""
     end = ((report or {}).get("provenance") or {}).get("observation_date")
     if not end:
         return None

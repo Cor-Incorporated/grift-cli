@@ -322,6 +322,7 @@ def _verify_saved_alignment(
     reference_manifest: Path | None,
 ) -> VerifyResult:
     from tep_core.alignment import alignment_payload, alignment_subject
+    from tep_core.alignment_repo import SAVED_REPORTS_MODE
     from tep_core.digest import file_digest
 
     if actor_report_path is None or project_report_path is None:
@@ -402,7 +403,7 @@ def _verify_saved_alignment(
         subject=alignment_subject(
             actor_report,
             project_id=(project_report.get("subject") or {}).get("project_id"),
-            mode=(report.get("subject") or {}).get("mode"),
+            mode=SAVED_REPORTS_MODE,
         ),
         limitations=list(report.get("limitations") or []),
         project_report=project_report,
@@ -832,11 +833,7 @@ def _verify_alignment(
     project_report_path: Path | None = None,
     reference_manifest: Path | None = None,
 ) -> VerifyResult:
-    from tep_core.alignment import alignment_payload, alignment_subject
-    from tep_core.analyze_v2 import analyze_subject
-    from tep_core.digest import file_digest
-    from tep_core.identity import identity_digest, select_actor
-    from tep_core.project import declared_view, load_project_toml
+    from tep_core.alignment_repo import SAVED_REPORTS_MODE
     from tep_core.version import DEFINITION_VERSION
 
     provenance = report.get("provenance") or {}
@@ -846,7 +843,16 @@ def _verify_alignment(
             notes=["definition version is not current"],
         )
     subject = report.get("subject") or {}
-    if subject.get("mode") == "saved_reports":
+    # The inputs handed to verify pick the path; the file's own `mode` decides
+    # only when both input sets (or neither) are given. Both paths rebuild
+    # `mode`, so a `mode` added to or dropped from the file is still a
+    # MISMATCH, never a reason to stop (#102 review). `repo` is not an input
+    # here: the CLI always passes one (the current directory by default).
+    has_saved = actor_report_path is not None and project_report_path is not None
+    has_repo = project_path is not None
+    claims_saved = subject.get("mode") == SAVED_REPORTS_MODE
+    use_saved = claims_saved if has_saved == has_repo else has_saved
+    if use_saved:
         return _verify_saved_alignment(
             report,
             actor_report_path=actor_report_path,
@@ -868,56 +874,15 @@ def _verify_alignment(
         _cleanup_worktree(repo, worktree)
         return VerifyResult(CANNOT_VERIFY, notes=["actor id missing"])
     try:
-        identity = (
-            load_identity(identity_path)
-            if identity_path is not None
-            else load_subject_identity(
-                analyze_repo,
-                None,
-                revision=rev_parse(analyze_repo),
-            )
-        )
-        selected = select_actor(identity, str(canonical))
-        loaded = load_project_toml(project_path)
-        declared = declared_view(loaded)
-        as_of = provenance.get("as_of")
-        if as_of is None and provenance.get("window_basis") == "explicit_as_of":
-            as_of = provenance.get("observation_date")
-        actor_report = analyze_subject(
+        recomputed = _recompute_repo_alignment(
+            report,
             analyze_repo,
-            selected,
-            Lineage(),
-            repository_source=repo,
-            subject_kind="actor",
-            canonical_id=str(canonical),
-            as_of=as_of,
-            role_lens=provenance.get("role_lens"),
+            repo,
+            identity_path,
+            project_path,
+            canonical=str(canonical),
             forge_export=forge_export,
             tracker_export=tracker_export,
-            include_files=bool(provenance.get("vendor_scan")),
-            survival=bool(provenance.get("survival")),
-            reference_id=provenance.get("reference_id"),
-        )
-        recomputed = alignment_payload(
-            actor_report=actor_report,
-            declared=declared,
-            provenance={
-                **provenance,
-                "analyzed_commit_sha": actor_report["provenance"]["analyzed_commit_sha"],
-                "observation_date": actor_report["provenance"]["observation_date"],
-                "window_basis": actor_report["provenance"]["window_basis"],
-                "identity_digest": identity_digest(selected),
-                "input_digests": {
-                    **(actor_report["provenance"].get("input_digests") or {}),
-                    "project": file_digest(project_path),
-                },
-            },
-            subject=alignment_subject(
-                actor_report,
-                project_id=subject.get("project_id"),
-                mode=subject.get("mode"),
-            ),
-            limitations=list(report.get("limitations") or []),
         )
     except Exception as exc:  # noqa: BLE001
         _cleanup_worktree(repo, worktree)
@@ -925,8 +890,84 @@ def _verify_alignment(
     _cleanup_worktree(repo, worktree)
     differences = _diff_payloads(report, recomputed)
     if differences:
-        return VerifyResult(MISMATCH, differences=differences)
+        notes = [SAVED_FILE_ON_REPO_PATH_NOTE] if claims_saved else []
+        return VerifyResult(MISMATCH, differences=differences, notes=notes)
     return VerifyResult(VERIFIED)
+
+
+# Said first when a file that names itself a saved-report alignment is checked
+# against a repository: most of its differences come from the path, not from an edit.
+SAVED_FILE_ON_REPO_PATH_NOTE = (
+    "subject.mode is 'saved_reports': this alignment says it was made from saved "
+    "reports; verify it with --actor-report and --project-report"
+)
+
+
+def _recompute_repo_alignment(
+    report: dict,
+    analyze_repo: Path,
+    repo: Path,
+    identity_path: Path | None,
+    project_path: Path,
+    *,
+    canonical: str,
+    forge_export: Path | None,
+    tracker_export: Path | None,
+) -> dict:
+    """Rebuild the alignment with the function `grift align --repo` uses.
+
+    Only the recompute inputs are read from the saved file (as_of and role_lens
+    from the alignment's provenance; vendor_scan, survival and reference_id from
+    the actor provenance, the only place `grift align --repo` records them);
+    every field compared, the subject, provenance and limitations included,
+    comes from the recomputation. A copied field would verify whatever the file
+    says (#102 review). The event window is not passed yet (0.9.2).
+    """
+    from tep_core.alignment_repo import repo_alignment_payload
+    from tep_core.analyze_v2 import analyze_subject
+    from tep_core.digest import file_digest
+    from tep_core.identity import select_actor
+    from tep_core.project import declared_view, load_project_toml
+
+    provenance = report.get("provenance") or {}
+    # `grift align --repo` records --vendor-scan / --survival / --reference in
+    # the actor report's provenance only; the alignment's own provenance never
+    # had them. A non-object there is an edit: recompute without the options.
+    actor_provenance = report.get("actor_provenance")
+    if not isinstance(actor_provenance, dict):
+        actor_provenance = {}
+    identity = (
+        load_identity(identity_path)
+        if identity_path is not None
+        else load_subject_identity(analyze_repo, None, revision=rev_parse(analyze_repo))
+    )
+    selected = select_actor(identity, canonical)
+    loaded = load_project_toml(project_path)
+    as_of = provenance.get("as_of")
+    if as_of is None and provenance.get("window_basis") == "explicit_as_of":
+        as_of = provenance.get("observation_date")
+    actor_report = analyze_subject(
+        analyze_repo,
+        selected,
+        Lineage(),
+        repository_source=repo,
+        subject_kind="actor",
+        canonical_id=canonical,
+        as_of=as_of,
+        role_lens=provenance.get("role_lens"),
+        forge_export=forge_export,
+        tracker_export=tracker_export,
+        include_files=bool(actor_provenance.get("vendor_scan")),
+        survival=bool(actor_provenance.get("survival")),
+        reference_id=actor_provenance.get("reference_id"),
+    )
+    return repo_alignment_payload(
+        actor_report,
+        declared=declared_view(loaded),
+        project_id=loaded.get("project_id") or None,
+        project_digest=file_digest(project_path),
+        analyzed_at=provenance.get("analyzed_at"),
+    )
 
 
 def _verify_project(
@@ -1020,6 +1061,15 @@ def _verify_project(
         return VerifyResult(CANNOT_VERIFY, notes=[f"recomputation failed: {exc}"])
     _cleanup_worktree(repo, worktree)
     differences = _diff_payloads(report.get("observed") or {}, recomputed.get("observed") or {})
+    # 0.9.1 J3: the project Markdown reads this to call the range 全履歴, so it is
+    # recomputed like the observations. A report saved before it has no key.
+    recorded = provenance.get("revision_completeness")
+    recomputed_completeness = evidence["provenance"]["revision_completeness"]
+    if recorded is not None and recorded != recomputed_completeness:
+        differences.append(
+            "provenance.revision_completeness: "
+            f"report={recorded!r} recomputed={recomputed_completeness!r}"
+        )
     if differences:
         return VerifyResult(MISMATCH, differences=differences)
     return VerifyResult(VERIFIED)

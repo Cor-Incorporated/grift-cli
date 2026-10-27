@@ -39,7 +39,19 @@ class GitCommit:
 def _run_git(repo: Path, args: list[str], timeout: int = _GIT_TIMEOUT_SECONDS) -> str:
     try:
         result = subprocess.run(  # noqa: S603
-            ["git", "-c", "safe.directory=*", "-C", str(repo), *args],
+            # `log.showSignature=true` in a user's config prints each signed
+            # commit's signature check into `git log` / `git show` stdout, where
+            # it was read as commit fields and file names.
+            [
+                "git",
+                "-c",
+                "safe.directory=*",
+                "-c",
+                "log.showSignature=false",
+                "-C",
+                str(repo),
+                *args,
+            ],
             env={**os.environ, "GIT_NO_LAZY_FETCH": "1"},
             capture_output=True,
             text=True,
@@ -158,10 +170,17 @@ def repository_identity(repo: Path, *, include_local_path: bool) -> dict[str, ob
     return payload
 
 
+# Every field is NUL-terminated and each record starts with a NUL. A subject or
+# author name can hold 0x1f or U+2028; with 0x1f separators and `splitlines()`
+# such a commit was dropped, or lost its author time, name and paths. NUL
+# cannot occur in a commit header, and `--name-only` quotes unusual paths.
+_LOG_FORMAT = "%x00%H%x00%ae%x00%P%x00%ad%x00%s%x00%aI%x00%an%x00"
+_LOG_FIELDS = 7
+
+
 def read_commits(repo: Path, *, include_files: bool = False) -> list[GitCommit]:
     """Read commit metadata. File names are optional (vendor heuristic)."""
-    fmt = "%H%x1f%ae%x1f%P%x1f%ad%x1f%s%x1f%aI%x1f%an"
-    args = ["log", f"--format={fmt}", "--date=short"]
+    args = ["log", f"--format={_LOG_FORMAT}", "--date=short"]
     if include_files:
         args.append("--name-only")
     raw = _run_git(repo, args)
@@ -169,29 +188,28 @@ def read_commits(repo: Path, *, include_files: bool = False) -> list[GitCommit]:
 
 
 def _parse_log(raw: str, *, include_files: bool) -> list[GitCommit]:
+    tokens = raw.split("\x00")
+    stray = (len(tokens) - 1) % (_LOG_FIELDS + 1)
+    if tokens[0].strip() or stray:
+        raise GitError(
+            f"git log output does not split into commits of {_LOG_FIELDS} fields "
+            f"(observed {len(tokens) - 1} fields, {stray} left over, "
+            f"leading {tokens[0][:40]!r})"
+        )
     commits: list[GitCommit] = []
-    current: GitCommit | None = None
-    files: list[str] = []
-
-    def flush() -> None:
-        nonlocal current, files
-        if current is None:
-            return
-        current.files = tuple(files)
-        commits.append(current)
-        current = None
-        files = []
-
-    for line in raw.splitlines():
-        if "\x1f" in line:
-            flush()
-            parts = line.split("\x1f")
-            if len(parts) not in {5, 6, 7}:
-                continue
-            sha, email, parents, date, subject = parts[:5]
-            author_iso = parts[5] if len(parts) >= 6 else ""
-            author_name = parts[6] if len(parts) >= 7 else ""
-            current = GitCommit(
+    # tokens[0] precedes the first record; each record is 7 fields + its tail.
+    for start in range(1, len(tokens) - _LOG_FIELDS, _LOG_FIELDS + 1):
+        sha, email, parents, date, subject, author_iso, author_name = tokens[
+            start : start + _LOG_FIELDS
+        ]
+        tail = tokens[start + _LOG_FIELDS]
+        files = (
+            tuple(line.strip() for line in tail.split("\n") if line.strip())
+            if include_files
+            else ()
+        )
+        commits.append(
+            GitCommit(
                 sha=sha,
                 author_email=email,
                 parents=tuple(p for p in parents.split() if p),
@@ -199,12 +217,9 @@ def _parse_log(raw: str, *, include_files: bool) -> list[GitCommit]:
                 subject=subject,
                 author_iso=author_iso,
                 author_name=author_name,
+                files=files,
             )
-            files = []
-            continue
-        if include_files and current is not None and line.strip():
-            files.append(line.strip())
-    flush()
+        )
     return commits
 
 

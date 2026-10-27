@@ -18,7 +18,7 @@ from pathlib import Path
 from typing import Any, Iterable, Mapping, Sequence
 
 from tep_core.gitutil import GitCommit
-from tep_core.identity import Actor, IdentityConfig, empty_identity
+from tep_core.identity import RESERVED_ACTOR_HASH_RE, Actor, IdentityConfig, empty_identity
 from tep_core.observation import Observed
 from tep_core.origin import OriginResult, is_bot_email
 
@@ -579,10 +579,19 @@ def resolve_git_actor_partition(
         display_name = identity_login or chosen_names[partition_key]
         if bucket["resolution_basis"] != "explicit_identity" and "@" not in display_name:
             slug = slug_author(display_name)
-            if slug and slug_counts.get(slug) == 1 and slug not in explicit_ids:
+            # An author *named* like a hash id keeps its own hash id: the slug
+            # could be another cluster's id and stop the analysis (v0.9.1 L11).
+            if (
+                slug
+                and slug_counts.get(slug) == 1
+                and slug not in explicit_ids
+                and not RESERVED_ACTOR_HASH_RE.fullmatch(slug)
+            ):
                 actor_id = slug
         if actor_id in assigned_ids:
-            raise ValueError("actor id collision across distinct resolution seeds")
+            raise ValueError(
+                f"actor id collision across distinct resolution seeds (observed {actor_id!r})"
+            )
         assigned_ids.add(actor_id)
         shas = tuple(bucket["shas"])
         actor = InferredActor(

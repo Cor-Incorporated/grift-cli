@@ -417,7 +417,7 @@ def _section_text(report: dict) -> str:
 
 
 def test_counted_range_is_the_observation_date_history_not_role_window() -> None:
-    """H1: role_profile.window spans every author and ignores --as-of; never quoted."""
+    """H1: role_profile.window spans every author, not the counted range; never quoted."""
     role = _role(10, 30, n=40)
     role["window"] = {"start": "2025-01-01T00:00:00Z", "end": "2026-10-04T00:00:00Z"}
     text = _section_text(_actor_report(role=role))
@@ -783,29 +783,45 @@ def test_a_merge_after_the_observation_date_is_not_counted_in() -> None:
     assert f"| {tables.EVIDENCE_ROWS['work_merges']} | {once} |" in inside
 
 
-def _release_text(releases: int, basis: str) -> str:
-    report = _actor_report(role=_role(10, 30, releases=releases))
+def _release_text(releases: int, basis: str, end: str | None = "2026-06-30T00:00:00Z") -> str:
+    role = _role(10, 30, releases=releases)
+    if end is None:
+        role.pop("window")
+    else:
+        role["window"]["end"] = end
+    report = _actor_report(role=role)
     report["provenance"]["window_basis"] = basis
     return _section_text(report)
 
 
-def test_release_tags_are_not_counted_in_under_an_explicit_as_of() -> None:
-    """R1: tag dates are not in the JSON; under --as-of a tag may come after the date."""
-    counted = _release_text(2, "explicit_as_of")
-    for fragment in (
-        tables.SENTENCES["work_release_only"].format(r=2),
-        tables.QUESTIONS["ask_release"].format(r=2),
-        tables.SECTION_TEXTS["unseen_no_release"],
-    ):
-        assert fragment not in counted, fragment
-    assert tables.EVIDENCE_ROWS["work_releases"] not in _evidence_text(counted)
+def test_release_tags_under_an_explicit_as_of_need_the_role_window_cut_at_the_date() -> None:
+    """R1, J2: tag dates are not in the JSON; only a window ending at 23:59:59Z proves the cut."""
+    ends = (
+        "2026-06-30T00:00:00Z",
+        "2026-08-31T23:59:58Z",
+        "2026-08-31",
+        None,
+        "2026-09-15T10:00:00Z",  # after the date: the window was not cut there
+        "2026-08-30T23:59:59Z",  # the end of another day
+        "2026-08-31T23:59:59+00:00",  # the same instant, not the string analyze writes
+    )
+    for end in ends:
+        counted = _release_text(2, "explicit_as_of", end)
+        for fragment in (
+            tables.SENTENCES["work_release_only"].format(r=2),
+            tables.QUESTIONS["ask_release"].format(r=2),
+            tables.SECTION_TEXTS["unseen_no_release"],
+        ):
+            assert fragment not in counted, (end, fragment)
+        assert tables.EVIDENCE_ROWS["work_releases"] not in _evidence_text(counted), end
     zero = _release_text(0, "explicit_as_of")
     assert tables.SECTION_TEXTS["unseen_no_release"] in zero  # none at all is none before the date
-    head = _release_text(2, "legacy_head_date")
-    assert tables.SENTENCES["work_release_only"].format(r=2) in head
-    assert tables.QUESTIONS["ask_release"].format(r=2) in head
     twice = tables.SECTION_TEXTS["count_times"].format(c=2)
-    assert f"| {tables.EVIDENCE_ROWS['work_releases']} | {twice} |" in head
+    cut = _release_text(2, "explicit_as_of", "2026-08-31T23:59:59Z")
+    for text in (cut, _release_text(2, "legacy_head_date")):
+        assert tables.SENTENCES["work_release_only"].format(r=2) in text
+        assert tables.QUESTIONS["ask_release"].format(r=2) in text
+        assert f"| {tables.EVIDENCE_ROWS['work_releases']} | {twice} |" in text
 
 
 def test_process_rows_show_only_the_counts_that_were_taken() -> None:
@@ -960,7 +976,7 @@ def test_evidence_gap_days_round_like_the_sentences() -> None:
 
 
 def test_project_evidence_does_not_claim_the_whole_history() -> None:
-    """R7: project-v1 does not record a shallow clone, so its range is not called 全履歴."""
+    """R7: a project-v1 without revision_completeness cannot rule out a shallow clone."""
     observed = {
         "kind": "observed",
         "surface_profile": _surface({"backend": 25, "docs": 6}, 40),

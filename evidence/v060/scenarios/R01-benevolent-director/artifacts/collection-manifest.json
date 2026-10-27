@@ -67,10 +67,10 @@
       "sha256": "c9a0952448b9dd22ad06dcabee514278b6b4308ec1f95d4036a3af5a75a2801b"
     },
     {
-      "bytes": 7062,
+      "bytes": 7153,
       "media_type": "application/json",
       "path": "repo-report.json",
-      "sha256": "c95c1f1932c5afb3df76a3358b7ea91995a749f064939b1663317803b7ba410b"
+      "sha256": "d3e1e1da70e6a4fe2741d8d26404404c33cbb31984a0fc5d68d06afc7c812f2b"
     },
     {
       "bytes": 893,

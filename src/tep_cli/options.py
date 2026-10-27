@@ -64,7 +64,10 @@ def add_as_of(parser: argparse.ArgumentParser) -> None:
         "--as-of",
         default=None,
         metavar="YYYY-MM-DD",
-        help="Observation-window date for rhythm. Default: history HEAD date (window_basis=legacy_head_date)",
+        help=(
+            "Observation-window date (UTC day) for rhythm. "
+            "Default: the UTC day of HEAD's author date (window_basis=legacy_head_date)"
+        ),
     )
 
 

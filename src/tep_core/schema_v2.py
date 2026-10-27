@@ -302,6 +302,23 @@ def _public_join(ctx: _Ctx, join: Any) -> None:
         ctx.err("$.attribution.public_join.count_note", "must state list size is not a join")
 
 
+def _revision_completeness(ctx: _Ctx, completeness: Any) -> None:
+    """report-v2 and project-v1 record a shallow or promisor clone the same way."""
+    if not isinstance(completeness, dict) or set(completeness) != {
+        "shallow",
+        "promisor",
+        "complete",
+    }:
+        ctx.err(
+            "$.provenance.revision_completeness",
+            "must contain exactly shallow/promisor/complete",
+        )
+    elif any(not isinstance(completeness.get(key), bool) for key in completeness):
+        ctx.err("$.provenance.revision_completeness", "values must be booleans")
+    elif completeness["complete"] != (not completeness["shallow"] and not completeness["promisor"]):
+        ctx.err("$.provenance.revision_completeness.complete", "inconsistent")
+
+
 def validate_actor_card(card: Any) -> list[str]:
     ctx = _Ctx()
     if not isinstance(card, dict):
@@ -419,21 +436,7 @@ def validate_report_v2(report: Any) -> list[str]:
                     ctx.err("$.provenance.target_oid.value", "length must match object algorithm")
         completeness = prov.get("revision_completeness")
         if completeness is not None:
-            if not isinstance(completeness, dict) or set(completeness) != {
-                "shallow",
-                "promisor",
-                "complete",
-            }:
-                ctx.err(
-                    "$.provenance.revision_completeness",
-                    "must contain exactly shallow/promisor/complete",
-                )
-            elif any(not isinstance(completeness.get(key), bool) for key in completeness):
-                ctx.err("$.provenance.revision_completeness", "values must be booleans")
-            elif completeness["complete"] != (
-                not completeness["shallow"] and not completeness["promisor"]
-            ):
-                ctx.err("$.provenance.revision_completeness.complete", "inconsistent")
+            _revision_completeness(ctx, completeness)
         if not (_is_str(prov.get("analyzed_at")) and _TS_RE.match(str(prov.get("analyzed_at")))):
             ctx.err("$.provenance.analyzed_at", "must be UTC timestamp")
         if not (
@@ -622,6 +625,7 @@ def validate_project(report: Any) -> list[str]:
                 if isinstance(value, dict) and "kind" in value:
                     _observation(ctx, value, f"$.declared.change_rhythm.{key}")
     observed = report.get("observed")
+    _project_completeness(ctx, report.get("provenance"), observed)
     if observed is None:
         return ctx.errors
     if not isinstance(observed, dict):
@@ -634,6 +638,20 @@ def validate_project(report: Any) -> list[str]:
         require_definition=observed.get("kind") == "observed",
     )
     return ctx.errors
+
+
+def _project_completeness(ctx: _Ctx, prov: Any, observed: Any) -> None:
+    """0.9.1 J3: optional, so a project-v1 saved before it still loads (read as
+    unknown); only a report that observed a repository may carry it."""
+    if not isinstance(prov, dict) or "revision_completeness" not in prov:
+        return
+    if not (isinstance(observed, dict) and observed.get("kind") == "observed"):
+        ctx.err(
+            "$.provenance.revision_completeness",
+            "only a project report that observed a repository records it",
+        )
+        return
+    _revision_completeness(ctx, prov["revision_completeness"])
 
 
 def validate_alignment(report: Any) -> list[str]:

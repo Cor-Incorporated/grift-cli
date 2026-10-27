@@ -37,17 +37,18 @@ from tep_core.forge import summarize_forge_export, summarize_forge_rhythm
 from tep_core.identity import IdentityConfig, identity_digest
 from tep_core.lineage import Lineage
 from tep_core.local_inputs import ForgeInput, TrackerInput, load_forge_input, load_tracker_input
-from tep_core.context_profile import HISTORY_INCOMPLETE_REASON
+from tep_core.context_profile import HISTORY_INCOMPLETE_REASON, build_context_profile
 from tep_core.observation import NotObserved, Observed
 from tep_core.origin import OriginResult
 from tep_core.outcome import load_outcome_input, outcome_payload
 from tep_core.public_evidence import collect_revision_license_evidence
-from tep_core.dates import parse_day
+from tep_core.dates import iso_to_day, parse_day
 from tep_core.rhythm import change_rhythm, commit_timestamp
 from tep_core.role_lens import role_lens_payload, validate_role_lens
-from tep_core.revision import describe_revision
+from tep_core.revision import commit_history_complete, describe_revision
 from tep_core.scope import population_shas
 from tep_core.secrets_guard import InputValidationError
+from tep_core.shallow_limitation import shallow_limitation
 from tep_core.source_binding import (
     SourceBinding,
     assert_binding_matches,
@@ -86,6 +87,9 @@ def resolve_observation(commits: list[GitCommit], as_of: str | None) -> tuple[st
         # The range below is cut by each commit's UTC date (commit_timestamp), so
         # the HEAD date is read on the same clock. `date` is the author's local
         # day, and an evening HEAD west of UTC dropped out of its own report.
+        # An ancestor authored after HEAD (rebase, cherry-pick) still falls
+        # outside the range (0.9.2). Ending at the latest author day instead let
+        # one future-dated commit, a bot's included, move the whole window.
         return commit_timestamp(commits[0]).date().isoformat(), "legacy_head_date"
     now = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     return now, "legacy_head_date"
@@ -384,8 +388,9 @@ def analyze_subject(
         survival=survival,
         scope=scope,
         reference_version=reference_version if subject_kind == "repo" else None,
-        # Only an explicit --as-of cuts activity and the role profile; without it
-        # the observation date is HEAD's, and every reachable commit is counted.
+        # Only an explicit --as-of cuts activity, test co-change, rework, experience
+        # and the role profile; without it the observation date is HEAD's, and
+        # every reachable commit is counted.
         observation_date=as_of,
     )
     analyzed_oid = str((v1.get("provenance") or {}).get("analyzed_commit_sha") or "")
@@ -580,7 +585,9 @@ def analyze_subject(
         "test_cochange": v1["test_cochange"],
         "rework": v1["rework"],
         "survival": v1["survival"],
-        "context_profile": v1["context_profile"],
+        "context_profile": _utc_context_profile(
+            repo, identity, lineage, commits, origin, include_files=include_files
+        ),
         "surface_profile": surfaces,
         "change_rhythm": rhythm,
         "verification_profile": verification,
@@ -609,14 +616,6 @@ def analyze_subject(
         payload["limitations"].append(
             "The source is shallow or promisor-backed; full reachable-history "
             "completeness is not proven."
-        )
-    if revision_completeness["shallow"]:
-        # Says what the truncation actually did to the numbers, so a reader is
-        # not left to infer it from the flag above.
-        payload["limitations"].append(
-            "The commit graph is truncated, so repository-wide counts, spans and "
-            "actor totals are reported as not_observed rather than measured from "
-            "the fetched slice."
         )
     index = build_attribution_index(
         selected_with_merges,
@@ -696,7 +695,7 @@ def analyze_subject(
             identity,
             history_complete=not revision_completeness["shallow"],
         )
-        context = dict(v1.get("context_profile") or {})
+        context = dict(payload.get("context_profile") or {})
         # The directory is built from the same truncated history, so this
         # override must respect the degradation v1 already applied — otherwise
         # it silently restores the count context_profile just suppressed.
@@ -755,6 +754,12 @@ def analyze_subject(
             payload.get("event_rhythm") or payload.get("change_rhythm") or {},
             reference_manifest,
         )
+    if revision_completeness["shallow"]:
+        # Says what the truncation actually did to the numbers, so a reader is
+        # not left to infer it from the flag above. Read off the finished
+        # payload (after reference and interpretation): what is not_observed,
+        # and what counts only the fetched commits (0.9.1 J4).
+        payload["limitations"].append(shallow_limitation(payload))
     final_revision = describe_revision(repo)
     if final_revision.oid != target_oid:
         raise InputValidationError(
@@ -765,6 +770,36 @@ def analyze_subject(
             "reachable tag set changed during subject analysis; refusing mixed provenance"
         )
     return payload
+
+
+def _utc_context_profile(
+    repo: Path,
+    identity: IdentityConfig,
+    lineage: Lineage,
+    commits: list[GitCommit],
+    origin: OriginResult,
+    *,
+    include_files: bool,
+) -> dict[str, Any]:
+    """The v1 context layer, dated on the UTC day this report cuts and dates on.
+
+    v1 reads the author's local day, like the rest of report-v1. The context
+    ends on the day this report's range ends without --as-of (HEAD's UTC day);
+    it is not cut by --as-of (follow-up). Without --vendor-scan v1 classifies
+    origin before reading paths, so a vendor-only commit of a fork stays
+    inherited_upstream; the context reads that same classification.
+    """
+    if not include_files:
+        commits, origin = prepare_inputs(repo, identity, lineage, include_files=False)
+    end_day, _basis = resolve_observation(commits, None)
+    return build_context_profile(
+        repo,
+        commits,
+        origin,
+        history_complete=commit_history_complete(repo),
+        utc_days=True,
+        end_day=end_day,
+    )
 
 
 def _git_window(observation_date: str) -> dict[str, Any]:
@@ -783,9 +818,9 @@ def _tracker_window(tracker: Any) -> dict[str, Any] | None:
         return {
             "kind": "observed",
             "unit": "utc_date_range",
-            "value": f"{binding.window.start[:10]}/{binding.window.end[:10]}",
-            "start": binding.window.start[:10],
-            "end": binding.window.end[:10],
+            "value": f"{iso_to_day(binding.window.start)}/{iso_to_day(binding.window.end)}",
+            "start": iso_to_day(binding.window.start),
+            "end": iso_to_day(binding.window.end),
             "source_format": tracker.source_format,
             "binding_digest": binding.digest,
             "coverage_status": binding.coverage.status,
@@ -811,25 +846,29 @@ def _tracker_window(tracker: Any) -> dict[str, Any] | None:
 def _declared_event_window(
     forge: Any, tracker: Any, requested: tuple[str, str] | None
 ) -> dict[str, Any] | None:
+    # A bound window may carry any UTC offset. Its days are UTC days, as the
+    # binding check (`assert_subject_binding`) and the Git window read them:
+    # `[:10]` took the export's own calendar day, so no --event-window could
+    # satisfy both checks for an export written away from UTC.
     archive_win = None
     if forge is not None and forge.export is not None and forge.export.binding is not None:
         binding = forge.export.binding
         archive_win = {
-            "start": binding.window.start[:10],
-            "end": binding.window.end[:10],
+            "start": iso_to_day(binding.window.start),
+            "end": iso_to_day(binding.window.end),
             "source_format": forge.source_format,
         }
     elif forge is not None and forge.archive is not None:
         archive_win = {
-            "start": forge.archive.window_start[:10],
-            "end": forge.archive.window_end[:10],
+            "start": iso_to_day(forge.archive.window_start),
+            "end": iso_to_day(forge.archive.window_end),
             "source_format": forge.source_format,
         }
     elif tracker is not None and tracker.export is not None and tracker.export.binding is not None:
         binding = tracker.export.binding
         archive_win = {
-            "start": binding.window.start[:10],
-            "end": binding.window.end[:10],
+            "start": iso_to_day(binding.window.start),
+            "end": iso_to_day(binding.window.end),
             "source_format": tracker.source_format,
         }
     if requested is None:

@@ -596,6 +596,15 @@ def _strict_repo_report(
         strict_provenance["public_evidence_digest"] = _require_digest(
             public_digest, label="public_evidence_digest"
         )
+    # The identity decides the partition (a declared id reserves its name for
+    # the declared person), so verify must know which one was used (v0.9.1
+    # L10). Only recorded when an identity was given: a collection written
+    # without one keeps the same bytes as before.
+    recorded_identity = provenance.get("identity_digest")
+    if recorded_identity is not None:
+        if not isinstance(recorded_identity, str) or not _HEX64_RE.fullmatch(recorded_identity):
+            raise ActorArtifactError("identity_digest must be a lowercase SHA-256 string")
+        strict_provenance["identity_digest"] = recorded_identity
 
     metrics = report.get("metrics")
     if not isinstance(metrics, Mapping):

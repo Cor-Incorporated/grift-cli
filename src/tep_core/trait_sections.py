@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from tep_core.trait_evidence import evidence_table
+from tep_core.trait_evidence import evidence_table, recorded_shallow
 from tep_core.trait_profile import (
     actor_questions,
     as_decimal,
@@ -248,7 +248,16 @@ def project_section(report: dict[str, Any]) -> list[str]:
     lines += [SECTION_TEXTS["project_people"], ""]
     lines += work_blocks(observed, scope="変更", person=False)
     lines += _unseen(observed, person=False)
-    # project-v1 does not carry revision_completeness, so a shallow clone cannot
-    # be ruled out here: the range is not called 全履歴, and the note says why.
-    lines += _limits(("days", "places", "p90", "scales", "shallow_repo", "verify"))
-    return lines + evidence_table(observed, report.get("provenance") or {}, person=False)
+    prov = report.get("provenance") or {}
+    lines += _limits(("days", "places", "p90", "scales", *_shallow_notes(prov), "verify"))
+    return lines + evidence_table(observed, prov, person=False)
+
+
+def _shallow_notes(prov: dict[str, Any]) -> tuple[str, ...]:
+    """No note when project-v1 proves the clone is not shallow (the range is then
+    全履歴); a recorded shallow clone, or a report saved before 0.9.1 that does not
+    say (J3), keeps the range 「までの履歴」 and the note says which."""
+    shallow = recorded_shallow(prov)
+    if shallow is False:
+        return ()
+    return ("shallow_repo_recorded",) if shallow else ("shallow_repo",)

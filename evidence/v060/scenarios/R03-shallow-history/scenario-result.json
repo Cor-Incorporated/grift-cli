@@ -93,8 +93,8 @@
       "status": "PASS"
     },
     {
-      "actual": "0.9.0",
-      "expected": "0.9.0",
+      "actual": "0.9.1",
+      "expected": "0.9.1",
       "id": "runner-tool-version",
       "status": "PASS"
     },
@@ -288,7 +288,7 @@
     "report.unresolved": 0,
     "verify.collection_cli_pass": 1
   },
-  "duration_ms": 2275,
+  "duration_ms": 1252,
   "exit_code": 0,
   "output_digests": {
     "artifacts/actor-index.json": {
@@ -309,11 +309,11 @@
     },
     "artifacts/collection-manifest.json": {
       "algorithm": "sha256",
-      "value": "821070522597aa84d634cb5eb0e083aa7f4e60516b64ac72bc3b4ae2d4d5c610"
+      "value": "f1915ba1c0f3e921d0381d9f970a343fb00de0d6c4821eff7580aef3be775bcc"
     },
     "artifacts/repo-report.json": {
       "algorithm": "sha256",
-      "value": "71278667e5ea9d6b8927e8e4211b3c40914d4b1fd90a93332ca845fb2ae7fbd9"
+      "value": "5cac7bf7ee7b0291bf45af2ebc6c352e7379d0094820af9bdea9324bac9ca779"
     },
     "artifacts/repo-report.md": {
       "algorithm": "sha256",
@@ -333,16 +333,16 @@
     "source_binding": {
       "commit_oid": {
         "algorithm": "sha1",
-        "value": "0f8d7fa2af770d129ad8696b155a6d51ff021114"
+        "value": "a63bf03c80ac65bb98afb829ea88c01434551653"
       },
       "definition_version": "grift-tool-source-tree-v1",
-      "file_count": 104,
+      "file_count": 106,
       "source_tree_digest": {
         "algorithm": "sha256",
-        "value": "c095c87df885dbcee88593601cf6614c2209a89325565413fe3ee0ea9c0c0164"
+        "value": "0cae2e74a8209511913a91957e22824897a99c5e06c64e4c6f6d306cbe16124c"
       }
     },
-    "tool_version": "0.9.0"
+    "tool_version": "0.9.1"
   },
   "scenario_id": "R03-shallow-history",
   "schema_version": "tep-scenario-result-v1",

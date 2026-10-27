@@ -140,8 +140,9 @@ def analyze_repository(
     tests_observed = tests.get("kind") == "observed"
     head_sha = rev_parse(repo)
     head_date = commits[0].date if commits else None
-    # report-v2 passes an explicit --as-of: activity and the role profile stop at
-    # that UTC day, like its surface, verification and rhythm blocks.
+    # report-v2 passes an explicit --as-of: activity, test co-change, rework,
+    # experience and the role profile stop at that UTC day, like its surface,
+    # verification and rhythm blocks, and the 13-week windows count back from it.
     cutoff = parse_day(observation_date) if observation_date else None
     activity_dates, activity_day_counts = _activity_inputs(commits, origin, scope, cutoff)
     activity = activity_metrics(
@@ -154,12 +155,14 @@ def analyze_repository(
         pending_attribution=identity.pending_attribution,
         head_date=head_date,
         scope=scope,
+        cutoff=cutoff,
     )
     rework = rework_metrics(
         commits,
         origin,
         pending_attribution=identity.pending_attribution,
         scope=scope,
+        cutoff=cutoff,
     )
     corr = rework.get("corrective_rework_rate") if rework.get("kind") == "observed" else rework
     report = {
@@ -257,32 +260,33 @@ def _collection_failure_reason(message: str) -> str | None:
 def _activity_inputs(
     commits: list, origin: Any, scope: str, cutoff: date | None
 ) -> tuple[list[str], Counter[str]]:
-    """Commit days for activity_metrics; with a cutoff, only commits up to that UTC day."""
+    """Commit days for activity_metrics.
 
-    def in_range(commit: Any) -> bool:
-        return cutoff is None or commit_timestamp(commit).date() <= cutoff
-
+    Without a cutoff, every own commit, named by its author's local day (as
+    before). With one (an explicit --as-of), only commits up to that UTC day,
+    each named by its UTC day: the range is cut on the UTC clock, so a commit
+    made on the next local morning east of UTC is in it, and must not add an
+    active day after the observation date.
+    """
     if scope == "actor_cluster":
-        actor_shas = population_shas(commits, origin, scope)
-        dates = [c.date for c in commits if c.sha in actor_shas and in_range(c)]
-        return dates, Counter(dates)
-    if cutoff is None:
+        shas = population_shas(commits, origin, scope, cutoff=cutoff)
+    elif cutoff is None:
         return origin.tenant_dates, origin.tenant_day_counts
-    tenant = [c for c in commits if origin.classes_by_sha.get(c.sha) == "tenant_unique"]
-    dates = [c.date for c in tenant if in_range(c)]
+    else:
+        shas = population_shas(commits, origin, "tenant", cutoff=cutoff)
+    dates = [
+        commit_timestamp(c).date().isoformat() if cutoff is not None else c.date
+        for c in commits
+        if c.sha in shas
+    ]
     return dates, Counter(dates)
 
 
-def _up_to(collection: Any, observation_date: str | None) -> tuple[tuple, tuple, datetime | None]:
-    """The collected commits and release tags up to the end of that UTC day."""
-    from tep_core.experience import as_utc
-
+def _observation_end(observation_date: str | None) -> datetime | None:
+    """The last second of the --as-of day in UTC, or None without one."""
     if not observation_date:
-        return collection.commits, collection.release_tags, None
-    end = datetime.combine(parse_day(observation_date), time(23, 59, 59), tzinfo=timezone.utc)
-    commits = tuple(c for c in collection.commits if as_utc(c.authored_at) <= end)
-    tags = tuple(t for t in collection.release_tags if as_utc(t.tagged_at) <= end)
-    return commits, tags, end
+        return None
+    return datetime.combine(parse_day(observation_date), time(23, 59, 59), tzinfo=timezone.utc)
 
 
 def _tenant_experience(
@@ -373,6 +377,10 @@ def _tenant_experience(
         for actor in identity.actors
         for digest in actor.email_sha256
     }
+    # An explicit --as-of stops experience and the role profile at the end of
+    # that UTC day: the collector drops later commits and tags before it picks
+    # the size snapshots, so they are the first/median/last up to the date.
+    end = _observation_end(observation_date)
     try:
         collection = collect_experience_inputs(
             repo,
@@ -382,6 +390,7 @@ def _tenant_experience(
             tagger_actor_by_email=tagger_map,
             tagger_actor_by_email_sha256=tagger_digest_map,
             snapshot_actor_ids=(actor_id,),
+            observation_end=end,
         )
     except ExperienceCollectionError as exc:
         # Incomplete history carries its own exception type, so it is recognised
@@ -414,9 +423,15 @@ def _tenant_experience(
         )
     # Which libraries this actor first declared. Scanned from manifests at fixed
     # revisions, so it stays deterministic; a scan failure degrades the axis to
-    # not_observed rather than reporting an absence of choices (W2).
+    # not_observed rather than reporting an absence of choices (W2). Under
+    # --as-of only the manifest changes of the commits collected up to the date
+    # are read, so a library first declared after it is not an introduction.
     try:
-        dependencies = collect_dependency_introductions(repo, revision=target)
+        dependencies = collect_dependency_introductions(
+            repo,
+            revision=target,
+            only_commits=None if end is None else frozenset(c.oid for c in collection.commits),
+        )
     except ExperienceCollectionError as exc:
         if _collection_failure_reason(str(exc)) is None:
             raise
@@ -429,6 +444,7 @@ def _tenant_experience(
         ai_coauthor_emails=ai_identities.emails,
         ai_coauthor_email_sha256=ai_identities.email_sha256,
         release_tags=collection.release_tags,
+        observation_end=end,
         dependency_introductions=(dependencies.introduced if dependencies is not None else None),
         dependency_manifest_commits=(
             dependencies.manifest_commits if dependencies is not None else None
@@ -439,9 +455,6 @@ def _tenant_experience(
     # out of the observation that named them, so the two blocks cannot drift
     # into describing different sets. Nothing here is combined with the actor's
     # measurements -- it describes libraries (norms §7).
-    # The role profile stops at the observation date like the rest of report-v2.
-    # experience keeps the whole history: its dependency scan is not dated yet.
-    role_commits, role_tags, role_end = _up_to(collection, observation_date)
     introduction = (experience.get("metrics") or {}).get("dependency_introduction") or {}
     names = introduction.get("values") if introduction.get("kind") == "observed" else None
     context = library_context(
@@ -451,11 +464,11 @@ def _tenant_experience(
     return (
         experience,
         build_role_profile(
-            role_commits,
+            collection.commits,
             actor_id=actor_id,
             consent=consent,
-            release_tags=role_tags,
-            observation_end=role_end,
+            release_tags=collection.release_tags,
+            observation_end=end,
         ),
         context,
     )

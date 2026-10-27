@@ -13,7 +13,14 @@ terms and report-v1 JSON keys lives there only:
 Markdown names the four viewpoints the way griftai.org does, as the plain Japanese words followed by
 the site term. JSON keys and the fixed texts inside the JSON (such as `limitations`) do not change,
 so those texts keep their older wording. The names are declared in the
-[Japanese guide](../metrics-guide.md#markdown-の観点の呼び名).
+[Japanese guide](../metrics-guide.md#markdown-の観点の呼び名). `tests/test_v090_site_names.py` checks
+that table against the headings, the names in the 「傾向」 (tendency) section, the headings of the
+「観測された数値」 (observed numbers) section, the project's declared item names
+(`DECLARED_TEXTS`, `DECLARED_ITEM_NAMES`) and the decision-table sentences that name a viewpoint
+in their text (`place_tests_only`, `work_not_observed`, `work_scope_differs`, `work_scope_later`,
+`record_scope_paths`); a name changed in one of these places alone fails with the table's value
+and the code's value side by side. A new decision-table sentence that names a viewpoint fails the
+same test until it is added to that test's list (`NAME_MENTIONS`).
 
 | Heading in the Markdown | Plain words | Site term | JSON key (report-v2) |
 |---|---|---|---|

@@ -51,13 +51,23 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Establish the suite deadline before checkout and clones
-        env:
-          LIVE_TIER: ${{ inputs.tier }}
         run: |
           set -euo pipefail
           # Leave two minutes for the always-upload step while keeping every
           # collection, clone, install, and verification inside the 30m job.
           echo "LIVE_GATE_DEADLINE_EPOCH=$(($(date +%s) + 1680))" >> "$GITHUB_ENV"
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      # actions/checkout empties the working directory, so the provisional FAIL
+      # summary is written after it. Written before checkout, a run that failed
+      # in install, clone or the gate had nothing to upload (run 40348629797).
+      # A failure inside checkout itself still uploads nothing.
+      - name: Write the provisional FAIL summary after checkout
+        env:
+          LIVE_TIER: ${{ inputs.tier }}
+        run: |
+          set -euo pipefail
           mkdir -p provider-live-evidence
           python - <<'PY'
           import json
@@ -79,9 +89,6 @@ jobs:
               encoding="utf-8",
           )
           PY
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"

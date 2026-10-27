@@ -23,7 +23,7 @@ from pathlib import Path, PurePosixPath
 from typing import Iterable, Mapping, Sequence
 
 from tep_core.attribution import GitObjectId, parse_git_oid
-from tep_core.experience import ExperienceCommit, FileChange, ReleaseTag
+from tep_core.experience import ExperienceCommit, FileChange, ReleaseTag, as_utc
 from tep_core.identity import email_identity_sha256
 
 __all__ = [
@@ -101,6 +101,8 @@ def _git_bytes(
                 "--no-replace-objects",
                 "-c",
                 "safe.directory=*",
+                "-c",
+                "log.showSignature=false",
                 "-C",
                 str(repo),
                 *args,
@@ -541,6 +543,7 @@ def collect_dependency_introductions(
     repo: Path,
     *,
     revision: str = "HEAD",
+    only_commits: frozenset[str] | None = None,
 ) -> DependencyIntroductions:
     """Diff each manifest-touching commit against its first parent.
 
@@ -548,6 +551,10 @@ def collect_dependency_introductions(
     its first parent's does not. A version bump changes the constraint, not the
     set, so it never registers: choosing a library and maintaining one are
     different acts and only the first is domain evidence.
+
+    The manifest log carries no dates. ``only_commits`` (the OIDs an --as-of
+    collection kept) limits the scan to those commits: a later commit is
+    neither read nor counted in ``manifest_commits`` or ``unparseable``.
     """
     from tep_core.dependency_manifest import SUPPORTED_MANIFESTS, ecosystem_for
 
@@ -578,6 +585,8 @@ def collect_dependency_introductions(
         if not lines:
             continue
         oid, paths = lines[0].strip(), lines[1:]
+        if only_commits is not None and oid.lower() not in only_commits:
+            continue
         paths = [p for p in paths if PurePosixPath(p).name.casefold() in SUPPORTED_MANIFESTS]
         if not paths:
             continue
@@ -620,6 +629,7 @@ def collect_experience_inputs(
     tagger_actor_by_email: Mapping[str, str] | None = None,
     tagger_actor_by_email_sha256: Mapping[str, str] | None = None,
     snapshot_actor_ids: Iterable[str] = (),
+    observation_end: datetime | None = None,
 ) -> ExperienceCollection:
     """Collect fixed-revision events without network or identity inference.
 
@@ -627,7 +637,9 @@ def collect_experience_inputs(
     ``sha_to_actor`` mapping is used verbatim after lowercase OID
     normalization; absent commits stay unresolved.  Repository-size snapshots
     are exact fixed-tree values and are only attached at first/median/last
-    contributions for ``snapshot_actor_ids``.
+    contributions for ``snapshot_actor_ids``.  With ``observation_end`` (an
+    explicit --as-of), commits authored and tags made after it are dropped
+    before the snapshots are chosen.
     """
 
     repository = repo.resolve()
@@ -651,6 +663,7 @@ def collect_experience_inputs(
             sequence=sequence,
         )
         for sequence, commit in enumerate(objects)
+        if observation_end is None or as_utc(commit.authored_at) <= observation_end
     )
     snapshot_oids = _snapshot_oids(rows, snapshot_actor_ids)
     sizes = {oid: _repository_size(repository, oid) for oid in sorted(snapshot_oids)}
@@ -672,4 +685,6 @@ def collect_experience_inputs(
         tagger_actor_by_email or {},
         tagger_actor_by_email_sha256 or {},
     )
+    if observation_end is not None:
+        tags = tuple(tag for tag in tags if as_utc(tag.tagged_at) <= observation_end)
     return ExperienceCollection(target_oid=target, commits=rows, release_tags=tags)
