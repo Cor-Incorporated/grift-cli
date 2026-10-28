@@ -162,5 +162,5 @@ baseline approval requires D4 (definition version) drift.
 
 The provisional FAIL summary of `v060-provider-live.yml` is now written after checkout (#99), so a
 failed release-tier run uploads it. The four evidence gates were regenerated from the 0.9.1 source;
-the golden baseline approval is a human step (see the Japanese original for the dry-run drift: D3 ×1,
-D4 ×2, D0–D2 = 0, no observed-value drift).
+the golden baseline was approved as `gold-actor-partition-0007` (approved by human:teradakousuke at
+2026-10-28T01:57:56Z, requirement REL-091; the dry-run drift was D3 ×1, D4 ×2, D0–D2 = 0, no observed-value drift).

@@ -190,12 +190,11 @@ src が変わったので、証跡 4 件を 0.9.1 の source で作り直した�
   2026-10-27T16:25Z）。`determinism.report_sha256` は `5a63b782…` → `4774f965…`。#104 で
   `context_profile.active_days_180d` が 7 → 6 になったこと（JST の朝の commit 8 件が UTC では前の日）と、版数の
   文字列による
-- `benchmarks/v060/golden` の承認移行は人間ゲート。dry-run（`scripts/v060_golden.py`、2026-10-27T16:26Z）の drift は
+- `benchmarks/v060/golden` は `gold-actor-partition-0007` として承認移行した（承認者 human:teradakousuke、approved_at
+  2026-10-28T01:57:56Z、要求 REL-091。`--approve` は代表が実行した）。承認後の `scripts/v060_golden.py` は overall PASS
+  （D0-D4 = 0）。dry-run（`scripts/v060_golden.py`、2026-10-27T16:26Z）の drift は
   **D3 ×1 / D4 ×2、D0-D2 = 0**。D3 = `repo-report.json` の `provenance.tool_version`、D4 =
   `provenance.definition_version` と `metrics.human_nonmerge_commit_share.definition_version`。観測値の drift は 0。
-  承認は `scripts/v060_golden_baseline.py --case actor-partition --approve --requirement REL-091 --migration-id
-  gold-actor-partition-0007 --approved-by human:<承認者> --approved-at <RFC3339>` を人間が実行する。それまで
-  `tests/test_v060_golden_runner.py::test_runner_executes_repo_and_verify_cli` は red
 
 ## v0.9.0 の差分
 

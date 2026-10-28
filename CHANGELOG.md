@@ -52,7 +52,8 @@ project report は VERIFIED）。書き出した一式（`--out` の collection�
 - **定義版数を `tep-v0.9.1-2026-10-28` に上げた**（REL-091）。上の JSON の値の変化に合わせたもの。版数だけを上げて
   定義版数を据え置くことはできない（golden の runner が `provenance.tool_version` の差を D3 として FAIL にし、
   承認には D4 が要る）。証跡（`evidence/v060/scenarios`・`scenarios-public`・`evidence/v070/benchmark.json`）を
-  0.9.1 の source で作り直した。golden の承認移行は人間ゲート
+  0.9.1 の source で作り直した。golden baseline は `gold-actor-partition-0007` として承認移行した（承認者
+  human:teradakousuke、approved_at 2026-10-28T01:57:56Z）
 - **identity の `canonical_id` に、grift が付ける hash id の形（`actor_` と 16 進数 12〜32 桁）を書けなく
   した**（exit 2。観測した値をメッセージに出す）。宣言した id が別の人の hash id と同じだと、その人の
   commit が宣言した人の数に入ることがあった。この形の id を使っている identity は、読める id に
