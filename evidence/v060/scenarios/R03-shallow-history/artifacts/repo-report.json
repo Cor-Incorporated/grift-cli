@@ -119,13 +119,13 @@
     "forge export が提供されていないため、review は観測できません。Git の merge commit 比率を pull request review とは呼びません。",
     "tracker export が提供されていないため、issue triage / milestone coordination は観測できません。これは活動が無かったことを意味しません。",
     "The source is shallow or promisor-backed; full reachable-history completeness is not proven.",
-    "The commit graph is truncated, so repository-wide counts, spans and actor totals are reported as not_observed rather than measured from the fetched slice.",
+    "The commit graph is truncated (shallow clone). Reported as not_observed (history_incomplete): activity, context_profile.resolved_human_actors, context_profile.top_actor_share, context_profile.collaboration_class, context_profile.scale.human_commits, context_profile.scale.first_commit, context_profile.scale.active_span_days, context_profile.scale.top_level_dirs, context_profile.scale.tags, context_profile.repo_age_days, context_profile.active_days_180d, context_profile.lifecycle_stage, context_profile.actor_turnover, context_profile.release_cadence. Every other value in these blocks counts only the fetched commits: origin, attribution, actor_directory, test_cochange, rework, context_profile, surface_profile, change_rhythm, verification_profile, coordination_profile.git, population, metrics.",
     "Actor IDs are repo-local Git primary-author clusters, not verified people.",
     "Provider enrichment is display evidence and cannot change the actor partition."
   ],
   "metrics": {
     "human_nonmerge_commit_share": {
-      "definition_version": "tep-v0.9.0-2026-10-26",
+      "definition_version": "tep-v0.9.1-2026-10-28",
       "denominator": 33,
       "kind": "observed",
       "limitations": [
@@ -163,9 +163,9 @@
   },
   "provenance": {
     "analysis_scope": "repo",
-    "analyzed_at": "2026-10-26T14:47:02Z",
+    "analyzed_at": "2026-10-27T17:07:26Z",
     "analyzed_commit_sha": "fa9bc317cc0ac1953ed09cbab11d3de2232c2fb0",
-    "definition_version": "tep-v0.9.0-2026-10-26",
+    "definition_version": "tep-v0.9.1-2026-10-28",
     "input_digests": {
       "benchmark_manifest": null,
       "forge": null,
@@ -190,7 +190,7 @@
       "value": "fa9bc317cc0ac1953ed09cbab11d3de2232c2fb0"
     },
     "tool_name": "grift",
-    "tool_version": "0.9.0"
+    "tool_version": "0.9.1"
   },
   "report_kind": "evidence",
   "schema_version": "report-v2",

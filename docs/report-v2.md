@@ -29,7 +29,13 @@ runtime の正本は
 - `window`: start/end/unit/basisを固定します
 - `metrics`: 各観測に `kind`、numerator、denominator、unit、window、
   definition version、limitationsを持たせます
-- `limitations` / `notices`: 未観測、coverage不足、解釈上の限界を欠落不能にします
+- `limitations` / `notices`: 未観測、coverage不足、解釈上の限界を欠落不能にします。
+  浅い clone（`provenance.revision_completeness.shallow = true`）では、`limitations` に
+  `The commit graph is truncated (shallow clone).` で始まる 1 文を足します。履歴が途中までしか無いために
+  `not_observed`（reason `history_incomplete`）にした値の場所と、取得できた変更だけで数えた節の名前を、
+  その report の JSON から読んで並べます（0.9.1 から）。`coordination_profile` は、forge / tracker export から
+  来る `review`・`tracker` を除いた `coordination_profile.git` と書きます。export から来る節、HEAD のファイルを
+  見る `test_frameworks`、`input_coverage`、`reference` は並べません
 
 `score`、`rank`、`fit`、`recommendation`、`overall` と、それらの派生語彙は
 成果物のどの階層でも禁止します。
@@ -124,6 +130,14 @@ optional `experience` / `role_profile`は明示consent gateで生成した観測
 `not_observed(consenting_actor_required)`だけを保持し、verifyは固定OIDとidentityから
 exact再計算します。この機械field名や生成可否は同意の証明ではありません。
 detailを持つcollectionの検証には、生成時と同じ`--identity FILE`を指定します。
+identity は actor の分け方を決めるので（宣言した id は、commit が無くても同じ名前の別人には使わせない）、
+0.9.1 から identity を使って書いた collection は `repo-report.json` の `provenance.identity_digest` に
+その digest を記録します。verify は違う identity を、MISMATCH の先頭の
+`identity (recorded identity_digest …, observed …)`（記録した digest と、いま使った digest）と、
+生成時と同じ `--identity FILE` を求める `note:` の行で名指しします。identity なしで書いた collection と
+0.9.0 までの collection にはこの key が無く、食い違ったときは `note:` の行だけを添えます（identity を
+渡したか渡さないかで文面が変わります。原因が identity とは限りません）。読み込めない identity
+（たとえば hash id の形の canonical_id）を渡したときは `CANNOT_VERIFY`（exit 2）です。
 CLIはActor ID、`--all`、`--top`の同時指定を拒否します。
 
 ## experience / role

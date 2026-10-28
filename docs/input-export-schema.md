@@ -11,6 +11,12 @@ generic Git OID、UTC window、coverage を必須とする。forge と tracker �
 同時に与える場合は同じ binding でなければならない。v1 は既存の legacy
 loader / command の読み取り互換だけを維持する。
 
+`window` の `start` / `end` はタイムゾーン付きの時刻ならどの offset でもよい。
+`--event-window` と report の `input_coverage.event_window` /
+`tracker_window` は、その時刻の UTC の日付で読む
+（`2026-07-31T20:00:00-04:00` は `2026-08-01`）。Git の窓（`git_window`）も
+UTC の日付なので、同じ瞬間を指す窓は同じ日付になる。
+
 ## tep-forge-export-v2
 
 ```json

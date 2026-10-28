@@ -942,7 +942,10 @@ def build_experience(
         ):
             # Compatibility for callers that supplied normalized linear events
             # before parent OIDs became part of the fixed-DAG contract.  Real
-            # collection rejects missing ancestry before reaching this layer.
+            # collection rejects missing ancestry in the repository, but under
+            # --as-of it drops commits authored after the date, so a kept commit
+            # whose parents were all authored later (a rebase or cherry-pick)
+            # also arrives here and borrows the previous snapshot.
             primary_parent = previous_snapshot
         current = _LineageSnapshot(primary_parent)
         timestamp = as_utc(commit.authored_at)

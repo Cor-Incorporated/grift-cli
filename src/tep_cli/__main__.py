@@ -122,6 +122,8 @@ def _run_verify(args: argparse.Namespace) -> int:
         return 0
     if result.status == MISMATCH:
         sys.stdout.write(f"{MISMATCH}: {len(result.differences)} field(s) differ\n")
+        for note in result.notes:
+            sys.stdout.write(f"  note: {note}\n")
         for line in result.differences:
             sys.stdout.write(f"  - {line}\n")
         return 1
@@ -129,6 +131,42 @@ def _run_verify(args: argparse.Namespace) -> int:
     for note in result.notes:
         sys.stdout.write(f"  - {note}\n")
     return 2
+
+
+def _collection_identity_check(
+    provenance: dict, observed: str | None
+) -> tuple[str | None, str | None]:
+    """Return (difference, note) for the identity a collection was written with.
+
+    The identity decides the actor partition, so a different one makes every
+    partition field differ. A collection written with an identity records its
+    digest (v0.9.1 L10) and a different one is named as the difference. One
+    without the key was written without an identity or by grift 0.9.0 or
+    earlier; the two cannot be told apart, so it only gets a note, printed
+    when something else differs. The note says the identity may be the cause:
+    a MISMATCH can also come from another change.
+    """
+
+    if "identity_digest" in provenance:
+        recorded = provenance["identity_digest"]
+        if recorded == observed:
+            return None, None
+        return (
+            f"identity (recorded identity_digest {recorded}, observed {observed or 'none'})",
+            "identity differs from the one the collection was written with, and the "
+            "identity decides the actor partition; verify with the same --identity FILE",
+        )
+    if observed is None:
+        return None, (
+            "the collection records no identity_digest; collections written by grift "
+            "0.9.0 or earlier with --identity record none, so if this collection was "
+            "written with an identity, verify with the same --identity FILE"
+        )
+    return None, (
+        "the collection records no identity_digest (written without an identity, or by "
+        f"grift 0.9.0 or earlier) but this verify uses identity_digest {observed}; "
+        "the identity may be the cause, since it changes the actor partition"
+    )
 
 
 def _run_actor_artifact_verify(
@@ -154,7 +192,7 @@ def _run_actor_artifact_verify(
     from tep_core.experience import EXPERIENCE_DEFINITION_VERSION
     from tep_core.role_profile import ROLE_PROFILE_DEFINITION_VERSION
     from tep_core.gitutil import coauthor_shas, remote_url, rev_parse
-    from tep_core.identity import actor_ids, load_subject_identity, select_actor
+    from tep_core.identity import actor_ids, identity_digest, load_subject_identity, select_actor
     from tep_core.public_evidence import load_public_evidence, verify_public_evidence
     from tep_core.revision import RevisionError, fixed_revision_worktree
 
@@ -196,7 +234,10 @@ def _run_actor_artifact_verify(
             # verified, and a second sort here is the two-copies defect this
             # repository keeps finding (the 0.7.x copy sorted by commit count).
             expected_actors = actor_summaries(recomputed)
-            differences: list[str] = []
+            identity_difference, identity_note = _collection_identity_check(
+                repo_report["provenance"], identity_digest(identity)
+            )
+            differences: list[str] = [identity_difference] if identity_difference else []
             if recomputed.partition_digest != manifest["partition_digest"]["value"]:
                 differences.append("partition digest")
             if expected_actors != actor_index["actors"]:
@@ -385,6 +426,8 @@ def _run_actor_artifact_verify(
                         differences.append("provider account metadata/OID binding")
             if differences:
                 sys.stdout.write(f"{MISMATCH}: " + ", ".join(dict.fromkeys(differences)) + "\n")
+                if identity_note:
+                    sys.stdout.write(f"  note: {identity_note}\n")
                 return 1
             if cannot_notes:
                 sys.stdout.write(
@@ -399,7 +442,12 @@ def _run_actor_artifact_verify(
     except RevisionError as exc:
         sys.stdout.write(f"{CANNOT_VERIFY}: target repository cannot supply fixed OID: {exc}\n")
         return 2
-    except (ActorArtifactError, IdentityValidationError, OSError, ValueError) as exc:
+    except IdentityValidationError as exc:
+        # An identity that cannot be loaded is an unusable input, not a
+        # different collection: the same answer a saved report's verify gives.
+        sys.stdout.write(f"{CANNOT_VERIFY}: identity cannot be loaded: {exc}\n")
+        return 2
+    except (ActorArtifactError, OSError, ValueError) as exc:
         sys.stdout.write(f"{MISMATCH}: actor collection verification failed: {exc}\n")
         return 1
 

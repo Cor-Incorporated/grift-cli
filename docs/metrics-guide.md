@@ -35,7 +35,7 @@
 
 ## Markdown の観点の呼び名
 
-`grift actor`・`grift repo`・`grift project`・`grift align` の Markdown は、4 つの観点を griftai.org と同じ「平易な言い方（サイトの用語）」の形で呼びます（例: 見出し「変えた部分の区分（作業領域）」）。JSON のキーと、JSON に入る固定文（`limitations` など）は変えていません（その文には「作業領域の観測」「変更提出の時系列」のような元の言い方が残ります）。呼び名は**この表だけ**に置き、Markdown の見出しとの一致は `tests/test_v090_site_names.py` が検査します。
+`grift actor`・`grift repo`・`grift project`・`grift align` の Markdown は、4 つの観点を griftai.org と同じ「平易な言い方（サイトの用語）」の形で呼びます（例: 見出し「変えた部分の区分（作業領域）」）。JSON のキーと、JSON に入る固定文（`limitations` など）は変えていません（その文には「作業領域の観測」「変更提出の時系列」のような元の言い方が残ります）。呼び名は**この表だけ**に置き、Markdown の見出し、「傾向」の節の名前、「観測された数値」の節の見出し、案件の要望の項目名（`DECLARED_TEXTS`・`DECLARED_ITEM_NAMES`）、文の中で観点の名前を引く決定表の文（`place_tests_only`・`work_not_observed`・`work_scope_differs`・`work_scope_later`・`record_scope_paths`）との一致は `tests/test_v090_site_names.py` が検査します。どれか 1 か所だけ呼び名が変わると、表の値とコードの値を並べて落ちます。観点の名前を引く文を決定表に足したときも、そのテストの一覧（`NAME_MENTIONS`）に足すまで落ちます。
 
 | 平易な言い方 | サイトの用語 | JSON キー（report-v2） |
 |---|---|---|

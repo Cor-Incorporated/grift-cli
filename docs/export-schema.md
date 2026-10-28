@@ -26,7 +26,7 @@ report-v1（`docs/report-schema.md`）と同じ追加互換規約: **export-v1 �
 | フィールド | 型 | 意味 |
 |---|---|---|
 | `sha` | string (40 hex) | コミット SHA |
-| `ts` | string `YYYY-MM-DD` | author date（日精度。他の全指標と同じ `--date=short` 由来） |
+| `ts` | string `YYYY-MM-DD` | author date（日精度。作者のタイムゾーンでの日付で、`--date=short` 由来。report-v1 の日付と同じ。`repo`・`actor`・`project`・`align` のレポートは範囲を UTC の日付で切り（v0.6 から）、観測日も UTC の日付で取る（v0.9.0 から）ので、日付の境目（UTC より西の夕方、日本の 0 時〜9 時など）ではこの値と 1 日ずれる） |
 | `origin` | string | 11分類のいずれか（report-v1 origin と同一語彙） |
 | `actor` | string \| null | 解決できたら `canonical_id`、できなければ null。**生メール・生 author 文字列は出ない** |
 | `bot` | bool | origin == `bot` と同値 |
@@ -46,7 +46,7 @@ merge コミットは `git log --name-only` の仕様上ファイル一覧が空
 | `attribution_state` | string | identity の当該 actor の状態 |
 | `commits` | int >= 1 | この actor の `tenant_unique` コミット数 |
 | `active_days` | int >= 1 | 一意な活動日数 |
-| `first_ts` / `last_ts` | string `YYYY-MM-DD` | 最初・最後の tenant_unique コミット日 |
+| `first_ts` / `last_ts` | string `YYYY-MM-DD` | 最初・最後の tenant_unique コミット日（`ts` と同じ作者のタイムゾーンでの日付） |
 | `core_period` | object | report-v1 の `core_activity_period` と同一構造（この actor の日付で計算） |
 
 actor 行を持つのは **tenant_unique コミットが1以上の canonical_id のみ**。pattern 推論（actor 行なし）・bot・unresolved は行を持たない（commits.ndjson の `actor` が null で表現）。actor 順は canonical_id 辞書順（決定論的）。

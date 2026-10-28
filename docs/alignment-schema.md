@@ -7,7 +7,15 @@ actorの表示根拠は `subject.actor_selection` / `actor_attribution_state` �
 記録があるときだけ、actor の本人向けの文と同じ関数（`actor_basis.consent_recorded`）で
 確かめて写し、公開 inferred には付けない。Markdown の面談の問いは、claimed かつ
 `actor_consent` があるときだけ出す（T7）。`grift verify` は保存した値を信じず、actor report
-から作り直して比べる。総合点・順位・合否・推奨は計算しない。
+から作り直して比べる。ただし保存した 2 つの report の経路では、渡した actor report そのものは
+確かめないので、actor report は `grift verify actor-report.json --repo REPO --identity IDENTITY`
+で別に確かめる。repo から作り直す経路（`--repo --identity --project`）は、subject・provenance・
+limitations を `grift align --repo` と同じ関数（`alignment_repo.repo_alignment_payload`）で作り直す
+（`project_id` は project TOML から、`mode` は付けない）。保存した JSON から読むのは作り直しの入力
+（as_of・role_lens・vendor_scan・survival・reference_id）だけ。verify の経路は渡した入力で選び、両方の入力がそろっている（またはどちらもそろっていない）ときだけ保存した `mode` で選ぶ。
+`grift report <alignment.json>` は保存した JSON を描き直すだけで、`actor_selection`・
+`actor_attribution_state`・`actor_consent` を確かめない（Markdown の「数字の読み方と限界」にもそう書く）。
+総合点・順位・合否・推奨は計算しない。
 
 禁止キー: `score`, `rank`, `percentile_for_actor`, `fit`, `compatibility_score`, `recommendation`, `hire`, `pass`, `fail`, `overall`, `fit_score`
 
@@ -104,7 +112,7 @@ actorの表示根拠は `subject.actor_selection` / `actor_attribution_state` �
 }
 ```
 
-`relationship.kind` は `similar_direction` / `different_direction` / `mixed` / `not_comparable` です。採用・能力・適合ではありません。window や単位が違う場合は `not_comparable` です。
+`relationship.kind` は `similar_direction` / `different_direction` / `mixed` / `not_comparable` / `not_proven` です。採用・能力・適合ではありません。window や単位が違う場合は `not_comparable` です。比べた件数の小さいほうが 20 に届かないときは `not_proven` で、向きの候補は `direction` に残りますが、向きとしては扱いません（`confidence` は 5 未満なら `insufficient_data`、5 以上 20 未満なら `weak_signal`）。
 
 v0.9.0 から、`relationship` と軸の窓は次のとおりです。
 
@@ -120,7 +128,25 @@ v0.9.0 から、Markdown には `strength`（weak / moderate / strong）と `rel
 
 `evidence_paths` は `actor.`（actor観測）と `project.declared.`（案件宣言）を分けて書きます。
 
-Markdown は次の順です: 要望と記録が重なっている点 → 面談で確かめたい点 → 案件側が書いていないこと（参考） → 数字の読み方と限界（v0.9.0、[決定表](trait-profile.md)） → 対象 → 入力 → 見ていないこと → 観測値 → 基準値 → 傾向 → 確からしさ → 比較不能 → 言えること/言えないこと → 再現情報。先頭の節は判定（overlap など）を並べ直したもので、重なった項目の数は出しません。
+Markdown の見出し（`## `）は次の順です。
+
+1. `要望と記録が重なっている点`
+2. `面談で確かめたい点`
+3. `案件側が書いていないこと（参考）`
+4. `数字の読み方と限界`
+5. `このレポートは誰・何を対象にしたか`
+6. `何を入力として見たか`
+7. `何を見ていないか`
+8. `案件側の宣言`
+9. `観測された数値 / 軸ごとの並び`
+10. `基準値・比較材料`
+11. `傾向`
+12. `傾向の確からしさ`
+13. `比較不能・未観測・未証明`
+14. `言えること / 言えないこと`
+15. `再現情報`
+
+1〜4 は v0.9.0 からの先頭の節です（[決定表](trait-profile.md)）。判定（overlap など）を並べ直したもので、重なった項目の数は出しません。3 は案件側が書いていない項目があるときだけ出ます。浅い clone の記録では、1〜4 の代わりに出さない理由の 1 文だけが出ます。
 
 tracker export が無いときの説明:
 

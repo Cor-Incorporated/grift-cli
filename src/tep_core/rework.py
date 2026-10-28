@@ -42,8 +42,11 @@ def rework_metrics(
     *,
     pending_attribution: bool,
     scope: str = DEFAULT_SCOPE,
+    cutoff: date | None = None,
 ) -> dict[str, object]:
-    shas = population_shas(commits, origin, scope)
+    """Rework among the scope's production commits; with a cutoff (an explicit
+    --as-of), only those up to that UTC day."""
+    shas = population_shas(commits, origin, scope, cutoff=cutoff)
     if scope == "tenant" and pending_attribution and not shas:
         return NotObserved("pending_attribution").to_dict()
     if not shas:

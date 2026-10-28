@@ -8,8 +8,10 @@ from tep_core.v2_constants import HISTORY_WINDOW_BASIS, HISTORY_WINDOW_PREFIX
 
 
 def _history_end_text(end: Any) -> str:
-    # Not 「全履歴」: a shallow clone holds only the fetched slice, and project-v1
-    # does not record whether the clone was shallow (follow-up of #85).
+    # Not 「全履歴」: a shallow clone holds only the fetched slice (follow-up of #85).
+    # The detail layer keeps one wording for every report; a project-v1 saved before
+    # 0.9.1 does not record whether the clone was shallow. The opening section says
+    # 全履歴 when the report proves it is not (tep_core.trait_evidence.history_text).
     return f"{end} までの履歴" if end else "—"
 
 

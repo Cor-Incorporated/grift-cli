@@ -202,7 +202,7 @@ def test_rhythm_relationship_is_not_comparable_between_a_person_and_a_repository
         assert axis["coverage"] == {"status": "partial", "missing": ["comparable_scope"]}, name
 
 
-def test_surface_axis_window_says_the_whole_history_was_counted(outputs) -> None:
+def test_surface_axis_window_says_the_history_up_to_the_date_was_counted(outputs) -> None:
     """§1.4 row 2: surface counts cover the history up to the observation date."""
 
     payload = json.loads(outputs["alignment"])

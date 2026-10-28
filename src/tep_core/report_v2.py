@@ -147,8 +147,8 @@ def render_evidence_markdown(report: dict[str, Any]) -> str:
         "",
         "## このレポートは誰・何を対象にしたか",
         f"- {who}",
-        f"- 観測日: {prov.get('observation_date')}（窓の基準={prov.get('window_basis')}。"
-        "explicit_as_of は --as-of、legacy_head_date は履歴 HEAD 日）",
+        f"- 観測日: {prov.get('observation_date')}（UTC の日付。窓の基準={prov.get('window_basis')}。"
+        "explicit_as_of は --as-of、legacy_head_date は HEAD の作者日付の UTC の日付）",
         "",
         "## 何を入力として見たか",
         f"- {_coverage_line(coverage, 'git', 'Git 履歴を入力として使った', 'Git 履歴は使っていない')}",
@@ -263,10 +263,12 @@ def _tendency_label(value: Any) -> str:
     if value.endswith("_surface_prominent"):
         name = value[: -len("_surface_prominent")]
         return f"{name}系surfaceが相対的に多い傾向"
+    # The row's label already names the viewpoint (「変更のペース（変更リズム）」, or the
+    # axis in an alignment), so the value does not repeat it (0.9.1 L16).
     mapping = {
         # Saved 0.8.0 payloads carry this label; it never meant a regular cadence.
-        "regular_submission_direction": "変更のペース（変更リズム）が観測される",
-        "rhythm_observed": "変更のペース（変更リズム）が観測される",
+        "regular_submission_direction": "変更の間隔が観測される",
+        "rhythm_observed": "変更の間隔が観測される",
     }
     return mapping.get(value, value)
 
@@ -322,7 +324,8 @@ def _gap_lines(report: dict[str, Any]) -> list[str]:
 
 
 def _history_text(prov: dict[str, Any]) -> str:
-    """Surface counts cover the whole scoped history, not the 180-day window."""
+    """Surface counts cover the scoped history up to the observation date (only the
+    fetched slice in a shallow clone), not the 180-day window."""
     return _window_text({"end": prov.get("observation_date"), "basis": HISTORY_WINDOW_BASIS})
 
 

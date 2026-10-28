@@ -29,6 +29,17 @@ grift verify alignment-out/alignment.json \
   --reference-manifest benchmarks/v060/sources.json
 ```
 
+Verify an alignment made on the compatibility path with the same repository, identity and project TOML it was made from. The inputs you pass pick the path: `--project` without both of `--actor-report` and `--project-report` means the repository path; both of those without `--project` mean the saved-report path. When both input sets are complete, or neither is, the file's `subject.mode` decides: `saved_reports` means the saved-report path, anything else the repository path. A saved-report alignment checked on the repository path starts its MISMATCH with `note: subject.mode is 'saved_reports'`.
+
+```bash
+grift verify alignment.json --repo . \
+  --identity .tep/identity.toml --project .tep/project.toml
+```
+
+On both paths the `subject` (including the consent record `actor_consent` and `project_id`) is rebuilt from the inputs and compared, never copied from the saved JSON. The repository path also rebuilds the provenance and limitations, and reads from the saved JSON only the recompute inputs (what `--as-of`, `--role-lens`, `--vendor-scan`, `--survival` and `--reference` were). An alignment made with `--event-window` does not yet verify on the repository path (to be fixed in 0.9.2). The saved-report path trusts the actor report it is handed and rebuilds from it; check that actor report separately with `grift verify actor-report.json --repo REPO --identity IDENTITY`.
+
+`grift report alignment-out/alignment.json` only re-renders the Markdown from the saved JSON; it checks nothing. Whether the interview questions are shown comes straight from the actor selection, identity kind and consent record written in the JSON (`subject.actor_selection`, `subject.actor_attribution_state` and `subject.actor_consent`); re-rendering an actor report treats its person-facing sentences the same way. `grift verify` is what checks that the JSON was not changed (for an alignment made from saved reports, check the actor report too, as above). The Markdown says the same under "数字の読み方と限界" (how to read the numbers and their limits).
+
 ## Writing out several people at once
 
 ```bash
@@ -200,6 +211,14 @@ observation produced by the explicit-consent gate or
 `not_observed(consenting_actor_required)`. Neither the machine-field name nor
 its presence proves consent. Verification recomputes both fields from the fixed
 OID and identity instead of trusting a self-consistent card/manifest rewrite.
+From 0.9.1 a collection written with an identity records its digest in
+`repo-report.json` as `provenance.identity_digest`. Verify reports a different
+identity as the first MISMATCH item,
+`identity (recorded identity_digest …, observed …)` (the recorded and the
+observed digest), with a `note:` line asking for the same `--identity FILE`. A
+collection written without an identity, or by 0.9.0 or earlier, has no such key;
+when it does not verify, only a `note:` line is added (the identity may not be the
+cause). An identity that cannot be loaded gives `CANNOT_VERIFY` (exit 2).
 
 report-v1 and export-v1 keep their additive compatibility contract. report-v2
 and new v0.6 artifacts use closed Draft 2020-12 schemas and reject unknown
@@ -341,6 +360,15 @@ disclose a payload that the intake would then bounce.
 ```bash
 grift contribute --purpose outcome-linkage --door local
 ```
+
+## Upgrading from 0.9.0
+
+The full notes are in [migration-v091.md](migration-v091.md) (the [Japanese original](../migration-v091.md) also keeps the notes for older versions) and the [changelog](../../CHANGELOG.md) (in Japanese). What needs regenerating:
+
+- Reports saved by 0.9.0 (`analyze`, `actor`, `repo`) and alignments (`align`) are CANNOT_VERIFY under 0.9.1 `grift verify` (`DEFINITION_VERSION` changed). Project reports that observed a repository are MISMATCH. Regenerate them with 0.9.1
+- A collection written by 0.9.0 with `grift actor ID --as-of … --out DIR` for a person with a consent record in the identity is MISMATCH under 0.9.1 `grift verify` (the card's experience is now cut at the observation date). Regenerate it. Collections from `--all`, `--top` and `repo --actors` still VERIFY, even with `--as-of`, except in repositories with an author whose name has the hash-id shape (`actor_` plus hex digits): those collections are MISMATCH however they were written; regenerate them
+- An identity file whose `canonical_id` has the shape `actor_` plus 12–32 hex digits makes 0.9.1 exit 2. Rename the id. If the identity is committed to the repository and read at a fixed revision, pass a fixed copy with `--identity FILE`
+- v2 reports count `context_profile` days in UTC. In repositories with commits made between 0:00 and 9:00 in Japan, the values can differ from 0.9.0
 
 ## Upgrading from 0.8.0
 

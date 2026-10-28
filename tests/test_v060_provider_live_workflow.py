@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import os
 import subprocess
 import sys
 import textwrap
@@ -195,3 +196,56 @@ def test_publish_live_admission_one_sided_mutation_is_red(removed: str) -> None:
     assert removed in body
     with pytest.raises(AssertionError):
         _assert_publish_live_admission(body.replace(removed, "removed-by-mutation", 1))
+
+
+def test_provisional_fail_summary_is_written_after_checkout_so_a_failed_run_uploads_it() -> None:
+    """actions/checkout empties the working directory ("Deleting the contents of ...").
+
+    A FAIL placeholder written before it is gone by the time the always-upload
+    step runs, so a run that fails in install, clone or the gate uploaded nothing
+    (run 40348629797). The deadline must still be set before checkout; only the
+    placeholder moves after it.
+    """
+    body = _workflow()
+    checkout = body.index("actions/checkout@v4")
+    placeholder = body.index('"reason": "runner_not_completed"')
+    deadline = body.index("LIVE_GATE_DEADLINE_EPOCH=$(($(date +%s) + 1680))")
+    install = body.index("- name: Install exact checkout")
+    assert deadline < checkout, "the suite deadline must be set before checkout"
+    assert checkout < placeholder < install, (
+        "the provisional FAIL summary must be written after actions/checkout and before "
+        f"install, clone and the gate (checkout at {checkout}, placeholder at "
+        f"{placeholder}, install at {install})"
+    )
+
+
+def test_provisional_placeholder_writes_exactly_the_files_the_upload_expects(tmp_path: Path) -> None:
+    """Run the placeholder step and compare what it writes with the upload paths.
+
+    The order test alone stays green when the placeholder writes another
+    directory or file name, is made conditional, or a second checkout wipes it.
+    """
+    body = _workflow()
+    start = body.index("      - name: Write the provisional FAIL summary")
+    end = body.index("\n      - ", start + 1) + 1
+    step = body[start:end]
+    assert "\n        if:" not in step, "the placeholder step must be unconditional"
+    marker = step.index("        run: |\n") + len("        run: |\n")
+    script = textwrap.dedent(step[marker:])
+    env = {
+        "LIVE_TIER": "release",
+        "PATH": f"{Path(sys.executable).parent}{os.pathsep}{os.environ['PATH']}",
+    }
+    subprocess.run(["/bin/bash", "-c", script], cwd=tmp_path, env=env, check=True)
+    written = sorted(
+        path.relative_to(tmp_path).as_posix() for path in tmp_path.rglob("*") if path.is_file()
+    )
+    upload = body.split("Upload sanitized provider evidence only", 1)[1]
+    block = upload.split("path: |", 1)[1].split("if-no-files-found:", 1)[0]
+    files = sorted(
+        line.strip()
+        for line in block.splitlines()
+        if line.strip() and not line.strip().endswith("/")
+    )
+    assert written == files, f"placeholder wrote {written}, upload expects {files}"
+    assert body.count("actions/checkout@") == 1, "a later checkout would wipe the placeholder"

@@ -226,7 +226,8 @@ def _limit_notes(declared: dict[str, Any], text: str, *, gaps: bool) -> list[str
     keys += ["p90"] if RHYTHM_ITEM_NAMES["p90_gap_days"] in text else []
     keys += ["gap_rounding"] if gaps else []
     keys.append("scales")
-    return [*(LIMIT_NOTES[key] for key in keys), SELECTIVITY_NOTICE_JA, LIMIT_NOTES["verify"]]
+    tail = [SELECTIVITY_NOTICE_JA, LIMIT_NOTES["verify"], LIMIT_NOTES["consent"]]
+    return [*(LIMIT_NOTES[key] for key in keys), *tail]
 
 
 def alignment_section(report: dict[str, Any]) -> list[str]:

@@ -112,7 +112,7 @@ steps:
   - uses: actions/setup-python@v5
     with:
       python-version: "3.12"
-  - uses: Cor-Incorporated/grift-cli@v0.9.0
+  - uses: Cor-Incorporated/grift-cli@v0.9.1
     with:
       scope: repo
       comment: false
@@ -130,7 +130,7 @@ The action runs `grift analyze`, writes a summary to `$GITHUB_STEP_SUMMARY`, and
 - [Usage norms](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/norms.md)
 - [Metric validation and limits](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/validation.md): the design choices behind the numbers and their limits, and results from 117 public repositories, including the comparisons that did not separate
 - Output formats: [report-v1](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/report-schema.md), [export](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/export-schema.md), [identity](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/identity-schema.md); in Japanese: [report-v2](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/report-v2.md), [alignment](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/alignment-schema.md), [project](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/project-schema.md)
-- [Changelog](https://github.com/Cor-Incorporated/grift-cli/blob/main/CHANGELOG.md) (in Japanese) and [0.9.0 migration notes](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/migration-v090.md)
+- [Changelog](https://github.com/Cor-Incorporated/grift-cli/blob/main/CHANGELOG.md) (in Japanese) and [0.9.1 migration notes](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/migration-v091.md)
 
 Product site: [griftai.org](https://griftai.org) (Japanese).
 

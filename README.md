@@ -110,7 +110,7 @@ steps:
   - uses: actions/setup-python@v5
     with:
       python-version: "3.12"
-  - uses: Cor-Incorporated/grift-cli@v0.9.0
+  - uses: Cor-Incorporated/grift-cli@v0.9.1
     with:
       scope: repo
       comment: false
@@ -128,7 +128,7 @@ steps:
 - [利用規範（norms）](docs/norms.md)
 - [指標の検証と限界](docs/validation.md)。数値を出すときの設計の選択とその限界、公開 117 リポジトリで指標を確かめた結果（差が出た比較と出なかった比較の両方）を載せています
 - 出力の形式: [report-v2](docs/report-v2.md)、[report-v1](docs/report-schema.md)、[alignment](docs/alignment-schema.md)、[project](docs/project-schema.md)、[identity](docs/identity-schema.md)、[export](docs/export-schema.md)、[ローカル export の入力](docs/input-export-schema.md)
-- [変更履歴（CHANGELOG）](CHANGELOG.md)と、0.9.0 への[移行の注意](docs/migration-v090.md)
+- [変更履歴（CHANGELOG）](CHANGELOG.md)と、0.9.1 への[移行の注意](docs/migration-v091.md)
 
 製品サイトは [griftai.org](https://griftai.org) です。
 

@@ -4,6 +4,105 @@
 
 タグ・PyPI・リポ public 化は本ファイルの記載対象外（人間ゲート）。
 
+## [0.9.1] — 2026-10-28
+
+人や案件について事実と違う数や読みが出うるところを直す patch release。コマンドは増えず、CLI フラグと
+enum 値は変わらない。任意の key が増えるのは、project-v1 の `provenance.revision_completeness`（そこから作った
+照らし合わせの `project_provenance` にも写る）と、identity を使って書いた collection の `repo-report.json` の
+`provenance.identity_digest`（report-v2 に元からある任意の key）。公開 Forge 取得（provider-neutral Forge証跡、
+GitHub/GitLab/self-managed、PARTIAL/resume）、attest / portfolio、contribution-v2 の契約、`暗黙 PyPI update check` を
+持たない設計はいずれも 0.9.0 から変わらない。移行は `docs/migration-v091.md`、英語は `docs/en/migration-v091.md`。
+
+JSON の値が変わるのは次の場面で、どれも 0.9.0 のリリースの後に洗い出した在庫にあったもの。
+
+- `--as-of` を指定したとき、experience・test_cochange・rework も観測日（UTC）で切る。actor の activity の日も
+  同じ UTC の日で数える（`grift repo` の activity は、まだ作者の現地の日付で数える）
+- v2 レポートの `context_profile` の日付を UTC で数える。**ふつうのリポジトリでも変わりうる**: 作者の
+  現地の日付と UTC の日付が違う commit（日本なら 0:00〜8:59）があると、`active_days_180d` などが
+  同じレポートの `change_rhythm` と同じ数え方になる
+- forge / tracker の export の窓を UTC の日付で読む（UTC より東の offset で書かれ、`[:10]` がたまたま Git の窓と
+  合っていた export は `windows_not_equivalent` になる）
+- 浅い clone の report-v2 の `limitations` の 1 文を、実際に `not_observed` にした値と、取得できた
+  commit だけで数えた節を名前で並べる文にする
+- 作者名が grift の付ける hash id（`actor_` と 16 進数）の形の人は、名前の slug ではなく自分の hash id で数える
+
+`--as-of` なしで、HEAD より後の作者日付を持つ祖先（rebase・cherry-pick のあと）がレポートから外れる件は、
+直し方を試したが外し、次の版に回した。観測日は 0.9.0 と同じく HEAD の作者日付の UTC の日付。
+
+0.9.0 で保存した report（`analyze`・`actor`・`repo`）と照らし合わせは、0.9.1 の `verify` では定義版数が違うため
+CANNOT_VERIFY に、リポジトリを観測した project report は定義版数の欄が食い違うため MISMATCH になる（要求だけの
+project report は VERIFIED）。書き出した一式（`--out` の collection）は定義版数を見ない。`grift actor ID --as-of …
+--out DIR` で、identity に同意の記録がある人の card を書いたものは MISMATCH（card の experience を観測日で切るように
+なったため）、作者名が hash id の形の人がいる repo のものも MISMATCH、identity が読めなければ CANNOT_VERIFY に
+なる。それ以外（`--all`・`--top`・`repo --actors` は `--as-of` 付きでも）は VERIFIED。どれも 0.9.1 で作り直せば
+検算できる（実測は `docs/migration-v091.md`）。
+
+### Added
+
+- **`grift project` の JSON（project-v1）に `provenance.revision_completeness` を足した**（任意。
+  `{shallow, promisor, complete}`、report-v2 と同じ形）。案件のリポジトリを渡したときだけ書く。浅い
+  clone でないと分かれば、project の Markdown の範囲を「全履歴」と書く（0.9.0 は見分けられないので
+  書かなかった）。`grift verify` はこの key も作り直して比べる
+- **identity を使って書いた collection の `repo-report.json` に `provenance.identity_digest` を書く**
+  （report-v2 の同じ key と同じ値）。`grift verify` に別の identity を渡すと、分け方が同じでも identity の違いとして
+  MISMATCH を名指しする
+
+### Changed
+
+- **定義版数を `tep-v0.9.1-2026-10-28` に上げた**（REL-091）。上の JSON の値の変化に合わせたもの。版数だけを上げて
+  定義版数を据え置くことはできない（golden の runner が `provenance.tool_version` の差を D3 として FAIL にし、
+  承認には D4 が要る）。証跡（`evidence/v060/scenarios`・`scenarios-public`・`evidence/v070/benchmark.json`）を
+  0.9.1 の source で作り直した。golden baseline は `gold-actor-partition-0007` として承認移行した（承認者
+  human:teradakousuke、approved_at 2026-10-28T01:57:56Z）
+- **identity の `canonical_id` に、grift が付ける hash id の形（`actor_` と 16 進数 12〜32 桁）を書けなく
+  した**（exit 2。観測した値をメッセージに出す）。宣言した id が別の人の hash id と同じだと、その人の
+  commit が宣言した人の数に入ることがあった。この形の id を使っている identity は、読める id に
+  書き直す必要がある
+- identity を読めない collection の `grift verify` は、MISMATCH（exit 1）ではなく CANNOT_VERIFY（exit 2）になる
+- 照らし合わせの Markdown の「数字の読み方と限界」に、`grift report <alignment.json>` での描き直しは
+  同意の記録を確かめないこと、保存した report から作った照らし合わせでは actor report も `grift verify` で
+  確かめることを 1 行で書く
+
+### Fixed
+
+- **`--as-of` を指定しても、experience・test_cochange・rework が観測日のあとの commit まで数えていた**。
+  test_cochange の 13 週の窓も HEAD の日から数えていた。どれも観測日（UTC）の終わりまでの commit と
+  タグで数え、13 週の窓は観測日から数える。足した依存も観測日までの commit の分だけを数える。
+  `--as-of` のときの actor の activity の日は、範囲を切るのと同じ UTC の日で数える。`--as-of` を指定しない
+  ときは、これらの値は変わらない
+- **v2 レポートの `context_profile` が作者の現地の日付で数えていた**。範囲は UTC の日付で切るので、
+  同じレポートの中で `context_profile.active_days_180d` と `change_rhythm.active_days_180d` が
+  食い違うことがあった。UTC の日付で数える。report-v1（`grift analyze`）は変えていない
+- forge / tracker の export の窓の日付を、時刻の offset のまま `[:10]` で読んでいた。UTC の日付で
+  読む（UTC より西で書いた窓に `--event-window` を合わせられなかった）
+- 件名に 0x1f などの区切りに似た文字を含む commit を、`git log` の読み取りで落としていた
+- git の設定 `log.showSignature=true` の環境で、署名の確認の行が commit のファイルの一覧に混ざっていた。
+  grift が呼ぶ git に `log.showSignature=false` を付ける
+- **浅い clone の report-v2 が「actor の合計は not_observed」と書きながら、surface・change_rhythm は
+  取得できた範囲から observed で出していた**。`limitations` の文を、not_observed にした値と、取得
+  できた commit だけで数えた節を名前で並べる文にした
+- **作者名の slug が別の cluster の hash id と同じだと、解析が exit 2 で止まっていた**。hash id の形の名前の人は
+  自分の hash id で数える
+- **`grift verify <alignment.json> --repo --identity --project` が、照らし合わせの `project_id`・`mode`・
+  provenance の多く・`limitations` を保存した JSON から写していた**（書き換えても VERIFIED になった）。
+  `grift align --repo` と同じ関数で作り直して比べる。`--survival` / `--vendor-scan` / `--reference` で作った
+  照らし合わせが必ず MISMATCH になっていたのも直した。`--actor-report`/`--project-report` と `--project` の
+  両方を渡したときだけ、JSON の `subject.mode` でどちらの経路で確かめるかを選ぶ。照らし合わせの JSON は
+  変わらない。保存した report から作った照らし合わせの検算と、`--event-window` で作った照らし合わせの repo の
+  経路の検算は、まだ直していない
+- `--as-of` を指定した actor の Markdown が、観測日までに付けたリリースの印（注釈付きタグ）の回数を
+  書かなかった。role_profile の窓が観測日の終わりで切られているとき（0.9.0 以降の `--as-of`）は、
+  回数と面談の問いを出す
+- Markdown の「傾向」の行で、変更のペースの名前が 2 回続いていた（「変更のペース（変更リズム）:
+  変更の間隔が観測される」にした）
+- release tier の workflow（`v060-provider-live.yml`）が途中で失敗したとき、仮の FAIL 要約を
+  `actions/checkout` が消していて、何も上げられなかった。仮の要約を checkout の後に書く
+- テスト: `--as-of` の切り方（actor_cluster・13 週の基準・観測日その日・UTC）、東の朝の commit が
+  窓に入るか、呼び名の表と見出し・傾向の名前・宣言の名前・観点の名前を含む文、JSON と Markdown の傾向の注記、
+  照らし合わせの検算と契約の schema、project の節に役割の節が出ないこと、を固定するテストを足した
+- docs: 照らし合わせの節の順に「案件側の宣言」を、`relationship.kind` の一覧に `not_proven` を
+  足した（`docs/alignment-schema.md`）。`docs/export-schema.md`（日英）の日付の説明を直した
+
 ## [0.9.0] — 2026-10-26
 
 記録から見える仕事の進め方を、平易な文と、面談で確かめたいことの問いにして、Markdown の先頭に
@@ -55,17 +154,6 @@ JSON の値が変わるのは次の 4 つの場面で、どれも人や案件に
   とき、`--as-of` を指定していてタグを付けた日が分からないときなどは、理由を書いて外す
 
 ### Changed
-
-- **README を日英とも書き直し、PyPI の説明を英語にした**。冒頭で「何を出すか・何を
-  出さないか・1 コマンドで試す」が分かる構成にし、版ごとの修正履歴は本ファイルと
-  migration へのリンクだけにした。コマンドの詳しい使い方は `docs/usage.md` /
-  `docs/en/usage.md`、指標の限界・参照用の位置・群のあいだの判別結果は
-  `docs/validation.md` / `docs/en/validation.md` へ内容を移した。`pyproject.toml` の
-  `readme` を `README.en.md`（リンクはすべて絶対 URL）に、`description` を評価に
-  読めない 1 行に変え、`project_urls` に Homepage（griftai.org）・Documentation・
-  Japanese README・Changelog・Source・Issues を揃えた。README を読む検査は移した先の
-  文書を読むように直し、PyPI に出る README の相対リンク・`project_urls` の参照先・
-  リンクの見出しを `tests/test_readme_entry.py` で検査する。CLI の出力は変わらない。
 
 - **Markdown から「傾向の強さ」（`strength`）の行と、alignment の `relationship` の行を外した**
   （ADR-0002）。2 つのレポートを並べると、強い人・弱い人、合う人・合わない人に読めるため。
@@ -216,7 +304,7 @@ PARTIAL/resume）、attest / portfolio、contribution-v2 の契約、`暗黙 PyP
   表の並びという実体は量で決まっていた。公開面の「点数や順位はつけない」と
   食い違うので並び順だけを直し、`commit_count` の値は分母付きの事実として
   残す。actor id は identity があれば canonical_id、無ければ `actor_<hash>`。`--top N` が選ぶ N 名は変わらない（量で選ぶ経路は 0.9 で
-  廃止か改名をユーザーが判断する。`docs/PLAN-v080-20261025.md` §2.3）。
+  廃止か改名をユーザーが判断する）。
   `grift verify DIR` は、行が actor id 順でない index、行順に従わない
   selection、最多 commit の集合でない `top` selection を digest 比較の前に
   拒否し、CLI の collection verify は writer と同じ `actor_summaries` で行を
@@ -225,6 +313,19 @@ PARTIAL/resume）、attest / portfolio、contribution-v2 の契約、`暗黙 PyP
   `actor index rows must be ordered by actor id …`、行が偶然 id 順でも
   `actor-index.md` の注記差で `actor index Markdown does not match verified
   JSON`）。release 時に `DEFINITION_VERSION` を上げ、migration に実測を載せる。
+
+- **README を日英とも書き直し、PyPI の説明を英語にした**。冒頭で「何を出すか・何を
+  出さないか・1 コマンドで試す」が分かる構成にし、版ごとの修正履歴は本ファイルと
+  migration へのリンクだけにした。コマンドの詳しい使い方は `docs/usage.md` /
+  `docs/en/usage.md`、指標の限界・参照用の位置・群のあいだの判別結果は
+  `docs/validation.md` / `docs/en/validation.md` へ内容を移した。`pyproject.toml` の
+  `readme` を `README.en.md`（リンクはすべて絶対 URL）に、`description` を評価に
+  読めない 1 行に変え、`project_urls` に Homepage（griftai.org）・Documentation・
+  Japanese README・Changelog・Source・Issues を揃えた。README を読む検査は移した先の
+  文書を読むように直し、PyPI に出る README の相対リンク・`project_urls` の参照先・
+  リンクの見出しを `tests/test_readme_entry.py` で検査する。CLI の出力は変わらない。
+  （0.9.1 で `[0.9.0]` からここへ移した。実際に入ったのは 0.8.0 の wheel で、0.8.0 の
+  Release 本文にも書いてある）
 
 ### Fixed
 

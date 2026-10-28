@@ -306,6 +306,16 @@ LIMIT_NOTES: dict[str, str] = {
         "件数どうしを割り算した比べ方はしていません。"
     ),
     "verify": "数字は JSON の値から作っています。JSON は `grift verify` で検算できます。この Markdown は検算の対象外です。",
+    # Alignment only: `grift report <alignment.json>` re-renders the saved file
+    # and checks nothing, so the consent behind the questions is the file's word.
+    "consent": (
+        "面談の問いを出すかどうかは、JSON に書かれた actor の選び方・ID の種類・同意の記録"
+        "（`subject.actor_selection`・`subject.actor_attribution_state`・`subject.actor_consent`）"
+        "で決めています。保存した JSON から描き直したとき（`grift report`）は、これを確かめていません。"
+        "照らし合わせの JSON は `grift verify` で確かめます。保存した actor の report から作った"
+        "照らし合わせでは、`grift verify` は渡した actor の report を信じて作り直すので、actor の report も"
+        " `grift verify actor-report.json --repo REPO --identity IDENTITY` で確かめます。"
+    ),
     "p90": (
         "間隔を短い順に並べたときの 9 割の位置の値を「9 割のところ」と書いています"
         "（前後の 2 つの値のあいだを按分します）。"
@@ -316,6 +326,13 @@ LIMIT_NOTES: dict[str, str] = {
     "shallow_repo": (
         "浅い clone のリポジトリでは、取得できた変更だけを数えます。いちばん古い変更は"
         "すべてのファイルを足したように数えられます。project の JSON には浅い clone かどうかが入っていません。"
+    ),
+    # 0.9.1 J3: project-v1 records `provenance.revision_completeness`. `shallow_repo`
+    # stays for a project report saved before it (no key, so unknown).
+    "shallow_repo_recorded": (
+        "このリポジトリは浅い clone なので、取得できた変更だけを数えます。いちばん古い変更は"
+        "すべてのファイルを足したように数えられます。`git fetch --unshallow` で残りの履歴を取ると、"
+        "取得できなかった変更も数えます。"
     ),
 }
 

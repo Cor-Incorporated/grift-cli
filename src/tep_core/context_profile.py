@@ -15,11 +15,12 @@ from __future__ import annotations
 import re
 from collections import Counter
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 from tep_core.gitutil import GitCommit, _run_git
 from tep_core.observation import NotObserved, Observed
 from tep_core.origin import OriginResult
+from tep_core.rhythm import commit_timestamp
 
 CONTEXT_DEFINITION_VERSION = "context-v3-2026-08-25"
 
@@ -152,10 +153,22 @@ def _tags(repo: Path) -> list[str]:
     return [line.strip() for line in out.splitlines() if line.strip()]
 
 
-def _commit_dates(commits: list[GitCommit]) -> tuple[str | None, str | None]:
+def _local_day(commit: GitCommit) -> str:
+    """The author's own calendar day (`%ad --date=short`), as report-v1 counts."""
+    return commit.date
+
+
+def _utc_day(commit: GitCommit) -> str:
+    """The UTC day of the author time, as report-v2 cuts and dates its range."""
+    return commit_timestamp(commit).date().isoformat()
+
+
+def _commit_dates(
+    commits: list[GitCommit], day_of: Callable[[GitCommit], str] = _local_day
+) -> tuple[str | None, str | None]:
     if not commits:
         return None, None
-    dates = sorted(c.date for c in commits)
+    dates = sorted(day_of(c) for c in commits)
     return dates[0], dates[-1]
 
 
@@ -169,7 +182,11 @@ def _days_between(first: str, last: str) -> int:
     return (parse(last) - parse(first)).days
 
 
-def _active_days_in_window(commits: list[GitCommit], head_date: str | None) -> int:
+def _active_days_in_window(
+    commits: list[GitCommit],
+    head_date: str | None,
+    day_of: Callable[[GitCommit], str] = _local_day,
+) -> int:
     """Unique human-commit days within the trailing DENSITY_WINDOW (lifecycle-v2).
 
     Density, not recency: a single recent housekeeping day after 180 days of
@@ -184,7 +201,7 @@ def _active_days_in_window(commits: list[GitCommit], head_date: str | None) -> i
         return date(year, month, day)
 
     cut = parse(head_date) - timedelta(days=DENSITY_WINDOW_DAYS)
-    days = {parse(c.date) for c in commits if parse(c.date) >= cut}
+    days = {parse(day_of(c)) for c in commits if parse(day_of(c)) >= cut}
     return len(days)
 
 
@@ -300,7 +317,9 @@ def _test_docs_shares(commits: list[GitCommit]) -> tuple[float | None, float | N
     return round(test_touch / len(pop), 4), round(docs_touch / len(pop), 4)
 
 
-def _actor_turnover(commits: list[GitCommit]) -> dict[str, dict[str, int]]:
+def _actor_turnover(
+    commits: list[GitCommit], day_of: Callable[[GitCommit], str] = _local_day
+) -> dict[str, dict[str, int]]:
     """Per-year actor movement (context-v3): `joined` = first-seen year count,
     `last_active` = last-seen year count. The old key `left` was misleading —
     an actor whose latest commit is this year is NOT gone (#50)."""
@@ -308,7 +327,7 @@ def _actor_turnover(commits: list[GitCommit]) -> dict[str, dict[str, int]]:
     last_year: dict[str, str] = {}
     for commit in commits:
         key = _author_key(commit)
-        year = commit.date[:4]
+        year = day_of(commit)[:4]
         if key not in first_year or year < first_year[key]:
             first_year[key] = year
         if key not in last_year or year > last_year[key]:
@@ -335,8 +354,16 @@ def build_context_profile(
     origin: OriginResult,
     *,
     history_complete: bool = True,
+    utc_days: bool = False,
+    end_day: str | None = None,
 ) -> dict[str, Any]:
     """repo-scope context layer. Appears in report-v1 as an additive section.
+
+    Dates are the author's local day, like the rest of report-v1. report-v2
+    passes `utc_days=True`: its observation date and range are UTC days, and a
+    HEAD made in the evening west of UTC otherwise ends its own context a day
+    before the report's observation date. It also passes `end_day`, the day its
+    range ends on, so the context cannot end on a day of its own.
 
     `history_complete=False` (a shallow or promisor clone) suppresses every
     depth-dependent field. On a `--depth 50` clone of urllib3 the visible
@@ -369,12 +396,14 @@ def build_context_profile(
     merges = sum(1 for c in humans if c.is_merge)
     pr_flow_share = round(merges / len(humans), 4)
 
-    first_date, last_date = _commit_dates(humans)
+    day_of = _utc_day if utc_days else _local_day
+    first_date, last_date = _commit_dates(humans, day_of)
     span_days = _days_between(first_date, last_date) if first_date and last_date else 0
-    head_date = commits[0].date if commits else None
+    # report-v2's end_day is HEAD's UTC day today; it is where M3 (0.9.2) lands.
+    head_date = end_day or (day_of(commits[0]) if commits else None)
     # lifecycle-v2 primary observations (density-based, addendum16 §2)
     days_since_last = _days_between(last_date, head_date) if last_date and head_date else None
-    active_days_180d = _active_days_in_window(humans, head_date)
+    active_days_180d = _active_days_in_window(humans, head_date, day_of)
     if active_days_180d >= LIFECYCLE_ACTIVE_MIN_DAYS_180D:
         lifecycle_stage = "active"
     elif active_days_180d >= LIFECYCLE_MAINTAINED_MIN_DAYS_180D:
@@ -422,7 +451,7 @@ def build_context_profile(
         "active_days_180d": depth_dependent(Observed(active_days_180d, "days").to_dict()),
         "lifecycle_stage": depth_dependent(Observed(lifecycle_stage, "class").to_dict()),
         "actor_turnover": depth_dependent(
-            Observed(_actor_turnover(humans), "actors/year").to_dict()
+            Observed(_actor_turnover(humans, day_of), "actors/year").to_dict()
         ),
         "release_cadence": depth_dependent(
             Observed(_release_cadence(tags, span_days), "tags/year").to_dict()

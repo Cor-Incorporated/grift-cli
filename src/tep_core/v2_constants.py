@@ -110,8 +110,9 @@ SELECTIVITY_NOTICE_JA = (
 # rhythm axes not comparable (v0.9.0, trait-profile design §1.4 row 1).
 RELATIONSHIP_SCOPE_NOT_EQUIVALENT = "scope_not_equivalent"
 RELATIONSHIP_COMPARED_UNIT = "commit_share"
-# surface_profile and verification_profile count every scoped commit up to the
-# observation date; only change_rhythm uses the 180-day window (§1.4 row 2).
+# surface_profile and verification_profile count the scoped commits up to the
+# observation date that the repository holds (only the fetched slice in a shallow
+# clone); only change_rhythm uses the 180-day window (§1.4 row 2).
 HISTORY_WINDOW_BASIS = "history_to_observation_date"
 # alignment JSON writes a history window as `history/<observation date>`.
 HISTORY_WINDOW_PREFIX = "history/"

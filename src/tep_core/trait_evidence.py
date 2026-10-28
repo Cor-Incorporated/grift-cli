@@ -46,11 +46,20 @@ def _units(counts: list[int]) -> str:
     return " / ".join(SECTION_TEXTS["count_unit"].format(c=count) for count in counts)
 
 
+def recorded_shallow(prov: dict[str, Any]) -> bool | None:
+    """`provenance.revision_completeness.shallow`, or None when it is not recorded
+    (a project-v1 saved before 0.9.1 J3): unknown, never read as complete."""
+    completeness = prov.get("revision_completeness")
+    shallow = completeness.get("shallow") if isinstance(completeness, dict) else None
+    return shallow if isinstance(shallow, bool) else None
+
+
 def history_text(prov: dict[str, Any], *, person: bool = True) -> str:
-    """The counted range. Only the actor report can rule out a shallow clone
-    (provenance.revision_completeness); project-v1 cannot, so it is not 全履歴."""
+    """The counted range: 全履歴 only where a shallow clone is ruled out. The actor
+    section is not shown for one; project-v1 records it since 0.9.1 (J3)."""
     end = prov.get("observation_date")
-    key = "history" if person else "history_repo"
+    whole = person or recorded_shallow(prov) is False
+    key = "history" if whole else "history_repo"
     return SECTION_TEXTS[key].format(end=end) if end else _UNKNOWN_PERIOD
 
 

@@ -23,7 +23,7 @@ A shallow clone (a record whose history stops partway) gets no sentences even wi
 
 > この節の文は出していません。{reason}です。浅い clone では、いちばん古い変更がすべてのファイルを足したように数えられ、場所や間隔の数が全履歴と変わります。`git fetch --unshallow` で全履歴を取ってから実行すると出します。
 
-A partial (promisor) clone has every commit, so the section is shown. role_profile is not collected there, so only "関わり方" (how they take part) is left out with the reason (`work_not_observed`), as it is when the time budget runs out. role_profile is cut at an explicit `--as-of`, and without one it counts every commit up to HEAD. When its denominator still differs from the section's own commits, that aspect is left out and both counts are named: `work_scope_later` when role_profile also counted work after the observation date, `work_scope_differs` otherwise. A merge count is stated only when role_profile counted nothing after the observation date, and a release-tag count only without an explicit `--as-of` (tag dates are not in the JSON). A count of zero is always stated.
+A partial (promisor) clone has every commit, so the section is shown. role_profile is not collected there, so only "関わり方" (how they take part) is left out with the reason (`work_not_observed`), as it is when the time budget runs out. role_profile is cut at an explicit `--as-of`, and without one it counts every commit up to HEAD. When its denominator still differs from the section's own commits, that aspect is left out and both counts are named: `work_scope_later` when role_profile also counted work after the observation date, `work_scope_differs` otherwise. A merge count is stated only when role_profile counted nothing after the observation date, and a release-tag count only without an explicit `--as-of`, or with one when role_profile's window ends exactly at the end of the observation date (`<observation date>T23:59:59Z`). Tag dates are not in the JSON, but under `--as-of` role_profile cuts tags by their tag time at that instant and ends its window there. With no window, or a window that ends at any other time, the release count is not stated. A count of zero is always stated.
 
 A reason that could not be measured is written with a `PLAIN_REASONS` row. A reason with no row never prints as a bare internal name; it goes into this sentence (`PLAIN_REASON_FALLBACK`):
 
@@ -35,7 +35,7 @@ A reason that could not be measured is written with a `PLAIN_REASONS` row. A rea
 - The median gap and the 90th-percentile gap are rounded half up to one decimal. The 90th percentile is interpolated between two neighbouring gaps, so "9 of 10 gaps are within it" cannot be claimed. In the alignment sections every gap is rounded up, so a value next to a declared upper bound never contradicts the verdict and one value never prints two ways in one section.
 - The counts of gaps within 2 days and of 30 days or more are the JSON share times the number of gaps, rounded half up. With 10,000 gaps or more the share's four decimals cannot give an exact count, so the count is marked 約 (about) and no lead sentence is picked.
 - A declared minimum share (`min_share`) is written as a percentage (0.3 is 30%).
-- The actor report calls its range "{end} までの全履歴" (the whole history up to the date), because a shallow clone gets no section. The project repository's record is "{end} までの履歴" (the history up to the date) with a limit note (`shallow_repo`), because project-v1 does not record whether the clone was shallow.
+- The actor report calls its range "{end} までの全履歴" (the whole history up to the date), because a shallow clone gets no section. The project repository's record is "{end} までの全履歴" only when project-v1's `provenance.revision_completeness.shallow` is `false`. When it is `true`, the record is "{end} までの履歴" (the history up to the date) with a limit note (`shallow_repo_recorded`); when the key is absent, as in a project-v1 saved by 0.9.0 or earlier, whether the clone was shallow is unknown, so the record is "{end} までの履歴" with the limit note `shallow_repo`.
 - When only a saved alignment is given and the JSON has no actor counts, an item with a declared minimum share is written as a share (`record_own_share`) and any other item as a count alone.
 - Places, and ties between them, follow the `SURFACES` order in `src/tep_core/v2_constants.py`. The order carries no meaning.
 
@@ -126,7 +126,7 @@ A reason that could not be measured is written with a `PLAIN_REASONS` row. A rea
 | `work_modify_more` | How they take part | More modifying changes (role_profile, actor report only) | すでにあるファイルに手を入れる変更（{m} 件）のほうが、新しいファイルを作る変更（{c} 件）より多い進め方です。 |
 | `work_create_more` | How they take part | More creating changes | 新しいファイルを作る変更（{c} 件）のほうが、すでにあるファイルに手を入れる変更（{m} 件）より多い進め方です。 |
 | `work_equal` | How they take part | Equal counts | 新しいファイルを作る変更と、すでにあるファイルに手を入れる変更が、どちらも {c} 件です。 |
-| `work_process` | How they take part | At least one merge and one release tag. Merges count only when role_profile counted nothing after the observation date, release tags only without an explicit `--as-of` | ほかの作業の取り込み（merge）を {i} 回、リリースの印（タグ）付けを {r} 回しています。 |
+| `work_process` | How they take part | At least one merge and one release tag. Merges count only when role_profile counted nothing after the observation date, release tags only without an explicit `--as-of` or when role_profile's window ends at the end of the observation date (`T23:59:59Z`) | ほかの作業の取り込み（merge）を {i} 回、リリースの印（タグ）付けを {r} 回しています。 |
 | `work_merge_only` | How they take part | Only counted merges | ほかの作業の取り込み（merge）を {i} 回しています。 |
 | `work_release_only` | How they take part | Only counted release tags | リリースの印（タグ）付けを {r} 回しています。 |
 | `work_few` | How they take part | role_profile counts the same commits, and fewer than 20 own changes | 自分の変更が 20 件に届かないため、この観点の文は出していません（{n} 件）。 |
@@ -144,7 +144,7 @@ A reason that could not be measured is written with a `PLAIN_REASONS` row. A rea
 | `ask_rhythm_bursty` | 2 | The rhythm lead is `rhythm_bursty` | 続けて出す時期と、長く空く時期は、それぞれどんな仕事の区切りでしたか。 |
 | `ask_fix_without_test` | 3 | 20 or more fix changes and at least one without a test change | 直しの変更 {s} 件のうち、テストを変えなかった {u} 件はどんな場面でしたか。 |
 | `ask_test_type` | 3 | Fewer than 20 fix changes and at least one test type (the type with the most changes; ties in VERIFICATION_TYPES order) | {type}（{c} 件）はどんな場面で書いていますか。 |
-| `ask_release` | 4 | At least one counted release tag (role_profile counts the same commits, and no explicit `--as-of`) | リリースの印付け（{r} 回）はどこまで任されていましたか。 |
+| `ask_release` | 4 | At least one counted release tag (role_profile counts the same commits, and either no explicit `--as-of` or role_profile's window ends at the end of the observation date, `T23:59:59Z`) | リリースの印付け（{r} 回）はどこまで任されていましたか。 |
 | `ask_unclassified` | 5 | At least one change that touched an unclassified file | 「種類を分けられなかったファイル」に触れた変更（{k} 件）は、何のファイルでしたか（決まりに入っていない拡張子のことがあります）。 |
 
 ## Alignment sections (`ALIGNMENT_TEXTS`)
@@ -258,9 +258,11 @@ A reason that could not be measured is written with a `PLAIN_REASONS` row. A rea
 | `days` | 変更を出した日の数は小さく分けて毎日出せば増え、まとめて出せば減ります。要望の日数は量の線で、補正はしていません。 |
 | `scales` | 1 人の記録と案件のリポジトリの件数は、同じ物差しではありません。件数どうしを割り算した比べ方はしていません。 |
 | `verify` | 数字は JSON の値から作っています。JSON は `grift verify` で検算できます。この Markdown は検算の対象外です。 |
+| `consent` | 面談の問いを出すかどうかは、JSON に書かれた actor の選び方・ID の種類・同意の記録（`subject.actor_selection`・`subject.actor_attribution_state`・`subject.actor_consent`）で決めています。保存した JSON から描き直したとき（`grift report`）は、これを確かめていません。照らし合わせの JSON は `grift verify` で確かめます。保存した actor の report から作った照らし合わせでは、`grift verify` は渡した actor の report を信じて作り直すので、actor の report も `grift verify actor-report.json --repo REPO --identity IDENTITY` で確かめます。 |
 | `p90` | 間隔を短い順に並べたときの 9 割の位置の値を「9 割のところ」と書いています（前後の 2 つの値のあいだを按分します）。 |
 | `gap_rounding` | この節の間隔の日数は上限と並べたときに判定と食い違わないよう、すべて小数 1 桁に切り上げています。 |
 | `shallow_repo` | 浅い clone のリポジトリでは、取得できた変更だけを数えます。いちばん古い変更はすべてのファイルを足したように数えられます。project の JSON には浅い clone かどうかが入っていません。 |
+| `shallow_repo_recorded` | このリポジトリは浅い clone なので、取得できた変更だけを数えます。いちばん古い変更はすべてのファイルを足したように数えられます。`git fetch --unshallow` で残りの履歴を取ると、取得できなかった変更も数えます。 |
 
 ## Verdict names (inside `ask_other`) (`VERDICT_NAMES`)
 

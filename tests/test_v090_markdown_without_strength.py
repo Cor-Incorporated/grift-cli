@@ -20,6 +20,7 @@ import pytest
 from git_fixture import commit, init_repo
 
 from tep_cli.__main__ import main
+from tep_core.v2_constants import TENDENCY_CHANGE_NOTE, TENDENCY_CHANGE_NOTE_MD
 
 ROOT = Path(__file__).resolve().parents[1]
 AS_OF = "2026-08-31"
@@ -137,3 +138,52 @@ def test_deprecated_strength_is_documented_and_still_in_the_json(outputs) -> Non
         "different_direction",
         "not_comparable",
     }, facts
+
+
+MARKDOWNS = ("actor_md", "repo_md", "project_md", "alignment_md")
+
+
+def test_markdown_note_is_the_json_note_without_strength(outputs) -> None:
+    """0.9.1 M6: TENDENCY_CHANGE_NOTE (JSON) and TENDENCY_CHANGE_NOTE_MD are one note.
+
+    JSON keeps `strength` (deprecated) on both sides of an axis, so its note names
+    the strength; the Markdown does not print `strength`, so its copy is the same
+    note with only 「強さや」 taken out. Editing one constant alone, letting the JSON
+    note into a Markdown, or dropping `strength` from any directional tendency
+    (actor or project, any axis) fails here with every fact in the message.
+    """
+    payload = json.loads(outputs["alignment_json"])
+    sides = ("actor_tendency", "project_tendency")
+    directional = {
+        f"{axis['axis']} {side}": axis[side]
+        for axis in payload["axes"]
+        for side in sides
+        if axis[side].get("kind") == "directional"
+    }
+    facts = {
+        "json_note": TENDENCY_CHANGE_NOTE,
+        "md_note": TENDENCY_CHANGE_NOTE_MD,
+        "json_note_without_strength": TENDENCY_CHANGE_NOTE.replace("強さや", ""),
+        "directional_sides": sorted({where.rsplit(" ", 1)[1] for where in directional}),
+        "directional_axes": sorted({where.split(".", 1)[0] for where in directional}),
+        "json_strength": {where: node.get("strength") for where, node in directional.items()},
+        "json_carries_json_note": {
+            where: TENDENCY_CHANGE_NOTE in node["limitations"]
+            for where, node in directional.items()
+        },
+        "markdown_with_md_note": [
+            name for name in MARKDOWNS if TENDENCY_CHANGE_NOTE_MD in outputs[name]
+        ],
+        "markdown_with_json_note": [
+            name for name in MARKDOWNS if TENDENCY_CHANGE_NOTE in outputs[name]
+        ],
+    }
+    assert "強さ" in facts["json_note"] and "強さ" not in facts["md_note"], facts
+    assert facts["json_note_without_strength"] == facts["md_note"], facts
+    # Both sides and both kinds of axis are directional in this fixture, so none is skipped.
+    assert facts["directional_sides"] == list(sides), facts
+    assert facts["directional_axes"] == ["change_rhythm", "surfaces"], facts
+    assert set(facts["json_strength"].values()) <= {"weak", "moderate", "strong"}, facts
+    assert all(facts["json_carries_json_note"].values()), facts
+    assert facts["markdown_with_md_note"] == list(MARKDOWNS), facts
+    assert facts["markdown_with_json_note"] == [], facts
