@@ -82,7 +82,7 @@ v0.6 からの基本の入口は **対象** を名前にしたコマンドです
 | `grift report` | 分析して `.grift/report.{json,md}` に**記録**（常に現在の HEAD を再分析・既定 repo スコープ・`--scope tenant` 可） |
 | `grift verify` | `.grift/report.json` を同条件で再計算し改ざんを検出（VERIFIED / MISMATCH / CANNOT_VERIFY） |
 | `grift contribute` | `.grift/report.json` からprofile別payloadを組む。既定はlocal書込のみ。**`--open`** は明示network経路として本人のforkへpushし、PR作成ページを開く（最終ボタンは本人） |
-| `grift update` | grift-cli 自身を明示的に更新。`--check` は最新版の表示だけを行う唯一の update-check 経路 |
+| `grift update` | 実行中の grift-cli の環境を明示的に更新し、更新後の版を表示。`--check` は PyPI の最新版情報を読むだけ。`grift --version` は通信せず手元の版を表示 |
 
 - `.grift/` は出力専用のディレクトリです（無ければ自動で作ります）。リポジトリの `.gitignore` に `.grift/` を足しておくことを勧めます
 - 対象パス・スコープ・出力先を明示する書き方は従来どおりです: `grift analyze path --scope tenant --identity .tep/identity.toml --out dir`
@@ -289,6 +289,8 @@ report-v1の全フィールド定義は[report-schema.md](report-schema.md)
 
 **TEP Report 集計と参照分布 vNext** への提出は、profile と door を先に決めてから行います。
 
+引数なしの `grift contribute` も同意後に `.grift/contribution.json` を保存します。自動送信はしません。既定の `--door local` で作ったv2 payloadは公開受け口に提出できないため、提出ID・PR内のファイル名・meta行は表示せず、`--door public-pr` で作り直す手順だけを表示します。公開提出する場合は以下のように `--door public-pr` で作り直し、その実行が表示する提出ID、PR内のファイル名、保存したbytesのSHA-256を含むmeta / manifest行と二つの提出経路URLを使います。`--purpose outcome-linkage` のように `public-pr` を使えない目的では、公開受け口に提出できないことを1行だけ表示し、作り直す手順も表示しません。
+
 ```bash
 grift report                                  # ① repo スコープの report を作る
 grift contribute --privacy aggregate --door public-pr --out .grift/contribution.json
@@ -296,6 +298,8 @@ grift contribute --privacy aggregate --door public-pr --out .grift/contribution.
 ```
 
 提出先は [tep-contributions](https://github.com/Cor-Incorporated/tep-contributions) です。
+
+表示された `payloads/<年>/<提出ID>.json` と、JSON行を保存した同名の `.meta.json` をPRへ追加します。`--open` を付けた場合は、ローカルの事前検査を通ると本人のgh/git権限でforkのbranchにこの2ファイルをcommitしてpushするので、手で追加する必要はありません（gh/gitが使えない場合や途中で失敗した場合は、表示される手順に従います。pushが済んだ後に失敗したときは、手順ではなくPR作成ページのURLが表示されます）。`manifest.jsonl` は受け口CIがmetaから生成するartifactなので編集しません。[本人の公開PR経路](https://github.com/Cor-Incorporated/tep-contributions/blob/main/README.en.md#submitting-via-the-public-door)と[身元を伏せる代理PR経路](https://github.com/Cor-Incorporated/tep-contributions/blob/main/README.en.md#the-identity-private-door)は、どちらもpayload自体を公開します。controlled / masked / rawの出力には、`--door local` で作った場合も公開提出案内を表示しません。
 
 - `report-v1` は既存 `tep-contribution-v1` を維持します。`report-v2` の既定 `aggregate` はActor行、repo/remote/OID、正確な時刻、source digestを落としたbucket集計です。`named-public` は本人の明示authorityがあるprovider-neutral project/accountだけを保持します
 - `masked` は32 byte以上のHMAC鍵をpermission検査済みfile/FDから読み、`raw` とともに `local` / `controlled` 専用です。研究用のsource対応はpermission 0600のcontrolled sidecarへ分離され、`public-pr` はhard errorです。認可済みcontrolled destinationがないため自動uploadは実装していません
@@ -308,6 +312,23 @@ grift contribute --privacy aggregate --door public-pr --out .grift/contribution.
 ```bash
 grift contribute --purpose outcome-linkage --door local
 ```
+
+## CLI自身の版確認と更新
+
+```bash
+grift --version       # 手元の版だけを表示（offline）
+grift update --check  # 明示的にPyPIの最新版情報を取得（更新しない）
+grift update          # 実行中の環境を更新し、更新後の版を表示
+```
+
+`update` は実行中の環境がpipx管理ならその環境をpipxで、それ以外は実行中のPythonの `-P -m pip` で更新します。PATHにある別環境のpipは使いません。`PYTHONPATH`、`PIP_TARGET`、`PIP_PREFIX`、`PIP_ROOT` は引き継がず、解析中のリポジトリ（作業ディレクトリ）では起動しません。自動更新・通常の測定コマンドからの版確認通信はありません。通信できない場合や更新に失敗した場合はメッセージを確認してください。
+
+## 0.9.1 からの更新
+
+詳しくは [migration-v092.md](migration-v092.md) と [CHANGELOG](../CHANGELOG.md) にあります。作り直しが要るものは次のとおりです。
+
+- 0.9.1 で保存した report（`analyze`・`actor`・`repo`）と照らし合わせ（`align`）は、0.9.2 の `grift verify` で CANNOT_VERIFY になります（`DEFINITION_VERSION` を上げたため）。リポジトリを観測した project report は MISMATCH になります（`definition_version` の欄）。0.9.2 で作り直してください。要求だけを書いた project report と、`repo --actors` で書いた collection は、そのまま VERIFIED です
+- `grift update` は、実行中の環境だけを更新します（PATH にある別環境の pipx / pip は使いません）。通信できないときの `grift update --check` は exit 2 になります（0.9.1 は exit 0）
 
 ## 0.9.0 からの更新
 

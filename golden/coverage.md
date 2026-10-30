@@ -8,6 +8,8 @@
 `synthetic` = actor exactnessをpublic goldenではなくexact synthetic testsで固定。
 HOLE 行は機械検出された穴。**穴は静かに放置しない** — 表の HOLE と issue 番号の対応を
 tests/test_coverage.py の KNOWN_HOLES が強制する。
+公開同梱物のIssue参照は `https://github.com/Cor-Incorporated/grift-cli/issues/<番号>`
+のみを使う。privateなdevリポのIssueは公開鏡へ対応付け、URL形式をofflineテストで検査する。
 
 **v0.6 supersession（2026-08-31）**: 公開OSS goldenはreport-v1回帰とrepo-level
 detectorを固定する。wave 2のcontext v2はこのpublic-golden laneに残る。第三者public

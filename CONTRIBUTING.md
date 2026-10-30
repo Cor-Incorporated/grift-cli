@@ -84,6 +84,7 @@ CI（`.github/workflows/ci.yml`）の job と、落ちたときに見る場所:
 | `v060-golden` | v0.6 golden fixture の再生と、公開 digest-only registry の検証 | §5 の #2 と #4 |
 | `action-dogfood` | 同梱 GitHub Action（`action.yml`）をこの repo に実行 | `action.yml` と `scripts/action_contract_guard.py` |
 | `package-smoke` | 汚れた作業木から sdist / wheel を作り、clean install して smoke | `pyproject.toml` の `only-include` と追跡ファイルの対応 |
+| `docker` | `Dockerfile` からイメージを作り、`--version`・同梱ツール（git / ssh-keygen）・wheel の中身が追跡ファイルと同じか・履歴が全部ある checkout での読み取り専用 mount かつ network なしの `repo` を確かめる | artifact `docker-smoke-*` の `guard-ledger.jsonl`（チェックごとに rc、版は期待値と観測値、wheel はファイル数）と `package-files.diff`。ビルドや wheel の中身が崩れたら `Dockerfile` の `COPY` と `.dockerignore` が `pyproject.toml` と合っているか（`tests/test_docker_build_inputs.py`） |
 | `gitleaks` | secret scan（`.gitleaks.toml`） | 公開 OID の誤検知なら allowlist 済み path かを見る |
 | `golden` | live golden corpus。PR では skip、schedule で走る | network を使う期待値 |
 

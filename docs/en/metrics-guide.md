@@ -100,8 +100,8 @@ number may be used.**
 | resolved_human_actors / top_actor_share | Contributor count (upstream/bot excluded) and top-author share (no names) |
 | pr_flow_share | Share of merge (PR) commits |
 | scale / repo_age_days | Size (commits, span, top dirs, tags) and repo age |
-| actor_turnover | Yearly join/leave counts |
-| release_cadence | Tag frequency (releases/year) |
+| actor_turnover | First-activity (joined) / last-activity (last_active) year counts; not departures |
+| release_cadence | Local Git tags annualized over the human activity span (tags/year) |
 | conventional_commit_share / issue_link_density | Conventional subjects (`feat:` etc.) / `#N` references |
 | language_composition / dependency_manifests / monorepo_markers | Language mix / dependency files / monorepo signs |
 | test_file_ratio / docs_share | Test/docs path touches |
@@ -231,6 +231,29 @@ On griftai.org and cor-jp.com this value is called コードの新しさ (Code r
   Density does **not** distinguish development from maintenance (a
   high-density operational repo is legitimately active); density was chosen
   over recency so bulk housekeeping cannot fake freshness
+- **language_composition**: shares of path touches with recognized language
+  extensions, not raw counts, lines of code, or the current file mix. A path
+  touched in another commit counts again; unrecognized extensions do not enter
+  the denominator. JSON uses 0–1 `touch-share` values; Markdown shows percentages
+  for the top three languages. Shares below 1% are omitted, so displayed values
+  need not sum to 100%.
+- **actor_turnover**: `joined` counts the first observed activity year and
+  `last_active` the last observed activity year. Currently active contributors
+  also count in `last_active`; it does not measure departure or resignation.
+- **release_cadence**: `tag count / active_span_days × 365.25`, rounded to two
+  decimals in `tags/year`. The span is the day difference between the first and
+  last human commits. For example, 43 tags over 70 days yields 224.37 tags/year,
+  not 224 observed published releases. All local tags count, without filtering
+  for release purpose or tag creation time. A zero-day span cannot be annualized;
+  Markdown shows `not observed (zero_activity_span)`. A span shorter than 20 days
+  is not annualized either (no rate is shown on a denominator below 20): Markdown
+  shows only the counts, as in `3 tags over 1 days (not annualized: span < 20 days)`.
+  The JSON value is unchanged. Shallow or partial clones return
+  `not_observed(history_incomplete)`.
+
+The JSON contract is `context-v3-2026-08-25`: earlier versions emitted raw
+language counts under the `touch-share` unit and the misleading turnover key
+`left`. The current version uses shares, `last_active`, and `tags/year`.
 
 ---
 

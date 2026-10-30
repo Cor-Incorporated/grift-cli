@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from typing import Any
 
+from tep_core.cochange import MIN_POPULATION_FOR_RATE
+
 # P0-d-2: first-party merges are not narrated as upstream_sync.
 _ORIGIN_ORDER = (
     "tenant_unique",
@@ -221,6 +223,62 @@ def _fmt_langs(value: Any) -> str:
     return ", ".join(f"{name} {share * 100:.0f}%" for name, share in top) or "not observed"
 
 
+def _fmt_turnover(node: Any) -> str:
+    node = _node(node)
+    if node.get("kind") != "observed":
+        return f"not observed ({node.get('reason', 'missing')})"
+    rows = node.get("value")
+    if not isinstance(rows, dict) or not all(isinstance(row, dict) for row in rows.values()):
+        return "not observed (malformed)"
+    return "; ".join(
+        f"{year}: joined {row.get('joined')}, last_active {row.get('last_active', row.get('left'))}"
+        for year, row in sorted(rows.items())
+    ) or "not observed (no_human_commits)"
+
+
+def _is_count(value: Any) -> bool:
+    """True for a whole, non-negative number (bool is an int in Python and is not a count)."""
+    return isinstance(value, int) and not isinstance(value, bool) and value >= 0
+
+
+def _node(value: Any) -> dict[str, Any]:
+    """The value if it is an object, else an empty one: a hand-edited report.json holds any JSON."""
+    return value if isinstance(value, dict) else {}
+
+
+def _fmt_tag_frequency(ctx: dict[str, Any]) -> str:
+    """The annualized tag count with the count and span it divides (#50).
+
+    The span in days is the rate's denominator, and a rate whose denominator is
+    below MIN_POPULATION_FOR_RATE is not shown (CONTRIBUTING.md §7): 3 tags over
+    1 day printed as 1095.75 tags/year. Such a span shows the counts only.
+    report.json keeps the annualized value; only this Markdown row withholds it.
+    """
+    node = _node(ctx.get("release_cadence"))
+    if node.get("kind") != "observed":
+        return f"not observed ({node.get('reason', 'missing')})"
+    if node.get("value") is None:
+        return "not observed (zero_activity_span)"
+    scale = _node(ctx.get("scale"))
+    tags = _node(scale.get("tags"))
+    span = _node(scale.get("active_span_days"))
+    # Every report grift writes carries both next to release_cadence, but
+    # `grift report <file>` re-renders whatever report.json it is given. Without
+    # the span the rate cannot be checked against the minimum, so it is not shown.
+    if tags.get("kind") == span.get("kind") == "observed":
+        count, days = tags.get("value"), span.get("value")
+        # A hand-edited report.json can carry any JSON value here: only counts are a basis.
+        if _is_count(count) and _is_count(days):
+            if days < MIN_POPULATION_FOR_RATE:
+                return (
+                    f"{count} tags over {days} days "
+                    f"(not annualized: span < {MIN_POPULATION_FOR_RATE} days)"
+                )
+            unit = node.get("unit", "tags/year")
+            return f"{node['value']} {unit} ({count} tags / {days} days × 365.25)"
+    return "not annualized (no tag count or active_span_days in this report)"
+
+
 def _fmt_context_lines(ctx: dict[str, Any] | None) -> list[str]:
     if not ctx or ctx.get("kind") != "observed":
         if ctx and ctx.get("kind") == "not_observed":
@@ -244,6 +302,14 @@ def _fmt_context_lines(ctx: dict[str, Any] | None) -> list[str]:
             f"(active_days_180d {val('active_days_180d')} days = 直近180日で人がコミットした日数 / unique days with human commits in the last 180 days; "
             f"days_since_last_human_commit {val('days_since_last_human_commit')} = 最終コミットからの日数 / days since the last human commit; "
             f"repo age {val('repo_age_days')} days)"
+        ),
+        (
+            f"- actor_turnover (actors/year): {_fmt_turnover(ctx.get('actor_turnover'))}"
+            " — 初回活動年・最終活動年の人数（離脱ではない）/ first/last observed activity years, not departures"
+        ),
+        (
+            f"- tag frequency (release_cadence): {_fmt_tag_frequency(ctx)}"
+            " — ローカルタグ数を最初から最後の人間活動スパンで年換算 / local tags annualized over first-to-last human activity, not published releases"
         ),
         f"- process: pr_flow_share {val('pr_flow_share')} ratio (PRマージ経由 / via PR merges); conventional subjects {val('conventional_commit_share')} ratio (定型件名 / conventional subjects)",
         f"- languages (touch-share): {_fmt_langs(val('language_composition'))} — 言語構成（接触比率）/ language mix by path touches",

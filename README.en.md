@@ -112,7 +112,7 @@ steps:
   - uses: actions/setup-python@v5
     with:
       python-version: "3.12"
-  - uses: Cor-Incorporated/grift-cli@v0.9.1
+  - uses: Cor-Incorporated/grift-cli@v0.9.2
     with:
       scope: repo
       comment: false
@@ -123,6 +123,23 @@ The action runs `grift analyze`, writes a summary to `$GITHUB_STEP_SUMMARY`, and
 - It needs the caller repository's full history and Python 3.11 or newer. A missing checkout or a shallow clone stops the run before measurement (fail-closed, exit 2). Invalid inputs also fail closed.
 - Run it with `contents: read` and `comment: false`, so code from a pull request never receives a write token. The `comment: true` path is implemented, but this project's own CI runs read-only, so that path is unproven. Do not grant write permission to pull-request code until a trusted follow-up workflow exists.
 
+## Use with Docker
+
+Build an image from a clone of this repository and run grift without installing Python on the host. Mount the repository you want to read at `/repo`.
+
+```bash
+git clone https://github.com/Cor-Incorporated/grift-cli.git
+docker build -t grift-cli grift-cli
+cd /path/to/target-repo
+docker run --rm -v "$PWD:/repo:ro" grift-cli repo
+docker run --rm --user "$(id -u):$(id -g)" -v "$PWD:/repo" grift-cli repo . --format both --out .grift
+```
+
+- Fetch the full history. A shallow clone does not stop the run, but grift counts only the commits it was given and reports `revision_completeness` as incomplete (`complete: false`)
+- Do not mount a linked `git worktree`: its `.git` is a file that points outside the mount, so the container cannot read the history and stops with exit 2. Mount a regular clone
+- When writing with `--out`, pass your host UID with `--user "$(id -u):$(id -g)"` (the image defaults to a non-root user with uid 1000)
+- The image bundles only `git` and `openssh-client`. `gh` and `cosign` are not included, so run `contribute --open` and anything that calls cosign (`attest --sign cosign`, and `verify` or `portfolio` with a cosign trust policy) on the host
+
 ## Documentation
 
 - [Usage guide](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/usage.md)
@@ -130,7 +147,7 @@ The action runs `grift analyze`, writes a summary to `$GITHUB_STEP_SUMMARY`, and
 - [Usage norms](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/norms.md)
 - [Metric validation and limits](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/validation.md): the design choices behind the numbers and their limits, and results from 117 public repositories, including the comparisons that did not separate
 - Output formats: [report-v1](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/report-schema.md), [export](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/export-schema.md), [identity](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/identity-schema.md); in Japanese: [report-v2](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/report-v2.md), [alignment](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/alignment-schema.md), [project](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/project-schema.md)
-- [Changelog](https://github.com/Cor-Incorporated/grift-cli/blob/main/CHANGELOG.md) (in Japanese) and [0.9.1 migration notes](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/migration-v091.md)
+- [Changelog](https://github.com/Cor-Incorporated/grift-cli/blob/main/CHANGELOG.md) (in Japanese) and [0.9.2 migration notes](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/migration-v092.md)
 
 Product site: [griftai.org](https://griftai.org) (Japanese).
 

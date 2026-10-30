@@ -92,8 +92,8 @@ grift のレポートは3層の観測で構成されます。**層 = その数�
 | resolved_human_actors / top_actor_share | 上流・bot 除外後の関与者数と最多作成者の比率（名前は出ない） |
 | pr_flow_share | merge（PR）経由の割合 |
 | scale / repo_age_days | 規模（コミット数・スパン・トップディレクトリ数・タグ数）と repo 年齢 |
-| actor_turnover | 年別の参入・離脱人数 |
-| release_cadence | タグ頻度（リリース/年） |
+| actor_turnover | 年別の初回活動人数（joined）・最終活動人数（last_active）。離脱人数ではない |
+| release_cadence | ローカルの Git タグ数を人間活動スパンで年換算（tags/year） |
 | conventional_commit_share / issue_link_density | 定型件名（`feat:` 等）の割合 / `#N` 参照を含む件名の割合 |
 | language_composition / dependency_manifests / monorepo_markers | 言語構成・依存管理ファイル・monorepo 兆候 |
 | test_file_ratio / docs_share | テスト/ドキュメントパスを触れたコミットの割合 |
@@ -270,9 +270,13 @@ A クラス（検証文化）の中央値は 0.05 と低めですが、因果の
 
 - **pr_flow_share**: merge コミット（PR マージ）の割合。高い = レビュー工程を経る文化
 - **conventional_commit_share**: `feat:` `fix:` のような定型件名の割合。高い = 変更種別が機械可読な管理
-- **language_composition**: 言語別のファイル接触比率（多言語 repo の判別に）
+- **language_composition**: 認識対象の言語拡張子を持つファイルへの接触が分母。同じパスでも別コミットで触れば再度数えます。`touch-share` の値は生カウントではなく 0〜1 の比率で、Markdown は百分率（上位3言語）です。認識されない拡張子は分母に含まず、1%未満の言語は省略するため表示合計が100%にならない場合があります。コード行数や現在のファイル構成の割合ではありません
+- **actor_turnover**: `joined` は観測履歴で初めて活動した年、`last_active` は最後に活動した年に数えます。現在も活動している人も `last_active` に含まれるため、離脱や退職を示しません
+- **release_cadence**: `タグ数 / active_span_days × 365.25` を小数第2位に丸めた年換算値（`tags/year`）です。`active_span_days` は最初から最後の人間コミットまでの日数差です。たとえば43タグ・70日なら224.37 tags/yearで、224回の公開リリースを観測した意味ではありません。ローカルに存在する全タグを数え、リリース用途の判定やタグ作成日時による絞り込みはしません。スパンが0日の場合は年換算できず、Markdownは `not observed (zero_activity_span)` と表示します。スパンが20日未満の場合も年換算せず（母数20未満の率は出さない）、Markdownはタグ数と日数だけを `3 tags over 1 days (not annualized: span < 20 days)` のように表示します。JSONの値は変わりません。浅い・部分cloneは `not_observed(history_incomplete)` です
 - **dependency_manifests**: 依存管理ファイルの種類（複数 = polyglot / monorepo の兆候）
 - **top_actor_share**: 最多作成者の比率（単独性の程度。名前は出ません）
+
+これらのJSON契約は `context-v3-2026-08-25` です。以前の版では `language_composition` が `touch-share` 単位で生カウントを出し、`actor_turnover` に誤解を招く `left` キーを使っていました。現在の版では比率・`last_active`・`tags/year` を使います。
 
 ---
 

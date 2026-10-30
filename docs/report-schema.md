@@ -136,8 +136,8 @@ repo スコープの文脈観測層（裁定: BD tep-context-profile-ruling §4-
 | `days_since_last_human_commit` | days | **lifecycle-v2 一次出力**: HEAD から最後の human（非bot）コミットまでの日数 |
 | `active_days_180d` | days | **lifecycle-v2 一次出力**: 直近180日窓の human コミットユニーク日数（密度） |
 | `lifecycle_stage` | class | **lifecycle-v2（密度基準）**: `dormant`（active_days_180d≤2）/ `maintained`（3〜11）/ `active`（≥12）。クラスは便宜であり一次観測値2つに常に併記される。**本閾値はパイロット第1round の観察から設計した（informed-by-pilot-1）** — 同一標本での「検証」は行わず、妥当性確認は将来の新標本（段2）で行う。**限界**: bulk housekeeping は「新しさ」を膨らませるため密度基準を採る／作業モード（開発 vs 保守）は測っていない — クラスは活動密度のみ |
-| `actor_turnover` | actors/year | 年別 joined/left |
-| `release_cadence` | releases/year | タグ頻度 |
+| `actor_turnover` | actors/year | 年別の `joined`（観測履歴で初めて活動した年の人数）/ `last_active`（最後に活動した年の人数）。現在も活動している人も `last_active` に入るため離脱人数ではない |
+| `release_cadence` | tags/year | `タグ数 / active_span_days × 365.25`（小数第2位）。ローカルの全タグを人間活動スパンで年換算した値で、公開リリース数ではない。Markdown での表示（20日未満のスパンは年換算しない等）は metrics-guide を参照 |
 | `conventional_commit_share` | ratio | `type(scope)?:` 形式の件名比率 |
 | `language_composition` | touch-share | 拡張子別パス接触比率（1%未満は省略） |
 | `test_file_ratio` / `docs_share` | ratio | テスト/ドキュメントパス接触コミット比率 |

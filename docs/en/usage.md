@@ -82,7 +82,7 @@ The verbs from the 0.5 series keep their meaning: **analyze = display (stdout)**
 | `grift report` | Analyze and **record into `.grift/report.{json,md}`** (always re-analyzes the current HEAD; repo scope by default, `--scope tenant` available) |
 | `grift verify` | Recompute `.grift/report.json` under recorded provenance (VERIFIED / MISMATCH / CANNOT_VERIFY) |
 | `grift contribute` | Build an opt-in payload from `.grift/report.json` (**never auto-sends to us**; after consent writes `.grift/contribution.json` and prints steps). **`--open`** pushes a branch with the payload and meta file committed to your fork and opens the PR creation page in the browser (uses your own gh credentials and your own fork; the final button is yours) |
-| `grift update` | Explicitly upgrade grift-cli. `--check` is the only update-check path and only displays the latest version |
+| `grift update` | Explicitly upgrade the running grift-cli environment and show its resulting version. `--check` only reads the latest version from PyPI. `grift --version` shows the local version offline |
 
 - `.grift/` is the dedicated output directory (auto-created). Adding `.grift/` to your `.gitignore` is recommended
 - Custom invocations keep the explicit form: `grift analyze path --scope tenant --identity .tep/identity.toml --out dir`
@@ -336,6 +336,8 @@ block is easier to use; the per-line glosses in the body and
 
 Submissions to the **TEP Report and the next reference distribution** start by fixing a privacy profile and door:
 
+Bare `grift contribute` also saves `.grift/contribution.json` after consent. Nothing is sent automatically. A v2 payload created with the default `--door local` cannot be submitted to the public intake, so no submission ID, PR filename, or meta row is displayed for it; only the step to rebuild it with `--door public-pr` is. To submit publicly, rebuild it with `--door public-pr` as below and use what that run displays: the submission ID, the PR filename, a meta / manifest JSON row containing the saved bytes' SHA-256, and both submission URLs. For a purpose that cannot use `public-pr`, such as `--purpose outcome-linkage`, a single line says it cannot be submitted to the public intake, and no rebuild step is displayed.
+
 ```bash
 grift report                                      # 1) create a repo-scope report
 grift contribute --privacy aggregate --door public-pr --out .grift/contribution.json
@@ -343,6 +345,8 @@ grift contribute --privacy aggregate --door public-pr --out .grift/contribution.
 ```
 
 The intake repository is [tep-contributions](https://github.com/Cor-Incorporated/tep-contributions).
+
+Add the displayed `payloads/<year>/<submission-ID>.json` and a matching `.meta.json` containing the JSON row to the PR. With `--open`, once the local pre-push check passes, those two files are committed to a branch and pushed to your fork with your gh/git credentials, so you do not add them by hand (if gh/git is unavailable or the flow fails, follow the steps that are displayed; if it fails after the push, the PR creation page URL is displayed instead of steps). Intake CI generates the `manifest.jsonl` artifact from metadata; do not edit it. Both the [public PR door](https://github.com/Cor-Incorporated/tep-contributions/blob/main/README.en.md#submitting-via-the-public-door) and the [identity-private proxy door](https://github.com/Cor-Incorporated/tep-contributions/blob/main/README.en.md#the-identity-private-door) publish the payload itself. Controlled / masked / raw output has no public-submission guidance, including when it was built with `--door local`.
 
 - report-v1 retains the legacy `tep-contribution-v1` contract. For report-v2, the default `aggregate` profile drops actor rows, repo/remote/OIDs, exact timestamps, and source digests. `named-public` retains only explicitly authorized provider-neutral project/account evidence
 - `masked` reads a 32-byte-or-longer HMAC key only from a permission-checked file or FD. It and `raw` are restricted to `local` / `controlled`; their 0600 sidecar carries research source/governance, and `public-pr` is a hard error. No automatic controlled upload exists before an authorized destination does
@@ -360,6 +364,23 @@ disclose a payload that the intake would then bounce.
 ```bash
 grift contribute --purpose outcome-linkage --door local
 ```
+
+## Checking and upgrading the CLI itself
+
+```bash
+grift --version       # show the installed version offline
+grift update --check  # explicitly read PyPI metadata; do not upgrade
+grift update          # upgrade the running environment and show its resulting version
+```
+
+`update` uses pipx only when the running environment is managed by pipx; otherwise it uses the running Python's `-P -m pip`. It does not select another environment's pip from PATH. It passes on neither `PYTHONPATH` nor `PIP_TARGET`, `PIP_PREFIX` or `PIP_ROOT`, and it does not start in the repository you are analysing (the working directory). There is no automatic upgrade or version-check request from measurement commands. Read the diagnostic if the network is unavailable or the upgrade fails.
+
+## Upgrading from 0.9.1
+
+The full notes are in [migration-v092.md](migration-v092.md) (the [Japanese original](../migration-v092.md) also keeps the notes for older versions) and the [changelog](../../CHANGELOG.md) (in Japanese). What needs regenerating:
+
+- Reports saved by 0.9.1 (`analyze`, `actor`, `repo`) and alignments (`align`) are CANNOT_VERIFY under 0.9.2 `grift verify` (`DEFINITION_VERSION` changed). Project reports that observed a repository are MISMATCH (the `definition_version` field). Regenerate them with 0.9.2. A project report made only from requirements and a collection written by `repo --actors` are still VERIFIED
+- `grift update` updates only the running environment (it never uses another pipx or pip on PATH). `grift update --check` exits 2 when it cannot connect (0.9.1 exited 0)
 
 ## Upgrading from 0.9.0
 

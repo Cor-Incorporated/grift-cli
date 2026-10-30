@@ -110,7 +110,7 @@ steps:
   - uses: actions/setup-python@v5
     with:
       python-version: "3.12"
-  - uses: Cor-Incorporated/grift-cli@v0.9.1
+  - uses: Cor-Incorporated/grift-cli@v0.9.2
     with:
       scope: repo
       comment: false
@@ -121,6 +121,23 @@ steps:
 - 呼び出し元のリポジトリの全履歴と、Python 3.11 以上が要ります。checkout していない、または shallow clone のときは、計測の前に止まります（fail-closed、exit 2）。入力が決まりに合わないときも fail-closed で止まります。
 - `contents: read` と `comment: false` で動かし、PR のコードに write 権限の token を渡さないでください。`comment: true` の経路は実装していますが、このプロジェクトの CI は読み取り専用で動かしているため、その経路はまだ確かめていません。信頼できる後段の workflow を設計するまでは、PR のコードに write 権限を付けません。
 
+## Docker で使う
+
+ホストに Python を入れずに、このリポジトリを clone して作ったイメージで grift を実行できます。読みたいリポジトリは `/repo` に mount します。
+
+```bash
+git clone https://github.com/Cor-Incorporated/grift-cli.git
+docker build -t grift-cli grift-cli
+cd /path/to/target-repo
+docker run --rm -v "$PWD:/repo:ro" grift-cli repo
+docker run --rm --user "$(id -u):$(id -g)" -v "$PWD:/repo" grift-cli repo . --format both --out .grift
+```
+
+- 履歴は全部取得してください。shallow clone を mount しても止まりませんが、渡された commit だけで数え、`revision_completeness` が不完全（`complete: false`）になります
+- `git worktree` で作った作業ツリーは mount しないでください。`.git` がファイルで mount の外を指すため、コンテナ内から履歴を読めず exit 2 で止まります。通常の clone を mount します
+- `--out` で書き出すときは `--user "$(id -u):$(id -g)"` でホストの UID を渡します（イメージ既定は uid 1000 の非 root ユーザー）
+- イメージには `git` と `openssh-client` だけを同梱します。`gh` と `cosign` は含めないので、`contribute --open` と、cosign を呼ぶ操作（`attest --sign cosign`、cosign の信頼ポリシーを使う `verify` と `portfolio`）はホスト側で実行してください
+
 ## ドキュメント
 
 - [コマンドの詳しい使い方](docs/usage.md)
@@ -128,7 +145,7 @@ steps:
 - [利用規範（norms）](docs/norms.md)
 - [指標の検証と限界](docs/validation.md)。数値を出すときの設計の選択とその限界、公開 117 リポジトリで指標を確かめた結果（差が出た比較と出なかった比較の両方）を載せています
 - 出力の形式: [report-v2](docs/report-v2.md)、[report-v1](docs/report-schema.md)、[alignment](docs/alignment-schema.md)、[project](docs/project-schema.md)、[identity](docs/identity-schema.md)、[export](docs/export-schema.md)、[ローカル export の入力](docs/input-export-schema.md)
-- [変更履歴（CHANGELOG）](CHANGELOG.md)と、0.9.1 への[移行の注意](docs/migration-v091.md)
+- [変更履歴（CHANGELOG）](CHANGELOG.md)と、0.9.2 への[移行の注意](docs/migration-v092.md)
 
 製品サイトは [griftai.org](https://griftai.org) です。
 

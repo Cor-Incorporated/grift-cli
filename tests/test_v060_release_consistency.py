@@ -405,28 +405,68 @@ def test_update_check_can_only_run_through_the_explicit_update_handler() -> None
     assert "GRIFT_NO_UPDATE_NOTICE" not in source
     assert 'if args.command == "update":\n        return _run_update(args)' in source
 
-    tree = ast.parse(source, filename=str(path))
-    urlopen_owners: list[str] = []
-
     class NetworkCallVisitor(ast.NodeVisitor):
         def __init__(self) -> None:
             self.functions: list[str] = []
+            self.check_guards = 0
+            self.urlopen_owners: list[tuple[str, bool]] = []
+            self.update_import_owners: list[str] = []
+            self.update_call_owners: list[str] = []
+
+        def owner(self) -> str:
+            return self.functions[-1] if self.functions else "<module>"
 
         def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
             self.functions.append(node.name)
             self.generic_visit(node)
             self.functions.pop()
 
+        def visit_ImportFrom(self, node: ast.ImportFrom) -> None:
+            if node.module == "tep_cli.update_cmd":
+                self.update_import_owners.append(self.owner())
+
+        def visit_If(self, node: ast.If) -> None:
+            guarded = (
+                isinstance(node.test, ast.Attribute)
+                and isinstance(node.test.value, ast.Name)
+                and node.test.value.id == "args"
+                and node.test.attr == "check"
+            )
+            self.visit(node.test)
+            self.check_guards += guarded
+            for child in node.body:
+                self.visit(child)
+            self.check_guards -= guarded
+            for child in node.orelse:
+                self.visit(child)
+
         def visit_Call(self, node: ast.Call) -> None:
             name = node.func.attr if isinstance(node.func, ast.Attribute) else None
             if name == "urlopen":
-                urlopen_owners.append(self.functions[-1] if self.functions else "<module>")
+                self.urlopen_owners.append((self.owner(), bool(self.check_guards)))
+            if isinstance(node.func, ast.Name) and node.func.id == "run_update":
+                self.update_call_owners.append(self.owner())
             self.generic_visit(node)
 
-    NetworkCallVisitor().visit(tree)
-    assert urlopen_owners == ["_run_update"], (
-        "PyPI/update urlopen must remain reachable only from explicit `grift update`"
+    entry = NetworkCallVisitor()
+    entry.visit(ast.parse(source, filename=str(path)))
+    assert entry.urlopen_owners == []
+    assert entry.update_import_owners == ["_run_update"], "update implementation must be lazy"
+    assert entry.update_call_owners == ["_run_update"], "only the explicit handler may update"
+
+    update_path = ROOT / "src" / "tep_cli" / "update_cmd.py"
+    update_tree = ast.parse(_read(update_path), filename=str(update_path))
+    implementation = NetworkCallVisitor()
+    implementation.visit(update_tree)
+    assert implementation.urlopen_owners == [("run_update", True)], (
+        "PyPI metadata must remain guarded by args.check inside the explicit update handler"
     )
+    assert not any(
+        isinstance(node, ast.Call)
+        for statement in update_tree.body
+        if not isinstance(statement, (ast.FunctionDef, ast.ClassDef))
+        for node in ast.walk(statement)
+    ), "importing the update module must not execute any action"
 
 
 def test_partial_public_collection_documentation_matches_exit_code_3() -> None:

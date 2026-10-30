@@ -9,6 +9,7 @@ no longer a hole (stale entries → update the table + close the issue).
 
 from __future__ import annotations
 
+import re
 import sys
 from pathlib import Path
 
@@ -99,6 +100,10 @@ def test_holes_are_issue_tracked_and_not_stale() -> None:
         f"KNOWN_HOLES entries whose row is no longer a hole (close the issue and "
         f"remove the entry): {sorted(stale)}"
     )
+    for field, url in KNOWN_HOLES.items():
+        assert re.fullmatch(
+            r"https://github\.com/Cor-Incorporated/grift-cli/issues/[1-9][0-9]*", url
+        ), f"{field}: HOLE issue URL must use the public grift-cli repository: {url}"
 
 
 def test_pin_count_within_master_limit() -> None:

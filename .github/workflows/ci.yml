@@ -454,3 +454,85 @@ jobs:
             package-dist/
             package-evidence/
           if-no-files-found: error
+
+  docker:
+    # The Dockerfile builds the wheel from this checkout. Build the image, then
+    # smoke its entrypoint, its bundled tools, the files inside its wheel and an
+    # offline repo observation on a read-only mount. It also runs on the weekly
+    # schedule, so a moved base image is noticed without a code change.
+    #
+    # H5-guard: yes
+    # H5-NEGATIVE: a failed build, an image whose --version differs from
+    # src/tep_core/version.py, a wheel that lacks (or adds) a tracked package
+    # file, or a mount with no complete git history (a linked worktree, a
+    # directory without .git, a shallow clone) must end the step in "block".
+    # H5-LEDGER: each check appends one line to guard-ledger.jsonl before the step
+    # can fail, and the file is uploaded even when the build or the smoke fails.
+    # H5-RETIRE: remove with the Dockerfile, or after 90 days in which no uploaded
+    # ledger holds a "block" line.
+    # H5-PAIR: pyproject.toml readme and wheel inputs ↔ Dockerfile COPY and
+    # .dockerignore; mutation=a name that drifts is red in
+    # tests/test_docker_build_inputs.py, a single file that goes missing from
+    # the wheel is red in the package-files check below.
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Build image and smoke
+        run: |
+          set -euo pipefail
+          mkdir -p docker-evidence
+          ledger=docker-evidence/guard-ledger.jsonl
+          failed=0
+          # record <check> <rc> <expected> <observed>: one ledger line per check.
+          # It passes only when the command succeeded and the observed value is
+          # the expected one; after the build, every check runs so one run shows
+          # every mismatch.
+          record() {
+            local decision=block
+            if [ "$2" -eq 0 ] && [ "$4" = "$3" ]; then decision=pass; else failed=1; fi
+            jq -nc --arg check "$1" --arg decision "$decision" --argjson rc "$2" \
+              --arg expected "$3" --arg observed "$4" '$ARGS.named' | tee -a "$ledger"
+          }
+          rc=0; docker build -t grift-cli:ci . || rc=$?
+          record image-build "$rc" "" ""
+          # Nothing below can run without the image.
+          test "$failed" -eq 0
+          # A version file that cannot be read leaves expected empty: a block, not a crash.
+          expected="grift $(sed -n 's/^__version__ = "\(.*\)"$/\1/p' src/tep_core/version.py || true)"
+          rc=0; observed="$(docker run --rm grift-cli:ci --version)" || rc=$?
+          record image-version "$rc" "$expected" "$observed"
+          # git reads the history; ssh-keygen is what `grift attest` signs with.
+          rc=0
+          docker run --rm --entrypoint sh grift-cli:ci \
+            -c 'command -v git && command -v ssh-keygen' > /dev/null || rc=$?
+          record bundled-tools "$rc" "" ""
+          # The wheel in the image holds exactly the tracked package files, so a
+          # .dockerignore line that drops one file cannot pass unnoticed.
+          rc=0
+          { git ls-files src/tep_core src/tep_cli | sed 's|^src/||' | sort; } \
+            > docker-evidence/package-files.expected || rc=$?
+          docker run --rm --entrypoint python grift-cli:ci -c "import importlib.metadata as m; print(*sorted(str(f) for f in m.files('grift-cli') if f.parts[0] in ('tep_core', 'tep_cli') and '__pycache__' not in f.parts), sep='\n')" \
+            | sort > docker-evidence/package-files.observed || rc=$?
+          diff docker-evidence/package-files.expected docker-evidence/package-files.observed \
+            > docker-evidence/package-files.diff || rc=1
+          cat docker-evidence/package-files.diff
+          record package-files "$rc" \
+            "$(wc -l < docker-evidence/package-files.expected | tr -d ' ') files" \
+            "$(wc -l < docker-evidence/package-files.observed | tr -d ' ') files"
+          # Complete history is part of the observation; a shallow checkout is a block.
+          rc=0
+          observed="$(docker run --rm --network none -v "$PWD:/repo:ro" grift-cli:ci repo /repo \
+            --format json | jq -r '.provenance.revision_completeness.complete')" || rc=$?
+          record offline-repo-observation "$rc" true "$observed"
+          test "$failed" -eq 0
+      - name: Upload docker smoke evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-smoke-${{ github.event.pull_request.head.sha || github.sha }}
+          path: docker-evidence/
+          if-no-files-found: error

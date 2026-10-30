@@ -598,14 +598,14 @@ def _add_verify_parser(sub: argparse._SubParsersAction) -> None:
 def _add_update_parser(sub: argparse._SubParsersAction) -> None:
     parser = sub.add_parser(
         "update",
-        help="Upgrade grift-cli itself (pipx or pip; explicit, never automatic)",
+        help="Upgrade the running grift-cli installation (pipx or pip; explicit, never automatic)",
         epilog=_EPILOG,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
         "--check",
         action="store_true",
-        help="Only show the latest available version from PyPI (read-only), do not upgrade",
+        help="Explicitly read the latest version from PyPI; display only, without upgrading",
     )
 
 
@@ -675,7 +675,7 @@ def _add_contribute_parser(sub: argparse._SubParsersAction) -> None:
         "--out",
         type=Path,
         default=None,
-        help="Write the payload JSON here (default: stdout prints payload + confirmation)",
+        help="Write the payload JSON here after consent (default: .grift/contribution.json)",
     )
     parser.add_argument(
         "--mode",
