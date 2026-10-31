@@ -120,9 +120,23 @@ def test_wave1_unanswerable_rows_carry_issues() -> None:
     text = DOC.read_text(encoding="utf-8")
     for name, body in _entries(text).items():
         if "起票:" in body:
-            assert re.search(r"起票:\s*https://github\.com/.*issues/\d+", body), (
-                f"{name}: 起票 line must carry an issue URL"
+            match = re.search(r"起票:\s*(\S+)", body)
+            assert match and re.fullmatch(
+                r"https://github\.com/Cor-Incorporated/grift-cli/issues/[1-9][0-9]*",
+                match.group(1),
+            ), (
+                f"{name}: 起票 line must carry a public grift-cli issue URL"
             )
+
+
+def test_issue_links_use_public_repository() -> None:
+    text = DOC.read_text(encoding="utf-8")
+    urls = re.findall(r"https?://github\.com/[^\s`<>|)]+", text)
+    for url in urls:
+        if "/issues" in url:
+            assert re.fullmatch(
+                r"https://github\.com/Cor-Incorporated/grift-cli/issues/[1-9][0-9]*", url
+            ), f"persona issue URL must use the public grift-cli repository: {url}"
 
 
 def test_issue_table_lists_all_filed_rows() -> None:

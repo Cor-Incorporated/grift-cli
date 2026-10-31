@@ -84,6 +84,7 @@ CI jobs (`.github/workflows/ci.yml`) and where to look when one fails:
 | `v060-golden` | Replays the v0.6 golden fixture and verifies the public digest-only registry | §5 #2 and #4 |
 | `action-dogfood` | Runs the bundled GitHub Action (`action.yml`) against this repo | `action.yml` and `scripts/action_contract_guard.py` |
 | `package-smoke` | Builds sdist / wheel from a dirty tree and smoke-tests a clean install | `only-include` in `pyproject.toml` vs tracked files |
+| `docker` | Builds the image from `Dockerfile` and checks `--version`, the bundled tools (git / ssh-keygen), that the wheel holds exactly the tracked package files, and `repo` on a read-only mount with no network from a checkout with full history | `guard-ledger.jsonl` in the `docker-smoke-*` artifact (rc per check, expected and observed version, file counts for the wheel) and `package-files.diff`. If the build or the wheel contents break: do the `Dockerfile` `COPY` lines and `.dockerignore` match `pyproject.toml` (`tests/test_docker_build_inputs.py`) |
 | `gitleaks` | Secret scan (`.gitleaks.toml`) | A public OID false positive: check whether the path is allowlisted |
 | `golden` | Live golden corpus; skipped on PRs, runs on schedule | Network-dependent expected values |
 

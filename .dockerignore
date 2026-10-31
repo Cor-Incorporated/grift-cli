@@ -1,0 +1,9 @@
+# Allowlist: the image build only needs the wheel inputs.
+*
+!pyproject.toml
+!README.en.md
+!LICENSE
+!.gitignore
+!src/
+**/__pycache__
+**/*.py[cod]

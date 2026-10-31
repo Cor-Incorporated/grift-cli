@@ -20,6 +20,7 @@ from tep_core.identity import empty_identity
 from tep_core.lineage import Lineage
 
 from git_fixture import commit, init_repo
+from process_guard import refusing_process_starts
 
 
 def _repo_report(tmp_path: Path) -> dict:
@@ -110,9 +111,24 @@ def test_50_markdown_renders_language_percents(tmp_path, capsys):
     assert "3684" not in markdown.split("languages")[1].split("\n")[0], "raw counts must not appear"
 
 
-def test_51_update_check_reports_installed(capsys):
-    code = main(["update", "--check"])
-    assert code in (0, 2)  # offline tolerated
+def test_51_update_check_reports_installed(capsys, monkeypatch):
+    import io
+
+    def refuse(*args, **kwargs):
+        raise AssertionError("update --check must not start an installer")
+
+    # A regression that lets --check reach the installer would otherwise run a real
+    # `pip install --upgrade` against the environment running the tests.
+    for target in ("subprocess.run", "subprocess.Popen", "os.system"):
+        monkeypatch.setattr(target, refuse)
+    monkeypatch.setattr(
+        "urllib.request.urlopen",
+        lambda *args, **kwargs: io.BytesIO(b'{"info":{"version":"fixture-version"}}'),
+    )
+    # exec/spawn/fork do not go through the names above: the audit hook covers them.
+    with refusing_process_starts():
+        code = main(["update", "--check"])
+    assert code == 0
     out = capsys.readouterr().out
     assert "installed:" in out
 

@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from datetime import datetime
 from pathlib import Path
 
 from tep_cli.benchmark_cmd import run_benchmark
@@ -641,40 +642,9 @@ def _analyze_to_grift_dir(*, scope: str = "repo") -> int:
 
 
 def _run_update(args: argparse.Namespace) -> int:
-    """Explicit self-upgrade (#51). No telemetry: reads PyPI metadata (public
-    JSON) only with --check; upgrade runs pipx/pip locally."""
-    import shutil
-    import subprocess
-    import urllib.request
+    from tep_cli.update_cmd import run_update
 
-    latest = None
-    try:
-        with urllib.request.urlopen("https://pypi.org/pypi/grift-cli/json", timeout=10) as response:
-            latest = json.loads(response.read()).get("info", {}).get("version")
-    except Exception as exc:  # noqa: BLE001 — offline is fine
-        sys.stderr.write(f"version check skipped (offline or PyPI unreachable): {exc}\n")
-    sys.stdout.write(f"installed: {__version__}\n")
-    if latest:
-        sys.stdout.write(f"latest:    {latest}\n")
-        if latest == __version__:
-            sys.stdout.write("up to date\n")
-            return 0
-    elif not args.check:
-        sys.stderr.write("continuing with upgrade attempt anyway\n")
-    if args.check:
-        return 0
-    pipx = shutil.which("pipx")
-    if pipx:
-        sys.stdout.write("running: pipx upgrade grift-cli\n")
-        result = subprocess.run([pipx, "upgrade", "grift-cli"])
-        return result.returncode
-    pip = shutil.which("pip") or shutil.which("pip3")
-    if pip:
-        sys.stdout.write("running: pip install --upgrade grift-cli\n")
-        result = subprocess.run([pip, "install", "--upgrade", "grift-cli"])
-        return result.returncode
-    sys.stderr.write("neither pipx nor pip found — upgrade manually (pipx upgrade grift-cli)\n")
-    return 2
+    return run_update(args, installed_version=__version__)
 
 
 def _run_contribute(args: argparse.Namespace) -> int:
@@ -813,26 +783,82 @@ def _run_contribute(args: argparse.Namespace) -> int:
     digest = hashlib.sha256(payload_text.encode("utf-8")).hexdigest()
     now = datetime.now(timezone.utc)
     submission_id = now.strftime("%m%d-%H%M") + "-" + digest[:8]
-    sys.stderr.write(f"\npayload written to {target} (nothing was sent)\n")
-    if selected_door == "public-pr":
-        sys.stderr.write(
-            "\n=== 公開提出手順（Git履歴から完全撤回できません） ===\n"
-            f"1. https://github.com/Cor-Incorporated/tep-contributions に PR を出す\n"
-            f"   - ファイル名: payloads/{now.year}/{submission_id}.json（上記 payload をそのまま）\n"
-            f"   - 同じ場所に {submission_id}.meta.json も追加（--open は自動でコミット済み）:\n"
-            f'     {{"id":"{submission_id}","sha256":"{digest}","received_at":"{now.strftime("%Y-%m-%dT%H:%M:%SZ")}","door":"pr"}}\n'
-            "   - manifest.jsonl は main で自動生成されるため編集不要\n"
-            "2. 代理PR経路は提出者の身元を公開しないだけで、payload自体は最終的に公開されます\n"
-            "   詳細: tep-contributions の README/CONTRIBUTING\n"
-        )
-    elif selected_door == "controlled":
+    opening = bool(getattr(args, "open", False))
+    sys.stderr.write(
+        f"\npayload written to {target} "
+        + ("(not sent yet; --open continues below)\n" if opening else "(nothing was sent)\n")
+    )
+    if selected_door == "controlled" or controlled:
         sys.stderr.write(
             "\ncontrolled payload was written locally. Automatic upload is intentionally unavailable; "
             "transfer it only to the authorized controlled destination named in the sidecar.\n"
         )
     else:
-        sys.stderr.write("\nlocal payload only: no submission destination was selected.\n")
-    if getattr(args, "open", False):
+        if selected_door == "local":
+            sys.stderr.write("\nlocal payload only: no submission destination was selected.\n")
+        purpose_name, purpose_doors = _purpose_doors(payload.get("purpose"))
+        if "public-pr" not in purpose_doors:
+            # prepare_contribution refuses door=public-pr for this purpose
+            # (PURPOSE_DOORS), so a rebuild with --door public-pr exits 2:
+            # print no public-submission step at all.
+            sys.stderr.write(
+                f"purpose '{purpose_name}' は公開受け口に提出できません / cannot be submitted "
+                f"to the public intake (doors: {', '.join(sorted(purpose_doors)) or 'none'}).\n"
+            )
+        elif payload.get("door") == "local":
+            # A v2 local draft records door=local and public_payload=false, so
+            # the intake rejects it whatever it is renamed to, and its receipt
+            # id is random per build: no id, PR path or meta row printed for
+            # this file could match the payload a rebuild produces. Only the
+            # rebuild is actionable.
+            sys.stderr.write(
+                "この local draft は公開受け口に提出できません（not submission-ready）。\n"
+                "公開提出する場合は、同じ report と同じオプションに --door public-pr を加えて再生成し、"
+                "その実行が表示する提出ID・PR path・meta行を使ってください。\n"
+                "To submit publicly, rebuild with the same report and options plus "
+                "--door public-pr, then use the submission ID, PR path and meta row that run prints.\n"
+            )
+        else:
+            intake = "https://github.com/Cor-Incorporated/tep-contributions"
+            metadata = _meta_row(submission_id, digest, now)
+            if opening:
+                # _open_submission_flow (below) commits the payload and this
+                # meta row to a fork branch and pushes it, so describe that
+                # instead of manual steps or a "nothing was sent" claim.
+                handling = (
+                    "--open は次にローカルの事前検査を行い、通れば gh/git であなたの fork に"
+                    " branch を作り、この payload と .meta.json を commit・push します。"
+                    "手でファイルを追加する必要はありません。PR作成の最後のボタンはあなたが押します。\n"
+                    "--open next runs the local pre-push check; if it passes, it commits this "
+                    "payload and its .meta.json to a branch and pushes it to your fork with your "
+                    "gh/git credentials, so no manual file adding is needed. You press the final "
+                    "'Create pull request' button.\n"
+                    "gh/git が使えない・失敗した場合は、続けて表示される案内に従ってください / "
+                    "if gh/git is unavailable or fails, follow the message printed next.\n"
+                )
+                nothing_sent = ""
+            else:
+                handling = (
+                    "payload は書き出したファイルをそのまま使用してください。\n"
+                    "meta行は .meta.json に保存します。"
+                )
+                nothing_sent = "CLIからは何も送信していません。"
+            sys.stderr.write(
+                "\n=== 提出情報（コピー用 / copy-ready metadata） ===\n"
+                f"提出ID / submission_id: {submission_id}\n"
+                f"PR payload: payloads/{now.year}/{submission_id}.json\n"
+                f"PR metadata: payloads/{now.year}/{submission_id}.meta.json\n"
+                "meta / manifest row (sha256):\n"
+                f"{metadata}\n"
+                f"{handling}"
+                "manifest.jsonl は編集・追加不要です。\n"
+                "受け口のCIが meta から manifest artifact を生成します。\n"
+                f"公開ドア URL: {intake}/blob/main/README.en.md#submitting-via-the-public-door\n"
+                f"身元を伏せる代理PR URL: {intake}/blob/main/README.en.md#the-identity-private-door\n"
+                "代理PR経路は提出者の身元を公開しないだけで、payload自体は最終的に公開されます。\n"
+                f"公開後はGit履歴から完全撤回できません。{nothing_sent}\n"
+            )
+    if opening:
         from tep_core.contribute import validate_contribution_payload
 
         violations = validate_contribution_payload(payload)
@@ -843,18 +869,79 @@ def _run_contribute(args: argparse.Namespace) -> int:
             for violation in violations:
                 sys.stderr.write(f"  - {violation}\n")
             return 1
-        _open_submission_flow(payload_text, submission_id, digest, now)
+        _open_submission_flow(payload_text, submission_id, digest, now, target)
     return 0
 
 
-def _open_submission_flow(payload_text: str, submission_id: str, digest: str, now) -> None:
+def _purpose_doors(recorded: object) -> tuple[str, frozenset[str]]:
+    """Return the declared name of a payload's purpose and the doors it may use.
+
+    Payloads record the purpose label (``PURPOSES`` values); the door limits
+    live in ``PURPOSE_DOORS`` keyed by name. Reading both here keeps the
+    post-consent guidance on the same table ``prepare_contribution`` enforces.
+
+    Args:
+        recorded: The payload's ``purpose`` field (a declared name or label).
+
+    Returns:
+        The purpose name and its allowed doors; an empty set when undeclared.
+    """
+    from tep_core.contribution_v2 import PURPOSE_DOORS, PURPOSES
+
+    for name, label in PURPOSES.items():
+        if recorded in (name, label):
+            return name, PURPOSE_DOORS[name]
+    return str(recorded), frozenset()
+
+
+def _meta_record(submission_id: str, digest: str, now: datetime) -> dict[str, str]:
+    """The sidecar record of a public submission (intake CI builds the manifest from it)."""
+    return {
+        "id": submission_id,
+        "sha256": digest,
+        "received_at": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "door": "pr",
+    }
+
+
+def _meta_row(submission_id: str, digest: str, now: datetime) -> str:
+    """The copy-ready one-line form of the sidecar record."""
+    return json.dumps(
+        _meta_record(submission_id, digest, now), ensure_ascii=False, separators=(",", ":")
+    )
+
+
+def _manual_submission_steps(
+    target: Path, submission_id: str, digest: str, now: datetime
+) -> str:
+    """The by-hand steps for the payload that was written, for when ``--open`` cannot push.
+
+    ``target`` is the file this run wrote (``--out`` may name any path), so the steps never point at
+    the default ``.grift/contribution.json``, which can hold an older payload.
+    """
+    import shlex
+
+    path = f"payloads/{now.year}/{submission_id}"
+    return (
+        "To submit by hand / 手動で提出する場合:\n"
+        f"1. add {shlex.quote(str(target))} to the PR as {path}.json "
+        f"(rename it to {submission_id}.json first: GitHub keeps the local file name)\n"
+        f"2. save this row as {path}.meta.json:\n"
+        f"{_meta_row(submission_id, digest, now)}\n"
+    )
+
+
+def _open_submission_flow(
+    payload_text: str, submission_id: str, digest: str, now: datetime, target: Path
+) -> None:
     """`grift contribute --open` (#49 follow-up): open the submission flow.
 
     Preferred path (gh + git available): create a fork branch locally with the
-    payload committed (payload + manifest line), push it to the user's fork,
+    payload committed (payload + metadata sidecar), push it to the user's fork,
     and open the compare URL — the browser shows a ready PR with files already
     attached; the user only presses "Create pull request".
-    Fallback: open the intake repo's new-PR page in the browser.
+    Fallback: open the intake repo's new-PR page in the browser and print the by-hand steps for
+    ``target``, the payload file this run wrote.
 
     This explicit ``--open`` path performs clone/fork/push operations with the
     user's own gh/git credentials; the user still presses the final PR button.
@@ -867,7 +954,6 @@ def _open_submission_flow(payload_text: str, submission_id: str, digest: str, no
     import urllib.request
 
     INTAKE = "https://github.com/Cor-Incorporated/tep-contributions"
-    received_at = now.strftime("%Y-%m-%dT%H:%M:%SZ")
     branch = f"contrib/{submission_id}"
     title = f"contribution: {submission_id}"
     body = (
@@ -875,17 +961,22 @@ def _open_submission_flow(payload_text: str, submission_id: str, digest: str, no
         f"- payload: `payloads/{now.year}/{submission_id}.json`\n"
         f"- sha256: `{digest}`\n"
     )
+    compare = (
+        f"{INTAKE}/compare/{urllib.parse.quote(branch)}"
+        f"?expand=1&title={urllib.parse.quote(title)}"
+        f"&body={urllib.parse.quote(body)}"
+    )
     gh = shutil.which("gh")
     git = shutil.which("git")
     if not (gh and git):
         # F-1: fallback lands on the intake repository (a real page) — the old
         # compare/main...new URL was invalid. Manual attach per CONTRIBUTING.
         url = f"{INTAKE}#how-to-submit"
-        _open_browser(url)
+        opened = _open_browser(url)
         sys.stderr.write(
-            "opened the intake repository in your browser — attach "
-            f"{GRIFT_DIR / 'contribution.json'} as payloads/{now.year}/{submission_id}.json "
-            "(gh CLI not found for the automated branch flow)\n"
+            ("opened the intake repository in your browser " if opened else "")
+            + "(gh or git not found for the automated branch flow).\n"
+            + _manual_submission_steps(target, submission_id, digest, now)
         )
         return
 
@@ -897,6 +988,7 @@ def _open_submission_flow(payload_text: str, submission_id: str, digest: str, no
             raise RuntimeError(f"{' '.join(shlex.quote(c) for c in cmd)}\n{result.stderr.strip()}")
         return result
 
+    pushed = False
     try:
         with tempfile.TemporaryDirectory() as tmp:
             repo_dir = str(Path(tmp) / "tep-contributions")
@@ -908,16 +1000,7 @@ def _open_submission_flow(payload_text: str, submission_id: str, digest: str, no
             # regenerated on main (single writer) — no append conflicts
             meta = year_dir / f"{submission_id}.meta.json"
             meta.write_text(
-                json.dumps(
-                    {
-                        "id": submission_id,
-                        "sha256": digest,
-                        "received_at": received_at,
-                        "door": "pr",
-                    },
-                    ensure_ascii=False,
-                    indent=1,
-                )
+                json.dumps(_meta_record(submission_id, digest, now), ensure_ascii=False, indent=1)
                 + "\n",
                 encoding="utf-8",
             )
@@ -939,33 +1022,58 @@ def _open_submission_flow(payload_text: str, submission_id: str, digest: str, no
             # never push to origin (the clone's origin stays untouched).
             run([git, "-C", repo_dir, "remote", "add", "fork", fork_url])
             run([git, "-C", repo_dir, "push", "--quiet", "fork", branch])
-            compare = (
-                f"{INTAKE}/compare/{urllib.parse.quote(branch)}"
-                f"?expand=1&title={urllib.parse.quote(title)}"
-                f"&body={urllib.parse.quote(body)}"
-            )
-            _open_browser(compare)
-            sys.stderr.write(
-                f"branch `{branch}` pushed to your fork ({user}/tep-contributions).\n"
-                "browser opened at the PR creation page — payload and manifest line are "
-                "already committed; press 'Create pull request' to submit.\n"
-            )
+            pushed = True
+            if _open_browser(compare):
+                sys.stderr.write(
+                    f"branch `{branch}` pushed to your fork ({user}/tep-contributions).\n"
+                    "browser opened at the PR creation page — payload and metadata sidecar are "
+                    "already committed; press 'Create pull request' to submit.\n"
+                )
+            else:
+                sys.stderr.write(
+                    f"branch `{branch}` pushed to your fork ({user}/tep-contributions); payload "
+                    "and metadata sidecar are already committed. Open the page above and press "
+                    "'Create pull request'.\n"
+                )
     except Exception as exc:  # noqa: BLE001 — degrade gracefully
-        sys.stderr.write(f"automated flow failed ({exc}); falling back to the browser\n")
+        if pushed:
+            # The branch is on the user's fork: submitting by hand would open a second PR for
+            # the same id. Only the page that creates this PR is left to open.
+            sys.stderr.write(
+                f"branch `{branch}` is already pushed to your fork, but the next step failed "
+                f"({exc}). Open this page to create the pull request; do not submit by hand:\n"
+                f"{compare}\n"
+            )
+            return
+        sys.stderr.write(
+            f"automated flow failed ({exc}); falling back to the browser.\n"
+            + _manual_submission_steps(target, submission_id, digest, now)
+        )
         _open_browser(f"{INTAKE}#how-to-submit")
 
 
-def _open_browser(url: str) -> None:
+def _open_browser(url: str) -> bool:
+    """Ask the OS to open ``url``; False (with the URL shown) when there is no way to do it."""
     import platform
     import subprocess
 
     system = platform.system()
     if system == "Darwin":
-        subprocess.run(["open", url], check=False)
+        command = ["open", url]
     elif system == "Windows":
-        subprocess.run(["cmd", "/c", "start", url], check=False)
+        command = ["cmd", "/c", "start", url]
     else:
-        subprocess.run(["xdg-open", url], check=False)
+        command = ["xdg-open", url]
+    try:
+        result = subprocess.run(command, check=False)
+    except OSError as exc:  # no browser opener here (SSH session, container)
+        reason = str(exc)
+    else:
+        if result.returncode == 0:
+            return True
+        reason = f"{command[0]} exited {result.returncode}"  # xdg-utils without a display, etc.
+    sys.stderr.write(f"could not open a browser ({reason}); open this URL yourself:\n{url}\n")
+    return False
 
 
 def _run_attest(args: argparse.Namespace) -> int:

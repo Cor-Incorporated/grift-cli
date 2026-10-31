@@ -4,6 +4,51 @@
 
 タグ・PyPI・リポ public 化は本ファイルの記載対象外（人間ゲート）。
 
+## [0.9.2] — 2026-10-30
+
+Docker で grift を実行できるようにし、`contribute`・`context`・`update` の表示と動きを直す patch release。コマンドは増えず、
+CLI フラグと enum 値は変わらない。分析結果の値も変わらない（合成 repo の repo report を 0.9.1 と 0.9.2 で比べて、違ったのは
+`provenance.tool_version` と `definition_version` の 3 項目だけ）。公開 Forge 取得（provider-neutral Forge証跡、
+GitHub/GitLab/self-managed、PARTIAL/resume）、attest / portfolio、contribution-v2 の契約、`暗黙 PyPI update check` を
+持たない設計はいずれも 0.9.1 から変わらない。`DEFINITION_VERSION` を `tep-v0.9.1-2026-10-28` →
+`tep-v0.9.2-2026-10-30` に上げたので、0.9.1 で保存した report（`analyze`・`actor`・`repo`）と照らし合わせは 0.9.2 の `grift verify` で
+CANNOT_VERIFY になる。移行は `docs/migration-v092.md`、英語は `docs/en/migration-v092.md`。
+
+### Added
+
+- `Dockerfile` を足し、ホストに Python を入れずに、このチェックアウトから作ったイメージで grift を実行できるようにした。CI に `docker` job を足し、イメージの `--version` と、読み取り専用 mount・network なしでの `repo` の観測を確かめる。コマンドと出力は変わらない。
+
+### Changed
+
+- `grift update` は、実行中の環境だけを更新する（pipx 管理の環境なら pipx、それ以外は実行中の Python の `-P -m pip`。PATH にある別環境は使わない）（#51）。
+  - `grift update`（`--check` なし）は PyPI のメタデータを先に取りに行かなくなり、更新のあとに入った版を `installed after update: grift X.Y.Z` と表示する
+  - 通信できないときの `grift update --check` は exit 0 から exit 2 になった。`--check` は installer を起動しない
+  - installer は `PYTHONPATH` と `PIP_TARGET`・`PIP_PREFIX`・`PIP_ROOT` を取り除いた環境で、作業ディレクトリではなく実行中の環境のディレクトリから起動する（解析中のリポジトリの `pip.py` を実行しない）
+
+### Fixed
+
+- `grift contribute` の同意後の案内を、実行できる手順だけにした。既定の `--door local` で作った下書きには提出 ID・PR 内のファイル名・meta 行を出さず、`--door public-pr` で作り直す手順だけを示す。`--purpose outcome-linkage` のように公開受け口に出せない purpose には、公開提出の案内を出さない。`--open` では、何をするか（fork への commit と push、最後のボタンは本人）を説明する。gh/git が使えない・失敗したときは、書き出したファイル（`--out` のパス）を `payloads/<年>/<提出ID>.json` として加え、`.meta.json` に meta 行を保存する手順を示し、push が済んだ後に失敗したときは手順ではなく PR 作成ページの URL を示す。ブラウザを開けなかったときも URL を示す（#49）。
+- Context profile に初回/最終活動年とタグ頻度の分子・分母を表示する。活動スパンが 20 日未満の repo ではタグ頻度を年換算せず件数だけを表示する（JSON の値は変わらない）。手で編集した report.json を `grift report <file>` で描き直したとき、2 行が壊れた値で落ちず `not annualized (…)`・`not observed (malformed)` と表示する。日英 metrics-guide と report-schema の説明を同期する（#50）。
+- `grift update` を実行中の pip/pipx 環境へ限定し、明示 check と更新後の版確認・失敗表示を整える。installer を `-P` で、`PYTHONPATH`・`PIP_*` を取り除いて、環境のディレクトリから起動する。HTTP 応答が途中で切れたときの `--check` は読める失敗になる（#51）。
+
+### 既知の制約
+
+3 つの PR の独立レビューで見つかり、0.9.2 では直していないもの。
+
+- `grift contribute`（#49）
+  - report-v1 の report では `--purpose` が黙って無視され、purpose ごとの door の制限が掛からない（report-v2 では掛かる）。0.9.2 では直しておらず、別に追っている
+  - 手動提出の手順に表示するパスは `shlex.quote` した形のまま（ブラウザのファイル選択にそのまま貼れない）。一時ディレクトリの後片付けに失敗すると、成功と失敗の文言が両方出る
+  - Windows の `cmd /c start` は URL の `&` をエスケープしておらず、終了コードで開けたかを判定するため、開けていても「could not open a browser」と表示されることがある（cmd.exe では未検証）
+  - 同意の開示文の「用途」は、`--purpose outcome-linkage` の report-v2 でも reference-distributions と表示される
+- 文脈プロファイルの表示（#50）
+  - タグ頻度と actor_turnover の行は、report-v1 の Markdown（`grift analyze`・引数なしの `grift report`）にだけ出る。`grift repo` などの report-v2 の Markdown には出ない（0.9.1 から同じ。JSON の `context_profile` には入っている）
+  - 手で編集した report.json の年換算値や単位の型は検査しない。`context_profile` 自体が文字列やリストのとき、`collaboration_class` が文字列のとき、極端に桁数の多い整数のときは、0.9.1 と同じく traceback で終わる
+- `grift update`（#51）
+  - installer を環境のディレクトリから起動するため、引き継いだ環境変数の相対パス（例 `PIP_CONFIG_FILE=.config/pip.conf`）は環境のディレクトリ基準になる。`pip.conf` の `[install] target=`（`[global]`・`prefix=`・`root=` も）で実行中の環境が変わらなかった場合は、更新後の版を表示して exit 0 になりうる（pip の実機では確かめていない）。uv で作った環境（pip が無い）では `No module named pip` で失敗する
+  - installer の終了コードをそのまま返す。grift の終了コード表（1 = MISMATCH、3 = PARTIAL）と値が重なる
+  - `shutil.which("pipx")` が相対パスを返す環境（PATH の先頭が `.`）では、表示と実際の実行がずれる。Windows の `shutil.which` が cwd を先に見る件は未検証
+- テスト基盤: `tests/process_guard.py` が拒否するのは `os`/`subprocess` の入口のうちイベントを出すものだけ（`ctypes` の直接呼び出し、`_posixsubprocess.fork_exec`、`multiprocessing` の spawn/forkserver は対象外）。`test_cli_keyful_cosign_when_binary_is_available` はネットワークが切れていると落ちる（cosign の署名が外部に接続する可能性。未確認）
+
 ## [0.9.1] — 2026-10-28
 
 人や案件について事実と違う数や読みが出うるところを直す patch release。コマンドは増えず、CLI フラグと
