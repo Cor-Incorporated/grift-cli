@@ -4,6 +4,28 @@
 
 タグ・PyPI・リポ public 化は本ファイルの記載対象外（人間ゲート）。
 
+## [0.9.3] — 2026-11-21
+
+identity ファイルを手計算なしで作れるようにする feature release。`grift identity --init` / `--list` を追加し、
+パッケージ名と同じ名前の console script `grift-cli` を足した（`uvx grift-cli ...` が `--from` なしで動く）。
+README・docs の導入案内を `uv tool install grift-cli` 主体に書き換えた。Python 3.13 / 3.14 での動作を
+実測して classifiers に追加した。公開 Forge 取得（provider-neutral Forge証跡、GitHub/GitLab/self-managed、
+PARTIAL/resume）、attest / portfolio、contribution-v2 の契約、`暗黙 PyPI update check` を持たない設計は
+いずれも 0.9.2 から変わらない。`DEFINITION_VERSION` を `tep-v0.9.2-2026-10-30` →
+`tep-v0.9.3-2026-11-21` に上げたため、0.9.2 で保存した report と照らし合わせは 0.9.3 の
+`grift verify` で CANNOT_VERIFY（rc=2、実測）になる。移行は docs/migration-v093.md、
+英語は docs/en/migration-v093.md。PyPI への公開は人間ゲート。
+
+### Added
+
+- `grift identity --init --out FILE [--email EMAIL ...]`（公開リポジトリ issue #26）: identity-v2 テンプレートを生成する。`--email` はコマンドラインで受け取り、書き出すファイルには `email_sha256`（読み込み側と同じ domain-separated 計算）だけを記録し、生のメールは書かない。`canonical_id` の既定は最初の `--email` のローカル部（正規表現に合わない・予約形のときは `--id` で明示）。`attribution_state` は `claimed`。`consent` / `authority` は書かないため、experience / role は従来どおり fail-closed。`--email` なしでは空テンプレート。既存ファイルは上書きしない（exit 2）。書き込み前にローダでの検証を行う
+- `grift identity --list REPO`: author email を `件数<TAB>email` で一覧する（件数降順・email 昇順。順位づけではなく観測の補助）
+- パッケージ名と同じ名前の console script `grift-cli` を足した。`uvx grift-cli ...` が `--from` なしで動く（0.9.2 では `uvx grift-cli --version` が「実行ファイル grift-cli は無い」で失敗することを実測していた）
+
+### Changed
+
+- README（日英）と docs/usage（日英）の導入手順を `uv tool install grift-cli` 主体に書き換え（pipx・venv+pip も併記）。`pip install grift` が別ライブラリであることの注意を足した。identity ファイルの生成手順（`grift identity --init`）を README と usage、identity-schema に追加
+
 ## [0.9.2] — 2026-10-30
 
 Docker で grift を実行できるようにし、`contribute`・`context`・`update` の表示と動きを直す patch release。コマンドは増えず、

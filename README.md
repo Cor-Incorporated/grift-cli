@@ -23,12 +23,16 @@ grift を使うと、エンジニアがこれまでどんなコードを、ど�
 エンジニアの方は次の 3 行で自分のリポジトリを見られます。
 
 ```bash
-pipx install grift-cli
+uv tool install grift-cli
 cd your-repo
 grift repo
 ```
 
-grift が動くのに要るのは、Python 3.11 以上と git だけです。結果は画面に出るだけで、ファイルは作らず、どこにも送りません。保存するときは `--out DIR` を、JSON で受け取るときは `--format json` を付けます。`grift` が見つからないと言われたら、`pipx ensurepath` を実行してからターミナルを開き直してください。
+- `uv` を使わないなら `pipx install grift-cli`、または仮想環境を作って `pip install grift-cli` でも同じです（どちらも手元に Python 3.11 以上が要ります）
+- **`pip install grift` は別のライブラリです。** このツールのパッケージ名は `grift-cli` です
+- `grift identity --list .` と `grift identity --init --out .tep/identity.toml --email you@example.com` で、actor 用の identity ファイル（メールアドレスそのものではなく digest だけを記録）を生成できます。手順は [docs/usage.md](docs/usage.md) と [docs/identity-schema.md](docs/identity-schema.md)
+
+grift が動くのに要るのは、Python 3.11 以上と git だけです（手元に適した Python が無いときは、`uv tool install` が uv 側で用意します）。結果は画面に出るだけで、ファイルは作らず、どこにも送りません。保存するときは `--out DIR` を、JSON で受け取るときは `--format json` を付けます。`grift` が見つからないと言われたら、`uv tool update-shell`（pipx の場合は `pipx ensurepath`）を実行してからターミナルを開き直してください。
 
 ## 出力の読み方
 
@@ -110,7 +114,7 @@ steps:
   - uses: actions/setup-python@v5
     with:
       python-version: "3.12"
-  - uses: Cor-Incorporated/grift-cli@v0.9.2
+  - uses: Cor-Incorporated/grift-cli@v0.9.3
     with:
       scope: repo
       comment: false

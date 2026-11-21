@@ -872,6 +872,67 @@ def _add_portfolio_parser(sub: argparse._SubParsersAction) -> None:
     )
 
 
+def _add_identity_parser(sub: argparse._SubParsersAction) -> None:
+    parser = sub.add_parser(
+        "identity",
+        help="Generate or list identity-v2 material (identity-init-v1)",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=(
+            "Raw emails are accepted on the command line but never written to\n"
+            "the output file: the template records email_sha256 digests only.\n"
+            "Examples:\n"
+            "  grift identity --init --out .tep/identity.toml\n"
+            "  grift identity --init --out .tep/identity.toml --email you@example.com\n"
+            "  grift identity --init --out .tep/identity.toml --email a@x --email b@x --id alice\n"
+            "  grift identity --list REPO\n"
+            "attribution_state defaults to claimed. consent / authority stay unset;\n"
+            "experience and role observations fail closed without them."
+        ),
+    )
+    parser.add_argument(
+        "repo",
+        type=Path,
+        nargs="?",
+        default=None,
+        help="Git working tree for --list (default: .)",
+    )
+    parser.add_argument(
+        "--init",
+        action="store_true",
+        help="Write an identity-v2 template. Requires --out. Refuses overwrite",
+    )
+    parser.add_argument(
+        "--out",
+        type=Path,
+        default=None,
+        metavar="FILE",
+        help="Where to write the template (for example .tep/identity.toml)",
+    )
+    parser.add_argument(
+        "--email",
+        action="append",
+        default=None,
+        metavar="EMAIL",
+        dest="emails",
+        help="Author email to record as a digest; repeatable, deduplicated",
+    )
+    parser.add_argument(
+        "--id",
+        default=None,
+        dest="canonical_id",
+        help=(
+            "canonical_id (default: local part of the first --email when it "
+            "fits CANONICAL_ID_PATTERN)"
+        ),
+    )
+    parser.add_argument(
+        "--list",
+        action="store_true",
+        dest="list_emails",
+        help="Print REPO author emails with commit counts (count<TAB>email)",
+    )
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="grift",
@@ -897,4 +958,5 @@ def build_parser() -> argparse.ArgumentParser:
     _add_attest_parser(sub)
     _add_portfolio_parser(sub)
     _add_benchmark_parser(sub)
+    _add_identity_parser(sub)
     return parser

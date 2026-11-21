@@ -83,6 +83,7 @@ v0.6 からの基本の入口は **対象** を名前にしたコマンドです
 | `grift verify` | `.grift/report.json` を同条件で再計算し改ざんを検出（VERIFIED / MISMATCH / CANNOT_VERIFY） |
 | `grift contribute` | `.grift/report.json` からprofile別payloadを組む。既定はlocal書込のみ。**`--open`** は明示network経路として本人のforkへpushし、PR作成ページを開く（最終ボタンは本人） |
 | `grift update` | 実行中の grift-cli の環境を明示的に更新し、更新後の版を表示。`--check` は PyPI の最新版情報を読むだけ。`grift --version` は通信せず手元の版を表示 |
+| `grift identity` | identity-v2 テンプレートの生成（`--init --out FILE [--email ...]`。ファイルには email_sha256 だけを記録）と author email の一覧（`--list REPO`）。v0.9.3 |
 
 - `.grift/` は出力専用のディレクトリです（無ければ自動で作ります）。リポジトリの `.gitignore` に `.grift/` を足しておくことを勧めます
 - 対象パス・スコープ・出力先を明示する書き方は従来どおりです: `grift analyze path --scope tenant --identity .tep/identity.toml --out dir`
@@ -186,6 +187,29 @@ identityとは限りません）。読み込めないidentityを渡したとき�
 report-v1とexport-v1は既存キー・値の追加互換を維持します。report-v2と新規v0.6
 成果物はDraft 2020-12の閉じたschemaで未知キーを拒否します。詳細は
 [report-v2.md](report-v2.md)を参照してください。
+
+## identity ファイルの生成（`grift identity`・v0.9.3）
+
+メールアドレスの SHA-256 を手で計算しない生成コマンドです。メールはコマンドラインで
+受け取り、書き出されるファイルには `email_sha256` だけが記録されます。正規化と digest
+の計算は読み込み側と同じ実装を使うので、生成したファイルはそのまま `--identity` で
+読めます（書き込み前にローダでの検証も行います）。
+
+```bash
+grift identity --list .                                            # author email を件数つきで一覧
+grift identity --init --out .tep/identity.toml --email you@example.com
+grift identity --init --out .tep/identity.toml --email a@example.com --email b@example.com --id alice
+```
+
+- `--email` を渡さないと空のテンプレートを書きます
+- `canonical_id` の既定は最初の `--email` のローカル部（`@` の前）です。正規表現に合わない、
+  または予約形（`actor_` + 16進）に当たるときは `--id` で明示します
+- `attribution_state` は `claimed` で書かれます。`consent` / `authority` は書かれないため、
+  experience / role の観測には追記が必要です（無ければ従来どおり
+  `not_observed(consenting_actor_required)`）
+- 既存のファイルは上書きしません（exit 2）。作成中に書き込みが失敗した場合は、原因を解消して
+  同じ出力先に再実行できます。Windows 以外では、出力先がハードリンクに対応している必要があります。
+  対応していない場合は、対応するボリュームのパスを `--out` に指定してください。
 
 ## identity と AI identity の読み込み
 

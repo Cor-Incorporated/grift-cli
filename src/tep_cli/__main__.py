@@ -9,6 +9,7 @@ from datetime import datetime
 from pathlib import Path
 
 from tep_cli.benchmark_cmd import run_benchmark
+from tep_cli.identity_cmd import run_identity
 from tep_cli.options import build_parser
 from tep_cli.subject import run_actor, run_align, run_project, run_repo
 from tep_core.analyze import analyze_repository
@@ -911,9 +912,7 @@ def _meta_row(submission_id: str, digest: str, now: datetime) -> str:
     )
 
 
-def _manual_submission_steps(
-    target: Path, submission_id: str, digest: str, now: datetime
-) -> str:
+def _manual_submission_steps(target: Path, submission_id: str, digest: str, now: datetime) -> str:
     """The by-hand steps for the payload that was written, for when ``--open`` cannot push.
 
     ``target`` is the file this run wrote (``--out`` may name any path), so the steps never point at
@@ -1258,6 +1257,8 @@ def main(argv: list[str] | None = None) -> int:
         return _run_update(args)
     if args.command == "benchmark":
         return run_benchmark(args)
+    if args.command == "identity":
+        return run_identity(args)
     parser.error("unknown command")
     return 2
 
