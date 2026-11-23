@@ -22,8 +22,8 @@
   ],
   "assertions": [
     {
-      "actual": "0.9.3",
-      "expected": "0.9.3",
+      "actual": "0.9.5",
+      "expected": "0.9.5",
       "id": "runner-tool-version",
       "status": "PASS"
     },
@@ -166,8 +166,8 @@
       "status": "PASS"
     },
     {
-      "actual": "062662ebb3b6f73bdfe76b815e0d7c6855bde24bce0761a6c49bb0113f748e2c",
-      "expected": "062662ebb3b6f73bdfe76b815e0d7c6855bde24bce0761a6c49bb0113f748e2c",
+      "actual": "94b7375e89456777f91d9c82a2e309bd25c85f5d9542872967b753451a905d04",
+      "expected": "94b7375e89456777f91d9c82a2e309bd25c85f5d9542872967b753451a905d04",
       "id": "acquisition-receipt-digest",
       "status": "PASS"
     }
@@ -199,7 +199,7 @@
     "verify.collections": 3,
     "verify.verified": 1
   },
-  "duration_ms": 131254,
+  "duration_ms": 128979,
   "exit_code": 3,
   "output_digests": {
     "derived/actor-provider-independent": {
@@ -220,7 +220,7 @@
     },
     "derived/repo-provider-independent": {
       "algorithm": "sha256",
-      "value": "76992d0ab3540ebece0fc506290ccd02ce2eeb684ee643e9b34777d17480ff59"
+      "value": "9e51646943168c8ce98acd40a851e3e8153a76e30fa3031d7c2ad6d2845b0aa1"
     },
     "derived/repo-provider-independent-numeric": {
       "algorithm": "sha256",
@@ -240,11 +240,11 @@
     },
     "offline/collection-manifest.json": {
       "algorithm": "sha256",
-      "value": "58101f0bedc7c5702530911c13e1c60448c45d438ff7db7a8575ff194db88cdc"
+      "value": "efd2665c8f45876f34baa0be0ad464f5e0e5f83f67943e3c4f1f3263bbe7e8aa"
     },
     "offline/repo-report.json": {
       "algorithm": "sha256",
-      "value": "0b909cf2ffbf42bceb6aa18f6458979ab3db29aba05066c99cbcb3df3401aadd"
+      "value": "897bc57e01c0f6b68aec22265ae6f8f827a4d40643b7c0b55222681083c8bf81"
     },
     "offline/repo-report.md": {
       "algorithm": "sha256",
@@ -260,11 +260,11 @@
     },
     "partial/collection-manifest.json": {
       "algorithm": "sha256",
-      "value": "5cf77b91efced073c73f02049c2568751f2ecc8f8fc1a1230d54513f11f99bd6"
+      "value": "3e270086e46e9b3ab9953f7f00dfca79976f986eef2aa0a4aea8d6fec4c5c023"
     },
     "partial/repo-report.json": {
       "algorithm": "sha256",
-      "value": "488ddc88a6695c384dbd7779ad69ff75be2bd93ad60e0231358c10f978c0afb4"
+      "value": "e879b315330cef4354d322c26dfa3ae774a3dea8a08fc3080e24bdda1f7426a1"
     },
     "partial/repo-report.md": {
       "algorithm": "sha256",
@@ -272,7 +272,7 @@
     },
     "public-evidence/manifest.json": {
       "algorithm": "sha256",
-      "value": "d85461f20898ed04d1d9d69402b5c696398a0c2d2c7df5bd991d13732da1aa7d"
+      "value": "fda5b84d0ad57dcbb5a47106133337c073292295587ece76d2fdedc0e12bb48b"
     },
     "public-evidence/page-01.body": {
       "algorithm": "sha256",
@@ -280,7 +280,7 @@
     },
     "public-evidence/payload": {
       "algorithm": "sha256",
-      "value": "f8485593b50429cbd467d99a808239477d91e78dbe47008a589a88c0aa895ddc"
+      "value": "d8f7de401a75f9ed7522c086526172f0c3e1703deb4e400264c5c4129ee588dc"
     },
     "replay/actor-index.json": {
       "algorithm": "sha256",
@@ -292,11 +292,11 @@
     },
     "replay/collection-manifest.json": {
       "algorithm": "sha256",
-      "value": "b1addc6ad679be421cdbdc249d7980da68680426da6ca16b1761db03d2e89acf"
+      "value": "6756a2c73737b364b51e74a805bd833a7a0edacf402248d13fb88d439eb81c7b"
     },
     "replay/repo-report.json": {
       "algorithm": "sha256",
-      "value": "fbb1bed93dccd7b74454eef38f1b139a914fb7bd70146debb04b4c6abe8521c7"
+      "value": "23a22e974107acda6c137089b2d04ede53a32d7597ce9cc086367b498104f5ae"
     },
     "replay/repo-report.md": {
       "algorithm": "sha256",
@@ -317,16 +317,16 @@
     "source_binding": {
       "commit_oid": {
         "algorithm": "sha1",
-        "value": "3d423ec5b64c189b78fe671365c466ad0f181bbd"
+        "value": "c6365bae80188143afcb5a4f6dc71c0a36e2bc6e"
       },
       "definition_version": "grift-tool-source-tree-v1",
       "file_count": 109,
       "source_tree_digest": {
         "algorithm": "sha256",
-        "value": "d2f376986fd10294e669f52b9323c3e764dc0bfe9ff20b9c927e0a690cdc5991"
+        "value": "d4836a7597b62ea9acf89949ac93f6c274fbb9a85b7c74f8fe398433ef422ac7"
       }
     },
-    "tool_version": "0.9.3"
+    "tool_version": "0.9.5"
   },
   "scenario_id": "P02-vite-forced-partial",
   "schema_version": "tep-public-scenario-result-v2",
