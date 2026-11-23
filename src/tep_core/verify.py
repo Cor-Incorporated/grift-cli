@@ -96,6 +96,11 @@ def verify_report(
     if schema == "report-v2":
         from tep_core.schema_v2 import validate_report_v2
 
+        if "actor_index_digest" in report and "population" in report:
+            return VerifyResult(CANNOT_VERIFY, notes=[
+                "This report belongs to an actor collection. Keep the full directory "
+                "with collection-manifest.json and run grift verify DIR --repo REPO."
+            ])
         if not isinstance(report.get("provenance"), dict):
             return VerifyResult(
                 CANNOT_VERIFY,

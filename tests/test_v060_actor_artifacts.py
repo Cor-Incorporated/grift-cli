@@ -188,6 +188,24 @@ def test_repo_projection_rejects_divergent_tagset_binding() -> None:
         build_actor_artifacts(_index(), report)
 
 
+@pytest.mark.parametrize("field,value", [
+    ("observation_date", "2026-08-04"),
+    ("window_basis", "legacy_head_date"),
+])
+def test_collection_requires_consistent_observation_fields(tmp_path: Path, field: str, value: str) -> None:
+    report = _report()
+    report["window"] = {"start": "2026-01-01", "end": "2026-08-31", "unit": "date-range", "basis": "explicit_as_of"}
+    report["provenance"].update(observation_date="2026-08-31", window_basis="explicit_as_of")
+    collection = tmp_path / "collection"
+    write_actor_artifacts(collection, build_actor_artifacts(_index(), report, selection_mode="all"))
+    member = json.loads((collection / "repo-report.json").read_text())
+    member["provenance"][field] = value
+    _rewrite_member(collection, "repo-report.json", member)
+
+    with pytest.raises(ActorArtifactError, match="observation.*window"):
+        verify_actor_artifact_directory(collection)
+
+
 def test_top_and_explicit_keep_full_population_digest_but_change_selection() -> None:
     all_artifacts = build_actor_artifacts(_index(), _report())
     top = build_actor_artifacts(_index(), _report(), selection_mode="top", top=2)

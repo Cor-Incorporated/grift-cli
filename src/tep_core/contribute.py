@@ -28,6 +28,7 @@ from tep_core.contribution_v2 import (
     ContributionBundle,
     PURPOSE,
     build_contribution_bundle as build_v2_contribution_bundle,
+    resolve_purpose,
     validate_v2_payload,
 )
 
@@ -243,6 +244,14 @@ def prepare_contribution(
             "private to the identity owner and are never included)"
         )
     provenance = provenance_value
+    # A report-v1 contribution is recorded under one purpose and has no door,
+    # so a different purpose (or an unknown one) cannot be honoured: refuse it
+    # before the consent gate instead of silently recording the fixed one.
+    if purpose is not None and resolve_purpose(purpose) != CONTRIBUTE_PURPOSE:
+        raise ValueError(
+            f"purpose {purpose!r} needs a report-v2 report; a report-v1 report is "
+            f"contributed under {CONTRIBUTE_PURPOSE!r} only"
+        )
     payload: dict[str, Any] = {
         "contribution_schema": "tep-contribution-v1",
         "purpose": CONTRIBUTE_PURPOSE,

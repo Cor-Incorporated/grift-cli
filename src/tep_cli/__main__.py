@@ -91,6 +91,11 @@ def _run_verify(args: argparse.Namespace) -> int:
         sys.stderr.write("verify: pass the report either positionally or with --report, not both\n")
         return 2
     report = args.report or args.report_positional or GRIFT_DIR / "report.json"
+    if args.bundle is None and report.name == "repo-report.json" and report.is_file():
+        from tep_core.actor_artifacts import MANIFEST_NAME
+
+        if (report.parent / MANIFEST_NAME).is_file():
+            report = report.parent
     if report.is_dir() and args.bundle is None:
         return _run_actor_artifact_verify(
             report,
