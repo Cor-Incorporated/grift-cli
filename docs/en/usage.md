@@ -83,6 +83,7 @@ The verbs from the 0.5 series keep their meaning: **analyze = display (stdout)**
 | `grift verify` | Recompute `.grift/report.json` under recorded provenance (VERIFIED / MISMATCH / CANNOT_VERIFY) |
 | `grift contribute` | Build an opt-in payload from `.grift/report.json` (**never auto-sends to us**; after consent writes `.grift/contribution.json` and prints steps). **`--open`** pushes a branch with the payload and meta file committed to your fork and opens the PR creation page in the browser (uses your own gh credentials and your own fork; the final button is yours) |
 | `grift update` | Explicitly upgrade the running grift-cli environment and show its resulting version. `--check` only reads the latest version from PyPI. `grift --version` shows the local version offline |
+| `grift identity` | Generate an identity-v2 template (`--init --out FILE [--email ...]`; the file records `email_sha256` digests only) and list author emails (`--list REPO`). v0.9.3 |
 
 - `.grift/` is the dedicated output directory (auto-created). Adding `.grift/` to your `.gitignore` is recommended
 - Custom invocations keep the explicit form: `grift analyze path --scope tenant --identity .tep/identity.toml --out dir`
@@ -223,6 +224,30 @@ cause). An identity that cannot be loaded gives `CANNOT_VERIFY` (exit 2).
 report-v1 and export-v1 keep their additive compatibility contract. report-v2
 and new v0.6 artifacts use closed Draft 2020-12 schemas and reject unknown
 keys. See [report-v2.md](../report-v2.md) (Japanese).
+
+## Generating an identity file (`grift identity`, v0.9.3)
+
+The generator takes emails on the command line so you never compute the
+SHA-256 digests by hand. The written file records `email_sha256` only, using
+the same normalisation and digest the loader uses, so the file works with
+`--identity` as is (it is validated through the loader before writing).
+
+```bash
+grift identity --list .                                            # author emails with commit counts
+grift identity --init --out .tep/identity.toml --email you@example.com
+grift identity --init --out .tep/identity.toml --email a@example.com --email b@example.com --id alice
+```
+
+- Without `--email` an empty template is written
+- `canonical_id` defaults to the local part of the first `--email`. When that
+  does not fit the pattern, or has the reserved `actor_` + hex shape, pass
+  `--id`
+- `attribution_state` is written as `claimed`. `consent` / `authority` are not
+  written; add them when you want experience / role observations (otherwise
+  they stay `not_observed(consenting_actor_required)` as before)
+- An existing file is never overwritten (exit 2). If writing a new file fails, fix the cause and
+  retry at the same path. On systems other than Windows, the destination filesystem must support
+  hard links. If it does not, use `--out` to select a path on a volume that does.
 
 ## Identity and AI identity sources
 

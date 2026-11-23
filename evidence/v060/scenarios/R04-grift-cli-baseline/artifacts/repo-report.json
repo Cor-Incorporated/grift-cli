@@ -9,7 +9,7 @@
       "object_format": "sha1",
       "partition_digest": "939e1c331659877d1f11aa15f0fe7d2a8449177fda74f8f3cfad636993b0503a",
       "provider_enrichment_changes_partition": false,
-      "repo_scope_digest": "7bcddacfef54dc7d54359bd4852cd815c154959b40b0415982a2b3e9bf240ad5",
+      "repo_scope_digest": "f899e04f41b85d70c459a2362a98c0161b2f50ecee29b16232b4a0100dcf6691",
       "sha_to_actor_digest": "eaf31795ab7a1a4bff75fe77a2146c8746ffca79142222df53261d78ff70603a"
     },
     "attributed_commit_count": 164,
@@ -123,7 +123,7 @@
   ],
   "metrics": {
     "human_nonmerge_commit_share": {
-      "definition_version": "tep-v0.9.2-2026-10-30",
+      "definition_version": "tep-v0.9.3-2026-11-21",
       "denominator": 164,
       "kind": "observed",
       "limitations": [
@@ -161,9 +161,9 @@
   },
   "provenance": {
     "analysis_scope": "repo",
-    "analyzed_at": "2026-10-30T13:58:30Z",
+    "analyzed_at": "2026-11-21T15:10:45Z",
     "analyzed_commit_sha": "fa9bc317cc0ac1953ed09cbab11d3de2232c2fb0",
-    "definition_version": "tep-v0.9.2-2026-10-30",
+    "definition_version": "tep-v0.9.3-2026-11-21",
     "input_digests": {
       "benchmark_manifest": null,
       "forge": null,
@@ -173,7 +173,7 @@
         "value": "ffd98a8bc41acdfbce5af3981d469536a468609af9d69809341a67cf4051f944"
       },
       "public_evidence": null,
-      "tagset": "5835d2a773870ba915aa26c35769caf92c4705a27a1a830a6a4ed9d44842cd91",
+      "tagset": "8a0579c832c6ba46f2fc4b63c820a4465418671e5d1c6cf2f2c0f41de0a39d32",
       "tracker": null,
       "tracker_binding": null
     },
@@ -182,13 +182,13 @@
       "promisor": false,
       "shallow": false
     },
-    "tagset_digest": "5835d2a773870ba915aa26c35769caf92c4705a27a1a830a6a4ed9d44842cd91",
+    "tagset_digest": "8a0579c832c6ba46f2fc4b63c820a4465418671e5d1c6cf2f2c0f41de0a39d32",
     "target_oid": {
       "algorithm": "sha1",
       "value": "fa9bc317cc0ac1953ed09cbab11d3de2232c2fb0"
     },
     "tool_name": "grift",
-    "tool_version": "0.9.2"
+    "tool_version": "0.9.3"
   },
   "report_kind": "evidence",
   "schema_version": "report-v2",

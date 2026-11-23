@@ -28,6 +28,12 @@ consent = "recorded-explicit-consent"
 authority = "subject-authorization"
 ```
 
+Generation (v0.9.3): `grift identity --init --out FILE --email EMAIL ...` renders
+a file of this shape recording `email_sha256` only (it never writes `emails`).
+`grift identity --list REPO` lists author emails with commit counts. The
+generator reuses the canonical_id regex and the reserved-shape rule below
+verbatim, and validates its output through the loader before writing.
+
 ## canonical_id validity (F-P10-3, version-managed)
 
 `canonical_id` must **fullmatch**:

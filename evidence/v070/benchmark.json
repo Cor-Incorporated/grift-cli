@@ -85,19 +85,19 @@
   "self_contained": [
     {
       "claim": "Two runs over one fixed revision produce an identical report (SHA-256 over the whole document, excluding wall-clock fields and the checkout's directory name).",
-      "elapsed_seconds": 1.56,
+      "elapsed_seconds": 1.55,
       "holds": true,
       "id": "determinism",
       "measured": {
         "identical": true,
-        "report_sha256": "b7cbcd756e85fd1f4882729d82cd7c7b1b5eeb460f7e9b4ead74741c74b40f04",
+        "report_sha256": "7afee9376bf044e7783af009410845cd4d4bd07296b1b3eb9da414a5c48a9136",
         "runs": 2
       },
       "reproducibility": "self_contained"
     },
     {
       "claim": "`grift verify` exits non-zero on a modified report and names the reported and recomputed values.",
-      "elapsed_seconds": 2.08,
+      "elapsed_seconds": 2.01,
       "holds": true,
       "id": "tamper-detection",
       "measured": {
@@ -110,7 +110,7 @@
     },
     {
       "claim": "On a shallow clone, repository-wide fields degrade to not_observed while HEAD-anchored facts survive.",
-      "elapsed_seconds": 0.78,
+      "elapsed_seconds": 0.73,
       "holds": true,
       "id": "truncated-history",
       "measured": {
@@ -133,7 +133,7 @@
     },
     {
       "claim": "No emitted key or unit is a score, rank, fit, hire, percentile, or recommendation.",
-      "elapsed_seconds": 0.77,
+      "elapsed_seconds": 0.67,
       "holds": true,
       "id": "no-verdict-vocabulary",
       "measured": {
@@ -151,7 +151,7 @@
     },
     {
       "claim": "The default analysis path opens no socket from the Python process; git subprocesses run with GIT_NO_LAZY_FETCH=1 and their network behaviour is not measured here.",
-      "elapsed_seconds": 0.92,
+      "elapsed_seconds": 0.71,
       "holds": true,
       "id": "offline",
       "measured": {
@@ -170,7 +170,7 @@
     },
     {
       "claim": "Run through the CLI over a repository written by three distinct people, `grift align --team` reports coverage counts at the minimum team size and refuses below it instead of emitting a count that identifies an individual.",
-      "elapsed_seconds": 19.07,
+      "elapsed_seconds": 12.87,
       "holds": true,
       "id": "team-minimum",
       "measured": {
@@ -193,5 +193,5 @@
       "reproducibility": "self_contained"
     }
   ],
-  "tool_version": "0.9.2"
+  "tool_version": "0.9.3"
 }

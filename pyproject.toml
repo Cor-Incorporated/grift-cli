@@ -17,6 +17,8 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Software Development :: Quality Assurance",
 ]
 dependencies = []
@@ -26,6 +28,7 @@ dev = ["pytest>=8.0", "build>=1.2", "jsonschema>=4,<5"]
 
 [project.scripts]
 grift = "tep_cli.__main__:main"
+grift-cli = "tep_cli.__main__:main"
 
 [project.urls]
 Homepage = "https://griftai.org"

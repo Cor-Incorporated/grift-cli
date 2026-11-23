@@ -23,12 +23,16 @@ Run `grift project --init --out .tep/project.toml` to get an empty template, and
 Engineers can look at their own repository with three commands:
 
 ```bash
-pipx install grift-cli
+uv tool install grift-cli
 cd your-repo
 grift repo
 ```
 
-At run time grift needs only Python 3.11 or newer and git. The report is printed to your terminal; grift writes no files and sends nothing anywhere. Add `--out DIR` to save it, or `--format json` for machine-readable output. If your shell cannot find `grift`, run `pipx ensurepath` and open a new terminal.
+- Without `uv`, `pipx install grift-cli` or `pip install grift-cli` inside a virtual environment works the same (both need Python 3.11 or newer available locally).
+- **`pip install grift` installs a different library.** This tool's package name is `grift-cli`.
+- `grift identity --list .` and `grift identity --init --out .tep/identity.toml --email you@example.com` generate the identity file used by `grift actor` (it records email digests only, never the raw addresses). See [usage](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/usage.md) and the [identity schema](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/identity-schema.md).
+
+At run time grift needs only Python 3.11 or newer and git (when no suitable Python is present, `uv tool install` provisions one). The report is printed to your terminal; grift writes no files and sends nothing anywhere. Add `--out DIR` to save it, or `--format json` for machine-readable output. If your shell cannot find `grift`, run `uv tool update-shell` (or `pipx ensurepath` with pipx) and open a new terminal.
 
 The report text is currently in Japanese; the JSON output uses English keys.
 
@@ -112,7 +116,7 @@ steps:
   - uses: actions/setup-python@v5
     with:
       python-version: "3.12"
-  - uses: Cor-Incorporated/grift-cli@v0.9.2
+  - uses: Cor-Incorporated/grift-cli@v0.9.3
     with:
       scope: repo
       comment: false
@@ -169,7 +173,7 @@ MIT. See [LICENSE](https://github.com/Cor-Incorporated/grift-cli/blob/main/LICEN
 grift を使うと、エンジニアがこれまでどんなコードを、どれくらい、テストで確かめながら変えてきたかを、git（コードの変更を 1 件ずつ記録する仕組み）に残った記録から件数つきで知ることができます。点数や順位はつけません。人材紹介会社や SES の営業が推薦の理由を説明するときにも、エンジニア本人が経歴書に確かめられる事実を添えるときにも使えます。
 
 ```bash
-pipx install grift-cli
+uv tool install grift-cli
 cd your-repo
 grift repo
 ```

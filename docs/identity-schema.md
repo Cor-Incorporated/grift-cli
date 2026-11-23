@@ -28,6 +28,11 @@ consent = "recorded-explicit-consent"
 authority = "subject-authorization"
 ```
 
+生成（v0.9.3）: `grift identity --init --out FILE --email EMAIL ...` はこの形のファイルを、
+`email_sha256` だけを記録して生成します（`emails` は書きません）。`grift identity --list REPO`
+で author email を件数つきで一覧できます。生成器は下の canonical_id の正規表現と
+予約形の規則をそのまま使い、書き込み前にローダで検証します。
+
 ## canonical_id validity (F-P10-3・版管理)
 
 `canonical_id` は次の正規表現に **fullmatch** しなければならない（producer が `IdentityValidationError` で拒否する）:
