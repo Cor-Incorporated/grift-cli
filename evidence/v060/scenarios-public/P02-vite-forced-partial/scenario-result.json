@@ -22,8 +22,8 @@
   ],
   "assertions": [
     {
-      "actual": "0.9.5",
-      "expected": "0.9.5",
+      "actual": "0.9.6",
+      "expected": "0.9.6",
       "id": "runner-tool-version",
       "status": "PASS"
     },
@@ -166,8 +166,8 @@
       "status": "PASS"
     },
     {
-      "actual": "94b7375e89456777f91d9c82a2e309bd25c85f5d9542872967b753451a905d04",
-      "expected": "94b7375e89456777f91d9c82a2e309bd25c85f5d9542872967b753451a905d04",
+      "actual": "1badd7e50262d501b1b1d5d769fcb97b914912024cf0ea634ab481d0fb0fa8a0",
+      "expected": "1badd7e50262d501b1b1d5d769fcb97b914912024cf0ea634ab481d0fb0fa8a0",
       "id": "acquisition-receipt-digest",
       "status": "PASS"
     }
@@ -314,19 +314,19 @@
     "reason": "public_evidence_partial"
   },
   "runner": {
+    "tool_version": "0.9.6",
     "source_binding": {
-      "commit_oid": {
-        "algorithm": "sha1",
-        "value": "c6365bae80188143afcb5a4f6dc71c0a36e2bc6e"
-      },
       "definition_version": "grift-tool-source-tree-v1",
-      "file_count": 109,
       "source_tree_digest": {
         "algorithm": "sha256",
-        "value": "d4836a7597b62ea9acf89949ac93f6c274fbb9a85b7c74f8fe398433ef422ac7"
+        "value": "4563aad53e800a03838a7e7922fa6f1f289e3f284cca777e136e4288a9181446"
+      },
+      "file_count": 112,
+      "commit_oid": {
+        "algorithm": "sha1",
+        "value": "7bff0855df6bdee73b78773a791c7019485a74b1"
       }
-    },
-    "tool_version": "0.9.5"
+    }
   },
   "scenario_id": "P02-vite-forced-partial",
   "schema_version": "tep-public-scenario-result-v2",

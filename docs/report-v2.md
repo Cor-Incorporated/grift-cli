@@ -208,6 +208,13 @@ public-evidence digest、reachable tagset digest、scope、実行時刻を署名
 taggerのname/emailやtag本文はstatementへ出力しません。署名、report hash、repo再計算は
 独立判定のままです。
 
+## signature_observation と usage_terms（0.9.6）
+
+- `signature_observation`: 選んだ commit のうち署名ヘッダ（`gpgsig`・`gpgsig-sha256`）を持つものの比率。`kind`、`value`、`unit=ratio`、`count`、`sample_size`、`definition_version`、`limitations` を持つ。母数が 20 に届かないときは `not_observed(insufficient_population)`。署名の有効性は見ない（読む人の鍵に依存し、verify が再生できないため）。範囲は [verify-guarantees.md](verify-guarantees.md)
+- `usage_terms`: `disclosure_level`（`minimal|standard|full`）、`markdown_sections`、`withheld_from_markdown`、`json_retains_all_observations`、`permitted_uses`、`prohibited_uses`（`id` と `norms_article`）、`norms_ref`、`binding=declaration_only`、`limitations`。宣言であり、共有後の使い方を技術で止めるものではない
+- `provenance.disclosure_level`: `--disclosure-level` の記録。verify が同じ水準で作り直す
+- どちらも閉じた schema で、score・rank などの判定の語は持たない
+
 ## Markdown
 
 Markdownは「対象 → 入力/provenance → coverageと未観測 → 数値と母数 → 読み方 →

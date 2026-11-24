@@ -12,6 +12,7 @@ import pytest
 from tep_core.analyze import analyze_repository
 from tep_core.identity import empty_identity, load_identity
 from tep_core.lineage import Lineage
+from tep_core.scope import DEFAULT_SCOPE
 
 ROOT = Path(__file__).resolve().parents[1]
 PINS = ROOT / "golden" / "pins.toml"
@@ -96,7 +97,14 @@ def test_golden_repo(pin: dict) -> None:
     identity = load_identity(identity_path) if identity_path else empty_identity()
     parent = pin.get("parent") or None
     lineage = Lineage(is_fork=bool(pin.get("fork")), parent=parent)
-    report = analyze_repository(dest, identity, lineage, include_files=False)
+    report = analyze_repository(
+        dest,
+        identity,
+        lineage,
+        template_provided=bool(pin.get("template")),
+        include_files=False,
+        scope=pin.get("scope") or DEFAULT_SCOPE,
+    )
     expected = json.loads(
         (ROOT / "golden" / "expected" / f"{pin['id']}.json").read_text(encoding="utf-8")
     )

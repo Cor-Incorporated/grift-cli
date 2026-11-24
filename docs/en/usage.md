@@ -36,7 +36,7 @@ grift verify alignment.json --repo . \
   --identity .tep/identity.toml --project .tep/project.toml
 ```
 
-On both paths the `subject` (including the consent record `actor_consent` and `project_id`) is rebuilt from the inputs and compared, never copied from the saved JSON. The repository path also rebuilds the provenance and limitations, and reads from the saved JSON only the recompute inputs (what `--as-of`, `--role-lens`, `--vendor-scan`, `--survival` and `--reference` were). An alignment made with `--event-window` does not yet verify on the repository path (to be fixed in 0.9.2). The saved-report path trusts the actor report it is handed and rebuilds from it; check that actor report separately with `grift verify actor-report.json --repo REPO --identity IDENTITY`.
+On both paths the `subject` (including the consent record `actor_consent` and `project_id`) is rebuilt from the inputs and compared, never copied from the saved JSON. The repository path also rebuilds the provenance and limitations, and reads from the saved JSON only the recompute inputs (what `--as-of`, `--role-lens`, `--disclosure-level`, `--vendor-scan`, `--survival` and `--reference` were). An alignment made with `--event-window` does not yet verify on the repository path (to be fixed in 0.9.2). The saved-report path trusts the actor report it is handed and rebuilds from it; check that actor report separately with `grift verify actor-report.json --repo REPO --identity IDENTITY`.
 
 `grift report alignment-out/alignment.json` only re-renders the Markdown from the saved JSON; it checks nothing. Whether the interview questions are shown comes straight from the actor selection, identity kind and consent record written in the JSON (`subject.actor_selection`, `subject.actor_attribution_state` and `subject.actor_consent`); re-rendering an actor report treats its person-facing sentences the same way. `grift verify` is what checks that the JSON was not changed (for an alignment made from saved reports, check the actor report too, as above). The Markdown says the same under "数字の読み方と限界" (how to read the numbers and their limits).
 
@@ -104,6 +104,30 @@ Actor report is now limited to explicit `verified|claimed`; public inferred and
 explicit nonconsenting bases use `actor_cluster`. `actor_cluster` is a repo-local
 Git primary-author cluster, not a presentation basis or evidence of consent or
 personhood.
+
+## Sharing scope and usage terms (`--disclosure-level`, 0.9.6)
+
+A report-v2 from `repo` or `actor` records the conditions it was shared under as `usage_terms`: the permitted uses (the person's own review, material for a career summary, material for interview questions, recomputation by the recipient) and `prohibited_uses`, which point at articles of the [usage norms](norms.md). `binding` is `declaration_only`: nothing technically stops reuse after sharing. The field makes the conditions visible and quotable.
+
+```bash
+grift actor candidate_001 --identity .tep/identity.toml --disclosure-level minimal --format md
+```
+
+`--disclosure-level` selects which observations the Markdown shows.
+
+| Level | Observations shown in Markdown |
+|---|---|
+| `minimal` | work areas, how tests are written |
+| `standard` | the above plus coordination and event observations |
+| `full` (default) | the above plus change rhythm, event intervals and tracker lifecycle; identical to 0.9.5 output |
+
+The JSON keeps every observation at every level, because `grift verify` recomputes it. The chosen level is recorded in `provenance.disclosure_level` and verify rebuilds with the same level. Share the JSON only with someone who may read all of it.
+
+The Markdown of an actor report with recorded consent gains a "how to use this record (for you)" section, and, when the forge export you pass holds that person's review events, a sentence on review records. Review quality is not measured.
+
+## Signature observation (0.9.6)
+
+`signature_observation` in report-v2 is the share of selected commits whose object has a signature header. Only header presence is counted; validity is not checked, and it is not a score. What verify guarantees and what it does not is in [verify-guarantees.md](verify-guarantees.md).
 
 ## Team coverage gaps (`grift align --team`)
 
@@ -403,6 +427,10 @@ grift update          # upgrade the running environment and show its resulting v
 ```
 
 `update` uses pipx only when the running environment is managed by pipx; otherwise it uses the running Python's `-P -m pip`. It does not select another environment's pip from PATH. It passes on neither `PYTHONPATH` nor `PIP_TARGET`, `PIP_PREFIX` or `PIP_ROOT`, and it does not start in the repository you are analysing (the working directory). There is no automatic upgrade or version-check request from measurement commands. Read the diagnostic if the network is unavailable or the upgrade fails.
+
+## Upgrading from 0.9.5
+
+See [migration-v096.md](migration-v096.md). A report-v2 saved by 0.9.5 gives CANNOT_VERIFY under 0.9.6 `grift verify` because `DEFINITION_VERSION` changed. Regenerate it with 0.9.6.
 
 ## Upgrading from 0.9.1
 

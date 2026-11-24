@@ -76,12 +76,48 @@ def interpret_metric(
     population = inner.get("population")
     if inner.get("narrate_rate") is False or (isinstance(population, int) and population < 20):
         return NotObserved("insufficient_population").to_dict()
+    return _position(dist, metric_id, float(inner["value"]), str(inner.get("unit", "ratio")))
+
+
+# Survival has no commit population; the index averages over sampled lines, so the
+# same "fewer than 20 -> no position" rule applies to those lines.
+SURVIVAL_MIN_LINES = 20
+
+
+def interpret_survival(
+    *,
+    report_scope: str,
+    observation: dict,
+    reference_version: str | None = None,
+) -> dict[str, object]:
+    """Reference position of the opt-in survival index (tau=180d), same-scope only.
+
+    Until a published reference carries a survival block with n >= MIN_N this is
+    `reference_too_small`; v2026.09 and v2026.11 carry none.
+    """
+    dist = load_distributions(reference_version)
+    if report_scope != "repo":
+        return NotObserved("scope_is_tenant").to_dict()
+    require_same_scope(report_scope, str(dist.get("analysis_scope") or "repo"))
+    if observation.get("kind") != "observed" or observation.get("survival_index") is None:
+        return NotObserved("metric_not_observed").to_dict()
+    lines = observation.get("lines_sampled")
+    if isinstance(lines, int) and lines < SURVIVAL_MIN_LINES:
+        return NotObserved("insufficient_population").to_dict()
+    return _position(
+        dist,
+        "survival",
+        float(observation["survival_index"]),
+        str(observation.get("unit", "dimensionless")),
+    )
+
+
+def _position(dist: dict, metric_id: str, value: float, unit: str) -> dict[str, object]:
     block = (dist.get("metrics") or {}).get(metric_id) or {}
     values = list(block.get("values") or [])
     n = int(block.get("n") or len(values))
     if n < MIN_N:
         return NotObserved("reference_too_small").to_dict()
-    value = float(inner["value"])
     decile = _quantile_index(sorted(values), value) if values else _decile_from_bounds(block, value)
     return {
         "kind": "observed",
@@ -90,7 +126,7 @@ def interpret_metric(
         "n": n,
         "decile": decile,
         "value": value,
-        "unit": inner.get("unit", "ratio"),
+        "unit": unit,
         "metric_id": metric_id,
     }
 

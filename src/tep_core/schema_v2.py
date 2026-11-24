@@ -69,6 +69,8 @@ _REPORT_V2_KEYS = frozenset(
         "change_rhythm",
         "verification_profile",
         "coordination_profile",
+        "signature_observation",
+        "usage_terms",
         "event_observation",
         "event_rhythm",
         "tracker_lifecycle",
@@ -102,6 +104,7 @@ _REPORT_V2_PROVENANCE_KEYS = frozenset(
         "identity_digest",
         "vendor_scan",
         "survival",
+        "disclosure_level",
         "include_local_path",
         "as_of",
         "role_lens",
@@ -478,6 +481,9 @@ def validate_report_v2(report: Any) -> list[str]:
             version = node.get("definition_version")
             if version and version != expected_version:
                 ctx.err(f"$.{key}.definition_version", f"must be {expected_version}")
+    signature = report.get("signature_observation")
+    if signature is not None:
+        _observation(ctx, signature, "$.signature_observation", require_definition=True)
     surface = report.get("surface_profile")
     if isinstance(surface, dict) and surface.get("kind") == "observed":
         _surface_values(

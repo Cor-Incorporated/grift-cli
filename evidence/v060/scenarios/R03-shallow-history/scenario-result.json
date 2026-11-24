@@ -93,8 +93,8 @@
       "status": "PASS"
     },
     {
-      "actual": "0.9.5",
-      "expected": "0.9.5",
+      "actual": "0.9.6",
+      "expected": "0.9.6",
       "id": "runner-tool-version",
       "status": "PASS"
     },
@@ -330,19 +330,19 @@
     "reason": "public_evidence_not_provided"
   },
   "runner": {
+    "tool_version": "0.9.6",
     "source_binding": {
-      "commit_oid": {
-        "algorithm": "sha1",
-        "value": "beee7dffc9c4f698f299497174d151683c2b6d0a"
-      },
       "definition_version": "grift-tool-source-tree-v1",
-      "file_count": 109,
       "source_tree_digest": {
         "algorithm": "sha256",
-        "value": "d4836a7597b62ea9acf89949ac93f6c274fbb9a85b7c74f8fe398433ef422ac7"
+        "value": "4563aad53e800a03838a7e7922fa6f1f289e3f284cca777e136e4288a9181446"
+      },
+      "file_count": 112,
+      "commit_oid": {
+        "algorithm": "sha1",
+        "value": "7bff0855df6bdee73b78773a791c7019485a74b1"
       }
-    },
-    "tool_version": "0.9.5"
+    }
   },
   "scenario_id": "R03-shallow-history",
   "schema_version": "tep-scenario-result-v1",

@@ -22,8 +22,8 @@
   ],
   "assertions": [
     {
-      "actual": "0.9.5",
-      "expected": "0.9.5",
+      "actual": "0.9.6",
+      "expected": "0.9.6",
       "id": "runner-tool-version",
       "status": "PASS"
     },
@@ -166,8 +166,8 @@
       "status": "PASS"
     },
     {
-      "actual": "f5a925166b3366e8d55a842cf53b465b9c9d26d0a94c476dbd307245fbae61ad",
-      "expected": "f5a925166b3366e8d55a842cf53b465b9c9d26d0a94c476dbd307245fbae61ad",
+      "actual": "7c21f81acd10458c9e780e6559a54ace250ea89aea49ea81111e32c1fbf5aa75",
+      "expected": "7c21f81acd10458c9e780e6559a54ace250ea89aea49ea81111e32c1fbf5aa75",
       "id": "acquisition-receipt-digest",
       "status": "PASS"
     }
@@ -328,19 +328,19 @@
     "provided": true
   },
   "runner": {
+    "tool_version": "0.9.6",
     "source_binding": {
-      "commit_oid": {
-        "algorithm": "sha1",
-        "value": "c6365bae80188143afcb5a4f6dc71c0a36e2bc6e"
-      },
       "definition_version": "grift-tool-source-tree-v1",
-      "file_count": 109,
       "source_tree_digest": {
         "algorithm": "sha256",
-        "value": "d4836a7597b62ea9acf89949ac93f6c274fbb9a85b7c74f8fe398433ef422ac7"
+        "value": "4563aad53e800a03838a7e7922fa6f1f289e3f284cca777e136e4288a9181446"
+      },
+      "file_count": 112,
+      "commit_oid": {
+        "algorithm": "sha1",
+        "value": "7bff0855df6bdee73b78773a791c7019485a74b1"
       }
-    },
-    "tool_version": "0.9.5"
+    }
   },
   "scenario_id": "P03-gitlab-release-cli-full",
   "schema_version": "tep-public-scenario-result-v2",

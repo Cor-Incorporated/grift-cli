@@ -149,7 +149,7 @@ repo スコープの文脈観測層（裁定: BD tep-context-profile-ruling §4-
 
 ### interpretation 各エントリ（observed の場合）
 
-`reference_version`: string（例 `v2026.09`）、`analysis_scope`: `"repo"` 固定、`n`: int>=1、`decile`: 1..10、`value`: 0..1、`unit`、`metric_id`。参照分布 n<30 は `reference_too_small`。**十分位の 1 行以外の位置情報は出さない。**
+`reference_version`: string（例 `v2026.09`）、`analysis_scope`: `"repo"` 固定、`n`: int>=1、`decile`: 1..10、`value`: 0..1、`unit`、`metric_id`。参照分布 n<30 は `reference_too_small`。**十分位の 1 行以外の位置情報は出さない。** 0.9.6 から、`--survival` を付けたときだけ `interpretation.survival`（`metric_id=survival`、`unit=dimensionless`）が加わる。`lines_sampled` が 20 に届かないときは `insufficient_population`、公開分布に survival が無い間は `reference_too_small`。
 
 ## 終了コードと stdout/stderr 規約
 

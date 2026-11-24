@@ -33,6 +33,7 @@ from tep_core.tendency import rhythm_tendency, surface_tendency
 from tep_core.trait_alignment import alignment_section
 from tep_core.trait_sections import actor_section, project_section
 from tep_core.trait_profile import not_shown_reason
+from tep_core.usage_terms import LEVEL_SECTIONS, shown_sections, usage_terms_lines
 from tep_core.v2_constants import (
     ACTIVE_DAYS_INFLATION_LIMITATION,
     ALIGNMENT_NOTICE,
@@ -135,7 +136,11 @@ def render_evidence_markdown(report: dict[str, Any]) -> str:
     prov = report.get("provenance") or {}
     kind = subject.get("kind")
     lens = (report.get("role_lens") or {}).get("name")
-    shown = set(emphasized_sections(lens))
+    visible = set(shown_sections((report.get("usage_terms") or {}).get("disclosure_level")))
+    # A group the disclosure level withholds is emptied in the view that feeds the
+    # plain-sentence section and the tendencies, so no sentence or row restates it.
+    view = {**report, **{name: {} for name in LEVEL_SECTIONS["full"] if name not in visible}}
+    shown = set(emphasized_sections(lens)) & visible
     coverage = report.get("input_coverage") or {}
     who = (
         _actor_subject_line(subject)
@@ -184,9 +189,12 @@ def render_evidence_markdown(report: dict[str, Any]) -> str:
         lines += _verification_lines(report.get("verification_profile") or {})
     if "coordination_profile" in shown:
         lines += _coordination_lines(report.get("coordination_profile") or {})
-    lines += _event_observation_lines(report.get("event_observation") or {})
-    lines += _event_rhythm_lines(report.get("event_rhythm") or {})
-    lines += _lifecycle_lines(report.get("tracker_lifecycle") or {})
+    if "event_observation" in visible:
+        lines += _event_observation_lines(report.get("event_observation") or {})
+    if "event_rhythm" in visible:
+        lines += _event_rhythm_lines(report.get("event_rhythm") or {})
+    if "tracker_lifecycle" in visible:
+        lines += _lifecycle_lines(report.get("tracker_lifecycle") or {})
     if kind == "repo":
         lines += _actor_directory_lines(report)
     lines += [""] + _reading_notes()
@@ -195,7 +203,7 @@ def render_evidence_markdown(report: dict[str, Any]) -> str:
     lines += ref_lines or [
         "- このレポートには外部基準値はありません。観測値を基準値で置き換えていません。"
     ]
-    tendencies = _evidence_tendency_nodes(report)
+    tendencies = _evidence_tendency_nodes(view, withheld_rhythm="change_rhythm" not in visible)
     lines += ["", "## 傾向"]
     for label, node in tendencies:
         lines += _tendency_lines(label, node)[:1]
@@ -216,13 +224,20 @@ def render_evidence_markdown(report: dict[str, Any]) -> str:
         if kind == "actor"
         else []
     )
+    rhythm_notes = (
+        [
+            RHYTHM_LIMITATION,
+            RHYTHM_WINDOW_NOTE,
+            RHYTHM_TIMESTAMP_LIMITATIONS,
+            ACTIVE_DAYS_INFLATION_LIMITATION,
+        ]
+        if "change_rhythm" in visible
+        else []
+    )
     extra = [
         EVIDENCE_DISCLAIMER,
         SURFACE_LIMITATION,
-        RHYTHM_LIMITATION,
-        RHYTHM_WINDOW_NOTE,
-        RHYTHM_TIMESTAMP_LIMITATIONS,
-        ACTIVE_DAYS_INFLATION_LIMITATION,
+        *rhythm_notes,
         TENDENCY_CHANGE_NOTE_MD,
         *actor_notes,
     ]
@@ -232,8 +247,8 @@ def render_evidence_markdown(report: dict[str, Any]) -> str:
     extra += [_md_note(note) for note in persisted_limitations]
     for note in _unique(extra):
         lines.append(f"- {note}")
+    lines += ["", *usage_terms_lines(report)]
     lines += [
-        "",
         "## 再現情報",
         f"- 分析 SHA: `{prov.get('analyzed_commit_sha')}`",
         f"- 定義版: {prov.get('definition_version')}",
@@ -253,7 +268,7 @@ def render_evidence_markdown(report: dict[str, Any]) -> str:
         "",
     ]
     # ADR-0002: the plain sentences open the actor Markdown; the numbers follow.
-    head = actor_section(report) if kind == "actor" else []
+    head = actor_section(view) if kind == "actor" else []
     return "\n".join([*head, *lines])
 
 
@@ -329,9 +344,11 @@ def _history_text(prov: dict[str, Any]) -> str:
     return _window_text({"end": prov.get("observation_date"), "basis": HISTORY_WINDOW_BASIS})
 
 
-def _evidence_tendency_nodes(report: dict[str, Any]) -> list[tuple[str, dict[str, Any]]]:
+def _evidence_tendency_nodes(
+    report: dict[str, Any], *, withheld_rhythm: bool = False
+) -> list[tuple[str, dict[str, Any]]]:
     prov = report.get("provenance") or {}
-    return [
+    rows = [
         (
             "変えた部分の区分（作業領域）",
             surface_tendency(
@@ -349,6 +366,7 @@ def _evidence_tendency_nodes(report: dict[str, Any]) -> list[tuple[str, dict[str
             ),
         ),
     ]
+    return rows[:1] if withheld_rhythm else rows
 
 
 def render_project_markdown(report: dict[str, Any]) -> str:

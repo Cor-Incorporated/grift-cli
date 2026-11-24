@@ -56,7 +56,7 @@ FIELD_ROWS: tuple[FieldRow, ...] = (
         "origin: template_inherited",
         "1",
         REQUIREMENT_EXCITED,
-        "--template ピンなし（全 pin not_observed）",
+        "G10-scvi-tools のみ --template 付き（他は template_not_provided）",
     ),
     FieldRow(
         "origin.tenant_derivative",
@@ -109,11 +109,18 @@ FIELD_ROWS: tuple[FieldRow, ...] = (
         "opt-in（--survival）。golden では恒常 not_observed。corpus runs で実測",
     ),
     FieldRow(
-        "interpretation",
-        "interpretation",
+        "interpretation.test_cochange",
+        "interpretation: test_cochange",
         "1",
-        REQUIREMENT_INFO,
-        "repo スコープ専用。golden は tenant スコープ（scope_is_tenant）。corpus v2026.09 で励起",
+        REQUIREMENT_EXCITED,
+        "repo スコープ専用。tenant pin は scope_is_tenant（x）。G1R-click-repo が励起",
+    ),
+    FieldRow(
+        "interpretation.corrective_rework",
+        "interpretation: corrective_rework",
+        "1",
+        REQUIREMENT_EXCITED,
+        "repo スコープ専用。tenant pin は scope_is_tenant（x）。G1R-click-repo が励起",
     ),
     # --- wave 2: public-OSS, repo-level detector placeholders ---
     FieldRow(

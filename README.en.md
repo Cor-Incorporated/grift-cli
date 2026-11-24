@@ -116,7 +116,7 @@ steps:
   - uses: actions/setup-python@v5
     with:
       python-version: "3.12"
-  - uses: Cor-Incorporated/grift-cli@v0.9.5
+  - uses: Cor-Incorporated/grift-cli@v0.9.6
     with:
       scope: repo
       comment: false
@@ -150,6 +150,7 @@ docker run --rm --user "$(id -u):$(id -g)" -v "$PWD:/repo" grift-cli repo . --fo
 - [How to read reports](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/metrics-guide.md)
 - [Usage norms](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/norms.md)
 - [Metric validation and limits](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/validation.md): the design choices behind the numbers and their limits, and results from 117 public repositories, including the comparisons that did not separate
+- [What verify guarantees, and what it does not](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/verify-guarantees.md): the scope of `grift verify`, laid out as an attack tree
 - Output formats: [report-v1](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/report-schema.md), [export](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/export-schema.md), [identity](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/identity-schema.md); in Japanese: [report-v2](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/report-v2.md), [alignment](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/alignment-schema.md), [project](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/project-schema.md)
 - [Changelog](https://github.com/Cor-Incorporated/grift-cli/blob/main/CHANGELOG.md) (in Japanese) and [0.9.2 migration notes](https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/en/migration-v092.md)
 

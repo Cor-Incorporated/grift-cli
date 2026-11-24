@@ -4,6 +4,33 @@
 
 タグ・PyPI・リポ public 化は本ファイルの記載対象外（人間ゲート）。
 
+## [0.9.6] — 未公開候補
+
+公開リポジトリの issue #7・#8・#23・#24・#25・#27 を閉じる feature release。`grift` が出すものを「評価」ではなく「確かめられる仕事の記録」として整える。コマンドは増えず、追加は report-v2 の項目とオプション 1 つ（`--disclosure-level`）。
+provider-neutral Forge証跡はGitHub/GitLab/self-managedに対応し、PARTIAL/resumeで続きを取得できる。
+attest / portfolio、contribution-v2の適用範囲は[移行案内](docs/migration-v096.md)を参照。
+暗黙 PyPI update checkは実行しない。`DEFINITION_VERSION` を `tep-v0.9.5-2026-11-23` →
+`tep-v0.9.6-2026-11-24` に上げたため、0.9.5 で保存した report-v2 と照らし合わせは 0.9.6 の
+`grift verify` で CANNOT_VERIFY（終了コード 2）になる。移行は docs/migration-v096.md、英語は docs/en/migration-v096.md。
+タグ・PyPI への公開は人間ゲート（本リリースの作業では行わない）。
+
+### Added
+
+- 署名ヘッダの観測 `signature_observation`（#23）: report-v2 に、選んだ commit のうち署名ヘッダ（`gpgsig`）を持つものの比率を、件数と母数つきで出す。母数が 20 に届かないときは `not_observed`。署名の有効性は見ない（読む人の鍵に依存し、`grift verify` が再生できないため）。点数ではない
+- `usage_terms` と `--disclosure-level minimal|standard|full`（#27）: 許す使い方、使ってはいけない使い方（利用規範の条文）、開示水準、`binding: declaration_only` を JSON に残す。水準は Markdown に出す観測の範囲を選び、JSON は全観測を残す。水準は `provenance.disclosure_level` に記録し、verify が同じ水準で作り直す。既定の `full` は 0.9.5 までと同じ出力
+- 本人向けの節（#27）: 同意が記録された `grift actor` の Markdown に「この記録の使い方（本人向け）」を付ける（振り返り、経歴の要約、面談の前、共有の範囲）。経歴の要約の下書きは、事実の文だけを写す
+- forge / tracker の記録を本人向けの文のそばへ（#24）: 渡した export にその人のイベントがあれば、「レビューと課題の記録」の文を付ける。レビューの良し悪しは測らない。他の人が自分の変更を承認した記録は数えない。カバレッジが一部の記録は、件数が下限だと書く
+- `interpretation.survival`（#24）: `--survival` を付けたときだけ、survival の基準位置を出す。公開分布に survival が無い間は `reference_too_small`
+- `scripts/corpus_bootstrap.py`（#25）: `contribute` に頼らず、公開リポジトリから基準分布を作る（`plan` → `observe` → `build`）。出荷済みの v2026.09・v2026.11 は拒否する。survival の事前登録基準は docs/corpus-protocol.md
+- `docs/verify-guarantees.md`（英語は `docs/en/`）（#23）: verify が保証すること、しないことを、偽装の手口ごとに整理した攻撃木。README から辿れる
+- golden に repo スコープの pin `G1R-click-repo`（#8）。coverage の `interpretation` が excited になる。pin の上限を 13 から 14 に上げた（理由は tests/test_coverage.py）
+
+### Changed
+
+- G10-scvi-tools を `--template` 付きで固定し直し、`origin.template_inherited` の golden の穴を閉じた（#7）。golden runner と `gen_golden_expected` が pin の `template` と `scope` を使う。`KNOWN_HOLES` は空になった
+- docs/validation.md（日英）の survival の位置づけを「v2027 予定」から、0.9.6 で測れる形にしたことに改めた。test co-change の A vs C が `fail_tier2` のままであること、grift が出すのは確かめられる仕事の記録であることを書いた（#24）
+- `--survival` 付きの `shallow` 切り詰め時の限界文に `signature_observation` を数えた項目として加えた
+
 ## [0.9.5] — 未公開候補
 
 - `grift actor --out DIR` が観測日と期間の基準を保存する。

@@ -51,12 +51,16 @@ identityなしrepoのexperience / role_profileを公開OSS goldenで励起せず
 - 回答例: co-change を上げる最短経路はテストを書くこと（game すると本物になる指標選定）。また母集団には実在するテスト基盤が前提になる — テスト基盤の無い repo（G6 claude-code: not_observed）は率自体が出ない。対して G13 voicevox は vitest/playwright が観測される。
 - 非目標: assertの意味的品質や形骸テストの判定は、AI/ASTによる意味的品質評価に当たりv0.6の対象外。co-changeを品質や成果へ読み替えない
 
-#### Q1-3「decile 8 と言われて、で？」 — wave 1 は限界文
+#### Q1-3「decile 8 と言われて、で？」 — repo スコープ pin で実演
 
-- 使う観測: interpretation（参照分布位置）— **golden は tenant スコープで固定しているため励起されない**（`scope_is_tenant`）。repo スコープの十分位は corpus v2026.09 由来
+- 使う観測: interpretation（参照分布位置）。十分位は repo スコープだけに出る。golden の G1-click は tenant スコープなので `scope_is_tenant`、同じ click の同じ commit を repo スコープで固定した G1R-click-repo が十分位を出す
 - 転記: golden/expected/G1-click.json#interpretation.test_cochange.reason = scope_is_tenant
-- 限界文: golden 実数値つきの十分位実演には repo スコープの golden 期待値ピンが必要（観測ではなく golden ピン構成の欠落）→ 起票した
-- 起票: https://github.com/Cor-Incorporated/grift-cli/issues/8
+- 転記: golden/expected/G1R-click-repo.json#interpretation.test_cochange.decile = 9
+- 転記: golden/expected/G1R-click-repo.json#interpretation.test_cochange.n = 68
+- 転記: golden/expected/G1R-click-repo.json#interpretation.test_cochange.value = 0.3178
+- 転記: golden/expected/G1R-click-repo.json#interpretation.corrective_rework.decile = 6
+- 回答例: 「decile 9」は、参照 repo 68 件を値の順に並べたときの位置であり、良し悪しの等級ではない。同じ click でも、tenant スコープの値（0.2664）と repo スコープの値（0.3178）は数える母集団が違うため、横に並べて比べない
+- 限界文: 位置は同スコープの参照分布に対してだけ意味を持つ。参照 repo の選び方（docs/validation.md）に左右され、受領者の判断を置き換えない
 
 #### Q1-4「偽陰性のコストは誰が持つか」 — △（規範で対応）
 
@@ -179,7 +183,6 @@ identityなしrepoのexperience / role_profileを公開OSS goldenで励起せず
 
 | 問い | 状態 | 起票 |
 |---|---|---|
-| Q1-3 | golden 実数値の十分位実演に repo スコープ期待値ピンが無い（観測は既存・ピン構成の欠落） | https://github.com/Cor-Incorporated/grift-cli/issues/8 |
 | Q3-2 / E1 | 恒久限界（✗）— 規範と語彙ゲートは実装済みだが、git外の経歴や社会的選別リスクは解消できない | なし |
 | E4 | declared AI観測と非対称読み禁止は実装済み。透明性が不利に使われない現実妥当性は未証明 | blind pilot（ready 0 / blocked 14） |
 

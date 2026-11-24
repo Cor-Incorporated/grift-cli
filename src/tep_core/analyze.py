@@ -29,7 +29,7 @@ from tep_core.identity import (
 from tep_core.lineage import Lineage
 from tep_core.observation import NotObserved, Observed
 from tep_core.origin import classify_commits
-from tep_core.reference import interpret_metric
+from tep_core.reference import interpret_metric, interpret_survival
 from tep_core.revision import commit_history_complete
 from tep_core.rework import rework_metrics
 from tep_core.rhythm import commit_timestamp
@@ -219,6 +219,13 @@ def analyze_repository(
             ),
         },
     }
+    if survival:
+        # Opt-in like the metric itself, so a report without --survival is unchanged.
+        report["interpretation"]["survival"] = interpret_survival(
+            report_scope=scope,
+            observation=report["survival"],
+            reference_version=reference_version,
+        )
     if scope == "tenant":
         experience, role_profile, context = _tenant_experience(
             repo, commits, origin, identity, observation_date=observation_date

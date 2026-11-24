@@ -48,7 +48,13 @@ parent = ""
 
 # --- Golden v2 wave 1 (G6-G13): persona-driven expansion, master instruction
 # §3-1. Selection matrix evidence recorded per pin (tags + reason).
-# CI budget: G1-G13 = 13 repos total (master limit <= 13).
+# CI budget: G1-G13 + G1R = 14 repos total (limit <= 14, raised from 13 for the
+# repo-scope pin G1R-click-repo; see tests/test_coverage.py).
+#
+# Optional pin keys (read by tests/test_golden.py and scripts/gen_golden_expected.py):
+#   template = "<template repository>"  the run is given --template (the CLI only
+#                                       records that a template was provided)
+#   scope    = "repo"                   analysis scope; default "tenant"
 
 [[repos]]
 id = "G6-claude-code"
@@ -134,6 +140,7 @@ sha = "93dc4fae21917406673206320c8a3002433c4a5d"
 identity = ""
 fork = false
 parent = ""
+template = "https://github.com/scverse/cookiecutter-scverse"
 
 [repos.tags]
 collaboration = "community"
@@ -143,7 +150,7 @@ ecosystem = "python"
 persona_questions = "Q2,D-class"
 
 [repos.reason]
-text = "Template-derived: root .cruft.json names cookiecutter-scverse template URL + checkout v0.8.0. D-class template lineage coordination. ~4,506 commits (under hard ceiling 8k)."
+text = "Template-derived: root .cruft.json names cookiecutter-scverse template URL + checkout v0.8.0. Run with --template so origin.template_inherited is observed (issue #7). D-class template lineage coordination. ~4,506 commits (under hard ceiling 8k)."
 
 [[repos]]
 id = "G11-kilo"
@@ -201,3 +208,23 @@ persona_questions = "Q2,robustness"
 
 [repos.reason]
 text = "Japanese-origin OSS: README.md Japanese-first ('VOICEVOX のエディタです。'), Japanese community. Commit-convention / language-composition robustness for our market context. ~1,899 commits."
+
+[[repos]]
+id = "G1R-click-repo"
+name = "click"
+url = "https://github.com/pallets/click.git"
+sha = "2c8cd3ac958a7eb316d67f2d316c27086c4c0369"
+identity = ""
+fork = false
+parent = ""
+scope = "repo"
+
+[repos.tags]
+collaboration = "community"
+lifecycle = "active"
+era = "pre-2024"
+ecosystem = "python"
+persona_questions = "Q1-3"
+
+[repos.reason]
+text = "Same click repo and sha as G1, run at repo scope with no tenant identity. interpretation is repo-scope-only, so this is the only pin that excites it (reference decile position, issue #8). Shares the click clone with G1, so no extra clone cost."
