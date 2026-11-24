@@ -23,11 +23,11 @@ grift は、人を 1 つの数値にまとめることではなく、第三者�
 | test co-change | 本番変更にテストが伴うか | テスト基盤なしは not_observed。母数<20 は率も十分位も出さない（`insufficient_population`） |
 | corrective rework | 件名が fix/revert の直近パス回帰（観測） | 証拠主張には使わない（降格済み）。件名規約依存の交絡あり。バグ件数ではない。再挑戦は v0.6 行レベル |
 | path retouch | 同一ファイル再接触 | 観測のみ。証拠主張に使わない |
-| survival (τ=180d) | 行の残り方 | `--survival` のみ。参照分布は **v2027 予定**。今回の公開分布には含めない |
+| survival (τ=180d) | 行の残り方 | `--survival` のみ。0.9.6 から `interpretation.survival` で基準位置を出せるが、公開分布に survival が無いため今は `reference_too_small`。基準は事前登録済み（[corpus-protocol.md](corpus-protocol.md)） |
 
 ## 参照用の位置
 
-report-v1 が出す参照用の位置は「第N十分位」の 1 行だけです。repo スコープの公開リポジトリの分布の中で、そのリポジトリの値がどの帯にあるかを示します。tenant スコープの分布は無いため、tenant スコープでは出しません（`not_observed(scope_is_tenant)`）。n<30 の指標は位置を出しません（`reference_too_small`）。現行 v2026.11 の観測 n: test co-change 68 / corrective rework 101（観測）/ survival 0（v2027 予定）。旧 v2026.09 は不変のまま `--reference-version` で選べます。帯の定義は [metrics-guide.md](metrics-guide.md) の十分位の表記規約にあります。
+report-v1 が出す参照用の位置は「第N十分位」の 1 行だけです。repo スコープの公開リポジトリの分布の中で、そのリポジトリの値がどの帯にあるかを示します。tenant スコープの分布は無いため、tenant スコープでは出しません（`not_observed(scope_is_tenant)`）。n<30 の指標は位置を出しません（`reference_too_small`）。現行 v2026.11 の観測 n: test co-change 68 / corrective rework 101（観測）/ survival 0（0.9.6 から出せる形にした。分布は未公開）。旧 v2026.09 は不変のまま `--reference-version` で選べます。帯の定義は [metrics-guide.md](metrics-guide.md) の十分位の表記規約にあります。
 
 ## 群のあいだの違い（repo スコープ・基準 `5f2665e`）
 
@@ -39,9 +39,16 @@ report-v1 が出す参照用の位置は「第N十分位」の 1 行だけです
 - `test_cochange A vs C` → `fail_tier2`（median_A 0.2379, median_other 0.0769, gap 0.161, Cliff δ 0.291, n 18/21）。v2026.09 では `separated`（δ 0.7143）でしたが、C 群が「tests を持つ AI 駆動 repo」に広がり差が小さくなりました。登録済みの基準は下げず、変わった結果をそのまま公開しています
 - `corrective_rework A vs C / A vs D` → 方向要件なし（観測専用・v0.5.0 から不変）。A vs C δ -0.8333 / A vs D δ 0.0139
 - 母数: C narratable = 14（目標 30 に届かず、admission の実測で訂正）/ D total 29（目標 20 達成）
-- survival: 参照分布は v2027 予定
+- survival: 参照分布は未公開。0.9.6 で、公開リポジトリから分布を作る手順（`scripts/corpus_bootstrap.py`）と事前登録した基準を足した。A vs C の分離が test co-change で弱まったことへの対応として、survival を早めに測れるようにするためで、survival が群を分けるとはまだ言わない
 
 v2026.09 の記録（Run 2: A vs C `separated` ほか）は `corpus/DISCRIMINANT-v2026.09.md` に履歴として残しています。
+
+## 検証の位置づけ（0.9.6）
+
+test co-change の A vs C は `fail_tier2` のままです。この指標だけで、AI を多く使った repo と検証の文化がある repo を分けることは、今は言えません。grift が出すものは「評価」ではなく、確かめられる仕事の記録（誰が、どこに、どの形で手を入れたか。テストを伴ったか。レビューの記録があるか）です。そのため 0.9.6 では、次の 2 つを足しました。
+
+- forge のレビュー・課題の記録を、本人向けの文のそばに置く（commit だけでは見えない進め方）。他の人が自分の変更を承認した記録は数えていません
+- 署名ヘッダの有無の観測。有効性は見ません。verify の範囲は [verify-guarantees.md](verify-guarantees.md)
 
 ## 公開の決まり
 
