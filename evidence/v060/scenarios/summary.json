@@ -1,1 +1,42 @@
-PLACEHOLDER
+{
+  "counts": {
+    "fail": 0,
+    "not_proven": 0,
+    "pass": 6,
+    "source_drift": 0,
+    "total": 6
+  },
+  "manifest_digest": {
+    "algorithm": "sha256",
+    "value": "0803875d4090979a7be23262ab2a306a9632189829dccac9164246889e1f29ae"
+  },
+  "result_digests": [
+    {
+      "algorithm": "sha256",
+      "value": "5816e2ed320f6e9d17cbd33799d61e001127b6c5b68c3a79afe6d6841fea8d08"
+    },
+    {
+      "algorithm": "sha256",
+      "value": "6668f45d4a84745d1ff667b1bf5712d4770f579e024cdb31ca50e9cc82988bae"
+    },
+    {
+      "algorithm": "sha256",
+      "value": "8e038411d1c220ac3b5cee8ece2002d48a8a584e903491b47179bd06a0187ad7"
+    },
+    {
+      "algorithm": "sha256",
+      "value": "7bace148b0265fed931560aeeaccbe4314b9693b15a9a2cc5dac35d6b7bdd5ee"
+    },
+    {
+      "algorithm": "sha256",
+      "value": "9c0d69cf8eb197017dbd179751e7be0c4af37fd54211d1b1f57df1728a4168b6"
+    },
+    {
+      "algorithm": "sha256",
+      "value": "5cfebf3b04c492c3f16664fd1fad3a89816db2dfee2a7acdc00eaf940ba21e9f"
+    }
+  ],
+  "schema_version": "tep-scenario-summary-v1",
+  "suite_id": "v060-real-repositories",
+  "verdict": "PASS"
+}
