@@ -1,11 +1,6 @@
 {
-  "counts": {
-    "fail": 0,
-    "not_proven": 0,
-    "pass": 6,
-    "source_drift": 0,
-    "total": 6
-  },
+  "schema_version": "tep-scenario-summary-v1",
+  "suite_id": "v060-real-repositories",
   "manifest_digest": {
     "algorithm": "sha256",
     "value": "0803875d4090979a7be23262ab2a306a9632189829dccac9164246889e1f29ae"
@@ -36,7 +31,12 @@
       "value": "5cfebf3b04c492c3f16664fd1fad3a89816db2dfee2a7acdc00eaf940ba21e9f"
     }
   ],
-  "schema_version": "tep-scenario-summary-v1",
-  "suite_id": "v060-real-repositories",
+  "counts": {
+    "total": 6,
+    "pass": 6,
+    "fail": 0,
+    "not_proven": 0,
+    "source_drift": 0
+  },
   "verdict": "PASS"
 }

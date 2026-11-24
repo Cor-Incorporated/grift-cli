@@ -166,8 +166,8 @@
       "status": "PASS"
     },
     {
-      "actual": "7c21f81acd10458c9e780e6559a54ace250ea89aea49ea81111e32c1fbf5aa75",
-      "expected": "7c21f81acd10458c9e780e6559a54ace250ea89aea49ea81111e32c1fbf5aa75",
+      "actual": "629b6934534a97e5e52bd8a5c25680265b01fefe40e4b3745891bcb3f39b4b78",
+      "expected": "629b6934534a97e5e52bd8a5c25680265b01fefe40e4b3745891bcb3f39b4b78",
       "id": "acquisition-receipt-digest",
       "status": "PASS"
     }
