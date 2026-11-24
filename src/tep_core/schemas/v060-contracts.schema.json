@@ -1593,7 +1593,47 @@
       "additionalProperties": false,
       "properties": {
         "test_cochange": {"$ref": "#/$defs/report_interpretation_value"},
-        "corrective_rework": {"$ref": "#/$defs/report_interpretation_value"}
+        "corrective_rework": {"$ref": "#/$defs/report_interpretation_value"},
+        "survival": {"$ref": "#/$defs/report_interpretation_value"}
+      }
+    },
+    "report_usage_terms": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "definition_version",
+        "disclosure_level",
+        "markdown_sections",
+        "withheld_from_markdown",
+        "json_retains_all_observations",
+        "permitted_uses",
+        "prohibited_uses",
+        "norms_ref",
+        "binding",
+        "limitations"
+      ],
+      "properties": {
+        "definition_version": {"type": "string", "minLength": 1},
+        "disclosure_level": {"enum": ["minimal", "standard", "full"]},
+        "markdown_sections": {"type": "array", "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"}},
+        "withheld_from_markdown": {"type": "array", "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"}},
+        "json_retains_all_observations": {"const": true},
+        "permitted_uses": {"type": "array", "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"}},
+        "prohibited_uses": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "norms_article"],
+            "properties": {
+              "id": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+              "norms_article": {"type": "integer", "minimum": 1}
+            }
+          }
+        },
+        "norms_ref": {"type": "string", "minLength": 1},
+        "binding": {"const": "declaration_only"},
+        "limitations": {"$ref": "#/$defs/limitations"}
       }
     },
     "report_reference_coverage": {
@@ -1802,6 +1842,7 @@
             "identity_digest": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/sha256"}]},
             "vendor_scan": {"type": "boolean"},
             "survival": {"type": "boolean"},
+            "disclosure_level": {"enum": ["minimal", "standard", "full"]},
             "include_local_path": {"type": "boolean"},
             "as_of": {"type": ["string", "null"], "format": "date"},
             "role_lens": {"type": ["string", "null"]},
@@ -1874,6 +1915,8 @@
         "change_rhythm": {"$ref": "#/$defs/report_change_rhythm"},
         "verification_profile": {"$ref": "#/$defs/report_verification_profile"},
         "coordination_profile": {"$ref": "#/$defs/report_coordination_profile"},
+        "signature_observation": {"$ref": "#/$defs/report_observation"},
+        "usage_terms": {"$ref": "#/$defs/report_usage_terms"},
         "event_observation": {"$ref": "#/$defs/report_event_observation"},
         "event_rhythm": {"$ref": "#/$defs/report_event_rhythm"},
         "tracker_lifecycle": {"$ref": "#/$defs/report_tracker_lifecycle"},
