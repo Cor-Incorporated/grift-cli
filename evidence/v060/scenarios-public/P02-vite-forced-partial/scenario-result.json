@@ -166,8 +166,8 @@
       "status": "PASS"
     },
     {
-      "actual": "1badd7e50262d501b1b1d5d769fcb97b914912024cf0ea634ab481d0fb0fa8a0",
-      "expected": "1badd7e50262d501b1b1d5d769fcb97b914912024cf0ea634ab481d0fb0fa8a0",
+      "actual": "2bf5a107aa41c6ca0992050df49e17cb8cfaed953362918fb3675ad7768d64a7",
+      "expected": "2bf5a107aa41c6ca0992050df49e17cb8cfaed953362918fb3675ad7768d64a7",
       "id": "acquisition-receipt-digest",
       "status": "PASS"
     }
@@ -324,7 +324,7 @@
       "file_count": 112,
       "commit_oid": {
         "algorithm": "sha1",
-        "value": "7bff0855df6bdee73b78773a791c7019485a74b1"
+        "value": "b22bc955504064904c1774880afa264814e559cd"
       }
     }
   },
