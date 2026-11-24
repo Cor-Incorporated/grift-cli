@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from tep_core.self_view import coordination_lines, self_use_lines
 from tep_core.trait_evidence import evidence_table, recorded_shallow
 from tep_core.trait_profile import (
     actor_questions,
@@ -110,7 +111,7 @@ def _periods(report: dict[str, Any]) -> list[str]:
                 SECTION_TEXTS["record_scope_paths"].format(end=end, total=total, paths=paths)
             )
         else:
-            lines.append(SECTION_TEXTS["record_scope"].format(end=end, total=total))
+            lines.append(SECTION_TEXTS["record_scope"].format(end=end, total=total)
     window = prov.get("git_window") or {}
     population = (report.get("change_rhythm") or {}).get("window_population")
     days = window.get("days")
@@ -143,8 +144,11 @@ def actor_section(report: dict[str, Any]) -> list[str]:
         SECTION_TEXTS["actor_intro"].format(cid=cid),
         "",
     ]
-    lines += [*_periods(report), "", HEADINGS["work"], ""]
+    lines += [*_periods(report), ""]
+    lines += self_use_lines(report)
+    lines += [HEADINGS["work"], ""]
     lines += work_blocks(report, scope="自分の変更", person=True)
+    lines += coordination_lines(report)
     lines += _unseen(report, person=True)
     asks = actor_questions(report)
     lines += [
@@ -153,7 +157,14 @@ def actor_section(report: dict[str, Any]) -> list[str]:
         *(f"{index}. {ask}" for index, ask in enumerate(asks, 1)),
         "",
     ]
-    lines += _limits(("places", "rhythm", "p90", "tests", "own_work", "verify"))
+    withheld_rhythm = report.get("change_rhythm") == {}
+    lines += _limits(
+        tuple(
+            key
+            for key in ("places", "rhythm", "p90", "tests", "own_work", "verify")
+            if not (withheld_rhythm and key in {"rhythm", "p90"})
+        )
+    )
     return lines + evidence_table(report, report.get("provenance") or {}, person=True)
 
 
