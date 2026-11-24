@@ -586,6 +586,11 @@ def _strict_repo_report(
         "target_oid": dict(target),
         "revision_completeness": revision,
     }
+    # Carry the analysis anchor, independent of when the collection was saved.
+    # Legacy strict reports may omit these fields.
+    for key in ("observation_date", "window_basis"):
+        if key in provenance:
+            strict_provenance[key] = provenance[key]
     analyzed_sha = provenance.get("analyzed_commit_sha")
     if analyzed_sha is not None:
         if str(analyzed_sha) != target["value"]:
@@ -1261,6 +1266,15 @@ def verify_actor_artifact_directory(root: Path) -> VerifiedActorArtifacts:
         if errors:
             raise ActorArtifactError(f"{name} validation failed: " + "; ".join(errors))
         _assert_no_private_data(value)
+
+    provenance = report["provenance"]
+    observation = (provenance.get("observation_date"), provenance.get("window_basis"))
+    window = report["window"]
+    # Older collections carried both values in the window alone.
+    if observation != (None, None) and (
+        None in observation or observation != (window.get("end"), window.get("basis"))
+    ):
+        raise ActorArtifactError("repo observation date or basis differs from the collection window")
 
     row_ids = [str(row["actor_id"]) for row in index["actors"]]
     _require_actor_id_order(row_ids)

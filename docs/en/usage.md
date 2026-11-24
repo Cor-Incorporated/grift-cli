@@ -204,7 +204,9 @@ collection-manifest.json                # path/bytes/SHA-256 for every member
 The writer does not replace an existing directory. Full and selected counts,
 partition/population/selection digests, and each card's n/denominator must agree
 across JSON, Markdown, and the manifest. `grift verify DIR --repo REPO` rejects
-path traversal, symlinks, unregistered files, and tampering. Add
+path traversal, symlinks, unregistered files, and tampering.
+`grift verify DIR/repo-report.json --repo REPO` checks the same whole collection.
+Share the entire directory, including `collection-manifest.json`. Add
 `--public-evidence EVIDENCE_DIR` when independently verifying a collection that
 contains provider-account evidence.
 An explicit card may contain closed-schema `experience` / `role_profile`: an
@@ -384,7 +386,9 @@ The submitter chooses what the data is for with `--purpose`: `reference-distribu
 (the default when unset, the same meaning as v0.6.0) or `outcome-linkage`.
 `outcome-linkage` cannot use `--door public-pr`: the public intake schema still accepts
 only the v0.6.0 value, so grift refuses up front instead of letting you build and
-disclose a payload that the intake would then bounce.
+disclose a payload that the intake would then bounce. `outcome-linkage` works only
+with a report-v2 report: given a report-v1 report, grift exits 2 before the consent
+step (v1 records the single `reference-distributions` purpose).
 
 ```bash
 grift contribute --purpose outcome-linkage --door local

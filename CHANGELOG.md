@@ -4,6 +4,20 @@
 
 タグ・PyPI・リポ public 化は本ファイルの記載対象外（人間ゲート）。
 
+## [0.9.5] — 未公開候補
+
+- `grift actor --out DIR` が観測日と期間の基準を保存する。
+  `grift verify DIR/repo-report.json --repo REPO` からも同じ集合全体を照合できる。
+  切り離したレポートを渡すと、必要なディレクトリと検証手順を案内する。
+
+### Fixed
+
+- `grift contribute` に report-v1 の report と `--purpose outcome-linkage` を指定したとき、purpose を黙って捨てて終了コード 0 で進んでいた（`--open` なら commit と push まで進んだ）。v1 の report が記録できない purpose は、同意の確認より前に終了コード 2 で断るようにした。`--purpose` を省いた場合と `--purpose reference-distributions` は変わらない。outcome-linkage には report-v2 が要る（`docs/usage.md`・`docs/en/usage.md`）。
+
+provider-neutral Forge証跡はGitHub/GitLab/self-managedに対応し、PARTIAL/resumeで続きを取得できる。
+attest / portfolio、contribution-v2の適用範囲は[移行案内](docs/migration-v095.md)を参照。
+暗黙 PyPI update checkは実行しない。
+
 ## [0.9.3] — 2026-11-21
 
 identity ファイルを手計算なしで作れるようにする feature release。`grift identity --init` / `--list` を追加し、

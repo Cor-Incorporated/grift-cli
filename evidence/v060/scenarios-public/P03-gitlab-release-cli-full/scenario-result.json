@@ -22,8 +22,8 @@
   ],
   "assertions": [
     {
-      "actual": "0.9.3",
-      "expected": "0.9.3",
+      "actual": "0.9.5",
+      "expected": "0.9.5",
       "id": "runner-tool-version",
       "status": "PASS"
     },
@@ -166,8 +166,8 @@
       "status": "PASS"
     },
     {
-      "actual": "6ce437a233610d46f786a93fce942a68a85c4ced03dc51cbea16a6eb90f58e5d",
-      "expected": "6ce437a233610d46f786a93fce942a68a85c4ced03dc51cbea16a6eb90f58e5d",
+      "actual": "f5a925166b3366e8d55a842cf53b465b9c9d26d0a94c476dbd307245fbae61ad",
+      "expected": "f5a925166b3366e8d55a842cf53b465b9c9d26d0a94c476dbd307245fbae61ad",
       "id": "acquisition-receipt-digest",
       "status": "PASS"
     }
@@ -198,7 +198,7 @@
     "verify.collections": 3,
     "verify.verified": 3
   },
-  "duration_ms": 8267,
+  "duration_ms": 8552,
   "exit_code": 0,
   "output_digests": {
     "derived/actor-provider-independent": {
@@ -219,7 +219,7 @@
     },
     "derived/repo-provider-independent": {
       "algorithm": "sha256",
-      "value": "d465ae4c3f8f71afe5131e52483ab58c64550f8465db9c46e0f459de410ad74e"
+      "value": "10e896979f676e068523da0309daf1cdeb545c70b5eff9f5f14886613e8dfe65"
     },
     "derived/repo-provider-independent-numeric": {
       "algorithm": "sha256",
@@ -239,11 +239,11 @@
     },
     "live/collection-manifest.json": {
       "algorithm": "sha256",
-      "value": "56c4ad4ab545255e01a065e03e11fa44b85ac4119bcf68f6c18b0ede36d72317"
+      "value": "59c2d162acf38e0e7ccfbf4ce1580058e76edab217b4d1ff1a0ca04cd900b60f"
     },
     "live/repo-report.json": {
       "algorithm": "sha256",
-      "value": "6372568c91717876ee090493f0d0fd920191fb1f85f5c96afc8412381047e6d0"
+      "value": "facf57c797f8c95b5e55cdf7bbc7650c4b7d722753844545411a9a93259f79dd"
     },
     "live/repo-report.md": {
       "algorithm": "sha256",
@@ -259,11 +259,11 @@
     },
     "offline/collection-manifest.json": {
       "algorithm": "sha256",
-      "value": "3cc49d74f684eafc6f0b821da46852d0f51f54fd6ed688a89efe71374669451a"
+      "value": "ad37881d7ee61d24d664d2c16793f8bd43c0c3732713c85660dd43a5fe2bd90f"
     },
     "offline/repo-report.json": {
       "algorithm": "sha256",
-      "value": "7bcc999541d11ac6c6076303d6293946c0315f7a543c5ccc4338221685811bff"
+      "value": "70d1efd5f0a38b9a84113cb7949c7f9871e06a87433c6dcf0b05d6cd01deecf8"
     },
     "offline/repo-report.md": {
       "algorithm": "sha256",
@@ -271,7 +271,7 @@
     },
     "public-evidence/manifest.json": {
       "algorithm": "sha256",
-      "value": "7f104db9e5f4ced93f57344f06ecc882d57448b3e32ce69be910971db5ee8881"
+      "value": "3f375875cbfa6c779a93877e8081816955638c8d0c549235d0c42cb757a57929"
     },
     "public-evidence/page-01.body": {
       "algorithm": "sha256",
@@ -295,7 +295,7 @@
     },
     "public-evidence/payload": {
       "algorithm": "sha256",
-      "value": "c90ad1905696f2ae959feee38c72d251dffd157b0e01e6fa48dad6cc1742b8b9"
+      "value": "44aa69396374415be291fdbb704717f5041bca3b0c0249e24f6fb833bf68698a"
     },
     "replay/actor-index.json": {
       "algorithm": "sha256",
@@ -307,11 +307,11 @@
     },
     "replay/collection-manifest.json": {
       "algorithm": "sha256",
-      "value": "146c7a2618f0fb2e20177e4f6d23aeb118a33039d1fe5a47fbcfb0998fff6bdb"
+      "value": "37ccb4c96b012c78c27d84aaf811a41646054a334f3ea78a1cc2405935f2b030"
     },
     "replay/repo-report.json": {
       "algorithm": "sha256",
-      "value": "0d0e71b031b7921040ef0459bf5974ce8bc3514bb6cf882ad5916e8f203cae8b"
+      "value": "78834c98db9960b3d2af4449fe7cb0579eb70599080a5df42ce3420d2ae5b670"
     },
     "replay/repo-report.md": {
       "algorithm": "sha256",
@@ -331,16 +331,16 @@
     "source_binding": {
       "commit_oid": {
         "algorithm": "sha1",
-        "value": "3d423ec5b64c189b78fe671365c466ad0f181bbd"
+        "value": "c6365bae80188143afcb5a4f6dc71c0a36e2bc6e"
       },
       "definition_version": "grift-tool-source-tree-v1",
       "file_count": 109,
       "source_tree_digest": {
         "algorithm": "sha256",
-        "value": "d2f376986fd10294e669f52b9323c3e764dc0bfe9ff20b9c927e0a690cdc5991"
+        "value": "d4836a7597b62ea9acf89949ac93f6c274fbb9a85b7c74f8fe398433ef422ac7"
       }
     },
-    "tool_version": "0.9.3"
+    "tool_version": "0.9.5"
   },
   "scenario_id": "P03-gitlab-release-cli-full",
   "schema_version": "tep-public-scenario-result-v2",

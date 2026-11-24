@@ -171,7 +171,9 @@ collection-manifest.json                # 全memberのpath/bytes/SHA-256
 
 既存ディレクトリは上書きしません。full/selected件数、partition/population/
 selection digest、cardのn/denominatorを全形式で一致させ、path traversal、symlink、
-未登録file、改ざんを`grift verify DIR --repo REPO`で拒否します。公開accountを含む
+未登録file、改ざんを`grift verify DIR --repo REPO`で拒否します。
+`grift verify DIR/repo-report.json --repo REPO`も同じ集合全体を検証します。
+受け渡しには`collection-manifest.json`を含むディレクトリ一式が必要です。公開accountを含む
 集合の独立検証では`--public-evidence EVIDENCE_DIR`も指定します。
 explicit cardはclosed schema内のoptional `experience` / `role_profile`に、現在の
 consent gateで生成した観測または`not_observed(consenting_actor_required)`を保持します。
@@ -331,7 +333,7 @@ grift contribute --privacy aggregate --door public-pr --out .grift/contribution.
 - 受け口リポの CI はlegacy v1とpublic-safeなv2 `aggregate` / `named-public`だけをmode別allowlistで受理し、masked/raw、メール、内部Actor ID、credential形状を拒否します
 - 用途は「TEP Report 集計と参照分布 vNext」に限ります。保持期間は次回年次 Report まで、撤回は issue で受け付けます（`docs/norms.md` 保持・削除条項）
 
-提出データの目的は提出者が `--purpose` で選びます。`reference-distributions`（無指定時の既定・v0.6.0 と同じ意味）と `outcome-linkage` の 2 つです。`outcome-linkage` は `--door public-pr` では使えません（公開受け口の schema がまだ v0.6.0 の値だけを受けるため、組み立てた後に受け口で弾かれる前に断ります）。
+提出データの目的は提出者が `--purpose` で選びます。`reference-distributions`（無指定時の既定・v0.6.0 と同じ意味）と `outcome-linkage` の 2 つです。`outcome-linkage` は `--door public-pr` では使えません（公開受け口の schema がまだ v0.6.0 の値だけを受けるため、組み立てた後に受け口で弾かれる前に断ります）。`outcome-linkage` を使えるのは report-v2 の report だけで、report-v1 の report に指定すると、同意の前に終了コード 2 で断ります（v1 は `reference-distributions` の 1 つだけを記録します）。
 
 ```bash
 grift contribute --purpose outcome-linkage --door local

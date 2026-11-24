@@ -209,6 +209,49 @@ def _verify(directory: Path, repo: Path, identity: Path | None) -> tuple[int, st
     return code, out.strip()
 
 
+def test_selected_actor_collection_records_observation_date(tmp_path: Path) -> None:
+    repo, identity = _namesake(tmp_path)
+    _commit(repo, "Alice", "alice@example.com", 25)
+    out = tmp_path / "collection"
+    code, stdout, stderr = _run([
+        "actor", "alice", str(repo), "--identity", str(identity),
+        "--as-of", "2026-08-15", "--format", "md", "--out", str(out),
+    ])
+    assert code == 0, (stdout, stderr)
+    report = json.loads((out / "repo-report.json").read_text(encoding="utf-8"))
+    assert report["provenance"]["observation_date"] == "2026-08-15"
+    assert report["provenance"]["window_basis"] == "explicit_as_of"
+    code, output = _verify(out, repo, identity)
+    assert (code, output.split(":")[0]) == (0, "VERIFIED"), output
+    member = out / "repo-report.json"
+    assert _verify(member, repo, identity) == (code, output)
+    via_option, stdout, _ = _run([
+        "verify", "--report", str(member), "--repo", str(repo), "--identity", str(identity),
+    ])
+    assert (via_option, stdout.strip()) == (code, output)
+
+    copied = tmp_path / "repo-report.json"
+    copied.write_bytes(member.read_bytes())
+    detached_code, detached_output = _verify(copied, repo, identity)
+    assert detached_code == 2
+    assert "collection-manifest.json" in detached_output
+
+    # A direct member path still verifies every file protected by the manifest.
+    (out / "repo-report.md").write_text("changed\n", encoding="utf-8")
+    assert _verify(member, repo, identity) == _verify(out, repo, identity)
+    assert _verify(member, repo, identity)[0] == 1
+
+
+def test_standalone_repo_report_can_share_the_collection_filename(tmp_path: Path) -> None:
+    repo, identity = _namesake(tmp_path)
+    code, stdout, stderr = _run(["repo", str(repo), "--format", "json", "--identity", str(identity)])
+    assert code == 0, stderr
+    standalone = tmp_path / "repo-report.json"
+    standalone.write_text(stdout, encoding="utf-8")
+    code, output = _verify(standalone, repo, identity)
+    assert (code, output.split(":")[0]) == (0, "VERIFIED"), output
+
+
 def test_verify_names_the_identity_when_a_collection_is_checked_without_it(
     tmp_path: Path,
 ) -> None:

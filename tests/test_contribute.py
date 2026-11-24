@@ -6,13 +6,17 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
+
 from tep_cli.__main__ import main
 from tep_core.analyze import analyze_repository
 from tep_core.contribute import (
     CONFIRMATION_TEXT,
     CONTRIBUTE_PURPOSE,
     build_contribution,
+    prepare_contribution,
 )
+from tep_core.contribution_v2 import PURPOSES
 from tep_core.identity import empty_identity
 from tep_core.lineage import Lineage
 
@@ -193,3 +197,67 @@ def test_f_c1_yes_still_discloses_before_writing(tmp_path: Path, capsys: object)
     assert "definition=" in captured.err
     assert "=== contribution payload (full) ===" in captured.out, "full payload on stdout"
     assert out.exists()
+
+
+# --- #116: a report-v1 report is recorded under one purpose only ------------
+
+V1_MINIMAL_REPORT = {
+    "schema_version": "report-v1",
+    "provenance": {"analysis_scope": "repo", "definition_version": "x"},
+}
+V1_FIXED_PURPOSE_NAME = next(name for name, label in PURPOSES.items() if label == CONTRIBUTE_PURPOSE)
+V1_OTHER_PURPOSES = sorted(name for name in PURPOSES if name != V1_FIXED_PURPOSE_NAME)
+
+
+@pytest.mark.parametrize("purpose", V1_OTHER_PURPOSES)
+def test_report_v1_refuses_a_purpose_it_cannot_record(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str], purpose: str
+) -> None:
+    """Falsifiable (#116): a v1 report used to drop ``--purpose`` and exit 0 with the fixed one.
+
+    The refusal must come before the consent gate: nothing is written, and the
+    message names the purpose that was asked for.
+    """
+    path = tmp_path / "report.json"
+    path.write_text(json.dumps(V1_MINIMAL_REPORT), encoding="utf-8")
+    out = tmp_path / "contribution.json"
+
+    assert main(["contribute", str(path), "--out", str(out), "--yes", "--purpose", purpose]) == 2
+    err = capsys.readouterr().err
+    assert repr(purpose) in err
+    assert not out.exists(), "nothing may be written when the purpose is refused"
+
+
+@pytest.mark.parametrize("purpose", V1_OTHER_PURPOSES)
+def test_report_v1_refused_purpose_never_reaches_the_open_flow(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, purpose: str
+) -> None:
+    """Falsifiable (#116): ``--open`` used to commit and push for a purpose v1 cannot record."""
+
+    def refuse(*_args: object, **_kwargs: object) -> None:
+        raise AssertionError("a refused purpose must not start the submission flow")
+
+    monkeypatch.setattr("tep_cli.__main__._open_submission_flow", refuse)
+    path = tmp_path / "report.json"
+    path.write_text(json.dumps(V1_MINIMAL_REPORT), encoding="utf-8")
+
+    args = ["contribute", str(path), "--out", str(tmp_path / "c.json"), "--yes", "--open"]
+    assert main([*args, "--purpose", purpose]) == 2
+
+
+def test_report_v1_keeps_the_purpose_it_always_recorded(tmp_path: Path) -> None:
+    """The unchanged cases: no flag, and the flag that names the fixed purpose."""
+    path = tmp_path / "report.json"
+    path.write_text(json.dumps(V1_MINIMAL_REPORT), encoding="utf-8")
+
+    for extra in ([], ["--purpose", V1_FIXED_PURPOSE_NAME]):
+        out = tmp_path / f"contribution-{len(extra)}.json"
+        assert main(["contribute", str(path), "--out", str(out), "--yes", *extra]) == 0
+        assert json.loads(out.read_text(encoding="utf-8"))["purpose"] == CONTRIBUTE_PURPOSE
+
+
+def test_prepare_contribution_v1_accepts_the_label_and_refuses_an_unknown_purpose() -> None:
+    bundle = prepare_contribution(V1_MINIMAL_REPORT, purpose=CONTRIBUTE_PURPOSE)
+    assert bundle.payload["purpose"] == CONTRIBUTE_PURPOSE
+    with pytest.raises(ValueError, match="unknown contribution purpose"):
+        prepare_contribution(V1_MINIMAL_REPORT, purpose="no-such-purpose")
