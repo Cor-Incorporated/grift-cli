@@ -30,9 +30,14 @@ COVERAGE_MD = ROOT / "golden" / "coverage.md"
 
 # HOLE rows must carry an issue URL. When a hole is closed (pin added etc.),
 # remove the row here and close the issue.
-KNOWN_HOLES: dict[str, str] = {
-    "origin.template_inherited": "https://github.com/Cor-Incorporated/grift-cli/issues/7",
-}
+KNOWN_HOLES: dict[str, str] = {}
+
+# The master limit was 13 pins. 0.9.6 raises it to 14 for exactly one pin:
+# G1R-click-repo (issue #8). interpretation exists only at repo scope and every
+# other pin runs at tenant scope, so no existing pin can excite it. The new pin
+# reuses G1's click clone and sha (no extra clone cost) and a repo-scope analysis
+# of one repo; raising the limit further needs a new rationale here.
+MAX_PINS = 14
 
 
 def test_coverage_file_exists_and_pins_current() -> None:
@@ -107,7 +112,28 @@ def test_holes_are_issue_tracked_and_not_stale() -> None:
 
 
 def test_pin_count_within_master_limit() -> None:
-    assert len(pin_ids()) <= 13, "master instruction §3-1: golden total must stay <= 13"
+    assert len(pin_ids()) <= MAX_PINS, (
+        f"master instruction §3-1: golden total must stay <= {MAX_PINS} "
+        "(13 + G1R-click-repo, issue #8)"
+    )
+
+
+def test_repo_scope_pin_shares_click_clone_with_g1() -> None:
+    import tomllib
+
+    with (ROOT / "golden" / "pins.toml").open("rb") as handle:
+        pins = {pin["id"]: pin for pin in tomllib.load(handle)["repos"]}
+    base, repo_pin = pins["G1-click"], pins["G1R-click-repo"]
+    assert (repo_pin["url"], repo_pin["sha"]) == (base["url"], base["sha"])
+    assert repo_pin["scope"] == "repo"
+    assert not repo_pin["identity"]
+
+
+def test_template_pin_and_repo_scope_pin_are_excited() -> None:
+    matrix = compute_matrix()
+    assert matrix["origin.template_inherited"]["G10-scvi-tools"] == "o"
+    assert matrix["interpretation.test_cochange"]["G1R-click-repo"] == "o"
+    assert matrix["interpretation.corrective_rework"]["G1R-click-repo"] == "o"
 
 
 def test_every_pin_has_selection_metadata() -> None:
