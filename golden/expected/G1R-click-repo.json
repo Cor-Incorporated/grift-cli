@@ -95,8 +95,8 @@
     }
   },
   "core_activity_period": {
-    "kind": "not_observed",
-    "reason": "no_tenant_commits"
+      "kind": "not_observed",
+      "reason": "no_tenant_commits"
   },
   "test_frameworks": {
     "kind": "observed",
