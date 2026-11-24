@@ -665,6 +665,7 @@ def _verify_v2(
             include_files=bool(provenance.get("vendor_scan")),
             include_local_path=bool(provenance.get("include_local_path")),
             survival=bool(provenance.get("survival")),
+            disclosure_level=provenance.get("disclosure_level"),
             event_window=event_window,
             reference_manifest=reference_manifest,
             sha_to_accounts=_public_accounts_for_attribution(public_manifest),
