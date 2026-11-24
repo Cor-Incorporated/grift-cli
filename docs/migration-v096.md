@@ -21,7 +21,7 @@
 
 ## 固定revisionと公開Forge証跡
 
-GitHub・GitLabの公開履歴を取得する `--fetch-public` はprovider-neutral形式で記録します。PARTIAL（exit 3）の場合は `--resume-public-evidence` で再開し、保存済み証跡を `--public-evidence` で検証します。CIで `fetch-depth: 1` の場合、計測できる履歴は取得済みの範囲です。出力に `history_incomplete` があれば、全履歴を取り直して比較してください.
+GitHub・GitLabの公開履歴を取得する `--fetch-public` はprovider-neutral形式で記録します。PARTIAL（exit 3）の場合は `--resume-public-evidence` で再開し、保存済み証拠を `--public-evidence` で検証します。CIで `fetch-depth: 1` の場合、計測できる履歴は取得済みの範囲です。出力に `history_incomplete` があれば、全履歴を取り直して比較してください。
 
 ## contribution-v2
 
