@@ -39,13 +39,13 @@ grift が動くのに要るのは、Python 3.11 以上と git だけです（手
 `grift repo` の画面には、リポジトリ全体について次のような値が出ます。どの値にも「何件のうち何件か」が付きます。
 
 - 変えた部分の区分（作業領域）: テスト、ドキュメント、CI、画面（フロントエンド）など 11 の区分ごとに、その区分のファイルを触った commit（変更 1 件ごとの記録）が何件あったか。
-- 変更のペース（変更リズム）: 直近 180 日に変更を出した日数と、変更と変更のあいだが何日空いたか。労働時間や速さではありません。
+- 変更のペース（変更リズム）: 直近 180 日に変更を出した日数と、変更と変更のあいだが何日空いたか。労働時間や速度ではありません。
 - テストの付け方（検証の形）: テストのファイルを含む commit の割合と、テストの種類（unit、integration など）。
 - 関わった人の一覧: 人ごとの commit の件数。並びは ID の順で、件数の多い順ではありません。
 
 JSON（`--format json`）と `grift analyze` の出力には、次の値も入ります。
 
-- 帰属の区別: その変更が誰の仕事か。identity ファイルに載せた人、ほかの人、bot（自動で動くアカウント）、自動で作られたファイル、元のリポジトリ（fork 元）から引き継いだ変更などを 11 通りに分けます。
+- 帰属の区分: その変更が誰の仕事か。identity ファイルに載せた人、ほかの人、bot（自動で動くアカウント）、自動で作られたファイル、元のリポジトリ（fork 元）から引き継いだ変更などを 11 通りに分けます。
 - テスト併修率（JSON では `test_cochange`）: 本番のコードを変えた commit のうち、同じ commit でテストも変えた割合です。たとえば、本番のコードを変えた commit が 40 件あり、そのうち 12 件でテストも変えていれば「40 件のうち 12 件」と書きます（架空の例）。
 
 `grift align` の出力では、案件側が書いた要求と記録から数えた値を項目ごとに並べ、重なり、範囲外、0 件、未観測、要求なしの 5 通りで書きます。
@@ -137,7 +137,7 @@ docker run --rm -v "$PWD:/repo:ro" grift-cli repo
 docker run --rm --user "$(id -u):$(id -g)" -v "$PWD:/repo" grift-cli repo . --format both --out .grift
 ```
 
-- 履歴は全部取得してください。shallow clone を mount しても止まりませんが、渡された commit だけで数え、`revision_completeness` が不完全（`complete: false`）になります
+- 履歴は全部取得してください。shallow clone を mount しても止まりませんが、残された commit だけで数え、`revision_completeness` が不完全（`complete: false`）になります
 - `git worktree` で作った作業ツリーは mount しないでください。`.git` がファイルで mount の外を指すため、コンテナ内から履歴を読めず exit 2 で止まります。通常の clone を mount します
 - `--out` で書き出すときは `--user "$(id -u):$(id -g)"` でホストの UID を渡します（イメージ既定は uid 1000 の非 root ユーザー）
 - イメージには `git` と `openssh-client` だけを同梱します。`gh` と `cosign` は含めないので、`contribute --open` と、cosign を呼ぶ操作（`attest --sign cosign`、cosign の信頼ポリシーを使う `verify` と `portfolio`）はホスト側で実行してください
