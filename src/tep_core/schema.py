@@ -549,6 +549,8 @@ def _interpretation(ctx: _Ctx, node: Any) -> None:
         return
     _interp_entry(ctx, node.get("test_cochange"), f"{path}.test_cochange")
     _interp_entry(ctx, node.get("corrective_rework"), f"{path}.corrective_rework")
+    if "survival" in node:
+        _interp_entry(ctx, node.get("survival"), f"{path}.survival")
 
 
 # v0.6 strict contracts -----------------------------------------------------
