@@ -90,7 +90,7 @@
       "actual": "VERIFIED",
       "expected": "VERIFIED",
       "id": "verify-collection-core",
-      "status": "PASSS"
+      "status": "PASS"
     },
     {
       "actual": "0.9.6",
@@ -126,7 +126,7 @@
       "actual": 3,
       "expected": 3,
       "id": "actor-count",
-      "status": "PASSS"
+      "status": "PASS"
     },
     {
       "actual": "repo_human_nonmerge_commits + merge_count = attribution_human_including_merges + attribution_unresolved_commit_count",
@@ -144,13 +144,13 @@
       "actual": "2026-08-29",
       "expected": "2026-08-29",
       "id": "window-end",
-      "status": "PASSS"
+      "status": "PASS"
     },
     {
       "actual": 180,
       "expected": 180,
       "id": "window-days",
-      "status": "PASSS"
+      "status": "PASS"
     },
     {
       "actual": "date-range",
@@ -220,7 +220,7 @@
     },
     "artifacts/actors/cloudia.json": {
       "algorithm": "sha256",
-      "value": "10d953a6173ab8d272e63bc55d06263b398789bbd09270ae849a6d5cb8be36d"
+      "value": "10d953a6173ab8d272e63bc55d06263b398789bbd09270ae849a6da5cb8be36d"
     },
     "artifacts/actors/cloudia.md": {
       "algorithm": "sha256",
