@@ -41,3 +41,21 @@ Verdicts (separated and fail alike) are recorded verbatim in
 `inconclusive_small_n` / corrective A vs C `fail_tier2`. v2026.11: A vs D
 `separated` (δ 0.9198, n 18/18) / A vs C `fail_tier2` (δ 0.291 — the grown C
 pool reduced separation; criteria were not lowered).
+
+## Bootstrapping from public repositories (0.9.6, `scripts/corpus_bootstrap.py`)
+
+Builds a new reference version from public repositories alone, without `contribute`. The shipped `v2026.09` and `v2026.11` are immutable (the script refuses them); use a new version name such as `v2026.12`.
+
+1. `plan` (offline): from candidates (TOML or JSON with `url`, optional `group` and `sha`) or existing pin files (`--from-pins`), drop non-public https URLs (credentials, ssh, other hosts), duplicates, heavy clones and anything over the limit, each with a reason.
+2. `observe` (network): clone each planned repo and analyze with an empty identity at `scope=repo` (`--survival` also records survival). No person's identity enters. Per-repo values stay in the gitignored `corpus/runs-<version>/results.jsonl`; the public `corpus/pins-<version>.toml` holds url, sha and group only.
+3. `build`: write `corpus/<version>/distributions.json`. Deciles are issued only for metrics with n ≥ 30; a short metric gets a note and no distribution (`reference_too_small`). Placing the file under `src/tep_core/data/<version>/` and switching `REFERENCE_VERSION` is a human step after the results are checked.
+
+### Survival pre-registration
+
+From 0.9.6 survival (line retention at τ=180d) can show a reference position as `interpretation.survival`, but the published distributions carry no survival block, so it is `reference_too_small` today. Before the first survival distribution is built, these criteria are fixed and are not lowered after seeing results; a change is recorded with its reason and date.
+
+- Population: only repos with `lines_sampled ≥ 20` enter. Below n = 30, no deciles.
+- A vs C: median gap ≥ 0.10, |Cliff's δ| ≥ 0.33, and the A and C ranges (min–max) must not contain one another. No direction is fixed in advance; the observed direction is recorded.
+- Age confound: survival tends to read lower in older repos. If |Spearman ρ| against repo age is 0.5 or more, the metric is treated as an age proxy and not used to discriminate.
+
+If any criterion fails, the result is published as-is, as with the failed A vs C test co-change comparison.
