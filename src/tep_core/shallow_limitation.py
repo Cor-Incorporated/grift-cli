@@ -21,14 +21,14 @@ from tep_core.context_profile import HISTORY_INCOMPLETE_REASON
 # coordination_profile is named by its git part: review and tracker come from a
 # bound forge or tracker export. survival blames the fetched commits, so a line older
 # than the cut counts as written by the oldest fetched commit. interpretation places
-# test_cochange and rework. Not named: test_frameworks (files at HEAD),
+# test_cochange and rework. signature_observation reads the fetched commit objects.
+# Not named: test_frameworks (files at HEAD),
 # input_coverage, the export-fed blocks, outcome, role_lens, and reference (the forge
 # event rhythm on a catalog). tests/test_v091_shallow_json.py checks this both ways.
 _COUNTED_PATHS = (
     "origin",
     "attribution",
     "activity",
-    "actor_directory",
     "core_activity_period",
     "test_cochange",
     "rework",
@@ -38,6 +38,7 @@ _COUNTED_PATHS = (
     "change_rhythm",
     "verification_profile",
     "coordination_profile.git",
+    "signature_observation",
     "population",
     "metrics",
     "interpretation",
