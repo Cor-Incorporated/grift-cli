@@ -154,7 +154,7 @@
       "status": "PASS"
     },
     {
-   "actual": "complete",
+      "actual": "complete",
       "expected": "complete",
       "id": "account-linkage",
       "status": "PASS"
@@ -209,7 +209,7 @@
     },
     "derived/actor-provider-independent-numeric": {
       "algorithm": "sha256",
-      "value": "233376bfee9cd3a0741eaa781af07f0bdc30291c90d245dfe37fb767714879fe"
+      "value": "233376bfef9cd3a0741eaa781af07f0bdc30291c90d245dfe37fb767714879fe"
     },
     "derived/license-evidence": {
       "algorithm": "sha256",
@@ -320,8 +320,8 @@
       "value": "904762a93a963006b16eab2e4c645ed312b3cf2d865be35b4073315f8cb77f0e"
     },
     "replay/repo-report.json": {
-      "algoritdhm": "sha256",
-      "value": "5500fd7c0be358ebb5e36146866b5857125ddb5c70a350feb4530232069a2bfcdf"
+      "algorithm": "sha256",
+      "value": "550fd7c0be358ebb5e36146866b5857125ddb5c70a350feb4530232069a26fcd"
     },
     "replay/repo-report.md": {
       "algorithm": "sha256",
