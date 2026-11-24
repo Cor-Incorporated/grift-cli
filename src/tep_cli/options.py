@@ -7,6 +7,7 @@ from pathlib import Path
 
 from tep_core.contribution_v2 import PURPOSES
 
+from tep_core.usage_terms import DISCLOSURE_LEVELS
 from tep_core.v2_constants import ROLE_LENSES
 from tep_core.version import __version__
 
@@ -103,6 +104,18 @@ def add_role_lens(parser: argparse.ArgumentParser) -> None:
         choices=ROLE_LENSES,
         default=None,
         help="Display preset only. Does not classify a job or person",
+    )
+
+
+def add_disclosure_level(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument(
+        "--disclosure-level",
+        choices=DISCLOSURE_LEVELS,
+        default=None,
+        help=(
+            "What the Markdown view shows (default: full). The level and the usage terms "
+            "are recorded in the JSON; the JSON keeps every observation for grift verify"
+        ),
     )
 
 
@@ -255,6 +268,7 @@ def _add_repo_parser(sub: argparse._SubParsersAction) -> None:
     add_format_out(parser, default_format="md")
     add_as_of(parser)
     add_role_lens(parser)
+    add_disclosure_level(parser)
     add_local_exports(parser)
     add_outcome_declaration(parser)
     add_lineage_options(parser)
@@ -320,6 +334,7 @@ def _add_actor_parser(sub: argparse._SubParsersAction) -> None:
     add_format_out(parser, default_format="md")
     add_as_of(parser)
     add_role_lens(parser)
+    add_disclosure_level(parser)
     add_local_exports(parser)
     add_outcome_declaration(parser)
     add_lineage_options(parser)
