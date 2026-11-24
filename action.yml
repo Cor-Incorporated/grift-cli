@@ -111,8 +111,6 @@ runs:
         set -euo pipefail
         mkdir -p .grift
         grift analyze . --scope "$GRIFT_SCOPE" --format both --out .grift
-        # Shared block = the copy-pasteable summary section of report.md.
-        # Extract from '## Shared block' to the next '## ' heading.
         awk '/^## Shared block/{flag=1;next}/^## /{flag=0}flag' .grift/report.md > .grift/shared-block.md
         test -s .grift/shared-block.md
         {
@@ -120,7 +118,6 @@ runs:
           echo '```'
           cat .grift/shared-block.md
           echo '```'
-          echo "_読み方: 本レポートは証拠であり判定ではない（TEP norms 参照: https://github.com/Cor-Incorporated/grift-cli/blob/main/docs/norms.md）_"
         } >> "$GITHUB_STEP_SUMMARY"
 
     - name: Upload reports
@@ -129,23 +126,3 @@ runs:
         name: grift-report
         path: .grift/
         retention-days: 30
-
-    - name: Post PR comment (explicit opt-in only)
-      if: ${{ inputs.comment == 'true' && github.event_name == 'pull_request' }}
-      uses: actions/github-script@v7
-      with:
-        script: |
-          const fs = require('fs');
-          const body = [
-            '### grift (observation only — no pass/fail)',
-            '```',
-            fs.readFileSync('.grift/shared-block.md', 'utf8').trim(),
-            '```',
-            '_読み方: 本レポートは証拠であり判定ではない（TEP norms 参照）_'
-          ].join('\n');
-          await github.rest.issues.createComment({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            issue_number: context.issue.number,
-            body,
-          });
