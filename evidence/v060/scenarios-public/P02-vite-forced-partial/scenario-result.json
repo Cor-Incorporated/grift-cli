@@ -1,1 +1,338 @@
-PLACEHOLDER
+{
+  "argv": [
+    "python",
+    "-m",
+    "tep_cli",
+    "repo",
+    "${DISPOSABLE_REPO}/vite",
+    "--rev",
+    "e2b597de0ef14598901703f5aa52f8c962007d02",
+    "--actors",
+    "--format",
+    "both",
+    "--out",
+    "${OUTPUT_ROOT}/P02-vite-forced-partial/partial",
+    "--forge-provider",
+    "github",
+    "--fetch-public",
+    "--public-evidence-out",
+    "${RAW_BUNDLE_ROOT}/P02-vite-forced-partial",
+    "--max-public-pages",
+    "1"
+  ],
+  "assertions": [
+    {
+      "actual": "0.9.6",
+      "expected": "0.9.6",
+      "id": "runner-tool-version",
+      "status": "PASS"
+    },
+    {
+      "actual": "e2b597de0ef14598901703f5aa52f8c962007d02",
+      "expected": "e2b597de0ef14598901703f5aa52f8c962007d02",
+      "id": "target-oid",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "expected": 0,
+      "id": "offline-exit",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "expected": 0,
+      "id": "offline_collection_verify-exit",
+      "status": "PASS"
+    },
+    {
+      "actual": 3,
+      "expected": 3,
+      "id": "fetch-exit",
+      "status": "PASS"
+    },
+    {
+      "actual": 2,
+      "expected": 2,
+      "id": "bundle_verify-exit",
+      "status": "PASS"
+    },
+    {
+      "actual": 2,
+      "expected": 2,
+      "id": "live_collection_verify-exit",
+      "status": "PASS"
+    },
+    {
+      "actual": 3,
+      "expected": 3,
+      "id": "replay-exit",
+      "status": "PASS"
+    },
+    {
+      "actual": 2,
+      "expected": 2,
+      "id": "replay_collection_verify-exit",
+      "status": "PASS"
+    },
+    {
+      "actual": "partial",
+      "expected": "partial",
+      "id": "provider-coverage",
+      "status": "PASS"
+    },
+    {
+      "actual": 1,
+      "expected": 1,
+      "id": "provider-pages",
+      "status": "PASS"
+    },
+    {
+      "actual": 100,
+      "expected": 100,
+      "id": "provider-items",
+      "status": "PASS"
+    },
+    {
+      "actual": 9642,
+      "expected": 9642,
+      "id": "oid-expected",
+      "status": "PASS"
+    },
+    {
+      "actual": 100,
+      "expected": 100,
+      "id": "oid-observed",
+      "status": "PASS"
+    },
+    {
+      "actual": 9542,
+      "expected": 9542,
+      "id": "oid-missing",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "expected": 0,
+      "id": "oid-extra",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "expected": 0,
+      "id": "oid-duplicate",
+      "status": "PASS"
+    },
+    {
+      "actual": 9642,
+      "expected": 9642,
+      "id": "git-total",
+      "status": "PASS"
+    },
+    {
+      "actual": 9102,
+      "expected": 9102,
+      "id": "human-nonmerge",
+      "status": "PASS"
+    },
+    {
+      "actual": 70,
+      "expected": 70,
+      "id": "human-merge",
+      "status": "PASS"
+    },
+    {
+      "actual": 470,
+      "expected": 470,
+      "id": "bot-commits",
+      "status": "PASS"
+    },
+    {
+      "actual": 1368,
+      "expected": 1368,
+      "id": "actor-count",
+      "status": "PASS"
+    },
+    {
+      "actual": "complete",
+      "expected": "complete",
+      "id": "account-linkage",
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "id": "duration-within-limit",
+      "status": "PASS"
+    },
+    {
+      "actual": "1badd7e50262d501b1b1d5d769fcb97b914912024cf0ea634ab481d0fb0fa8a0",
+      "expected": "1badd7e50262d501b1b1d5d769fcb97b914912024cf0ea634ab481d0fb0fa8a0",
+      "id": "acquisition-receipt-digest",
+      "status": "PASS"
+    }
+  ],
+  "collection_mode": "fresh",
+  "counts": {
+    "account.commit-linked": 92,
+    "account.public-handle-actors": 27,
+    "account.stable": 27,
+    "account.status-matched-actors": 27,
+    "account.status-unavailable-actors": 1341,
+    "actor.full": 1368,
+    "git.bot": 470,
+    "git.human": 9172,
+    "git.merge": 70,
+    "git.nonmerge": 9572,
+    "git.total": 9642,
+    "metric.human-nonmerge.denominator": 9172,
+    "metric.human-nonmerge.numerator": 9102,
+    "oid.duplicates": 0,
+    "oid.expected": 9642,
+    "oid.extra": 0,
+    "oid.missing": 9542,
+    "oid.observed": 100,
+    "provider.items": 100,
+    "provider.pages": 1,
+    "provider.sha-to-account": 92,
+    "verify.cannot-verify": 2,
+    "verify.collections": 3,
+    "verify.verified": 1
+  },
+  "duration_ms": 128979,
+  "exit_code": 3,
+  "output_digests": {
+    "derived/actor-provider-independent": {
+      "algorithm": "sha256",
+      "value": "30e7306a40eaabbe1f219495384c3cd1e68796d39d1023fdb4a2e9ba87f38fda"
+    },
+    "derived/actor-provider-independent-numeric": {
+      "algorithm": "sha256",
+      "value": "28e6e5c81c1f87e4108a7c6d6d30b2e4fc5e0a2f15b0091206fc629aaafb5332"
+    },
+    "derived/license-evidence": {
+      "algorithm": "sha256",
+      "value": "3df50bfcdf4ff3c7e97be2587fff4112b010024312930950d0a73a7a0cbc4076"
+    },
+    "derived/population": {
+      "algorithm": "sha256",
+      "value": "80320fa7638dc4d85798dcbb813ae8705c592ee4b9f98c8ccaefd558d9dd9cc5"
+    },
+    "derived/repo-provider-independent": {
+      "algorithm": "sha256",
+      "value": "9e51646943168c8ce98acd40a851e3e8153a76e30fa3031d7c2ad6d2845b0aa1"
+    },
+    "derived/repo-provider-independent-numeric": {
+      "algorithm": "sha256",
+      "value": "523b28610669099b0019d24038dde6cbb55f97415ced750a64f965eb8666f337"
+    },
+    "derived/sha-to-actor": {
+      "algorithm": "sha256",
+      "value": "33a56ba04b5821c1760a0a8db3cb8771b1209c20e527d5ba508c442266817a87"
+    },
+    "offline/actor-index.json": {
+      "algorithm": "sha256",
+      "value": "e3bae587ca87454ff0fb2c61d39f3bad9bb3bb3d00fabcba682aa53795dc80e3"
+    },
+    "offline/actor-index.md": {
+      "algorithm": "sha256",
+      "value": "6ddda21df516e4ff716dc81144d1f0da3c10bbd679c968d632f02b30ffb1923b"
+    },
+    "offline/collection-manifest.json": {
+      "algorithm": "sha256",
+      "value": "efd2665c8f45876f34baa0be0ad464f5e0e5f83f67943e3c4f1f3263bbe7e8aa"
+    },
+    "offline/repo-report.json": {
+      "algorithm": "sha256",
+      "value": "897bc57e01c0f6b68aec22265ae6f8f827a4d40643b7c0b55222681083c8bf81"
+    },
+    "offline/repo-report.md": {
+      "algorithm": "sha256",
+      "value": "31a90d0210102c8b6d25b2a4614b7e2f317f5b5ef262d647d56acddfe4dd6f68"
+    },
+    "partial/actor-index.json": {
+      "algorithm": "sha256",
+      "value": "e3bae587ca87454ff0fb2c61d39f3bad9bb3bb3d00fabcba682aa53795dc80e3"
+    },
+    "partial/actor-index.md": {
+      "algorithm": "sha256",
+      "value": "e45072e61fba2071b79a29bb52d01bf1b23f13b11f21dd6f646e72816acda54b"
+    },
+    "partial/collection-manifest.json": {
+      "algorithm": "sha256",
+      "value": "3e270086e46e9b3ab9953f7f00dfca79976f986eef2aa0a4aea8d6fec4c5c023"
+    },
+    "partial/repo-report.json": {
+      "algorithm": "sha256",
+      "value": "e879b315330cef4354d322c26dfa3ae774a3dea8a08fc3080e24bdda1f7426a1"
+    },
+    "partial/repo-report.md": {
+      "algorithm": "sha256",
+      "value": "c40651f171cec310e277534dd9d5b80929604cb7fe8e3e4ef63021fb76e9d4f7"
+    },
+    "public-evidence/manifest.json": {
+      "algorithm": "sha256",
+      "value": "fda5b84d0ad57dcbb5a47106133337c073292295587ece76d2fdedc0e12bb48b"
+    },
+    "public-evidence/page-01.body": {
+      "algorithm": "sha256",
+      "value": "97247cafcf890a7c2ebaf431efa7a18274079da62cf23f1e1efc63dd738993ab"
+    },
+    "public-evidence/payload": {
+      "algorithm": "sha256",
+      "value": "d8f7de401a75f9ed7522c086526172f0c3e1703deb4e400264c5c4129ee588dc"
+    },
+    "replay/actor-index.json": {
+      "algorithm": "sha256",
+      "value": "e3bae587ca87454ff0fb2c61d39f3bad9bb3bb3d00fabcba682aa53795dc80e3"
+    },
+    "replay/actor-index.md": {
+      "algorithm": "sha256",
+      "value": "e45072e61fba2071b79a29bb52d01bf1b23f13b11f21dd6f646e72816acda54b"
+    },
+    "replay/collection-manifest.json": {
+      "algorithm": "sha256",
+      "value": "6756a2c73737b364b51e74a805bd833a7a0edacf402248d13fb88d439eb81c7b"
+    },
+    "replay/repo-report.json": {
+      "algorithm": "sha256",
+      "value": "23a22e974107acda6c137089b2d04ede53a32d7597ce9cc086367b498104f5ae"
+    },
+    "replay/repo-report.md": {
+      "algorithm": "sha256",
+      "value": "c40651f171cec310e277534dd9d5b80929604cb7fe8e3e4ef63021fb76e9d4f7"
+    }
+  },
+  "partition_digest": {
+    "algorithm": "sha256",
+    "value": "54cbadb21063584acc6702ac3c584c957dd614fe277950b65e293f74b567e426"
+  },
+  "prior_evidence_digests": null,
+  "provider_coverage": {
+    "kind": "not_proven",
+    "provided": true,
+    "reason": "public_evidence_partial"
+  },
+  "runner": {
+    "tool_version": "0.9.6",
+    "source_binding": {
+      "definition_version": "grift-tool-source-tree-v1",
+      "source_tree_digest": {
+        "algorithm": "sha256",
+        "value": "4563aad53e800a03838a7e7922fa6f1f289e3f284cca777e136e4288a9181446"
+      },
+      "file_count": 112,
+      "commit_oid": {
+        "algorithm": "sha1",
+        "value": "7bff0855df6bdee73b78773a791c7019485a74b1"
+      }
+    }
+  },
+  "scenario_id": "P02-vite-forced-partial",
+  "schema_version": "tep-public-scenario-result-v2",
+  "target_oid": {
+    "algorithm": "sha1",
+    "value": "e2b597de0ef14598901703f5aa52f8c962007d02"
+  },
+  "verdict": "PASS"
+}
