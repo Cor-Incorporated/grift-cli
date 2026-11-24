@@ -66,7 +66,7 @@ def main() -> int:
             + " | ".join(cells[i] for i in ids)
             + f" | {status} | {row.note} |"
         )
-    lines += ["", f"pins: {len(ids)} / 上限 13（master §3-1）", ""]
+    lines += ["", f"pins: {len(ids)} / 上限 14（master §3-1。13 + repo スコープ pin G1R-click-repo）", ""]
     if holes:
         lines.append("## 機検出された HOLE（issue トラック必須）")
         lines += [f"- {h}" for h in holes]
