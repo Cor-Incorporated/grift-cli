@@ -4,26 +4,33 @@
 
 ## The definition version changed
 
-The only TEP field name that changed on disk is `signature_text` → `corpus_text`. Read `corpus_text` for new files; keep accepting `signature_text` when migrating legacy input.
+`DEFINITION_VERSION` moves from `tep-v0.9.5-2026-11-23` to `tep-v0.9.6-2026-11-24`. A report-v2 saved by 0.9.5 or earlier gives `CANNOT_VERIFY` (exit 2) under 0.9.6 `grift verify`. Regenerate it with 0.9.6, or verify it with the CLI version that produced it.
 
-## Other breaking changes in 0.9.6
+## New report-v2 fields
 
-| Area | Before 0.9.6 | 0.9.6 | Why it matters |
-|------|----------------|--------|----------------|
-| Same field on disk | `signature_text` | `corpus_text` | Use `corpus_text` in new files and pipelines. |
-| Hook metrics in `report-v2` | Optional / sparse | Required where applicable | Downstream parsers must handle absence vs zero consistently. |
-| Contract JSON schema | Earlier draft | `v060-contracts.schema.json` | CI and golden tests pin this schema. |
-| Ref Commit Depth cap | Higher default | Capped (shallow repos flagged) | Shallow clones may under-report history depth. |
+- `signature_observation`: the share of selected commits whose object has a signature header. `not_observed` below 20 commits. Signature validity is not checked, and it is not a score. Scope: [verify-guarantees.md](verify-guarantees.md)
+- `usage_terms`: permitted uses, prohibited uses (articles of the [usage norms](norms.md)), the disclosure level, and `binding: declaration_only`
+- `provenance.disclosure_level`: records `--disclosure-level minimal|standard|full`; verify rebuilds with the same level
+- report-v1 `interpretation.survival`, only with `--survival`. The published references carry no survival block, so it is `reference_too_small` today
 
-## Recommended upgrade path
+Without `--disclosure-level` the level is `full` and the Markdown shows the same observations as 0.9.5. The new fields use no verdict words such as score or rank.
 
-1. Run Grift CLI 0.9.6 on a representative repo and archive `report-v2`.
-2. Regenerate golden expected JSON if you maintain them (`scripts/gen_golden_expected.py`).
-3. Update any consumer that assumed `signature_text` only.
-4. Re-run your CI golden suite (`tests/test_golden.py`).
+## Personal view
 
-## Notes for integrators
+The Markdown of `grift actor` with recorded consent gains a "how to use this record (for you)" section, and, when the forge or tracker export you pass holds that person's events, a sentence on review and issue records. It states counts and periods only, never quality.
 
-- **Corpus protocol**: see [corpus-protocol.md](corpus-protocol.md) for wire format.
-- **TEP / metrics glossary**: unchanged metric *names* in output except the corpus field rename above.
-- **Questions**: open an issue on the main repo or contact via your PoC channel.
+## Pinned revision and public forge evidence
+
+`--fetch-public` records GitHub and GitLab public history in a provider-neutral form. On PARTIAL (exit 3), resume with `--resume-public-evidence` and verify saved evidence with `--public-evidence`. When CI uses `fetch-depth: 1`, only the fetched history is measured; if the output shows `history_incomplete`, fetch the full history and compare again.
+
+## contribution-v2
+
+report-v1 accepts only the default `--purpose reference-distributions`; use report-v2 for other purposes. A report-v1 run with `outcome-linkage` exits 2 before writing a contribution or opening a pull request. contribution-v2 offers the information levels aggregate / named-public / masked / raw and the destinations local / controlled / public-pr. Review the output before sharing.
+
+## attest / portfolio
+
+`grift attest` signs with `ssh|cosign`. On receipt, check the signature, the report hash and the repository recomputation separately. `grift portfolio` prints eligible and included counts and never builds a score or rank from an individual's email/handle. See the [usage guide](usage.md) for `library_context`, `outcome` and `align --team`.
+
+## Bootstrapping a reference distribution from public repositories
+
+`scripts/corpus_bootstrap.py` builds a reference distribution from public repositories without `contribute` (`plan`, `observe`, `build`). The shipped `v2026.09` and `v2026.11` do not change. See [corpus-protocol.md](corpus-protocol.md).
