@@ -1,11 +1,6 @@
 {
-  "counts": {
-    "fail": 0,
-    "not_proven": 0,
-    "pass": 3,
-    "source_drift": 0,
-    "total": 3
-  },
+  "schema_version": "tep-scenario-summary-v1",
+  "suite_id": "v060-public-live-gates",
   "manifest_digest": {
     "algorithm": "sha256",
     "value": "f704ecdb6c35b2ac856fea114c9ee83f543aad61e754cb4d7dbef38d59bf20b9"
@@ -13,18 +8,23 @@
   "result_digests": [
     {
       "algorithm": "sha256",
-      "value": "b434bada3a33a03a7ddecd00e9c1ddefa82487cb570d7cc8427f99dd8be83400"
+      "value": "a9492db5f80cc3988ca4e4e9f79574a4cf402fd5a4657823d5704521490e3b61"
     },
     {
       "algorithm": "sha256",
-      "value": "36f724f048644cbe87b49ea917a2fad25525afe96c3f815de2f9ec3f73bbec7d"
+      "value": "ee4358321320f56f486205e4d2eb7873c042bbf3b3c7bcdb44b9d45b34697b1a"
     },
     {
       "algorithm": "sha256",
-      "value": "30a1616fe8453b96e355a4b82c5fe00a279fba439be7f71a58e66ff69beb8e64"
+      "value": "aca794898cea4316116d7236b68758a2936e33366f96270ed2202393eea49cc9"
     }
   ],
-  "schema_version": "tep-scenario-summary-v1",
-  "suite_id": "v060-public-live-gates",
+  "counts": {
+    "total": 3,
+    "pass": 3,
+    "fail": 0,
+    "not_proven": 0,
+    "source_drift": 0
+  },
   "verdict": "PASS"
 }
