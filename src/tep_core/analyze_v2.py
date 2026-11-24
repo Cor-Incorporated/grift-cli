@@ -55,9 +55,11 @@ from tep_core.source_binding import (
     assert_subject_binding,
     source_binding_payload,
 )
+from tep_core.signature_observation import signature_observation
 from tep_core.surface_profile import surface_profile
 from tep_core.tagset import reachable_tagset_digest
 from tep_core.tests_observed import observe_test_frameworks
+from tep_core.usage_terms import usage_terms_payload, validate_disclosure_level
 from tep_core.tracker_lifecycle import summarize_lifecycle
 from tep_core.tracker import summarize_tracker_export
 from tep_core.v2_constants import (
@@ -297,9 +299,11 @@ def analyze_subject(
     survival: bool = False,
     target_oid: dict[str, str] | None = None,
     revision_completeness: dict[str, bool] | None = None,
+    disclosure_level: str | None = None,
 ) -> dict[str, Any]:
     if subject_kind not in {"repo", "actor"}:
         raise ValueError("subject_kind must be repo or actor")
+    disclosure = validate_disclosure_level(disclosure_level)
     if subject_kind == "actor" and reference_version:
         raise InputValidationError(
             "actor view refuses --reference-version; tenant values are not placed on repo distributions"
@@ -430,6 +434,12 @@ def analyze_subject(
         tracker=None if tracker is None else tracker.export,
         empty_reason=empty_reason,
     )
+    signatures = signature_observation(
+        repo,
+        str(target_oid.get("value") or ""),
+        selected,
+        empty_reason=empty_reason,
+    )
     license_evidence = collect_revision_license_evidence(
         repo,
         GitObjectId(
@@ -531,6 +541,7 @@ def analyze_subject(
             ),
             "vendor_scan": bool(include_files),
             "survival": bool(survival),
+            "disclosure_level": disclosure,
             "include_local_path": bool(include_local_path),
             "as_of": as_of,
             "role_lens": lens,
@@ -592,6 +603,8 @@ def analyze_subject(
         "change_rhythm": rhythm,
         "verification_profile": verification,
         "coordination_profile": coordination,
+        "signature_observation": signatures,
+        "usage_terms": usage_terms_payload(disclosure),
         "event_observation": event_observation,
         "event_rhythm": archive_rhythm,
         "tracker_lifecycle": lifecycle,
