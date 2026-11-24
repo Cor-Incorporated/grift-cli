@@ -9,6 +9,11 @@ core_activity_period, test_frameworks, test_cochange, rework, survival,
 provenance subset, interpretation). Excludes analyzed_at / tool_version so
 the file only freezes content that must never change silently.
 
+A pin may carry ``template`` (a template repository the real CLI would be given
+through ``--template``) and ``scope`` (``tenant`` by default, or ``repo``). The
+CLI only records that a template was provided, so the runner passes
+``template_provided=True`` for such a pin.
+
 Golden rule kept: expected files are a REGRESSION detector. Generating them
 from the current implementation is allowed only for NEW pins whose values
 are then frozen; existing G1-G5 files are never rewritten by this script
@@ -30,6 +35,7 @@ sys.path.insert(0, str(ROOT / "tests"))
 from tep_core.analyze import analyze_repository  # noqa: E402
 from tep_core.identity import empty_identity  # noqa: E402
 from tep_core.lineage import Lineage  # noqa: E402
+from tep_core.scope import DEFAULT_SCOPE  # noqa: E402
 
 
 def slim(report: dict) -> dict:
@@ -79,6 +85,8 @@ def main() -> int:
                 dest,
                 identity,
                 Lineage(is_fork=bool(pin.get("fork")), parent=pin.get("parent") or None),
+                template_provided=bool(pin.get("template")),
+                scope=pin.get("scope") or DEFAULT_SCOPE,
             )
         except Exception as exc:  # noqa: BLE001
             failures += 1
