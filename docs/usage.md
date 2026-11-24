@@ -36,7 +36,7 @@ grift verify alignment.json --repo . \
   --identity .tep/identity.toml --project .tep/project.toml
 ```
 
-どちらの経路も `subject`（同意の記録 `actor_consent` と `project_id` を含む）を保存した JSON から写さず、入力から作り直して比べます。repo の経路は provenance と limitations も作り直し、保存した JSON からは作り直しの入力（`--as-of`・`--role-lens`・`--vendor-scan`・`--survival`・`--reference` の指定）だけを読みます。`--event-window` を付けて作った alignment は、まだ repo の経路で VERIFIED になりません（0.9.2 で直します）。保存した 2 つの report の経路は、渡した actor の report を信じて作り直します。actor の report が書き換えられていないかは、`grift verify actor-report.json --repo REPO --identity IDENTITY` で別に確かめてください。
+どちらの経路も `subject`（同意の記録 `actor_consent` と `project_id` を含む）を保存した JSON から写さず、入力から作り直して比べます。repo の経路は provenance と limitations も作り直し、保存した JSON からは作り直しの入力（`--as-of`・`--role-lens`・`--disclosure-level`・`--vendor-scan`・`--survival`・`--reference` の指定）だけを読みます。`--event-window` を付けて作った alignment は、まだ repo の経路で VERIFIED になりません（0.9.2 で直します）。保存した 2 つの report の経路は、渡した actor の report を信じて作り直します。actor の report が書き換えられていないかは、`grift verify actor-report.json --repo REPO --identity IDENTITY` で別に確かめてください。
 
 `grift report alignment-out/alignment.json` は保存した JSON から Markdown を描き直すだけで、検算はしません。面談の問いを出すかどうかは、JSON に書かれた actor の選び方・ID の種類・同意の記録（`subject.actor_selection`・`subject.actor_attribution_state`・`subject.actor_consent`）をそのまま使います（actor の report を描き直すときの本人向けの文も同じです）。JSON が書き換えられていないかを確かめるのは `grift verify` です（保存した report から作った照らし合わせでは、上のとおり actor の report も確かめます）。Markdown の「数字の読み方と限界」にも同じことを書いています。
 
@@ -101,6 +101,30 @@ fail closedします。CLIはclaimedを含め、申告者・本人同意・本�
 actor reportのmachine scopeは、explicit `verified|claimed`だけが`tenant`、公開inferred
 またはexplicit非同意basisは`actor_cluster`です。`actor_cluster`はrepo-local Git
 primary-author clusterであり、表示根拠・本人同意・本人性の証明ではありません。
+
+## 共有の範囲と使い方の条件（`--disclosure-level`・0.9.6）
+
+`repo` と `actor` の report-v2 には、共有するときの条件が `usage_terms` として残ります。許す使い方（本人の振り返り、経歴の要約の材料、面談で確かめたいことの材料、受け取った人による再計算）と、[利用規範](norms.md)の条文に当たる使ってはいけない使い方（`prohibited_uses`）の一覧です。`binding` は `declaration_only` で、共有したあとの使い方を技術で止めるものではありません。どの条件で渡したかを、見える形にして残します。
+
+```bash
+grift actor candidate_001 --identity .tep/identity.toml --disclosure-level minimal --format md
+```
+
+`--disclosure-level` は Markdown に出す観測の範囲を選びます。
+
+| 水準 | Markdown に出す観測 |
+|---|---|
+| `minimal` | 作業領域、テストの付け方 |
+| `standard` | 上に加えて、調整の観測、イベント観測 |
+| `full`（既定） | 上に加えて、変更リズム、イベント間隔、tracker の流れ。0.9.5 までの出力と同じ |
+
+JSON には、水準にかかわらず全観測が残ります。`grift verify` が JSON を計算し直すためです。選んだ水準は `provenance.disclosure_level` に記録され、verify は同じ水準で作り直します。JSON を渡すのは、全部を読んでよい相手だけにしてください。
+
+本人の同意が記録された actor report の Markdown には「この記録の使い方（本人向け）」の節が付き、渡した forge export にその人のレビューのイベントがあれば「レビューと課題の記録」の文が付きます。レビューの良し悪しは測りません。
+
+## 署名ヘッダの観測（0.9.6）
+
+report-v2 の `signature_observation` は、選んだ commit のうち署名ヘッダを持つものの比率です。数えるのはヘッダの有無だけで、署名が正しいかは見ません。点数ではありません。verify が何を保証し、何を保証しないかは [verify-guarantees.md](verify-guarantees.md) にあります。
 
 ## チームの充足ギャップ（`grift align --team`）
 
@@ -348,6 +372,10 @@ grift update          # 実行中の環境を更新し、更新後の版を表�
 ```
 
 `update` は実行中の環境がpipx管理ならその環境をpipxで、それ以外は実行中のPythonの `-P -m pip` で更新します。PATHにある別環境のpipは使いません。`PYTHONPATH`、`PIP_TARGET`、`PIP_PREFIX`、`PIP_ROOT` は引き継がず、解析中のリポジトリ（作業ディレクトリ）では起動しません。自動更新・通常の測定コマンドからの版確認通信はありません。通信できない場合や更新に失敗した場合はメッセージを確認してください。
+
+## 0.9.5 からの更新
+
+詳しくは [migration-v096.md](migration-v096.md) にあります。0.9.5 で保存した report-v2 は、0.9.6 の `grift verify` で CANNOT_VERIFY になります（`DEFINITION_VERSION` を上げたため）。0.9.6 で作り直してください。
 
 ## 0.9.1 からの更新
 
