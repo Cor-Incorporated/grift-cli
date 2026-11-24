@@ -3,7 +3,7 @@
 自動生成: `scripts/gen_coverage_table.py`（`tests/coverage_matrix.py` が計算ロジックの単一実装）。
 **手書き編集禁止** — テスト `tests/test_coverage.py` がこの表と expected ファイルの突合を行う。
 
-記号: `o` = observed（励起、0 も合法な観測値）/ `x` = not_observed / `-` = 期待値に未ピン。
+記号: `o` = observed（励起・0 も合法な観測値）/ `x` = not_observed / `-` = 期待値に未ピン。
 要件: `excited` = o>=1 / `both` = o>=1 かつ x>=1（public golden対象の新観測）/
 `synthetic` = actor exactnessをpublic goldenではなくexact synthetic testsで固定。
 HOLE 行は機械検出された穴。**穴は静かに放置しない** — 表の HOLE と issue 番号の対応を
@@ -15,7 +15,7 @@ tests/test_coverage.py の KNOWN_HOLES が強制する。
 detectorを固定する。wave 2のcontext v2はこのpublic-golden laneに残る。第三者public
 actorまたはidentityなしrepoのexperience / role_profileは
 `not_observed(consenting_actor_required)`であり、公開OSSにidentityを推測して励起しない。
-wave 3のactor行は`synthetic`、`-`は意図した非適用である。決定論・境界・fail-closedは
+wave 3のactor行は`synthetic`、`-`は意図した非適用である。決定論・境界値fail-closedは
 exact synthetic tests、実在repoでの現実妥当性はblind pilotで検証する。既存expectedを
 再生成してこの境界を迂回せず、synthetic greenをblind pilotの代替にしない。
 
@@ -53,9 +53,9 @@ exact synthetic tests、実在repoでの現実妥当性はblind pilotで検証�
 | experience: founder 時期性 | 3 | synthetic | - | - | - | - | - | - | - | - | - | - | - | - | - | - | synthetic | public OSSではactor観測しない。exact synthetic + blind pilotで検証 |
 | role_profile: 4 dimensions | 3 | synthetic | - | - | - | - | - | - | - | - | - | - | - | - | - | - | synthetic | public OSSではactor観測しない。exact synthetic + blind pilotで検証 |
 
-pins: 14 / 上限 14（master §3-1§13 + repo スコープ pin G1R-click-repo）
+pins: 14 / 上限 14（master §3-1、13 + repo スコープ pin G1R-click-repo）
 
-## 実行時間証跡（受入⑥・週次 CI 予算）
+## 実行時間証跡（受入⑤・週次 CI 予算）
 
 - 2026-08-22 wave 1: 13 repos, warm cache: 14.6s wall (`TEP_GOLDEN=1 pytest -m golden`; clone 済み .golden-cache)。コールド clone 込みは pins 追加時の `gen_golden_expected.py` 実行で別計上
 
