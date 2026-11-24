@@ -114,7 +114,7 @@
       "actual": 13,
       "expected": 13,
       "id": "report-merge",
-      "status": "PASSS"
+      "status": "PASS"
     },
     {
       "actual": 0,
@@ -150,7 +150,7 @@
       "actual": 180,
       "expected": 180,
       "id": "window-days",
-      "status": "PASSS"
+      "status": "PASS"
     },
     {
       "actual": "date-range",
@@ -192,7 +192,7 @@
       "actual": "valid",
       "expected": "valid",
       "id": "degrade-report-parse",
-      "status": "PASSS"
+      "status": "PASS"
     },
     {
       "actual": "not_observed",
@@ -204,13 +204,13 @@
       "actual": "not_observed",
       "expected": "not_observed",
       "id": "degrade-context_profile-resolved_human_actors",
-      "status": "PASSS"
+      "status": "PASS"
     },
     {
       "actual": "not_observed",
       "expected": "not_observed",
       "id": "degrade-context_profile-lifecycle_stage",
-      "status": "PASSS"
+      "status": "PASS"
     },
     {
       "actual": "not_observed",
@@ -227,7 +227,7 @@
     {
       "actual": "not_observed",
       "expected": "not_observed",
-      "id": "degrade-context_profile-scale_human_commits",
+      "id": "degrade-context_profile-scale-human_commits",
       "status": "PASS"
     },
     {
@@ -246,13 +246,13 @@
       "actual": 0,
       "expected": 0,
       "id": "verify-collection-cli",
-      "status": "PASSS"
+      "status": "PASS"
     },
     {
       "actual": 1,
       "expected": 1,
       "id": "actor-json-card-count",
-      "status": "PASSS"
+      "status": "PASS"
     },
     {
       "actual": 1,
@@ -277,7 +277,7 @@
     "git.nonmerge": 20,
     "git.total": 33,
     "metric.human_nonmerge.denominator": 33,
-    "metric.human-nonmerge.numerator": 20,
+    "metric.human_nonmerge.numerator": 20,
     "population.human": 33,
     "population.merge": 13,
     "population.nonmerge": 20,
@@ -293,7 +293,7 @@
   "output_digests": {
     "artifacts/actor-index.json": {
       "algorithm": "sha256",
-      "value": "fabcb3b5ae837794dfa7f69b999f0df08606050ac5cbf5aa6c4c10667ebd684"
+      "value": "fabcb3b5ae837794dfa7f69b99f9f0df08606050ac5cbf5aa6c4c10667ebd684"
     },
     "artifacts/actor-index.md": {
       "algorithm": "sha256",
