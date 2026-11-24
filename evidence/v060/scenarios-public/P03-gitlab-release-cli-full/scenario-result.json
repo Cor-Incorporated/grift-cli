@@ -1,1 +1,352 @@
-PLACEHOLDER
+{
+  "argv": [
+    "python",
+    "-m",
+    "tep_cli",
+    "repo",
+    "${DISPOSABLE_REPO}/release-cli",
+    "--rev",
+    "07d5e21c6610f781b65d7196c5d0e86e73bcc6be",
+    "--actors",
+    "--format",
+    "both",
+    "--out",
+    "${OUTPUT_ROOT}/P03-gitlab-release-cli-full/live",
+    "--forge-provider",
+    "gitlab",
+    "--fetch-public",
+    "--public-evidence-out",
+    "${RAW_BUNDLE_ROOT}/P03-gitlab-release-cli-full",
+    "--max-public-pages",
+    "100"
+  ],
+  "assertions": [
+    {
+      "actual": "0.9.6",
+      "expected": "0.9.6",
+      "id": "runner-tool-version",
+      "status": "PASS"
+    },
+    {
+      "actual": "07d5e21c6610f781b65d7196c5d0e86e73bcc6be",
+      "expected": "07d5e21c6610f781b65d7196c5d0e86e73bcc6be",
+      "id": "target-oid",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "expected": 0,
+      "id": "offline-exit",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "expected": 0,
+      "id": "offline_collection_verify-exit",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "expected": 0,
+      "id": "fetch-exit",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "expected": 0,
+      "id": "bundle_verify-exit",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "expected": 0,
+      "id": "live_collection_verify-exit",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "expected": 0,
+      "id": "replay-exit",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "expected": 0,
+      "id": "replay_collection_verify-exit",
+      "status": "PASS"
+    },
+    {
+      "actual": "complete",
+      "expected": "complete",
+      "id": "provider-coverage",
+      "status": "PASS"
+    },
+    {
+      "actual": 5,
+      "expected": 5,
+      "id": "provider-pages",
+      "status": "PASS"
+    },
+    {
+      "actual": 453,
+      "expected": 453,
+      "id": "provider-items",
+      "status": "PASS"
+    },
+    {
+      "actual": 453,
+      "expected": 453,
+      "id": "oid-expected",
+      "status": "PASS"
+    },
+    {
+      "actual": 453,
+      "expected": 453,
+      "id": "oid-observed",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "expected": 0,
+      "id": "oid-missing",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "expected": 0,
+      "id": "oid-extra",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "expected": 0,
+      "id": "oid-duplicate",
+      "status": "PASS"
+    },
+    {
+      "actual": 453,
+      "expected": 453,
+      "id": "git-total",
+      "status": "PASS"
+    },
+    {
+      "actual": 290,
+      "expected": 290,
+      "id": "human-nonmerge",
+      "status": "PASS"
+    },
+    {
+      "actual": 163,
+      "expected": 163,
+      "id": "human-merge",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "expected": 0,
+      "id": "bot-commits",
+      "status": "PASS"
+    },
+    {
+      "actual": 47,
+      "expected": 47,
+      "id": "actor-count",
+      "status": "PASS"
+    },
+    {
+      "actual": "unsupported",
+      "expected": "unsupported",
+      "id": "account-linkage",
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "id": "duration-within-limit",
+      "status": "PASS"
+    },
+    {
+      "actual": "7c21f81acd10458c9e780e6559a54ace250ea89aea49ea81111e32c1fbf5aa75",
+      "expected": "7c21f81acd10458c9e780e6559a54ace250ea89aea49ea81111e32c1fbf5aa75",
+      "id": "acquisition-receipt-digest",
+      "status": "PASS"
+    }
+  ],
+  "collection_mode": "fresh",
+  "counts": {
+    "account.commit-linked": 0,
+    "account.public-handle-actors": 0,
+    "account.stable": 0,
+    "account.status-unsupported-actors": 47,
+    "actor.full": 47,
+    "git.bot": 0,
+    "git.human": 453,
+    "git.merge": 163,
+    "git.nonmerge": 290,
+    "git.total": 453,
+    "metric.human-nonmerge.denominator": 453,
+    "metric.human-nonmerge.numerator": 290,
+    "oid.duplicates": 0,
+    "oid.expected": 453,
+    "oid.extra": 0,
+    "oid.missing": 0,
+    "oid.observed": 453,
+    "provider.items": 453,
+    "provider.pages": 5,
+    "provider.sha-to-account": 0,
+    "verify.cannot-verify": 0,
+    "verify.collections": 3,
+    "verify.verified": 3
+  },
+  "duration_ms": 8552,
+  "exit_code": 0,
+  "output_digests": {
+    "derived/actor-provider-independent": {
+      "algorithm": "sha256",
+      "value": "ea5b5bb6a794db7a9aee39dded00e7e2f769e90bdb305edc6a3e048b83d1bc23"
+    },
+    "derived/actor-provider-independent-numeric": {
+      "algorithm": "sha256",
+      "value": "b6b3b6a3f33c0cf90e731181c815291d9cfe98761ae3435cc7af5aaeefee26af"
+    },
+    "derived/license-evidence": {
+      "algorithm": "sha256",
+      "value": "ae6e2739dbfaa6d49a9b0ef917edc3e5876b348c09947ef0dc0beb320c10563b"
+    },
+    "derived/population": {
+      "algorithm": "sha256",
+      "value": "a873d75f0ac81024fa2a8727bb466104acc983c5ab017d3349d1c52e44a86f7e"
+    },
+    "derived/repo-provider-independent": {
+      "algorithm": "sha256",
+      "value": "10e896979f676e068523da0309daf1cdeb545c70b5eff9f5f14886613e8dfe65"
+    },
+    "derived/repo-provider-independent-numeric": {
+      "algorithm": "sha256",
+      "value": "0878cb1a8db870e6cc83ab240ae3832b9aec92a9253fcefcd168700be888e8b5"
+    },
+    "derived/sha-to-actor": {
+      "algorithm": "sha256",
+      "value": "21bc072b51ed41ad1fa2800804e16d03e6744d893bdd0c5dee555913feccfde7"
+    },
+    "live/actor-index.json": {
+      "algorithm": "sha256",
+      "value": "67f4bed45f26efe69332eddee0590e0ddd2d92a1b4f582c11afc11107b6def42"
+    },
+    "live/actor-index.md": {
+      "algorithm": "sha256",
+      "value": "621fca4326801f7297da17e3b86436edccbf0414fa449d4edd8e2045ed346a94"
+    },
+    "live/collection-manifest.json": {
+      "algorithm": "sha256",
+      "value": "59c2d162acf38e0e7ccfbf4ce1580058e76edab217b4d1ff1a0ca04cd900b60f"
+    },
+    "live/repo-report.json": {
+      "algorithm": "sha256",
+      "value": "facf57c797f8c95b5e55cdf7bbc7650c4b7d722753844545411a9a93259f79dd"
+    },
+    "live/repo-report.md": {
+      "algorithm": "sha256",
+      "value": "de6f75044cd1301e10d6e6b4f6e3adb4735ebd1b02db3f947671a671b5454bc4"
+    },
+    "offline/actor-index.json": {
+      "algorithm": "sha256",
+      "value": "67f4bed45f26efe69332eddee0590e0ddd2d92a1b4f582c11afc11107b6def42"
+    },
+    "offline/actor-index.md": {
+      "algorithm": "sha256",
+      "value": "3ccd7fcdc4c58d6d06446a54f31610d9dbf65032081938b7c0abd8a45d52d0ba"
+    },
+    "offline/collection-manifest.json": {
+      "algorithm": "sha256",
+      "value": "ad37881d7ee61d24d664d2c16793f8bd43c0c3732713c85660dd43a5fe2bd90f"
+    },
+    "offline/repo-report.json": {
+      "algorithm": "sha256",
+      "value": "70d1efd5f0a38b9a84113cb7949c7f9871e06a87433c6dcf0b05d6cd01deecf8"
+    },
+    "offline/repo-report.md": {
+      "algorithm": "sha256",
+      "value": "f7689db0eedf4998e554f5c5c656932dcb84725b9f19e609bd4e554abf49b91d"
+    },
+    "public-evidence/manifest.json": {
+      "algorithm": "sha256",
+      "value": "3f375875cbfa6c779a93877e8081816955638c8d0c549235d0c42cb757a57929"
+    },
+    "public-evidence/page-01.body": {
+      "algorithm": "sha256",
+      "value": "7e711a6e9363e3e024328ffbdf88c9eae7aec3bf9db6b1f97e9e711f7149a589"
+    },
+    "public-evidence/page-02.body": {
+      "algorithm": "sha256",
+      "value": "d3e93222ccb944650b6b84d6345667b009699d5961b76ba3bac873233794dc41"
+    },
+    "public-evidence/page-03.body": {
+      "algorithm": "sha256",
+      "value": "28882c415f1f357d7b3aa2c8fa83e6636ac4e83c32b71e051802e7b6f80b51de"
+    },
+    "public-evidence/page-04.body": {
+      "algorithm": "sha256",
+      "value": "fd1ea9a9420a38fe7b622a2e80c8ebf6d119619ad18fe381b4ffed26e74d5944"
+    },
+    "public-evidence/page-05.body": {
+      "algorithm": "sha256",
+      "value": "58412e36c197d90c8b7d3e25845aa14a184ca6866faeb4f8016e6fb391004be3"
+    },
+    "public-evidence/payload": {
+      "algorithm": "sha256",
+      "value": "44aa69396374415be291fdbb704717f5041bca3b0c0249e24f6fb833bf68698a"
+    },
+    "replay/actor-index.json": {
+      "algorithm": "sha256",
+      "value": "67f4bed45f26efe69332eddee0590e0ddd2d92a1b4f582c11afc11107b6def42"
+    },
+    "replay/actor-index.md": {
+      "algorithm": "sha256",
+      "value": "621fca4326801f7297da17e3b86436edccbf0414fa449d4edd8e2045ed346a94"
+    },
+    "replay/collection-manifest.json": {
+      "algorithm": "sha256",
+      "value": "37ccb4c96b012c78c27d84aaf811a41646054a334f3ea78a1cc2405935f2b030"
+    },
+    "replay/repo-report.json": {
+      "algorithm": "sha256",
+      "value": "78834c98db9960b3d2af4449fe7cb0579eb70599080a5df42ce3420d2ae5b670"
+    },
+    "replay/repo-report.md": {
+      "algorithm": "sha256",
+      "value": "de6f75044cd1301e10d6e6b4f6e3adb4735ebd1b02db3f947671a671b5454bc4"
+    }
+  },
+  "partition_digest": {
+    "algorithm": "sha256",
+    "value": "4f33a0b0c106ff0be93cbc37d0d42db39c0dc4e624affd13a708c88f55c2c998"
+  },
+  "prior_evidence_digests": null,
+  "provider_coverage": {
+    "kind": "observed",
+    "provided": true
+  },
+  "runner": {
+    "tool_version": "0.9.6",
+    "source_binding": {
+      "definition_version": "grift-tool-source-tree-v1",
+      "source_tree_digest": {
+        "algorithm": "sha256",
+        "value": "4563aad53e800a03838a7e7922fa6f1f289e3f284cca777e136e4288a9181446"
+      },
+      "file_count": 112,
+      "commit_oid": {
+        "algorithm": "sha1",
+        "value": "b22bc955504064904c1774880afa264814e559cd"
+      }
+    }
+  },
+  "scenario_id": "P03-gitlab-release-cli-full",
+  "schema_version": "tep-public-scenario-result-v2",
+  "target_oid": {
+    "algorithm": "sha1",
+    "value": "07d5e21c6610f781b65d7196c5d0e86e73bcc6be"
+  },
+  "verdict": "PASS"
+}
