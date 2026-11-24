@@ -38,8 +38,9 @@
       "reason": "parent_repo_not_provided"
     },
     "template_inherited": {
-      "kind": "not_observed",
-      "reason": "template_not_provided"
+      "kind": "observed",
+      "value": 0,
+      "unit": "commits"
     },
     "generated_or_vendor": {
       "kind": "observed",
