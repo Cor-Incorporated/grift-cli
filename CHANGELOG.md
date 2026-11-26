@@ -4,7 +4,7 @@
 
 タグ・PyPI・リポ public 化は本ファイルの記載対象外（人間ゲート）。
 
-## [0.9.6] — 未公開候補
+## [0.9.6] — 2026-11-25
 
 公開リポジトリの issue #7・#8・#23・#24・#25・#27 を閉じる feature release。`grift` が出すものを「評価」ではなく「確かめられる仕事の記録」として整える。コマンドは増えず、追加は report-v2 の項目とオプション 1 つ（`--disclosure-level`）。
 provider-neutral Forge証跡はGitHub/GitLab/self-managedに対応し、PARTIAL/resumeで続きを取得できる。
@@ -12,7 +12,6 @@ attest / portfolio、contribution-v2の適用範囲は[移行案内](docs/migrat
 暗黙 PyPI update checkは実行しない。`DEFINITION_VERSION` を `tep-v0.9.5-2026-11-23` →
 `tep-v0.9.6-2026-11-24` に上げたため、0.9.5 で保存した report-v2 と照らし合わせは 0.9.6 の
 `grift verify` で CANNOT_VERIFY（終了コード 2）になる。移行は docs/migration-v096.md、英語は docs/en/migration-v096.md。
-タグ・PyPI への公開は人間ゲート（本リリースの作業では行わない）。
 
 ### Added
 
